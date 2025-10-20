@@ -27,6 +27,7 @@ const readingHistoryRoutes = require('./routes/readingHistory');
 const listeningRoutes = require('./routes/listening');
 const speakingRoutes = require('./routes/speaking');
 const dashboardRoutes = require('./routes/dashboard');
+const achievementRoutes = require('./routes/achievements');
 const { router: authRoutes } = require('./routes/auth');
 
 // Routes
@@ -40,6 +41,7 @@ app.use('/api/reading', readingHistoryRoutes);
 app.use('/api/listening', listeningRoutes);
 app.use('/api/speaking', speakingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/achievements', achievementRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ message: "Server is healthy and connected!" });

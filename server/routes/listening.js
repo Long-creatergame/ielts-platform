@@ -171,6 +171,16 @@ router.post('/submit', async (req, res) => {
       answers: answerDetails
     });
 
+    // Auto-update achievements
+    try {
+      await fetch(`http://localhost:4000/api/achievements/update/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (achievementError) {
+      console.log('Achievement update failed (non-critical):', achievementError.message);
+    }
+
     res.json({
       message: 'Listening test submitted successfully',
       result: {

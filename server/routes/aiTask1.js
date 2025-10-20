@@ -79,6 +79,16 @@ router.post('/writing/task1', async (req, res) => {
       model: process.env.AI_MODEL || "llama3-8b-instant",
     });
 
+    // Auto-update achievements
+    try {
+      await fetch(`http://localhost:4000/api/achievements/update/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (achievementError) {
+      console.log('Achievement update failed (non-critical):', achievementError.message);
+    }
+
     res.json({
       message: 'Task 1 scoring complete and saved.',
       result: saved,

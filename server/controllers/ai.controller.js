@@ -120,6 +120,16 @@ Make sure the feedback is constructive and specific, around 50-100 words.
 
     await testRecord.save();
 
+    // Auto-update achievements
+    try {
+      await fetch(`http://localhost:4000/api/achievements/update/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (achievementError) {
+      console.log('Achievement update failed (non-critical):', achievementError.message);
+    }
+
     // Return the scoring result
     res.json({
       success: true,
