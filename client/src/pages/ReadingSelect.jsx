@@ -47,24 +47,24 @@ const ReadingSelect = () => {
               <div className="text-6xl mb-4">💼</div>
               <h2 className="text-2xl font-bold text-green-700 mb-4">General Training Reading</h2>
               <p className="text-gray-600 mb-6">
-                3 sections with everyday topics like advertisements, workplace documents, 
+                4 sections with everyday topics like advertisements, workplace documents, 
                 and general interest articles.
               </p>
               <div className="bg-green-50 rounded-lg p-4 mb-6">
                 <h3 className="font-semibold text-green-800 mb-2">Test Format:</h3>
                 <ul className="text-sm text-green-700 text-left">
                   <li>• 60 minutes duration</li>
-                  <li>• 3 sections</li>
+                  <li>• 4 sections</li>
                   <li>• 40 questions total</li>
                   <li>• Multiple choice, True/False, Fill in the blanks</li>
                 </ul>
               </div>
-              <button
-                disabled
-                className="inline-block bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold cursor-not-allowed"
+              <a
+                href="/reading/test?type=general"
+                className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
               >
-                Coming Soon
-              </button>
+                Start General Reading Test
+              </a>
             </div>
           </div>
         </div>

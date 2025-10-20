@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const ReadingResult = require('../models/ReadingResult');
-const readingData = require('../data/academicReadingFull.json');
+const academicReadingData = require('../data/academicReadingFull.json');
+const generalReadingData = require('../data/generalReadingFull.json');
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
 
@@ -71,22 +72,36 @@ Keep the feedback encouraging but honest, and provide actionable advice.`
   }
 }
 
-// GET /api/reading/test?type=academic
+// GET /api/reading/test?type=academic or ?type=general
 router.get('/test', (req, res) => {
   try {
     const { type = 'academic' } = req.query;
     
-    // For now, always return the full academic reading test
-    const testData = {
-      title: readingData.title,
-      duration: 60,
-      passages: readingData.passages.map(passage => ({
-        id: passage.id,
-        title: passage.title,
-        content: passage.content,
-        questionCount: passage.questions.length
-      }))
-    };
+    let testData;
+    if (type === 'general') {
+      testData = {
+        title: generalReadingData.title,
+        duration: generalReadingData.duration,
+        passages: generalReadingData.passages.map(passage => ({
+          id: passage.id,
+          title: passage.title,
+          content: passage.content,
+          questionCount: passage.questions.length
+        }))
+      };
+    } else {
+      // Default to academic
+      testData = {
+        title: academicReadingData.title,
+        duration: 60,
+        passages: academicReadingData.passages.map(passage => ({
+          id: passage.id,
+          title: passage.title,
+          content: passage.content,
+          questionCount: passage.questions.length
+        }))
+      };
+    }
 
     res.json(testData);
   } catch (error) {
@@ -100,8 +115,9 @@ router.post('/submit', async (req, res) => {
   try {
     const { testType = 'academic', answers = [], duration } = req.body;
     
-    // Get all questions from all passages
-    const allQuestions = readingData.passages.flatMap(passage => passage.questions);
+    // Get all questions from the appropriate test data
+    const testData = testType === 'general' ? generalReadingData : academicReadingData;
+    const allQuestions = testData.passages.flatMap(passage => passage.questions);
     
     // Check answers and calculate score
     let correctCount = 0;
@@ -196,12 +212,14 @@ router.get('/results', async (req, res) => {
   }
 });
 
-// GET /api/reading/questions/:passageId
+// GET /api/reading/questions/:passageId?type=academic or ?type=general
 router.get('/questions/:passageId', (req, res) => {
   try {
     const { passageId } = req.params;
+    const { type = 'academic' } = req.query;
     
-    const passage = readingData.passages.find(p => p.id === parseInt(passageId));
+    const testData = type === 'general' ? generalReadingData : academicReadingData;
+    const passage = testData.passages.find(p => p.id === parseInt(passageId));
     if (!passage) {
       return res.status(404).json({ error: 'Passage not found' });
     }

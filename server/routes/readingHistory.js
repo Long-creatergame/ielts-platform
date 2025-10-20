@@ -46,7 +46,8 @@ router.get("/analytics/:userId", async (req, res) => {
       date: new Date(r.createdAt).toLocaleDateString(),
       correctCount: r.correctCount,
       totalQuestions: r.totalQuestions,
-      duration: r.duration
+      duration: r.duration,
+      testType: r.testType
     }));
 
     res.json({ 

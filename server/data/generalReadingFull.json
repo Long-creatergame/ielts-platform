@@ -1,0 +1,342 @@
+{
+  "title": "IELTS General Reading Test – Full Version",
+  "duration": 60,
+  "passages": [
+    {
+      "id": 1,
+      "title": "Holiday Apartment Rental Notice",
+      "content": "You are planning to spend your holiday in a city apartment. Read the following advertisement carefully.\n\n**SEASIDE HOLIDAY APARTMENTS**\n\nLocated in the heart of Brighton's vibrant city center, our luxury apartments offer the perfect base for your seaside holiday. Each apartment features modern amenities and stunning sea views.\n\n**What's Included:**\n- Wi-Fi and cleaning service\n- Fully equipped kitchen with dishwasher\n- Air conditioning and heating\n- 24-hour security\n- Parking space (additional fee applies)\n- Towels and bed linen provided\n\n**Booking Information:**\n- Minimum stay: 3 nights\n- Check-in: 3:00 PM\n- Check-out: 11:00 AM\n- Keys available from reception office\n- Payment by credit card or bank transfer\n\n**Contact Details:**\nPhone: 01273 123456\nEmail: bookings@seasideapartments.co.uk\nAddress: 15 Marine Parade, Brighton BN2 1TL\n\n**Special Offers:**\n- 10% discount for stays over 7 nights\n- Free airport transfer for bookings over £500\n- Complimentary welcome pack for first-time guests",
+      "questions": [
+        {
+          "id": 1,
+          "type": "multiple-choice",
+          "question": "What is included in the rental price?",
+          "options": ["Electricity and gas", "Wi-Fi and cleaning", "Laundry only", "Parking space"],
+          "correct": 1,
+          "explanation": "The advertisement states that Wi-Fi and cleaning service are included."
+        },
+        {
+          "id": 2,
+          "type": "multiple-choice",
+          "question": "How can you get the key?",
+          "options": ["Pick up from office", "Delivered to your home", "Sent by post", "Available on arrival"],
+          "correct": 0,
+          "explanation": "The text mentions that keys are available from reception office."
+        },
+        {
+          "id": 3,
+          "type": "multiple-choice",
+          "question": "What is the minimum stay required?",
+          "options": ["2 nights", "3 nights", "5 nights", "7 nights"],
+          "correct": 1,
+          "explanation": "The booking information clearly states minimum stay is 3 nights."
+        },
+        {
+          "id": 4,
+          "type": "true-false",
+          "question": "Parking is included in the rental price.",
+          "correct": false,
+          "explanation": "The text states 'Parking space (additional fee applies)' indicating it's not included."
+        },
+        {
+          "id": 5,
+          "type": "multiple-choice",
+          "question": "What discount is available for longer stays?",
+          "options": ["5% for 5 nights", "10% for 7 nights", "15% for 10 nights", "20% for 14 nights"],
+          "correct": 1,
+          "explanation": "The special offers section mentions '10% discount for stays over 7 nights'."
+        },
+        {
+          "id": 6,
+          "type": "multiple-choice",
+          "question": "What is the check-in time?",
+          "options": ["2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"],
+          "correct": 1,
+          "explanation": "The booking information states check-in time is 3:00 PM."
+        },
+        {
+          "id": 7,
+          "type": "true-false",
+          "question": "First-time guests receive a complimentary welcome pack.",
+          "correct": true,
+          "explanation": "The special offers section mentions 'Complimentary welcome pack for first-time guests'."
+        },
+        {
+          "id": 8,
+          "type": "multiple-choice",
+          "question": "How can you contact the apartment service?",
+          "options": ["Phone only", "Email only", "Phone and email", "In person only"],
+          "correct": 2,
+          "explanation": "The contact details provide both phone number and email address."
+        },
+        {
+          "id": 9,
+          "type": "fill-blank",
+          "question": "The apartments are located in the heart of Brighton's _____ city center.",
+          "answer": "vibrant",
+          "explanation": "The text describes Brighton's city center as 'vibrant'."
+        },
+        {
+          "id": 10,
+          "type": "multiple-choice",
+          "question": "What amenity is NOT mentioned as included?",
+          "options": ["Air conditioning", "Dishwasher", "Swimming pool", "Heating"],
+          "correct": 2,
+          "explanation": "Swimming pool is not mentioned in the list of included amenities."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Company Safety Guidelines",
+      "content": "Employees must wear safety helmets at all times in the factory area. This policy applies to all staff members, visitors, and contractors working on-site.\n\n**Safety Equipment Requirements:**\n- Hard hats must be worn in all production areas\n- Safety goggles required when operating machinery\n- Steel-toed boots mandatory in workshop zones\n- High-visibility vests for outdoor work areas\n- Ear protection in high-noise environments\n\n**Emergency Procedures:**\nIn case of emergency, follow these steps:\n1. Stop work immediately\n2. Alert your supervisor or nearest safety officer\n3. Evacuate to designated assembly point\n4. Do not return until all-clear is given\n\n**Reporting Incidents:**\nAll accidents, no matter how minor, must be reported within 24 hours. Use the incident report form available from HR department or download from company intranet.\n\n**Training Requirements:**\n- New employees must complete safety training within first week\n- Annual refresher courses mandatory for all staff\n- Specialized training required for high-risk activities\n- Training records kept on file for compliance\n\n**Safety Committee:**\nMonthly meetings held first Tuesday of each month. All employees welcome to attend and raise safety concerns. Minutes available on company noticeboard.",
+      "questions": [
+        {
+          "id": 11,
+          "type": "multiple-choice",
+          "question": "When must employees wear helmets?",
+          "options": ["During breaks", "Only on night shifts", "At all times", "When supervisors are present"],
+          "correct": 2,
+          "explanation": "The text states employees must wear safety helmets 'at all times in the factory area'."
+        },
+        {
+          "id": 12,
+          "type": "multiple-choice",
+          "question": "Who does the safety policy apply to?",
+          "options": ["Employees only", "Employees and visitors", "All staff, visitors, and contractors", "Only production workers"],
+          "correct": 2,
+          "explanation": "The policy applies to 'all staff members, visitors, and contractors working on-site'."
+        },
+        {
+          "id": 13,
+          "type": "true-false",
+          "question": "Safety goggles are required when operating machinery.",
+          "correct": true,
+          "explanation": "The safety equipment requirements state 'Safety goggles required when operating machinery'."
+        },
+        {
+          "id": 14,
+          "type": "multiple-choice",
+          "question": "What should you do first in an emergency?",
+          "options": ["Call 999", "Stop work immediately", "Find your supervisor", "Evacuate the building"],
+          "correct": 1,
+          "explanation": "The emergency procedures state the first step is to 'Stop work immediately'."
+        },
+        {
+          "id": 15,
+          "type": "multiple-choice",
+          "question": "When must incidents be reported?",
+          "options": ["Within 1 hour", "Within 24 hours", "Within 48 hours", "Within 1 week"],
+          "correct": 1,
+          "explanation": "The text states 'All accidents must be reported within 24 hours'."
+        },
+        {
+          "id": 16,
+          "type": "multiple-choice",
+          "question": "Where can you get incident report forms?",
+          "options": ["From supervisors only", "HR department or company intranet", "Safety office only", "Emergency services"],
+          "correct": 1,
+          "explanation": "The text mentions forms are available 'from HR department or download from company intranet'."
+        },
+        {
+          "id": 17,
+          "type": "true-false",
+          "question": "New employees must complete safety training within the first month.",
+          "correct": false,
+          "explanation": "The text states training must be completed 'within first week', not first month."
+        },
+        {
+          "id": 18,
+          "type": "multiple-choice",
+          "question": "How often are refresher courses required?",
+          "options": ["Every 6 months", "Annually", "Every 2 years", "Only when incidents occur"],
+          "correct": 1,
+          "explanation": "The text states 'Annual refresher courses mandatory for all staff'."
+        },
+        {
+          "id": 19,
+          "type": "fill-blank",
+          "question": "Safety committee meetings are held on the first _____ of each month.",
+          "answer": "Tuesday",
+          "explanation": "The text states meetings are held 'first Tuesday of each month'."
+        },
+        {
+          "id": 20,
+          "type": "multiple-choice",
+          "question": "Where can you find safety committee minutes?",
+          "options": ["HR office", "Company intranet", "Company noticeboard", "Supervisor's office"],
+          "correct": 2,
+          "explanation": "The text states 'Minutes available on company noticeboard'."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Public Notice – City Library",
+      "content": "The City Library is open from 9 a.m. to 8 p.m. Monday to Saturday, and 10 a.m. to 6 p.m. on Sundays. We provide a wide range of services to support learning, research, and community engagement.\n\n**Library Services:**\n- Book borrowing (up to 20 items for 3 weeks)\n- Computer and internet access (free for members)\n- Printing and photocopying facilities\n- Study rooms for group work\n- Children's activities and story time sessions\n- Digital resources and online databases\n\n**Membership:**\n- Free membership for city residents\n- Photo ID and proof of address required\n- Membership card needed for borrowing\n- Online registration available\n\n**Special Programs:**\n- Computer literacy classes every Tuesday and Thursday\n- Book clubs for adults and teenagers\n- Homework help sessions for students\n- Author talks and literary events\n- Language learning resources\n\n**Facilities:**\n- Quiet study areas on upper floors\n- Children's section with play area\n- Café serving light meals and drinks\n- Free Wi-Fi throughout the building\n- Accessible parking and facilities\n\n**Contact Information:**\nMain Library: 123 Central Street, City Center\nPhone: (555) 123-4567\nEmail: info@citylibrary.gov\nWebsite: www.citylibrary.gov\n\n**Holiday Closures:**\nThe library is closed on public holidays. Extended hours during exam periods. Check website for current schedule.",
+      "questions": [
+        {
+          "id": 21,
+          "type": "multiple-choice",
+          "question": "What is the closing time on Saturday?",
+          "options": ["5 p.m.", "6 p.m.", "8 p.m.", "9 p.m."],
+          "correct": 2,
+          "explanation": "The text states the library is open '9 a.m. to 8 p.m. Monday to Saturday'."
+        },
+        {
+          "id": 22,
+          "type": "multiple-choice",
+          "question": "How many books can members borrow?",
+          "options": ["10 items", "15 items", "20 items", "25 items"],
+          "correct": 2,
+          "explanation": "The text states 'up to 20 items for 3 weeks'."
+        },
+        {
+          "id": 23,
+          "type": "true-false",
+          "question": "Computer access is free for library members.",
+          "correct": true,
+          "explanation": "The text states 'Computer and internet access (free for members)'."
+        },
+        {
+          "id": 24,
+          "type": "multiple-choice",
+          "question": "What is required for library membership?",
+          "options": ["Only photo ID", "Photo ID and proof of address", "Proof of address only", "Nothing required"],
+          "correct": 1,
+          "explanation": "The text states 'Photo ID and proof of address required'."
+        },
+        {
+          "id": 25,
+          "type": "multiple-choice",
+          "question": "When are computer literacy classes held?",
+          "options": ["Monday and Wednesday", "Tuesday and Thursday", "Friday and Saturday", "Sunday only"],
+          "correct": 1,
+          "explanation": "The text states 'Computer literacy classes every Tuesday and Thursday'."
+        },
+        {
+          "id": 26,
+          "type": "true-false",
+          "question": "The library has a café.",
+          "correct": true,
+          "explanation": "The facilities section mentions 'Café serving light meals and drinks'."
+        },
+        {
+          "id": 27,
+          "type": "multiple-choice",
+          "question": "Where are the quiet study areas located?",
+          "options": ["Ground floor", "Upper floors", "Basement", "Children's section"],
+          "correct": 1,
+          "explanation": "The text states 'Quiet study areas on upper floors'."
+        },
+        {
+          "id": 28,
+          "type": "multiple-choice",
+          "question": "What services are available for students?",
+          "options": ["Only book borrowing", "Homework help sessions", "Computer access only", "Study rooms only"],
+          "correct": 1,
+          "explanation": "The special programs include 'Homework help sessions for students'."
+        },
+        {
+          "id": 29,
+          "type": "fill-blank",
+          "question": "The library provides _____ resources and online databases.",
+          "answer": "digital",
+          "explanation": "The text mentions 'Digital resources and online databases'."
+        },
+        {
+          "id": 30,
+          "type": "multiple-choice",
+          "question": "How can you contact the library?",
+          "options": ["Phone only", "Email only", "Website only", "Phone, email, and website"],
+          "correct": 3,
+          "explanation": "The contact information provides phone, email, and website details."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Job Advertisement - Customer Service Representative",
+      "content": "We are seeking a motivated and experienced Customer Service Representative to join our growing team. This is a full-time position offering excellent benefits and career development opportunities.\n\n**Position Details:**\n- Full-time, 40 hours per week\n- Monday to Friday, 9:00 AM to 5:30 PM\n- Some weekend work may be required\n- Starting salary: £25,000 per annum\n- 25 days annual leave plus bank holidays\n\n**Key Responsibilities:**\n- Handle customer inquiries via phone, email, and chat\n- Process orders and manage customer accounts\n- Resolve complaints and provide product information\n- Maintain accurate customer records\n- Work collaboratively with sales and technical teams\n\n**Required Qualifications:**\n- Minimum 2 years customer service experience\n- Excellent communication skills in English\n- Computer literacy and CRM system experience\n- GCSEs in English and Mathematics (grade C or above)\n- Ability to work under pressure and meet targets\n\n**Preferred Skills:**\n- Additional language skills\n- Previous experience in retail or hospitality\n- Knowledge of our industry sector\n- Customer service qualification\n\n**Benefits Package:**\n- Competitive salary with annual reviews\n- Private healthcare insurance\n- Company pension scheme\n- Free parking on-site\n- Training and development opportunities\n- Employee discount scheme\n\n**Application Process:**\nTo apply, please send your CV and covering letter to:\nEmail: hr@companyname.co.uk\nSubject line: Customer Service Representative Application\n\nDeadline for applications: Friday 15th March\nInterviews will be held week commencing 25th March\n\nWe are an equal opportunities employer committed to diversity and inclusion.",
+      "questions": [
+        {
+          "id": 31,
+          "type": "multiple-choice",
+          "question": "What are the working hours for this position?",
+          "options": ["9:00 AM to 5:00 PM", "9:00 AM to 5:30 PM", "8:00 AM to 6:00 PM", "Flexible hours"],
+          "correct": 1,
+          "explanation": "The position details state 'Monday to Friday, 9:00 AM to 5:30 PM'."
+        },
+        {
+          "id": 32,
+          "type": "multiple-choice",
+          "question": "What is the starting salary?",
+          "options": ["£22,000", "£25,000", "£28,000", "£30,000"],
+          "correct": 1,
+          "explanation": "The position details state 'Starting salary: £25,000 per annum'."
+        },
+        {
+          "id": 33,
+          "type": "true-false",
+          "question": "Weekend work is never required for this position.",
+          "correct": false,
+          "explanation": "The text states 'Some weekend work may be required'."
+        },
+        {
+          "id": 34,
+          "type": "multiple-choice",
+          "question": "How much annual leave is offered?",
+          "options": ["20 days", "25 days", "30 days", "35 days"],
+          "correct": 1,
+          "explanation": "The position details state '25 days annual leave plus bank holidays'."
+        },
+        {
+          "id": 35,
+          "type": "multiple-choice",
+          "question": "What is the minimum experience required?",
+          "options": ["1 year", "2 years", "3 years", "5 years"],
+          "correct": 1,
+          "explanation": "The required qualifications state 'Minimum 2 years customer service experience'."
+        },
+        {
+          "id": 36,
+          "type": "true-false",
+          "question": "Computer literacy is required for this position.",
+          "correct": true,
+          "explanation": "The required qualifications include 'Computer literacy and CRM system experience'."
+        },
+        {
+          "id": 37,
+          "type": "multiple-choice",
+          "question": "What is the application deadline?",
+          "options": ["Friday 10th March", "Friday 15th March", "Monday 20th March", "Friday 25th March"],
+          "correct": 1,
+          "explanation": "The application process states 'Deadline for applications: Friday 15th March'."
+        },
+        {
+          "id": 38,
+          "type": "multiple-choice",
+          "question": "When will interviews be held?",
+          "options": ["Week of 18th March", "Week of 25th March", "Week of 1st April", "Week of 8th April"],
+          "correct": 1,
+          "explanation": "The text states 'Interviews will be held week commencing 25th March'."
+        },
+        {
+          "id": 39,
+          "type": "fill-blank",
+          "question": "The company offers _____ healthcare insurance as part of the benefits package.",
+          "answer": "private",
+          "explanation": "The benefits package includes 'Private healthcare insurance'."
+        },
+        {
+          "id": 40,
+          "type": "multiple-choice",
+          "question": "What should be included in the application email subject line?",
+          "options": ["Job Application", "Customer Service Position", "Customer Service Representative Application", "CV Submission"],
+          "correct": 2,
+          "explanation": "The application process specifies 'Subject line: Customer Service Representative Application'."
+        }
+      ]
+    }
+  ]
+}
