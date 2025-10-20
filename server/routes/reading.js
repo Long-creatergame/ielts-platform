@@ -173,6 +173,7 @@ router.post('/submit', async (req, res) => {
       message: 'Reading test submitted successfully',
       result: {
         _id: savedResult._id,
+        testType: savedResult.testType,
         correctCount,
         totalQuestions,
         bandScore,
