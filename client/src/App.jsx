@@ -17,6 +17,9 @@ import ReadingTest from './pages/ReadingTest'
 import ReadingResult from './pages/ReadingResult'
 import ReadingHistory from './pages/ReadingHistory'
 import ReadingAnalytics from './pages/ReadingAnalytics'
+import ListeningTest from './pages/ListeningTest'
+import ListeningHistory from './pages/ListeningHistory'
+import ListeningAnalytics from './pages/ListeningAnalytics'
 
 function App() {
   return (
@@ -75,6 +78,9 @@ function App() {
             <Route path="/reading/result" element={<ReadingResult />} />
             <Route path="/reading/history" element={<ReadingHistory />} />
             <Route path="/reading/analytics" element={<ReadingAnalytics />} />
+            <Route path="/listening/test" element={<ListeningTest />} />
+            <Route path="/listening/history" element={<ListeningHistory />} />
+            <Route path="/listening/analytics" element={<ListeningAnalytics />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>

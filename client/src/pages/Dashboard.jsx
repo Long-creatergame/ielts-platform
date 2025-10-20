@@ -253,6 +253,38 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Listening Analytics Card */}
+          <div className="bg-white shadow rounded-lg mb-8">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                🎧 Listening Analytics
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Track your listening test progress and performance over time
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => navigate('/listening/analytics')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  View Analytics
+                </button>
+                <button
+                  onClick={() => navigate('/listening/history')}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  View History
+                </button>
+                <button
+                  onClick={() => navigate('/listening/test')}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Take Listening Test
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Test Actions */}
           <div className="bg-white shadow rounded-lg mb-8">
             <div className="px-4 py-5 sm:p-6">
