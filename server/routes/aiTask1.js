@@ -89,6 +89,16 @@ router.post('/writing/task1', async (req, res) => {
       console.log('Achievement update failed (non-critical):', achievementError.message);
     }
 
+    // Auto-update challenge progress
+    try {
+      await fetch(`http://localhost:4000/api/challenges/progress/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (challengeError) {
+      console.log('Challenge progress update failed (non-critical):', challengeError.message);
+    }
+
     res.json({
       message: 'Task 1 scoring complete and saved.',
       result: saved,
