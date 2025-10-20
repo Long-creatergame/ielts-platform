@@ -1,0 +1,328 @@
+{
+  "title": "IELTS Academic Reading Test - Full Version",
+  "passages": [
+    {
+      "id": 1,
+      "title": "The Evolution of Urban Transport",
+      "content": "Urban transport has undergone a profound transformation over the past century. Early cities relied heavily on horse-drawn carriages and walking as primary means of transportation. The introduction of the electric tram in the late 19th century revolutionized mobility, allowing people to travel greater distances efficiently. With the rise of private automobiles in the mid-20th century, many cities expanded rapidly, leading to widespread urban sprawl. However, the dependence on cars also created severe traffic congestion, air pollution, and parking shortages. In response, modern cities have increasingly embraced public transit systems, cycling infrastructure, and pedestrian-friendly design to promote sustainable mobility.\n\nToday's smart cities are implementing innovative solutions to address transport challenges. Electric buses, light rail systems, and bike-sharing programs have become commonplace in many metropolitan areas. Some cities have introduced congestion pricing to reduce traffic during peak hours, while others have designated car-free zones in city centers. The integration of technology, such as real-time transit information and mobile payment systems, has made public transportation more convenient and user-friendly.\n\nLooking ahead, autonomous vehicles and hyperloop systems promise to further revolutionize urban mobility. However, these technologies also raise important questions about infrastructure investment, job displacement, and equitable access to transportation. As cities continue to grow and evolve, the challenge remains to create transport systems that are efficient, sustainable, and accessible to all residents.",
+      "questions": [
+        {
+          "id": 1,
+          "type": "multiple-choice",
+          "question": "What was the primary mode of transportation in early cities?",
+          "options": ["Electric trams", "Private automobiles", "Horse-drawn carriages", "Cycling"],
+          "correct": 2,
+          "explanation": "The passage states that early cities relied heavily on horse-drawn carriages and walking."
+        },
+        {
+          "id": 2,
+          "type": "multiple-choice",
+          "question": "When were electric trams introduced?",
+          "options": ["Early 19th century", "Mid-19th century", "Late 19th century", "Early 20th century"],
+          "correct": 2,
+          "explanation": "The passage mentions that electric trams were introduced in the late 19th century."
+        },
+        {
+          "id": 3,
+          "type": "true-false",
+          "question": "The rise of private automobiles led to urban sprawl.",
+          "correct": true,
+          "explanation": "The passage states that with the rise of private automobiles, many cities expanded rapidly, leading to widespread urban sprawl."
+        },
+        {
+          "id": 4,
+          "type": "multiple-choice",
+          "question": "What problems did car dependence create?",
+          "options": ["Reduced air pollution", "Improved parking", "Traffic congestion", "Better public transit"],
+          "correct": 2,
+          "explanation": "The passage mentions that car dependence created severe traffic congestion, air pollution, and parking shortages."
+        },
+        {
+          "id": 5,
+          "type": "fill-blank",
+          "question": "Modern cities have embraced _____ infrastructure to promote sustainable mobility.",
+          "answer": "cycling",
+          "explanation": "The passage states that modern cities have embraced cycling infrastructure to promote sustainable mobility."
+        },
+        {
+          "id": 6,
+          "type": "multiple-choice",
+          "question": "What technology has made public transportation more convenient?",
+          "options": ["Horse-drawn carriages", "Electric trams", "Mobile payment systems", "Private automobiles"],
+          "correct": 2,
+          "explanation": "The passage mentions that mobile payment systems have made public transportation more convenient and user-friendly."
+        },
+        {
+          "id": 7,
+          "type": "true-false",
+          "question": "All cities have introduced congestion pricing.",
+          "correct": false,
+          "explanation": "The passage states that 'some cities have introduced congestion pricing,' not all cities."
+        },
+        {
+          "id": 8,
+          "type": "multiple-choice",
+          "question": "What do autonomous vehicles promise to do?",
+          "options": ["Reduce infrastructure investment", "Create job displacement", "Revolutionize urban mobility", "Increase air pollution"],
+          "correct": 2,
+          "explanation": "The passage states that autonomous vehicles promise to further revolutionize urban mobility."
+        },
+        {
+          "id": 9,
+          "type": "fill-blank",
+          "question": "Hyperloop systems are mentioned as a technology that could revolutionize _____ mobility.",
+          "answer": "urban",
+          "explanation": "The passage mentions hyperloop systems as promising to further revolutionize urban mobility."
+        },
+        {
+          "id": 10,
+          "type": "multiple-choice",
+          "question": "What remains a challenge for growing cities?",
+          "options": ["Creating efficient transport systems", "Reducing urban sprawl", "Eliminating cars", "Building more highways"],
+          "correct": 0,
+          "explanation": "The passage states that the challenge remains to create transport systems that are efficient, sustainable, and accessible."
+        },
+        {
+          "id": 11,
+          "type": "true-false",
+          "question": "Bike-sharing programs are uncommon in metropolitan areas.",
+          "correct": false,
+          "explanation": "The passage states that bike-sharing programs have become commonplace in many metropolitan areas."
+        },
+        {
+          "id": 12,
+          "type": "multiple-choice",
+          "question": "What has technology integration provided for public transit?",
+          "options": ["More congestion", "Real-time information", "Higher costs", "Less accessibility"],
+          "correct": 1,
+          "explanation": "The passage mentions that technology integration has provided real-time transit information."
+        },
+        {
+          "id": 13,
+          "type": "fill-blank",
+          "question": "Some cities have designated _____ zones in city centers.",
+          "answer": "car-free",
+          "explanation": "The passage states that some cities have designated car-free zones in city centers."
+        },
+        {
+          "id": 14,
+          "type": "multiple-choice",
+          "question": "What does the passage suggest about future transport challenges?",
+          "options": ["They will be easily solved", "They require careful consideration", "They are not important", "They will disappear"],
+          "correct": 1,
+          "explanation": "The passage mentions that new technologies raise important questions that require consideration."
+        },
+        {
+          "id": 15,
+          "type": "true-false",
+          "question": "Transport systems should be accessible to all residents.",
+          "correct": true,
+          "explanation": "The passage states that the challenge is to create transport systems that are accessible to all residents."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "The Psychology of Advertising",
+      "content": "Advertising psychology is a sophisticated field that combines elements of cognitive science, behavioral economics, and social psychology to understand how consumers make purchasing decisions. At its core, advertising psychology seeks to identify the mental processes and emotional triggers that influence buying behavior. Research has shown that consumers often make decisions based on emotions rather than rational analysis, making emotional appeals a powerful tool in advertising campaigns.\n\nOne of the fundamental principles of advertising psychology is the concept of social proof. People tend to follow the behavior of others, especially when they are uncertain about a decision. This is why testimonials, user reviews, and celebrity endorsements are so effective in advertising. When consumers see others using and recommending a product, they are more likely to trust and purchase it themselves.\n\nAnother key psychological principle is the scarcity effect. Products or offers that are perceived as limited or exclusive tend to be more desirable. This is why phrases like 'limited time offer,' 'while supplies last,' and 'exclusive access' are commonly used in advertisements. The fear of missing out (FOMO) drives consumers to act quickly and make purchases they might otherwise delay or avoid.\n\nColor psychology also plays a crucial role in advertising effectiveness. Different colors evoke different emotions and associations. Red is often associated with urgency and excitement, making it effective for sales and clearance advertisements. Blue conveys trust and reliability, making it popular for financial and healthcare advertisements. Green is associated with nature and health, making it effective for organic and environmentally friendly products.\n\nNeuromarketing, a relatively new field, uses brain imaging techniques to study consumer responses to advertisements. This research has revealed that certain types of advertisements activate specific areas of the brain associated with reward, memory, and decision-making. Understanding these neural pathways allows advertisers to create more effective campaigns that resonate with consumers on a subconscious level.",
+      "questions": [
+        {
+          "id": 16,
+          "type": "multiple-choice",
+          "question": "What fields does advertising psychology combine?",
+          "options": ["Only cognitive science", "Cognitive science, behavioral economics, and social psychology", "Only behavioral economics", "Only social psychology"],
+          "correct": 1,
+          "explanation": "The passage states that advertising psychology combines elements of cognitive science, behavioral economics, and social psychology."
+        },
+        {
+          "id": 17,
+          "type": "multiple-choice",
+          "question": "How do consumers often make purchasing decisions?",
+          "options": ["Based on rational analysis", "Based on emotions", "Based on price alone", "Based on brand loyalty"],
+          "correct": 1,
+          "explanation": "The passage states that consumers often make decisions based on emotions rather than rational analysis."
+        },
+        {
+          "id": 18,
+          "type": "true-false",
+          "question": "Social proof is when people follow the behavior of others.",
+          "correct": true,
+          "explanation": "The passage defines social proof as people tending to follow the behavior of others."
+        },
+        {
+          "id": 19,
+          "type": "multiple-choice",
+          "question": "What makes testimonials and celebrity endorsements effective?",
+          "options": ["They are expensive", "They provide social proof", "They are always honest", "They target specific demographics"],
+          "correct": 1,
+          "explanation": "The passage states that testimonials and user reviews are effective because they provide social proof."
+        },
+        {
+          "id": 20,
+          "type": "fill-blank",
+          "question": "The _____ effect makes limited products more desirable.",
+          "answer": "scarcity",
+          "explanation": "The passage mentions the scarcity effect as making products perceived as limited more desirable."
+        },
+        {
+          "id": 21,
+          "type": "multiple-choice",
+          "question": "What does FOMO stand for in the context of advertising?",
+          "options": ["Fear of Missing Out", "Focus on Market Opportunities", "Frequency of Market Operations", "Financial Optimization Methods"],
+          "correct": 0,
+          "explanation": "The passage defines FOMO as 'fear of missing out.'"
+        },
+        {
+          "id": 22,
+          "type": "true-false",
+          "question": "Red is associated with trust and reliability in advertising.",
+          "correct": false,
+          "explanation": "The passage states that red is associated with urgency and excitement, while blue conveys trust and reliability."
+        },
+        {
+          "id": 23,
+          "type": "multiple-choice",
+          "question": "What color is popular for financial and healthcare advertisements?",
+          "options": ["Red", "Green", "Blue", "Yellow"],
+          "correct": 2,
+          "explanation": "The passage states that blue conveys trust and reliability, making it popular for financial and healthcare advertisements."
+        },
+        {
+          "id": 24,
+          "type": "fill-blank",
+          "question": "Green is associated with _____ and health in advertising.",
+          "answer": "nature",
+          "explanation": "The passage states that green is associated with nature and health."
+        },
+        {
+          "id": 25,
+          "type": "multiple-choice",
+          "question": "What does neuromarketing use to study consumer responses?",
+          "options": ["Surveys", "Brain imaging techniques", "Focus groups", "Sales data"],
+          "correct": 1,
+          "explanation": "The passage states that neuromarketing uses brain imaging techniques to study consumer responses."
+        },
+        {
+          "id": 26,
+          "type": "true-false",
+          "question": "Neuromarketing is a well-established field that has been used for decades.",
+          "correct": false,
+          "explanation": "The passage describes neuromarketing as a 'relatively new field.'"
+        },
+        {
+          "id": 27,
+          "type": "multiple-choice",
+          "question": "What areas of the brain are mentioned as being activated by advertisements?",
+          "options": ["Only memory areas", "Reward, memory, and decision-making", "Only decision-making areas", "Only reward areas"],
+          "correct": 1,
+          "explanation": "The passage states that advertisements activate areas associated with reward, memory, and decision-making."
+        },
+        {
+          "id": 28,
+          "type": "fill-blank",
+          "question": "Understanding neural pathways allows advertisers to create more _____ campaigns.",
+          "answer": "effective",
+          "explanation": "The passage states that understanding neural pathways allows advertisers to create more effective campaigns."
+        },
+        {
+          "id": 29,
+          "type": "multiple-choice",
+          "question": "What drives consumers to act quickly on limited offers?",
+          "options": ["Rational thinking", "Fear of missing out", "Brand loyalty", "Price comparison"],
+          "correct": 1,
+          "explanation": "The passage states that the fear of missing out (FOMO) drives consumers to act quickly."
+        },
+        {
+          "id": 30,
+          "type": "true-false",
+          "question": "All consumers respond to advertisements in the same way.",
+          "correct": false,
+          "explanation": "The passage suggests that understanding individual neural pathways allows for more effective targeting."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Renewable Energy Technologies",
+      "content": "The global transition to renewable energy represents one of the most significant technological and economic shifts of the 21st century. Solar photovoltaic (PV) technology has emerged as the fastest-growing renewable energy source, with costs decreasing by over 80% in the past decade. This dramatic cost reduction has made solar energy competitive with fossil fuels in many regions, driving massive investments in solar installations worldwide. Wind energy has also experienced substantial growth, particularly in offshore installations where wind speeds are higher and more consistent.\n\nEnergy storage technologies are crucial for addressing the intermittent nature of renewable energy sources. Lithium-ion batteries have become the dominant technology for grid-scale energy storage, with their capacity and efficiency continuously improving. However, researchers are exploring alternative storage solutions, including pumped hydro storage, compressed air energy storage, and hydrogen fuel cells. These technologies are essential for creating a reliable and resilient renewable energy grid.\n\nThe integration of renewable energy into existing power grids presents both opportunities and challenges. Smart grid technologies enable better management of distributed energy resources, allowing for more efficient distribution and consumption of renewable energy. However, grid modernization requires significant infrastructure investments and regulatory changes. Energy markets are also evolving to accommodate the unique characteristics of renewable energy, including time-of-use pricing and demand response programs.\n\nPolicy support has been instrumental in accelerating renewable energy adoption. Feed-in tariffs, renewable portfolio standards, and carbon pricing mechanisms have created favorable conditions for renewable energy development. Many countries have set ambitious targets for renewable energy deployment, with some aiming for 100% renewable electricity generation by 2050. International cooperation through agreements like the Paris Climate Accord has further strengthened global commitment to renewable energy transition.\n\nDespite these advances, challenges remain in achieving a fully renewable energy system. Grid stability, energy storage costs, and the need for backup power sources during periods of low renewable energy generation are ongoing concerns. Additionally, the environmental impact of renewable energy infrastructure, including land use and material requirements, must be carefully managed. Nevertheless, the continued technological innovation and falling costs suggest that renewable energy will play an increasingly dominant role in global energy systems.",
+      "questions": [
+        {
+          "id": 31,
+          "type": "multiple-choice",
+          "question": "What has been the fastest-growing renewable energy source?",
+          "options": ["Wind energy", "Hydroelectric power", "Solar photovoltaic technology", "Geothermal energy"],
+          "correct": 2,
+          "explanation": "The passage states that solar photovoltaic (PV) technology has emerged as the fastest-growing renewable energy source."
+        },
+        {
+          "id": 32,
+          "type": "multiple-choice",
+          "question": "By how much have solar energy costs decreased in the past decade?",
+          "options": ["Over 50%", "Over 60%", "Over 70%", "Over 80%"],
+          "correct": 3,
+          "explanation": "The passage states that solar energy costs have decreased by over 80% in the past decade."
+        },
+        {
+          "id": 33,
+          "type": "true-false",
+          "question": "Solar energy is now competitive with fossil fuels in many regions.",
+          "correct": true,
+          "explanation": "The passage states that the cost reduction has made solar energy competitive with fossil fuels in many regions."
+        },
+        {
+          "id": 34,
+          "type": "multiple-choice",
+          "question": "Where are wind speeds higher and more consistent for wind energy?",
+          "options": ["Onshore installations", "Offshore installations", "Mountain regions", "Desert areas"],
+          "correct": 1,
+          "explanation": "The passage mentions that wind speeds are higher and more consistent in offshore installations."
+        },
+        {
+          "id": 35,
+          "type": "fill-blank",
+          "question": "_____ batteries have become the dominant technology for grid-scale energy storage.",
+          "answer": "Lithium-ion",
+          "explanation": "The passage states that lithium-ion batteries have become the dominant technology for grid-scale energy storage."
+        },
+        {
+          "id": 36,
+          "type": "multiple-choice",
+          "question": "What is mentioned as an alternative storage solution?",
+          "options": ["Only lithium-ion batteries", "Pumped hydro storage", "Fossil fuel storage", "Nuclear storage"],
+          "correct": 1,
+          "explanation": "The passage mentions pumped hydro storage as one of the alternative storage solutions being explored."
+        },
+        {
+          "id": 37,
+          "type": "true-false",
+          "question": "Smart grid technologies enable better management of renewable energy.",
+          "correct": true,
+          "explanation": "The passage states that smart grid technologies enable better management of distributed energy resources."
+        },
+        {
+          "id": 38,
+          "type": "multiple-choice",
+          "question": "What does grid modernization require?",
+          "options": ["Only regulatory changes", "Only infrastructure investments", "Infrastructure investments and regulatory changes", "Only technological improvements"],
+          "correct": 2,
+          "explanation": "The passage states that grid modernization requires significant infrastructure investments and regulatory changes."
+        },
+        {
+          "id": 39,
+          "type": "fill-blank",
+          "question": "Many countries aim for _____ renewable electricity generation by 2050.",
+          "answer": "100%",
+          "explanation": "The passage states that some countries are aiming for 100% renewable electricity generation by 2050."
+        },
+        {
+          "id": 40,
+          "type": "multiple-choice",
+          "question": "What remains a challenge for renewable energy systems?",
+          "options": ["Only grid stability", "Grid stability, storage costs, and backup power needs", "Only storage costs", "Only backup power needs"],
+          "correct": 1,
+          "explanation": "The passage mentions that grid stability, energy storage costs, and backup power sources are ongoing concerns."
+        }
+      ]
+    }
+  ]
+}
