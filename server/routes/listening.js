@@ -127,7 +127,7 @@ router.get('/questions/:sectionId', (req, res) => {
 // POST /api/listening/submit
 router.post('/submit', async (req, res) => {
   try {
-    const { testType = 'academic', answers = [], duration } = req.body;
+    const { testType = 'academic', answers = [], duration, userId = 'guest' } = req.body;
     
     // Get all questions from all sections
     const allQuestions = listeningTestData.sections.flatMap(section => section.questions);
@@ -161,7 +161,7 @@ router.post('/submit', async (req, res) => {
 
     // Save result to database
     const savedResult = await ListeningResult.create({
-      userId: 'guest',
+      userId,
       testType,
       correctCount,
       totalQuestions,

@@ -98,6 +98,8 @@ router.post('/submit', upload.single('audio'), async (req, res) => {
       return res.status(400).json({ error: 'No audio file provided' });
     }
 
+    const { userId = 'guest' } = req.body;
+
     // For demo purposes, we'll simulate AI scoring
     // In a real implementation, you would send the audio to a speech-to-text service
     // and then analyze the transcript for IELTS scoring
@@ -125,7 +127,7 @@ router.post('/submit', upload.single('audio'), async (req, res) => {
 
     // Save result to database
     const savedResult = await SpeakingResult.create({
-      userId: 'guest',
+      userId,
       testType: 'academic',
       fluency: simulatedScores.fluency,
       lexical: simulatedScores.lexical,

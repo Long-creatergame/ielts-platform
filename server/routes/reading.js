@@ -113,7 +113,7 @@ router.get('/test', (req, res) => {
 // POST /api/reading/submit
 router.post('/submit', async (req, res) => {
   try {
-    const { testType = 'academic', answers = [], duration } = req.body;
+    const { testType = 'academic', answers = [], duration, userId = 'guest' } = req.body;
     
     // Get all questions from the appropriate test data
     const testData = testType === 'general' ? generalReadingData : academicReadingData;
@@ -159,7 +159,7 @@ router.post('/submit', async (req, res) => {
 
     // Save result to database
     const savedResult = await ReadingResult.create({
-      userId: 'guest',
+      userId,
       testType,
       correctCount,
       totalQuestions,

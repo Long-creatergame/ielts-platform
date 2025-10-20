@@ -179,7 +179,7 @@ const getTestResults = async (req, res) => {
 // New essay scoring function for direct API calls
 const scoreEssay = async (req, res) => {
   try {
-    const { essay, userId } = req.body;
+    const { essay, userId = 'guest' } = req.body;
     
     if (!essay) {
       return res.status(400).json({ error: 'Essay content is required' });

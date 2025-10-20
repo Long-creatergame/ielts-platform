@@ -44,7 +44,7 @@ ${essay}
 
 router.post('/writing/task1', async (req, res) => {
   try {
-    const { taskType = 'academic', question = '', essay = '' } = req.body || {};
+    const { taskType = 'academic', question = '', essay = '', userId = 'guest' } = req.body || {};
     if (!question || !essay) {
       return res.status(400).json({ error: 'Missing question or essay' });
     }

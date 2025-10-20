@@ -27,8 +27,10 @@ const readingHistoryRoutes = require('./routes/readingHistory');
 const listeningRoutes = require('./routes/listening');
 const speakingRoutes = require('./routes/speaking');
 const dashboardRoutes = require('./routes/dashboard');
+const { router: authRoutes } = require('./routes/auth');
 
 // Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/results", resultRoutes);
 app.use("/api/ai", essayRoutes);

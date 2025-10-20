@@ -5,6 +5,7 @@ const ListeningResult = require('../models/ListeningResult');
 const EssayResult = require('../models/EssayResult');
 const Task1Result = require('../models/Task1Result');
 const SpeakingResult = require('../models/SpeakingResult');
+const { authMiddleware } = require('./auth');
 
 // Helper function to calculate average
 const calcAvg = (arr, field) => {
@@ -14,7 +15,7 @@ const calcAvg = (arr, field) => {
   return validItems.reduce((a, b) => a + (b[field] || 0), 0) / validItems.length;
 };
 
-// GET /api/dashboard/overview/:userId
+// GET /api/dashboard/overview/:userId (supports both authenticated and guest users)
 router.get('/overview/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
