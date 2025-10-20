@@ -30,6 +30,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const achievementRoutes = require('./routes/achievements');
 const leaderboardRoutes = require('./routes/leaderboard');
 const challengeRoutes = require('./routes/challenges');
+const certificateRoutes = require('./routes/certificates');
 const { router: authRoutes } = require('./routes/auth');
 
 // Routes
@@ -46,6 +47,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/achievements', achievementRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/challenges', challengeRoutes);
+app.use('/api/certificates', certificateRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ message: "Server is healthy and connected!" });

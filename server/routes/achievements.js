@@ -119,6 +119,16 @@ router.post("/update/:userId", async (req, res) => {
     achievement.updatedAt = new Date();
     await achievement.save();
 
+    // Auto-generate certificates for major milestones
+    try {
+      await fetch(`http://localhost:4000/api/certificates/auto-generate/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (certError) {
+      console.log('Auto-certificate generation failed (non-critical):', certError.message);
+    }
+
     res.json({ 
       message: "Achievement updated successfully", 
       achievement: {
