@@ -1,0 +1,48 @@
+{
+  "parts": [
+    {
+      "id": 1,
+      "title": "Part 1 – Introduction & Interview",
+      "duration": 300,
+      "questions": [
+        "What is your full name?",
+        "Do you work or study?",
+        "What do you enjoy most about your work/studies?",
+        "Do you prefer mornings or evenings?",
+        "How often do you use technology in your daily life?",
+        "What do you like to do in your free time?",
+        "Do you enjoy cooking?",
+        "What type of music do you like?",
+        "Have you ever traveled abroad?",
+        "What is your favorite season?"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Part 2 – Cue Card",
+      "duration": 180,
+      "prompt": "Describe a place you would like to visit in the future.",
+      "guide": [
+        "Where it is",
+        "Why you want to visit it",
+        "What you would do there",
+        "And explain why it is special to you"
+      ],
+      "preparationTime": 60
+    },
+    {
+      "id": 3,
+      "title": "Part 3 – Discussion",
+      "duration": 300,
+      "questions": [
+        "How has travel changed compared to the past?",
+        "What are the advantages of visiting other countries?",
+        "Do you think people will travel more in the future?",
+        "What impact does tourism have on local communities?",
+        "How important is it to learn about different cultures?"
+      ]
+    }
+  ],
+  "totalDuration": 780,
+  "instructions": "You will have approximately 11-14 minutes for the entire speaking test. Make sure to speak clearly and naturally."
+}

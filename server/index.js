@@ -25,6 +25,7 @@ const aiTask1Routes = require('./routes/aiTask1');
 const readingRoutes = require('./routes/reading');
 const readingHistoryRoutes = require('./routes/readingHistory');
 const listeningRoutes = require('./routes/listening');
+const speakingRoutes = require('./routes/speaking');
 
 // Routes
 app.use("/api/ai", aiRoutes);
@@ -34,6 +35,7 @@ app.use('/api/ai', aiTask1Routes);
 app.use('/api/reading', readingRoutes);
 app.use('/api/reading', readingHistoryRoutes);
 app.use('/api/listening', listeningRoutes);
+app.use('/api/speaking', speakingRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ message: "Server is healthy and connected!" });
