@@ -12,15 +12,13 @@ const ReadingHistory = () => {
   const loadResults = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `http://localhost:4000/api/reading/results?page=${pagination.page}&limit=${pagination.limit}`
-      );
+      const response = await fetch('http://localhost:4000/api/reading/history/guest');
       const data = await response.json();
-      setResults(data.items);
+      setResults(data);
       setPagination(prev => ({
         ...prev,
-        total: data.total,
-        limit: data.limit
+        total: data.length,
+        limit: 10
       }));
     } catch (error) {
       console.error('Error loading results:', error);
@@ -54,9 +52,29 @@ const ReadingHistory = () => {
           <h1 className="text-3xl font-bold text-green-700 mb-2">
             📖 Reading Test History
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Track your progress and review past performances
           </p>
+          <div className="flex justify-center gap-4">
+            <a
+              href="/reading/select"
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Take New Test
+            </a>
+            <a
+              href="/reading/analytics"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              📊 View Analytics
+            </a>
+            <a
+              href="/dashboard"
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Dashboard
+            </a>
+          </div>
         </div>
 
         {/* Stats Summary */}
