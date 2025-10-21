@@ -14,60 +14,86 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
-  passwordHash: {
+  password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6
   },
-  isTrialUsed: {
+  avatar: {
+    type: String,
+    default: ''
+  },
+  goal: {
+    type: String,
+    enum: ['Du học', 'Định cư', 'Việc làm', 'Thử sức'],
+    default: 'Thử sức'
+  },
+  targetBand: {
+    type: Number,
+    min: 4.0,
+    max: 9.0,
+    default: 6.5
+  },
+  currentLevel: {
+    type: String,
+    enum: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
+    default: 'A2'
+  },
+  testsTaken: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Test'
+  }],
+  streakDays: {
+    type: Number,
+    default: 0
+  },
+  totalTests: {
+    type: Number,
+    default: 0
+  },
+  averageBand: {
+    type: Number,
+    default: 0
+  },
+  paid: {
     type: Boolean,
     default: false
   },
-  plan: {
-    type: String,
-    enum: ['trial', 'paid'],
-    default: 'trial'
+  freeTestsUsed: {
+    type: Number,
+    default: 0
   },
-  tests: [{
-    skill: {
-      type: String,
-      required: true
-    },
-    submittedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  payments: [{
-    method: {
-      type: String,
-      required: true
-    },
-    amount: {
-      type: Number,
-      required: true
-    },
-    stripeSessionId: {
-      type: String
-    },
-    paidAt: {
-      type: Date,
-      default: Date.now
-    }
-  }]
+  subscriptionPlan: {
+    type: String,
+    enum: ["free", "standard", "premium", "ultimate"],
+    default: "free"
+  },
+  subscriptionExpires: {
+    type: Date,
+    default: null
+  },
+  totalSpent: {
+    type: Number,
+    default: 0
+  },
+  lastActiveDate: {
+    type: Date,
+    default: Date.now
+  }
 }, {
   timestamps: true
 });
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('passwordHash')) return next();
-  this.passwordHash = await bcrypt.hash(this.passwordHash, 12);
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
 // Compare password method
-userSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.passwordHash);
+userSchema.methods.matchPassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);

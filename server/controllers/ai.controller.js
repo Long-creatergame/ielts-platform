@@ -168,7 +168,7 @@ Make sure the feedback is constructive and specific, around 50-100 words.
 // Get test results for a user
 const getTestResults = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.params.userId || req.user?._id || '000000000000000000000000';
     const { skill } = req.query;
 
     let query = { userId, status: 'scored' };

@@ -1,103 +1,65 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext()
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [token, setToken] = useState(localStorage.getItem('token'))
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
-  // Set up axios defaults
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    } else {
-      delete axios.defaults.headers.common['Authorization']
+      localStorage.setItem("token", token);
     }
-  }, [token])
+  }, [token]);
 
-  // Check if user is logged in on app load
-  useEffect(() => {
-    const checkAuth = async () => {
-      if (token) {
-        try {
-          const response = await axios.get('/api/auth/me')
-          setUser(response.data.user)
-        } catch (error) {
-          console.error('Auth check failed:', error)
-          logout()
-        }
-      }
-      setLoading(false)
-    }
+  const login = (userData, jwtToken) => {
+    setUser({ ...userData, token: jwtToken });
+    setToken(jwtToken);
+    localStorage.setItem("token", jwtToken);
+  };
 
-    checkAuth()
-  }, [token])
-
-  const login = async (email, password) => {
+  const register = async (userData) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password })
-      const { token: newToken, user: userData } = response.data
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
       
-      setToken(newToken)
-      setUser(userData)
-      localStorage.setItem('token', newToken)
-      
-      return { success: true }
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Login failed' 
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
       }
-    }
-  }
-
-  const register = async (name, email, password) => {
-    try {
-      const response = await axios.post('/api/auth/register', { name, email, password })
-      const { token: newToken, user: userData } = response.data
       
-      setToken(newToken)
-      setUser(userData)
-      localStorage.setItem('token', newToken)
-      
-      return { success: true }
+      const data = await response.json();
+      login(data.user, data.token);
+      return data;
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Registration failed' 
-      }
+      throw error;
     }
-  }
+  };
 
   const logout = () => {
-    setToken(null)
-    setUser(null)
-    localStorage.removeItem('token')
-    delete axios.defaults.headers.common['Authorization']
-  }
+    setUser(null);
+    setToken("");
+    localStorage.removeItem("token");
+  };
 
-  const value = {
-    user,
-    login,
-    register,
-    logout,
-    loading
-  }
+  // Helper function để get user ID cho API calls
+  const getUserId = () => {
+    if (user?.id) return user.id;
+    // For guest users, return a default guest ID that works with MongoDB
+    return '000000000000000000000000';
+  };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, token, login, register, logout, getUserId }}>
       {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
+// ✅ Export hook để các component khác (Dashboard, Profile, ...) dùng được
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

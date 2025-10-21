@@ -6,62 +6,87 @@ const testSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  skill: {
+  level: {
     type: String,
-    enum: ['listening', 'reading', 'writing', 'speaking'],
+    enum: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'beginner', 'intermediate', 'advanced'],
     required: true
   },
-  answers: [{
-    content: {
-      type: String,
-      required: true
+  skills: {
+    reading: {
+      questions: [Object],
+      duration: Number
     },
-    submittedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  score: {
-    overall: {
-      type: Number,
-      min: 0,
-      max: 9
+    listening: {
+      questions: [Object],
+      duration: Number
     },
-    task: {
-      type: Number,
-      min: 0,
-      max: 9
+    writing: {
+      questions: [Object],
+      duration: Number
     },
-    coherence: {
-      type: Number,
-      min: 0,
-      max: 9
-    },
-    lexical: {
-      type: Number,
-      min: 0,
-      max: 9
-    },
-    grammar: {
-      type: Number,
-      min: 0,
-      max: 9
+    speaking: {
+      questions: [Object],
+      duration: Number
     }
   },
-  aiFeedback: {
-    type: String
+  skillScores: {
+    reading: { correct: Number, total: Number },
+    listening: { correct: Number, total: Number },
+    writing: { correct: Number, total: Number },
+    speaking: { correct: Number, total: Number }
   },
-  status: {
+  skillBands: {
+    reading: Number,
+    listening: Number,
+    writing: Number,
+    speaking: Number
+  },
+  totalBand: {
+    type: Number,
+    required: true
+  },
+  answers: {
+    type: Object,
+    default: {}
+  },
+  paid: {
+    type: Boolean,
+    default: false
+  },
+  isPaid: {
+    type: Boolean,
+    default: false
+  },
+  resultLocked: {
+    type: Boolean,
+    default: true
+  },
+  price: {
+    type: Number,
+    default: 0
+  },
+  feedbackUnlocked: {
+    type: Boolean,
+    default: false
+  },
+  feedback: {
     type: String,
-    enum: ['pending', 'scored', 'completed'],
-    default: 'pending'
+    default: ''
+  },
+  coachMessage: {
+    type: String,
+    default: ''
+  },
+  completed: {
+    type: Boolean,
+    default: false
+  },
+  dateTaken: {
+    type: Date,
+    default: Date.now
   }
 }, {
   timestamps: true
 });
 
-// Index for better query performance
-testSchema.index({ userId: 1, skill: 1, createdAt: -1 });
-
 module.exports = mongoose.model('Test', testSchema);
-

@@ -18,3 +18,4 @@ const SpeakingResultSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('SpeakingResult', SpeakingResultSchema);
+

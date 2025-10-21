@@ -10,7 +10,7 @@ router.post('/score', aiScore);
 router.post('/essay', scoreEssay);
 
 // Get test results (no auth for testing)
-router.get('/results', getTestResults);
+router.get('/results/:userId?', getTestResults);
 
 module.exports = router;
 
