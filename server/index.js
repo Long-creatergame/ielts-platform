@@ -8,14 +8,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middleware
+// Middleware - CORS with explicit origin handling
 app.use(cors({ 
-  origin: [
-    "http://localhost:5173",
-    "https://ielts-platform-two.vercel.app",
-    "https://ielts-platform.vercel.app",
-    process.env.FRONTEND_URL
-  ].filter(Boolean), // Remove undefined values
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://ielts-platform-two.vercel.app",
+      "https://ielts-platform.vercel.app"
+    ];
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true 
 }));
 app.use(express.json());
