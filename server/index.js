@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// CORS Middleware - Allow all origins
+// CORS Middleware - Allow all origins (FINAL FIX)
 app.use((req, res, next) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,6 +22,15 @@ app.use((req, res, next) => {
     return;
   }
   
+  next();
+});
+
+// Additional CORS fix for all routes
+app.use('*', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
 app.use(express.json());
