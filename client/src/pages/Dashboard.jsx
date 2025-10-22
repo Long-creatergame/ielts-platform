@@ -16,12 +16,60 @@ export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
+  // Function to refresh dashboard data
+  const refreshDashboardData = () => {
+    fetchDashboardData();
+  };
+
+  const fetchDashboardData = async () => {
       try {
         if (user) {
-          // SIMPLIFIED: Use mock data instead of API calls to avoid backend issues
-          const mockData = {
+          // Get test results from localStorage
+          const savedTests = JSON.parse(localStorage.getItem('ielts_test_results') || '[]');
+          
+          // Calculate statistics from saved tests
+          const totalTests = savedTests.length;
+          const completedTests = savedTests.filter(test => test.overallBand).length;
+          const averageBand = completedTests > 0 
+            ? savedTests.reduce((sum, test) => sum + test.overallBand, 0) / completedTests 
+            : 0;
+          
+          // Get recent tests (last 5)
+          const recentTests = savedTests.slice(0, 5).map(test => ({
+            _id: test.id,
+            totalBand: test.overallBand,
+            dateTaken: test.dateCompleted,
+            level: test.level,
+            skillBands: test.skillScores
+          }));
+
+          // Generate coach message based on performance
+          let coachMessage = {
+            message: "🤖 AI Coach: Welcome to IELTS Platform! Start your first test to get personalized feedback.",
+            type: "welcome"
+          };
+
+          if (completedTests > 0) {
+            const latestTest = savedTests[0];
+            if (latestTest.overallBand >= 7.0) {
+              coachMessage = {
+                message: `🎉 Excellent work ${user.name}! Your latest test scored ${latestTest.overallBand}. Keep up the great performance!`,
+                type: "success"
+              };
+            } else if (latestTest.overallBand >= 6.0) {
+              coachMessage = {
+                message: `👍 Good progress ${user.name}! You scored ${latestTest.overallBand}. Focus on your weakest skill to improve further.`,
+                type: "encouragement"
+              };
+            } else {
+              coachMessage = {
+                message: `💪 Keep practicing ${user.name}! Every test helps you improve. Your score: ${latestTest.overallBand}`,
+                type: "motivation"
+              };
+            }
+          }
+
+          const dashboardData = {
             user: {
               name: user.name,
               email: user.email,
@@ -32,18 +80,16 @@ export default function Dashboard() {
               freeTestsUsed: user.freeTestsUsed || 0
             },
             statistics: {
-              totalTests: 0,
-              completedTests: 0,
-              averageBand: 0,
-              streakDays: 0
+              totalTests,
+              completedTests,
+              averageBand: Math.round(averageBand * 10) / 10,
+              streakDays: 0 // Can be calculated based on consecutive test days
             },
-            recentTests: [],
-            coachMessage: {
-              message: "🤖 AI Coach: Welcome to IELTS Platform! Start your first test to get personalized feedback.",
-              type: "welcome"
-            }
+            recentTests,
+            coachMessage
           };
-          setDashboardData(mockData);
+          
+          setDashboardData(dashboardData);
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -61,6 +107,16 @@ export default function Dashboard() {
 
     fetchDashboardData();
   }, [user]);
+
+  // Listen for storage changes to refresh data when tests are completed
+  useEffect(() => {
+    const handleStorageChange = () => {
+      fetchDashboardData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   if (loading) {
     return <Loader />;

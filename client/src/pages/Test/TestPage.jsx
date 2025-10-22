@@ -194,6 +194,11 @@ export default function TestPage() {
       user: user
     };
     
+    // Save test result to localStorage
+    const savedTests = JSON.parse(localStorage.getItem('ielts_test_results') || '[]');
+    savedTests.unshift(testResult); // Add to beginning of array (most recent first)
+    localStorage.setItem('ielts_test_results', JSON.stringify(savedTests));
+    
     // Navigate to results page with data
     navigate(`/test/result/${testResult.id}`, { 
       state: { testResult } 
