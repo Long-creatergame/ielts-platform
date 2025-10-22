@@ -134,6 +134,20 @@ app.get("/api/cors-test", (req, res) => {
   });
 });
 
+// Force CORS test endpoint
+app.get("/api/force-cors-test", (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.json({ 
+    message: "FORCE CORS test successful", 
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin || 'no origin',
+    headers: req.headers
+  });
+});
+
 // Dashboard API route
 app.get("/api/dashboard", (req, res) => {
   try {
