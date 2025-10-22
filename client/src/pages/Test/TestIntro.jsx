@@ -30,7 +30,9 @@ export default function TestIntro() {
 
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'}/tests/can-start`, {
+        // FIXED: Remove duplicate /api
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+        const response = await fetch(`${API_BASE_URL}/tests/can-start`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -61,7 +63,9 @@ export default function TestIntro() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'}/tests/start`, {
+      // FIXED: Remove duplicate /api
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_BASE_URL}/tests/start`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,9 +76,12 @@ export default function TestIntro() {
 
       if (response.ok) {
         const data = await response.json();
-        navigate(`/test/reading?level=${selectedLevel}&testId=${data.testId}`);
+        // FIXED: Navigate to existing route
+        navigate(`/test/reading`);
       } else if (response.status === 403) {
         setShowPaywall(true);
+      } else {
+        console.error('Failed to start test:', response.status);
       }
     } catch (error) {
       console.error('Error starting test:', error);
@@ -143,9 +150,10 @@ export default function TestIntro() {
         <div className="text-center">
           <button
             onClick={handleStartTest}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
+            disabled={loading}
+            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
           >
-            🚀 Bắt đầu bài thi ({selectedLevel})
+            {loading ? 'Đang kiểm tra...' : `🚀 Bắt đầu bài thi (${selectedLevel})`}
           </button>
           <p className="text-sm text-gray-500 mt-4">
             Bài thi sẽ bao gồm tất cả 4 kỹ năng theo trình độ {selectedLevel}
