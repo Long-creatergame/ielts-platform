@@ -52,8 +52,20 @@ const paymentRoutes = require('./routes/payment');
 const upsellRoutes = require('./routes/upsell');
 const { router: authRoutes } = require('./routes/auth');
 
-// Routes
-app.use("/api/auth", authRoutes);
+// Routes with CORS fix
+app.use("/api/auth", (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+}, authRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/results", resultRoutes);
 app.use("/api/ai", essayRoutes);
