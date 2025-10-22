@@ -1,15 +1,18 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-this-in-production';
 
-// CORS middleware for auth routes - FINAL FIX
+// CORS middleware for auth routes - ULTIMATE FIX
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400'); // 24 hours
   
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -18,40 +21,18 @@ router.use((req, res, next) => {
   
   next();
 });
-const JWT_SECRET = process.env.JWT_SECRET || 'ielts_secret_key_change_this_in_production';
 
-// Generate token
-const generateToken = (id) => {
-  return jwt.sign({ id }, JWT_SECRET, { expiresIn: '7d' });
+// Generate JWT token
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 };
 
-// Middleware to protect routes
-const authMiddleware = async (req, res, next) => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
-    
-    if (!user) {
-      return res.status(401).json({ message: 'Token is not valid' });
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
-
-// REGISTER
+// Register route
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    res.header('Access-Control-Allow-Origin', '*');
+    
+    const { name, email, password, goal, targetBand, currentLevel } = req.body;
 
     // Validation
     if (!name || !email || !password) {
@@ -72,7 +53,10 @@ router.post('/register', async (req, res) => {
     const user = await User.create({ 
       name, 
       email, 
-      password: password // The pre-save hook will hash this
+      password: password,
+      goal: goal || 'Thử sức',
+      targetBand: targetBand || 6.5,
+      currentLevel: currentLevel || 'A2'
     });
 
     // Generate token
@@ -85,18 +69,24 @@ router.post('/register', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        goal: user.goal,
+        targetBand: user.targetBand,
+        currentLevel: user.currentLevel,
         plan: user.plan
       }
     });
   } catch (error) {
+    res.header('Access-Control-Allow-Origin', '*');
     console.error('Registration error:', error);
     res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
-// LOGIN
+// Login route
 router.post('/login', async (req, res) => {
   try {
+    res.header('Access-Control-Allow-Origin', '*');
+    
     const { email, password } = req.body;
 
     // Validation
@@ -126,43 +116,78 @@ router.post('/login', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        goal: user.goal,
+        targetBand: user.targetBand,
+        currentLevel: user.currentLevel,
         plan: user.plan
       }
     });
   } catch (error) {
+    res.header('Access-Control-Allow-Origin', '*');
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error during login' });
   }
 });
 
-// GET USER PROFILE
+// Auth middleware
+const authMiddleware = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      return res.status(401).json({ message: 'Token is not valid' });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+// Get user profile
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
+    res.header('Access-Control-Allow-Origin', '*');
+    
     res.json({
       user: {
         id: req.user._id,
         name: req.user.name,
         email: req.user.email,
+        goal: req.user.goal,
+        targetBand: req.user.targetBand,
+        currentLevel: req.user.currentLevel,
         plan: req.user.plan,
-        isTrialUsed: req.user.isTrialUsed,
-        createdAt: req.user.createdAt
+        freeTestsUsed: req.user.freeTestsUsed,
+        paid: req.user.paid
       }
     });
   } catch (error) {
+    res.header('Access-Control-Allow-Origin', '*');
     console.error('Profile error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// UPDATE USER PROFILE
+// Update user profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { name } = req.body;
+    res.header('Access-Control-Allow-Origin', '*');
+    
+    const { name, goal, targetBand, currentLevel } = req.body;
     
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { name },
-      { new: true, runValidators: true }
+      { name, goal, targetBand, currentLevel },
+      { new: true }
     ).select('-password');
 
     res.json({
@@ -171,26 +196,34 @@ router.put('/profile', authMiddleware, async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        goal: user.goal,
+        targetBand: user.targetBand,
+        currentLevel: user.currentLevel,
         plan: user.plan
       }
     });
   } catch (error) {
-    console.error('Update profile error:', error);
+    res.header('Access-Control-Allow-Origin', '*');
+    console.error('Profile update error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// VERIFY TOKEN
-router.get('/verify', authMiddleware, async (req, res) => {
-  res.json({
+// Verify token
+router.get('/verify', authMiddleware, (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.json({ 
     message: 'Token is valid',
     user: {
       id: req.user._id,
       name: req.user.name,
       email: req.user.email,
+      goal: req.user.goal,
+      targetBand: req.user.targetBand,
+      currentLevel: req.user.currentLevel,
       plan: req.user.plan
     }
   });
 });
 
-module.exports = { router, authMiddleware };
+export default router;
