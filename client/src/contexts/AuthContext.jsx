@@ -20,9 +20,15 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'}/auth/register`, {
+      // TEMPORARY FIX: Use direct URL instead of environment variable
+      const API_BASE_URL = 'https://ielts-platform-emrv.onrender.com/api';
+      
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
         body: JSON.stringify(userData)
       });
       
