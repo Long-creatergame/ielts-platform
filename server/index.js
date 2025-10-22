@@ -89,6 +89,27 @@ app.get("/api/health", (req, res) => {
   res.json({ message: "Server is healthy and connected!" });
 });
 
+// CORS Test endpoint
+app.options("/api/auth/*", (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();
+});
+
+app.get("/api/cors-test", (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.json({ 
+    message: "CORS test successful", 
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin || 'no origin'
+  });
+});
+
 // Dashboard API route
 app.get("/api/dashboard", (req, res) => {
   try {
