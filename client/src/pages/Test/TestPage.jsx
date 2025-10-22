@@ -164,7 +164,7 @@ export default function TestPage() {
     setAnswers('');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // AI-powered band score calculation for each skill
     const skillScores = {};
     let totalScore = 0;
