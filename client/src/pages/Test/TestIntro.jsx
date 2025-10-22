@@ -12,6 +12,26 @@ export default function TestIntro() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // SECURITY: Check if user is logged in
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+  }, [user, navigate]);
+
+  // Show loading if user is not loaded yet
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   const levels = [
     { id: 'A1', name: 'Beginner', color: 'blue' },
     { id: 'A2', name: 'Elementary', color: 'blue' },

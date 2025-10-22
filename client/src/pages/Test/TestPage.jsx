@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import Timer from '../../components/Timer';
 
 export default function TestPage() {
   const { skill } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [answers, setAnswers] = useState('');
   const [timeUp, setTimeUp] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(1);
@@ -12,6 +14,26 @@ export default function TestPage() {
   const [level, setLevel] = useState('A2');
   const [questions, setQuestions] = useState([]);
   const [passage, setPassage] = useState('');
+
+  // SECURITY: Check if user is logged in
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+  }, [user, navigate]);
+
+  // Show loading if user is not loaded yet
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   const durations = {
     reading: 900,    // 15 minutes

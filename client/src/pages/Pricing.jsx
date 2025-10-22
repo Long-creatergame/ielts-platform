@@ -7,6 +7,23 @@ const Pricing = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // SECURITY: Check if user is logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-800 mb-6">Please login to view pricing</h1>
+          <Link
+            to="/login"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
