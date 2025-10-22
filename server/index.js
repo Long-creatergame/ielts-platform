@@ -17,15 +17,14 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/ielts-platf
   .then(() => console.log('✅ MongoDB connected successfully!'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// REMOVE CORS PACKAGE - Use only custom middleware
-// CORS Middleware - FINAL FIX (NO CORS PACKAGE)
+// CORS Middleware - ABSOLUTE FINAL FIX
 app.use((req, res, next) => {
-  // Set CORS headers for ALL requests
+  // Force CORS headers for ALL requests
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+  res.setHeader('Access-Control-Max-Age', '86400');
   
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
@@ -41,15 +40,6 @@ app.use(express.json());
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is healthy and connected!' });
-});
-
-// CORS test endpoints
-app.get("/api/cors-test", (req, res) => {
-  res.json({ 
-    message: "CORS test successful", 
-    timestamp: new Date().toISOString(),
-    origin: req.headers.origin || 'no origin'
-  });
 });
 
 // Routes
