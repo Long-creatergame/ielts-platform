@@ -1,19 +1,38 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
-const Test = require('../models/Test');
-const auth = require('../middleware/auth');
+import express from 'express';
+import User from '../models/User.js';
+import Test from '../models/Test.js';
 
-// Check if user can start a test (paywall logic)
-router.get('/can-start', auth, async (req, res) => {
+const router = express.Router();
+
+// Auth middleware
+const authMiddleware = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
-    const user = await User.findById(userId);
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
     }
 
+    const jwt = await import('jsonwebtoken');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
+    const user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      return res.status(401).json({ message: 'Token is not valid' });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+// Check if user can start a test (paywall logic)
+router.get('/can-start', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    
     // Check free trial usage
     if (user.freeTestsUsed < 1) {
       return res.json({ 
@@ -46,16 +65,11 @@ router.get('/can-start', auth, async (req, res) => {
 });
 
 // Start a test (increment free trial if applicable)
-router.post('/start', auth, async (req, res) => {
+router.post('/start', authMiddleware, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const user = req.user;
     const { level, skill } = req.body;
     
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
     // Check if user can start test
     if (user.freeTestsUsed >= 1 && !user.paid) {
       return res.status(403).json({ 
@@ -67,7 +81,7 @@ router.post('/start', auth, async (req, res) => {
 
     // Create new test
     const test = new Test({
-      userId,
+      userId: user._id,
       level,
       skill,
       isPaid: user.paid,
@@ -95,10 +109,10 @@ router.post('/start', auth, async (req, res) => {
 });
 
 // Get user's tests
-router.get('/mine', auth, async (req, res) => {
+router.get('/mine', authMiddleware, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const tests = await Test.find({ userId })
+    const user = req.user;
+    const tests = await Test.find({ userId: user._id })
       .sort({ dateTaken: -1 })
       .select('-answers');
 
@@ -109,4 +123,4 @@ router.get('/mine', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
