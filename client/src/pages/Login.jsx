@@ -25,14 +25,13 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Use environment variable with /api suffix
-      const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'}/api`;
+      // FIXED: Use environment variable directly (already includes /api)
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
       });
@@ -60,7 +59,7 @@ export default function Login() {
         </h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
+          <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-route3 rounded mb-6">
             {error}
           </div>
         )}

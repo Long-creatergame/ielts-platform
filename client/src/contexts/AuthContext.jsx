@@ -20,14 +20,13 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      // Use environment variable with /api suffix
-      const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'}/api`;
+      // FIXED: Use environment variable directly (already includes /api)
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(userData)
       });
