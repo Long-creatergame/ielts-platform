@@ -6,22 +6,6 @@ import User from '../models/User.js';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-this-in-production';
 
-// CORS middleware for auth routes - ULTIMATE FIX
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Max-Age', '86400'); // 24 hours
-  
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  
-  next();
-});
-
 // Generate JWT token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
@@ -30,8 +14,6 @@ const generateToken = (userId) => {
 // Register route
 router.post('/register', async (req, res) => {
   try {
-    res.header('Access-Control-Allow-Origin', '*');
-    
     const { name, email, password, goal, targetBand, currentLevel } = req.body;
 
     // Validation
@@ -76,7 +58,6 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
-    res.header('Access-Control-Allow-Origin', '*');
     console.error('Registration error:', error);
     res.status(500).json({ message: 'Server error during registration' });
   }
@@ -85,8 +66,6 @@ router.post('/register', async (req, res) => {
 // Login route
 router.post('/login', async (req, res) => {
   try {
-    res.header('Access-Control-Allow-Origin', '*');
-    
     const { email, password } = req.body;
 
     // Validation
@@ -123,7 +102,6 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    res.header('Access-Control-Allow-Origin', '*');
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error during login' });
   }
@@ -155,8 +133,6 @@ const authMiddleware = async (req, res, next) => {
 // Get user profile
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
-    res.header('Access-Control-Allow-Origin', '*');
-    
     res.json({
       user: {
         id: req.user._id,
@@ -171,7 +147,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
       }
     });
   } catch (error) {
-    res.header('Access-Control-Allow-Origin', '*');
     console.error('Profile error:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -180,8 +155,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
 // Update user profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    res.header('Access-Control-Allow-Origin', '*');
-    
     const { name, goal, targetBand, currentLevel } = req.body;
     
     const user = await User.findByIdAndUpdate(
@@ -203,7 +176,6 @@ router.put('/profile', authMiddleware, async (req, res) => {
       }
     });
   } catch (error) {
-    res.header('Access-Control-Allow-Origin', '*');
     console.error('Profile update error:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -211,7 +183,6 @@ router.put('/profile', authMiddleware, async (req, res) => {
 
 // Verify token
 router.get('/verify', authMiddleware, (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*');
   res.json({ 
     message: 'Token is valid',
     user: {
