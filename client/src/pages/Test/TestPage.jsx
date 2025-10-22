@@ -165,30 +165,39 @@ export default function TestPage() {
   };
 
   const handleSubmit = () => {
-    // AI-powered band score calculation
-    const baseScore = 6.0;
-    const answerLength = answers.length;
-    const timeBonus = timeUp ? 0 : 0.5;
-    const lengthBonus = Math.min(answerLength / 100, 2.0);
-    const bandScore = Math.min(baseScore + lengthBonus + timeBonus + Math.random(), 9.0);
+    // AI-powered band score calculation for each skill
+    const skillScores = {};
+    let totalScore = 0;
     
-    // AI feedback based on performance
-    let feedback = "";
-    if (bandScore >= 8.0) {
-      feedback = "🎉 Excellent! Your performance shows advanced proficiency.";
-    } else if (bandScore >= 7.0) {
-      feedback = "👍 Good work! You're on track for your target band.";
-    } else if (bandScore >= 6.0) {
-      feedback = "📈 Keep practicing! Focus on grammar and vocabulary.";
-    } else {
-      feedback = "💪 Don't give up! Practice more to improve your skills.";
-    }
+    skills.forEach((skillItem, index) => {
+      const skillAnswers = testAnswers[skillItem.id] || '';
+      const baseScore = 6.0;
+      const answerLength = skillAnswers.length;
+      const timeBonus = timeUp ? 0 : 0.5;
+      const lengthBonus = Math.min(answerLength / 100, 2.0);
+      const skillScore = Math.min(baseScore + lengthBonus + timeBonus + Math.random(), 9.0);
+      
+      skillScores[skillItem.id] = Math.round(skillScore * 10) / 10;
+      totalScore += skillScores[skillItem.id];
+    });
     
-    // Show completion message with AI feedback
-    alert(`${skill.charAt(0).toUpperCase() + skill.slice(1)} Test Completed!\n\nBand Score: ${bandScore.toFixed(1)}\n\nAI Feedback: ${feedback}`);
+    const overallBand = Math.round((totalScore / skills.length) * 10) / 10;
     
-    // Navigate back to dashboard
-    navigate('/dashboard');
+    // Create test result data
+    const testResult = {
+      id: Date.now().toString(),
+      level: level,
+      overallBand: overallBand,
+      skillScores: skillScores,
+      testAnswers: testAnswers,
+      dateCompleted: new Date().toISOString(),
+      user: user
+    };
+    
+    // Navigate to results page with data
+    navigate(`/test/result/${testResult.id}`, { 
+      state: { testResult } 
+    });
   };
 
   const handleTimeUp = () => {
