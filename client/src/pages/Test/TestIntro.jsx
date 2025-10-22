@@ -26,8 +26,8 @@ export default function TestIntro() {
     setLoading(true);
     
     try {
-      // Direct navigation to test page
-      navigate(`/test/reading`);
+      // Direct navigation to test page with level parameter
+      navigate(`/test/reading?level=${selectedLevel}`);
     } catch (error) {
       console.error('Error starting test:', error);
     } finally {
