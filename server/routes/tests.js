@@ -108,6 +108,55 @@ router.post('/start', authMiddleware, async (req, res) => {
   }
 });
 
+// Submit test results
+router.post('/submit', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    const { level, overallBand, skillScores, testAnswers, completed } = req.body;
+    
+    // Create new test with results
+    const test = new Test({
+      userId: user._id,
+      level,
+      overallBand,
+      skillScores,
+      answers: testAnswers,
+      completed,
+      isPaid: user.paid,
+      resultLocked: !user.paid,
+      price: user.paid ? 0 : 29000,
+      dateTaken: new Date()
+    });
+
+    await test.save();
+
+    // Update user statistics
+    user.totalTests += 1;
+    if (user.totalTests === 1) {
+      user.averageBand = overallBand;
+    } else {
+      user.averageBand = ((user.averageBand * (user.totalTests - 1)) + overallBand) / user.totalTests;
+    }
+    await user.save();
+
+    res.json({
+      success: true,
+      test: {
+        _id: test._id,
+        level: test.level,
+        overallBand: test.overallBand,
+        skillScores: test.skillScores,
+        dateCompleted: test.dateTaken,
+        completed: test.completed
+      },
+      message: 'Test results saved successfully'
+    });
+  } catch (error) {
+    console.error('Test submit error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get user's tests
 router.get('/mine', authMiddleware, async (req, res) => {
   try {

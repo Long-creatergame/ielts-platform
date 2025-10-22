@@ -194,15 +194,43 @@ export default function TestPage() {
       user: user
     };
     
-    // Save test result to localStorage
-    const savedTests = JSON.parse(localStorage.getItem('ielts_test_results') || '[]');
-    savedTests.unshift(testResult); // Add to beginning of array (most recent first)
-    localStorage.setItem('ielts_test_results', JSON.stringify(savedTests));
-    
-    // Navigate to results page with data
-    navigate(`/test/result/${testResult.id}`, { 
-      state: { testResult } 
-    });
+    // Save test result to MongoDB via API
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_BASE_URL}/api/tests/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          level: testResult.level,
+          overallBand: testResult.overallBand,
+          skillScores: testResult.skillScores,
+          testAnswers: testResult.testAnswers,
+          completed: true
+        })
+      });
+
+      if (response.ok) {
+        const savedTest = await response.json();
+        // Navigate to results page with saved test data
+        navigate(`/test/result/${savedTest._id}`, { 
+          state: { testResult: savedTest } 
+        });
+      } else {
+        // Fallback: navigate with local data if API fails
+        navigate(`/test/result/${testResult.id}`, { 
+          state: { testResult } 
+        });
+      }
+    } catch (error) {
+      console.error('Error saving test result:', error);
+      // Fallback: navigate with local data if API fails
+      navigate(`/test/result/${testResult.id}`, { 
+        state: { testResult } 
+      });
+    }
   };
 
   const handleTimeUp = () => {

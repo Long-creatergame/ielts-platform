@@ -24,72 +24,46 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
       try {
         if (user) {
-          // Get test results from localStorage
-          const savedTests = JSON.parse(localStorage.getItem('ielts_test_results') || '[]');
+          const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+          const token = localStorage.getItem('token');
           
-          // Calculate statistics from saved tests
-          const totalTests = savedTests.length;
-          const completedTests = savedTests.filter(test => test.overallBand).length;
-          const averageBand = completedTests > 0 
-            ? savedTests.reduce((sum, test) => sum + test.overallBand, 0) / completedTests 
-            : 0;
-          
-          // Get recent tests (last 5)
-          const recentTests = savedTests.slice(0, 5).map(test => ({
-            _id: test.id,
-            totalBand: test.overallBand,
-            dateTaken: test.dateCompleted,
-            level: test.level,
-            skillBands: test.skillScores
-          }));
-
-          // Generate coach message based on performance
-          let coachMessage = {
-            message: "🤖 AI Coach: Welcome to IELTS Platform! Start your first test to get personalized feedback.",
-            type: "welcome"
-          };
-
-          if (completedTests > 0) {
-            const latestTest = savedTests[0];
-            if (latestTest.overallBand >= 7.0) {
-              coachMessage = {
-                message: `🎉 Excellent work ${user.name}! Your latest test scored ${latestTest.overallBand}. Keep up the great performance!`,
-                type: "success"
-              };
-            } else if (latestTest.overallBand >= 6.0) {
-              coachMessage = {
-                message: `👍 Good progress ${user.name}! You scored ${latestTest.overallBand}. Focus on your weakest skill to improve further.`,
-                type: "encouragement"
-              };
-            } else {
-              coachMessage = {
-                message: `💪 Keep practicing ${user.name}! Every test helps you improve. Your score: ${latestTest.overallBand}`,
-                type: "motivation"
-              };
+          // Fetch dashboard data from API
+          const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
             }
-          }
+          });
 
-          const dashboardData = {
-            user: {
-              name: user.name,
-              email: user.email,
-              goal: user.goal || 'Thử sức',
-              targetBand: user.targetBand || 6.5,
-              currentLevel: user.currentLevel || 'A2',
-              paid: user.paid || false,
-              freeTestsUsed: user.freeTestsUsed || 0
-            },
-            statistics: {
-              totalTests,
-              completedTests,
-              averageBand: Math.round(averageBand * 10) / 10,
-              streakDays: 0 // Can be calculated based on consecutive test days
-            },
-            recentTests,
-            coachMessage
-          };
-          
-          setDashboardData(dashboardData);
+          if (response.ok) {
+            const data = await response.json();
+            setDashboardData(data);
+          } else {
+            // Fallback to mock data if API fails
+            const mockData = {
+              user: {
+                name: user.name,
+                email: user.email,
+                goal: user.goal || 'Thử sức',
+                targetBand: user.targetBand || 6.5,
+                currentLevel: user.currentLevel || 'A2',
+                paid: user.paid || false,
+                freeTestsUsed: user.freeTestsUsed || 0
+              },
+              statistics: {
+                totalTests: 0,
+                completedTests: 0,
+                averageBand: 0,
+                streakDays: 0
+              },
+              recentTests: [],
+              coachMessage: {
+                message: "🤖 AI Coach: Welcome to IELTS Platform! Start your first test to get personalized feedback.",
+                type: "welcome"
+              }
+            };
+            setDashboardData(mockData);
+          }
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -108,15 +82,6 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [user]);
 
-  // Listen for storage changes to refresh data when tests are completed
-  useEffect(() => {
-    const handleStorageChange = () => {
-      fetchDashboardData();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
   if (loading) {
     return <Loader />;

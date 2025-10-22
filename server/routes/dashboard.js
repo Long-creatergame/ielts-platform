@@ -44,6 +44,32 @@ router.get('/', authMiddleware, async (req, res) => {
       { $group: { _id: null, avgBand: { $avg: '$totalBand' } } }
     ]);
 
+    // Generate coach message based on performance
+    let coachMessage = {
+      message: "🤖 AI Coach: Welcome to IELTS Platform! Start your first test to get personalized feedback.",
+      type: "welcome"
+    };
+
+    if (completedTests > 0) {
+      const latestTest = tests[0];
+      if (latestTest.overallBand >= 7.0) {
+        coachMessage = {
+          message: `🎉 Excellent work ${user.name}! Your latest test scored ${latestTest.overallBand}. Keep up the great performance!`,
+          type: "success"
+        };
+      } else if (latestTest.overallBand >= 6.0) {
+        coachMessage = {
+          message: `👍 Good progress ${user.name}! You scored ${latestTest.overallBand}. Focus on your weakest skill to improve further.`,
+          type: "encouragement"
+        };
+      } else {
+        coachMessage = {
+          message: `💪 Keep practicing ${user.name}! Every test helps you improve. Your score: ${latestTest.overallBand}`,
+          type: "motivation"
+        };
+      }
+    }
+
     const dashboardData = {
       user: {
         id: user._id,
@@ -61,13 +87,11 @@ router.get('/', authMiddleware, async (req, res) => {
         averageBand: averageBand.length > 0 ? Math.round(averageBand[0].avgBand * 10) / 10 : 0,
         streakDays: user.streakDays
       },
-      recentTests: tests
+      recentTests: tests,
+      coachMessage
     };
 
-    res.json({
-      message: 'Dashboard data fetched successfully',
-      data: dashboardData
-    });
+    res.json(dashboardData);
   } catch (error) {
     console.error('Dashboard error:', error);
     res.status(500).json({ message: 'Server error' });
