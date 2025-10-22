@@ -20,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.id).select('-passwordHash');
+    const user = await User.findById(decoded.userId).select('-password');
     
     if (!user) {
       return res.status(401).json({ message: 'Token is not valid' });
@@ -57,7 +57,7 @@ router.post('/register', async (req, res) => {
     const user = await User.create({ 
       name, 
       email, 
-      passwordHash: password // The pre-save hook will hash this
+      password: password // The pre-save hook will hash this
     });
 
     // Generate token
@@ -96,7 +96,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -148,7 +148,7 @@ router.put('/profile', authMiddleware, async (req, res) => {
       req.user._id,
       { name },
       { new: true, runValidators: true }
-    ).select('-passwordHash');
+    ).select('-password');
 
     res.json({
       message: 'Profile updated successfully',
