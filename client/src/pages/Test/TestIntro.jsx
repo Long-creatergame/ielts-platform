@@ -10,7 +10,7 @@ export default function TestIntro() {
   const [selectedLevel, setSelectedLevel] = useState(user?.currentLevel || 'A2');
   const [canStartTest, setCanStartTest] = useState(true);
   const [showPaywall, setShowPaywall] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const levels = [
     { id: 'A1', name: 'Beginner', color: 'blue' },
@@ -21,70 +21,17 @@ export default function TestIntro() {
     { id: 'C2', name: 'Proficient', color: 'orange' }
   ];
 
-  useEffect(() => {
-    const checkCanStartTest = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const token = localStorage.getItem('token');
-        // FIXED: Remove duplicate /api
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-        const response = await fetch(`${API_BASE_URL}/tests/can-start`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setCanStartTest(data.allowed);
-          if (data.paywall) {
-            setShowPaywall(true);
-          }
-        }
-      } catch (error) {
-        console.error('Error checking test access:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkCanStartTest();
-  }, [user]);
-
   const handleStartTest = async () => {
-    if (!canStartTest) {
-      setShowPaywall(true);
-      return;
-    }
-
+    // SIMPLIFIED: Skip API calls and go directly to test
+    setLoading(true);
+    
     try {
-      const token = localStorage.getItem('token');
-      // FIXED: Remove duplicate /api
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      const response = await fetch(`${API_BASE_URL}/tests/start`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ level: selectedLevel, skill: 'reading' })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // FIXED: Navigate to existing route
-        navigate(`/test/reading`);
-      } else if (response.status === 403) {
-        setShowPaywall(true);
-      } else {
-        console.error('Failed to start test:', response.status);
-      }
+      // Direct navigation to test page
+      navigate(`/test/reading`);
     } catch (error) {
       console.error('Error starting test:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,7 +100,7 @@ export default function TestIntro() {
             disabled={loading}
             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
           >
-            {loading ? 'Đang kiểm tra...' : `🚀 Bắt đầu bài thi (${selectedLevel})`}
+            {loading ? 'Đang chuyển...' : `🚀 Bắt đầu bài thi (${selectedLevel})`}
           </button>
           <p className="text-sm text-gray-500 mt-4">
             Bài thi sẽ bao gồm tất cả 4 kỹ năng theo trình độ {selectedLevel}
