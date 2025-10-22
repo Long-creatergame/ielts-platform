@@ -17,11 +17,32 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   // Function to refresh dashboard data
-  const refreshDashboardData = () => {
-    fetchDashboardData();
+  const refreshDashboardData = async () => {
+    try {
+      if (user) {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+        const token = localStorage.getItem('token');
+        
+        // Fetch dashboard data from API
+        const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setDashboardData(data);
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing dashboard data:', error);
+    }
   };
 
-  const fetchDashboardData = async () => {
+  useEffect(() => {
+    const fetchDashboardData = async () => {
       try {
         if (user) {
           const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
