@@ -3,6 +3,21 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const router = express.Router();
+
+// CORS middleware for auth routes
+router.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
 const JWT_SECRET = process.env.JWT_SECRET || 'ielts_secret_key_change_this_in_production';
 
 // Generate token
