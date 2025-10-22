@@ -10,10 +10,24 @@ export default function TestPage() {
   const [answers, setAnswers] = useState('');
   const [timeUp, setTimeUp] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [currentSkill, setCurrentSkill] = useState(0); // 0=reading, 1=listening, 2=writing, 3=speaking
   const [totalQuestions] = useState(5);
   const [level, setLevel] = useState('A2');
   const [questions, setQuestions] = useState([]);
   const [passage, setPassage] = useState('');
+  const [testAnswers, setTestAnswers] = useState({
+    reading: '',
+    listening: '',
+    writing: '',
+    speaking: ''
+  });
+
+  const skills = [
+    { id: 'reading', name: 'Reading', icon: '📖', duration: 900, color: 'blue' },
+    { id: 'listening', name: 'Listening', icon: '🎧', duration: 900, color: 'green' },
+    { id: 'writing', name: 'Writing', icon: '✍️', duration: 3600, color: 'purple' },
+    { id: 'speaking', name: 'Speaking', icon: '🎤', duration: 660, color: 'orange' }
+  ];
 
   // SECURITY: Check if user is logged in
   useEffect(() => {
@@ -48,7 +62,13 @@ export default function TestPage() {
     const urlLevel = urlParams.get('level') || 'A2';
     setLevel(urlLevel);
 
-    // Simple question sets
+    // Initialize with Reading skill (first skill)
+    setCurrentSkill(0);
+    loadSkillQuestions('reading', urlLevel);
+  }, []);
+
+  const loadSkillQuestions = (skillType, level) => {
+    // Simple question sets for all skills
     const questionData = {
       reading: {
         A1: {
@@ -116,27 +136,33 @@ export default function TestPage() {
       }
     };
 
-    // Set questions based on skill and level
-    const skillData = questionData[skill];
-    if (skillData && skillData[urlLevel]) {
-      const data = skillData[urlLevel];
-      if (skill === 'reading' && data.passage) {
+    // Load questions for the specified skill and level
+    const skillData = questionData[skillType];
+    if (skillData && skillData[level]) {
+      const data = skillData[level];
+      if (skillType === 'reading' && data.passage) {
         setPassage(data.passage);
         setQuestions(data.questions);
       } else {
         setQuestions(data);
+        setPassage('');
       }
     } else {
       // Fallback to A2
       const fallbackData = skillData['A2'];
-      if (skill === 'reading' && fallbackData.passage) {
+      if (skillType === 'reading' && fallbackData.passage) {
         setPassage(fallbackData.passage);
         setQuestions(fallbackData.questions);
       } else {
         setQuestions(fallbackData);
+        setPassage('');
       }
     }
-  }, [skill]);
+    
+    // Reset current question when switching skills
+    setCurrentQuestion(1);
+    setAnswers('');
+  };
 
   const handleSubmit = () => {
     // AI-powered band score calculation
@@ -171,10 +197,25 @@ export default function TestPage() {
   };
 
   const handleNextQuestion = () => {
+    // Save current skill answers
+    setTestAnswers(prev => ({
+      ...prev,
+      [skills[currentSkill].id]: answers
+    }));
+
     if (currentQuestion < totalQuestions) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      handleSubmit();
+      // Move to next skill
+      if (currentSkill < skills.length - 1) {
+        setCurrentSkill(currentSkill + 1);
+        loadSkillQuestions(skills[currentSkill + 1].id, level);
+        setCurrentQuestion(1);
+        setAnswers('');
+      } else {
+        // All skills completed
+        handleSubmit();
+      }
     }
   };
 
@@ -183,17 +224,36 @@ export default function TestPage() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-center">
-              {skill === 'reading' && '📖 Reading Test'}
-              {skill === 'listening' && '🎧 Listening Test'}
-              {skill === 'writing' && '✍️ Writing Test'}
-              {skill === 'speaking' && '🎤 Speaking Test'}
-            </h1>
-            <Timer
-              duration={durations[skill]}
-              onTimeUp={handleTimeUp}
-            />
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-3xl font-bold">
+                {skills[currentSkill].icon} {skills[currentSkill].name} Test
+              </h1>
+              <Timer
+                duration={skills[currentSkill].duration}
+                onTimeUp={handleTimeUp}
+              />
+            </div>
+            
+            {/* Skills Progress */}
+            <div className="flex justify-center space-x-4 mb-4">
+              {skills.map((skillItem, index) => (
+                <div
+                  key={skillItem.id}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${
+                    index === currentSkill
+                      ? `bg-${skillItem.color}-100 border-2 border-${skillItem.color}-500`
+                      : index < currentSkill
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-500'
+                  }`}
+                >
+                  <span className="text-lg">{skillItem.icon}</span>
+                  <span className="font-medium">{skillItem.name}</span>
+                  {index < currentSkill && <span className="text-green-600">✓</span>}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Progress */}
@@ -215,7 +275,7 @@ export default function TestPage() {
             <h2 className="text-xl font-semibold mb-4">Question {currentQuestion}:</h2>
             
             {/* Reading Passage for Reading Tests */}
-            {skill === 'reading' && passage && (
+            {skills[currentSkill].id === 'reading' && passage && (
               <div className="mb-6 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                 <h3 className="font-semibold text-blue-800 mb-3">📖 Reading Passage:</h3>
                 <p className="text-gray-700 leading-relaxed">{passage}</p>
@@ -262,13 +322,21 @@ export default function TestPage() {
                 >
                   Next Question →
                 </button>
+              ) : currentSkill < skills.length - 1 ? (
+                <button
+                  onClick={handleNextQuestion}
+                  disabled={timeUp}
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                >
+                  Next Skill: {skills[currentSkill + 1].icon} {skills[currentSkill + 1].name} →
+                </button>
               ) : (
                 <button
                   onClick={handleSubmit}
                   disabled={timeUp}
                   className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
                 >
-                  Submit Test ✓
+                  Submit Full Test ✓
                 </button>
               )}
             </div>
