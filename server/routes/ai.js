@@ -191,13 +191,6 @@ Format your response as JSON:
       });
     }
 
-  } catch (error) {
-    console.error('AI assessment error:', error);
-    res.status(500).json({
-      bandScore: 5.0,
-      feedback: 'AI assessment temporarily unavailable. Please try again later.'
-    });
-  }
     */ // END COMMENTED OUT SECTION
 });
 
