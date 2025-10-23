@@ -10,11 +10,15 @@ import GoalProgressBar from '../components/GoalProgressBar';
 import CoachMessage from '../components/CoachMessage';
 import UpgradeBanner from '../components/UpgradeBanner';
 import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
+import AIPractice from '../components/AIPractice';
+import MyWeakness from '../components/MyWeakness';
+import RecommendedPractice from '../components/RecommendedPractice';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Function to refresh dashboard data
   const refreshDashboardData = async () => {
@@ -155,6 +159,183 @@ export default function Dashboard() {
             target={user.targetBand}
             goal={user.goal}
           />
+        </div>
+
+        {/* AI Engine Tabs */}
+        <div className="mb-8">
+          <div className="bg-white rounded-2xl shadow-xl">
+            <div className="border-b border-gray-200">
+              <nav className="flex space-x-8 px-6">
+                <button
+                  onClick={() => setActiveTab('overview')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'overview'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  📊 Overview
+                </button>
+                <button
+                  onClick={() => setActiveTab('ai-practice')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'ai-practice'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  🧩 AI Practice
+                </button>
+                <button
+                  onClick={() => setActiveTab('my-weakness')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'my-weakness'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  📊 My Weakness
+                </button>
+                <button
+                  onClick={() => setActiveTab('recommended')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'recommended'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  💡 Recommended Practice
+                </button>
+              </nav>
+            </div>
+            
+            <div className="p-6">
+              {activeTab === 'overview' && (
+                <div>
+                  {/* Coach Message */}
+                  {personalization?.coachMessage && (
+                    <div className="mb-8">
+                      <CoachMessage message={personalization.coachMessage} />
+                    </div>
+                  )}
+
+                  {/* Statistics Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <ScoreCard
+                      title="Tests Completed"
+                      score={statistics?.totalTests || 0}
+                      color="blue"
+                    />
+                    <ScoreCard
+                      title="Average Band"
+                      score={statistics?.averageBand || 'N/A'}
+                      color="green"
+                    />
+                    <ScoreCard
+                      title="Streak Days"
+                      score={user.streakDays || 0}
+                      color="purple"
+                    />
+                    <div className="bg-white rounded-2xl shadow-xl p-6 text-center">
+                      <div className="text-4xl mb-2">🎯</div>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-1">Target Band</h3>
+                      <p className="text-3xl font-bold text-orange-600">
+                        {user.targetBand}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Progress Ring */}
+                  {statistics?.averageBand > 0 && (
+                    <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 text-center">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-6">Progress Overview</h2>
+                      <ProgressRing
+                        current={statistics.averageBand}
+                        target={user.targetBand}
+                        size={150}
+                      />
+                    </div>
+                  )}
+
+                  {/* Quick Actions */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <Link
+                      to="/test/start"
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-6 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      <div className="text-4xl mb-3">📝</div>
+                      <h3 className="text-xl font-bold mb-2">Start New Test</h3>
+                      <p className="text-blue-100">Take a practice test</p>
+                    </Link>
+
+                    <Link
+                      to="/profile"
+                      className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      <div className="text-4xl mb-3">👤</div>
+                      <h3 className="text-xl font-bold mb-2">View Profile</h3>
+                      <p className="text-green-100">Manage your account</p>
+                    </Link>
+
+                    <Link
+                      to="/pricing"
+                      className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      <div className="text-4xl mb-3">💎</div>
+                      <h3 className="text-xl font-bold mb-2">Upgrade Plan</h3>
+                      <p className="text-purple-100">Unlock premium features</p>
+                    </Link>
+                  </div>
+
+                  {/* Recent Tests */}
+                  {dashboardData?.recentTests && dashboardData.recentTests.length > 0 && (
+                    <div className="bg-white rounded-2xl shadow-xl p-8">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Tests</h2>
+                      <div className="space-y-4">
+                        {dashboardData.recentTests.slice(0, 5).map((test, index) => (
+                          <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                            <div className="flex items-center space-x-4">
+                              <div className="text-2xl">
+                                {test.skill === 'reading' ? '📖' :
+                                 test.skill === 'writing' ? '✍️' :
+                                 test.skill === 'listening' ? '🎧' : '🎤'}
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-gray-800 capitalize">
+                                  {test.skill} Test
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  {new Date(test.date).toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-blue-600">
+                                {test.bandScore}
+                              </div>
+                              <div className="text-sm text-gray-600">Band Score</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {activeTab === 'ai-practice' && (
+                <AIPractice />
+              )}
+              
+              {activeTab === 'my-weakness' && (
+                <MyWeakness />
+              )}
+              
+              {activeTab === 'recommended' && (
+                <RecommendedPractice />
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Coach Message */}
