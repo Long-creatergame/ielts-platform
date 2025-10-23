@@ -279,43 +279,55 @@ export default function TestPage() {
   };
 
   const handleSubmit = async () => {
-    // AI-powered IELTS band score calculation based on REAL IELTS criteria
+    // AI-powered IELTS band score calculation using GROQ AI
     const skillScores = {};
     let totalScore = 0;
     
-    skills.forEach((skillItem, index) => {
+    for (const skillItem of skills) {
       const skillAnswers = testAnswers[skillItem.id] || '';
       
-      // REAL IELTS scoring criteria
       let skillScore = 0;
+      let aiFeedback = '';
       
       if (skillAnswers.length === 0) {
         // No answer = 0 band
         skillScore = 0;
+        aiFeedback = 'No answer provided. Please complete all sections to receive a proper assessment.';
       } else {
-        // AI analysis of content quality (not just word count)
-        const contentQuality = analyzeContentQuality(skillAnswers, skillItem.id);
-        const grammarScore = analyzeGrammar(skillAnswers);
-        const vocabularyScore = analyzeVocabulary(skillAnswers);
-        const coherenceScore = analyzeCoherence(skillAnswers);
-        const taskAchievement = analyzeTaskAchievement(skillAnswers, skillItem.id);
-        
-        // Weighted average of IELTS criteria
-        skillScore = (
-          contentQuality * 0.25 +
-          grammarScore * 0.25 +
-          vocabularyScore * 0.20 +
-          coherenceScore * 0.15 +
-          taskAchievement * 0.15
-        );
-        
-        // Ensure realistic band range (0-9)
-        skillScore = Math.max(0, Math.min(9, skillScore));
+        // Use GROQ AI for real IELTS assessment
+        try {
+          const aiResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai/assess`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              skill: skillItem.id,
+              answer: skillAnswers,
+              level: level
+            })
+          });
+          
+          if (aiResponse.ok) {
+            const aiData = await aiResponse.json();
+            skillScore = aiData.bandScore;
+            aiFeedback = aiData.feedback;
+          } else {
+            // Fallback to basic analysis if AI fails
+            skillScore = Math.min(6.0, 3.0 + (skillAnswers.length / 100));
+            aiFeedback = 'AI assessment unavailable. Basic scoring applied.';
+          }
+        } catch (error) {
+          console.error('AI assessment error:', error);
+          // Fallback scoring
+          skillScore = Math.min(6.0, 3.0 + (skillAnswers.length / 100));
+          aiFeedback = 'AI assessment unavailable. Basic scoring applied.';
+        }
       }
       
       skillScores[skillItem.id] = Math.round(skillScore * 10) / 10;
       totalScore += skillScores[skillItem.id];
-    });
+    }
     
     const overallBand = Math.round((totalScore / skills.length) * 10) / 10;
     

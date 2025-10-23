@@ -6,6 +6,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import testRoutes from './routes/tests.js';
 import paymentRoutes from './routes/payment.js';
 import upsellRoutes from './routes/upsell.js';
+import aiRoutes from './routes/ai.js';
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/upsell', upsellRoutes);
+app.use('/api/ai', aiRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
