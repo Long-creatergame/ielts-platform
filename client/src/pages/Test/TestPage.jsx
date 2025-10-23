@@ -21,47 +21,21 @@ export default function TestPage() {
     writing: '',
     speaking: ''
   });
+  const [testData, setTestData] = useState(null);
 
   const skills = [
-    { id: 'reading', name: 'Reading', icon: '📖', duration: 900, color: 'blue' },
-    { id: 'listening', name: 'Listening', icon: '🎧', duration: 900, color: 'green' },
-    { id: 'writing', name: 'Writing', icon: '✍️', duration: 3600, color: 'purple' },
-    { id: 'speaking', name: 'Speaking', icon: '🎤', duration: 660, color: 'orange' }
+    { id: 'reading', name: 'Reading', icon: '📖' },
+    { id: 'listening', name: 'Listening', icon: '🎧' },
+    { id: 'writing', name: 'Writing', icon: '✍️' },
+    { id: 'speaking', name: 'Speaking', icon: '🎤' }
   ];
 
-  // SECURITY: Check if user is logged in
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-  }, [user, navigate]);
-
-  // Show loading if user is not loaded yet
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  const durations = {
-    reading: 900,    // 15 minutes
-    listening: 900,  // 15 minutes
-    writing: 3600,   // 60 minutes
-    speaking: 660    // 11 minutes
-  };
-
-  useEffect(() => {
-    // Get level from URL
+    // Get level from URL params
     const urlParams = new URLSearchParams(window.location.search);
     const urlLevel = urlParams.get('level') || 'A2';
     setLevel(urlLevel);
-
+    
     // Initialize with Reading skill (first skill)
     setCurrentSkill(0);
     loadSkillQuestions('reading', urlLevel);
@@ -118,69 +92,89 @@ export default function TestPage() {
             ]
           }
         },
-      listening: {
-        A1: [
-          "Listen and identify: What is the person's name?",
-          "What time does the meeting start?",
-          "Where is the restaurant located?",
-          "What is the weather like today?",
-          "How much does the ticket cost?"
-        ],
-        A2: [
-          "What is the main topic of the conversation?",
-          "What does the speaker recommend?",
-          "When will the event take place?",
-          "What are the walking directions?",
-          "What is the speaker's opinion about the movie?"
-        ]
-      },
-      writing: {
-        A1: [
-          "**IELTS Writing Task 1 (Academic)**\n\nThe chart below shows the percentage of households in different income brackets in Country X from 2010 to 2020.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
-          "**IELTS Writing Task 2 (Academic)**\n\nSome people believe that governments should spend money on public transportation, while others think that private companies should provide transport services.\n\nDiscuss both views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words."
-        ],
-        A2: [
-          "**IELTS Writing Task 1 (Academic)**\n\nThe diagram below shows the process of how coffee is produced and prepared for sale in supermarkets and shops.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
-          "**IELTS Writing Task 2 (Academic)**\n\nIn many countries, the number of people choosing to live alone has increased significantly in recent years.\n\nWhat are the causes of this trend? Do you think it is a positive or negative development?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words."
-        ]
-      },
-      speaking: {
-        A1: [
-          "**IELTS Speaking Part 1**\n\nLet's talk about your hometown.\n\n- Where are you from?\n- What do you like most about your hometown?\n- Has your hometown changed much over the years?\n- What would you recommend visitors see in your hometown?",
-          "**IELTS Speaking Part 2**\n\nDescribe a memorable journey you have taken.\n\nYou should say:\n- where you went\n- when you went there\n- who you went with\n- what you did there\n- and explain why this journey was memorable for you\n\nYou have one minute to prepare your answer.",
-          "**IELTS Speaking Part 3**\n\nLet's discuss travel and tourism.\n\n- How has tourism changed in your country over the past decade?\n- What are the benefits and drawbacks of tourism for local communities?\n- Do you think virtual reality could replace actual travel in the future?\n- How important is it for people to travel to different countries?"
-        ],
-        A2: [
-          "**IELTS Speaking Part 1**\n\nLet's talk about technology.\n\n- How often do you use the internet?\n- What do you mainly use the internet for?\n- Do you think technology has made our lives easier?\n- What new technology would you like to have?",
-          "**IELTS Speaking Part 2**\n\nDescribe a person who has influenced you in your life.\n\nYou should say:\n- who this person is\n- how you know this person\n- what this person has done\n- and explain how this person has influenced you\n\nYou have one minute to prepare your answer.",
-          "**IELTS Speaking Part 3**\n\nLet's discuss education and learning.\n\n- How has education changed in your country in recent years?\n- What are the advantages and disadvantages of online learning?\n- Do you think traditional classroom learning will become obsolete?\n- How important is it for students to learn practical skills alongside academic subjects?"
-        ]
+        listening: {
+          A1: [
+            "Listen and identify: What is the person's name?",
+            "What time does the meeting start?",
+            "Where is the restaurant located?",
+            "What is the weather like today?",
+            "How much does the ticket cost?"
+          ],
+          A2: [
+            "What is the main topic of the conversation?",
+            "What does the speaker recommend?",
+            "When will the event take place?",
+            "What are the walking directions?",
+            "What is the speaker's opinion about the movie?"
+          ]
+        },
+        writing: {
+          A1: [
+            "**IELTS Writing Task 1 (Academic)**\n\nThe chart below shows the percentage of households in different income brackets in Country X from 2010 to 2020.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+            "**IELTS Writing Task 2 (Academic)**\n\nSome people believe that governments should spend money on public transportation, while others think that private companies should provide transport services.\n\nDiscuss both views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words."
+          ],
+          A2: [
+            "**IELTS Writing Task 1 (Academic)**\n\nThe diagram below shows the process of how coffee is produced and prepared for sale in supermarkets and shops.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+            "**IELTS Writing Task 2 (Academic)**\n\nIn many countries, the number of people choosing to live alone has increased significantly in recent years.\n\nWhat are the causes of this trend? Do you think it is a positive or negative development?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words."
+          ]
+        },
+        speaking: {
+          A1: [
+            "**IELTS Speaking Part 1**\n\nLet's talk about your hometown.\n\n- Where are you from?\n- What do you like most about your hometown?\n- Has your hometown changed much over the years?\n- What would you recommend visitors see in your hometown?",
+            "**IELTS Speaking Part 2**\n\nDescribe a memorable journey you have taken.\n\nYou should say:\n- where you went\n- when you went there\n- who you went with\n- what you did there\n- and explain why this journey was memorable for you\n\nYou have one minute to prepare your answer.",
+            "**IELTS Speaking Part 3**\n\nLet's discuss travel and tourism.\n\n- How has tourism changed in your country over the past decade?\n- What are the benefits and drawbacks of tourism for local communities?\n- Do you think virtual reality could replace actual travel in the future?\n- How important is it for people to travel to different countries?"
+          ],
+          A2: [
+            "**IELTS Speaking Part 1**\n\nLet's talk about technology.\n\n- How often do you use the internet?\n- What do you mainly use the internet for?\n- Do you think technology has made our lives easier?\n- What new technology would you like to have?",
+            "**IELTS Speaking Part 2**\n\nDescribe a person who has influenced you in your life.\n\nYou should say:\n- who this person is\n- how you know this person\n- what this person has done\n- and explain how this person has influenced you\n\nYou have one minute to prepare your answer.",
+            "**IELTS Speaking Part 3**\n\nLet's discuss education and learning.\n\n- How has education changed in your country in recent years?\n- What are the advantages and disadvantages of online learning?\n- Do you think traditional classroom learning will become obsolete?\n- How important is it for students to learn practical skills alongside academic subjects?"
+          ]
+        }
+      };
+
+      // Load questions for the specified skill and level
+      const skillData = fallbackData[skillType];
+      if (skillData && skillData[level]) {
+        if (skillType === 'reading') {
+          setPassage(skillData[level].passage);
+          setQuestions(skillData[level].questions);
+        } else {
+          setQuestions(skillData[level]);
+        }
+      } else {
+        // Default questions if level not found
+        const defaultQuestions = skillType === 'reading' ? 
+          ['What is the main topic?', 'What are the key points?', 'What is the conclusion?'] :
+          ['Question 1', 'Question 2', 'Question 3'];
+        setQuestions(defaultQuestions);
       }
     };
 
-    // Load questions for the specified skill and level
-    const skillData = questionData[skillType];
-    if (skillData && skillData[level]) {
-      const data = skillData[level];
-      if (skillType === 'reading' && data.passage) {
-        setPassage(data.passage);
-        setQuestions(data.questions);
-      } else {
-        setQuestions(data);
-        setPassage('');
-      }
+    // Try to load real IELTS data first, fallback to basic questions
+    loadRealIELTSData();
+  };
+
+  const handleAnswerChange = (e) => {
+    setAnswers(e.target.value);
+  };
+
+  const handleNextSkill = () => {
+    // Save current skill answers
+    setTestAnswers(prev => ({
+      ...prev,
+      [skills[currentSkill].id]: answers
+    }));
+
+    // Move to next skill
+    if (currentSkill < skills.length - 1) {
+      setCurrentSkill(currentSkill + 1);
+      const nextSkill = skills[currentSkill + 1];
+      loadSkillQuestions(nextSkill.id, level);
     } else {
-      // Fallback to A2
-      const fallbackData = skillData['A2'];
-      if (skillType === 'reading' && fallbackData.passage) {
-        setPassage(fallbackData.passage);
-        setQuestions(fallbackData.questions);
-      } else {
-        setQuestions(fallbackData);
-        setPassage('');
-      }
+      // All skills completed, submit test
+      handleSubmit();
     }
-    
+
     // Reset current question when switching skills
     setCurrentQuestion(1);
     setAnswers('');
@@ -364,198 +358,146 @@ export default function TestPage() {
       overallBand: overallBand,
       skillScores: skillScores,
       testAnswers: testAnswers,
-      dateCompleted: new Date().toISOString(),
-      user: user
+      completedAt: new Date().toISOString(),
+      aiFeedback: 'AI assessment completed successfully.'
     };
-    
-    // Save test result to MongoDB via API
+
+    // Save to backend
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      const response = await fetch(`${API_BASE_URL}/api/tests/submit`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({
-          level: testResult.level,
-          overallBand: testResult.overallBand,
-          skillScores: testResult.skillScores,
-          testAnswers: testResult.testAnswers,
-          completed: true
-        })
+        body: JSON.stringify(testResult)
       });
 
       if (response.ok) {
-        const savedTest = await response.json();
-        // Navigate to results page with saved test data
-        navigate(`/test/result/${savedTest._id}`, { 
-          state: { testResult: savedTest } 
-        });
+        const result = await response.json();
+        navigate(`/test/result/${result.testId}`, { state: { testResult } });
       } else {
-        // Fallback: navigate with local data if API fails
-        navigate(`/test/result/${testResult.id}`, { 
-          state: { testResult } 
-        });
+        // Fallback to local storage if backend fails
+        localStorage.setItem('latestTestResult', JSON.stringify(testResult));
+        navigate('/test/result', { state: { testResult } });
       }
     } catch (error) {
       console.error('Error saving test result:', error);
-      // Fallback: navigate with local data if API fails
-      navigate(`/test/result/${testResult.id}`, { 
-        state: { testResult } 
-      });
+      // Fallback to local storage
+      localStorage.setItem('latestTestResult', JSON.stringify(testResult));
+      navigate('/test/result', { state: { testResult } });
     }
   };
 
-  const handleTimeUp = () => {
-    setTimeUp(true);
-    handleSubmit();
-  };
-
-  const handleNextQuestion = () => {
-    // Save current skill answers
-    setTestAnswers(prev => ({
-      ...prev,
-      [skills[currentSkill].id]: answers
-    }));
-
-    if (currentQuestion < totalQuestions) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      // Move to next skill
-      if (currentSkill < skills.length - 1) {
-        setCurrentSkill(currentSkill + 1);
-        loadSkillQuestions(skills[currentSkill + 1].id, level);
-        setCurrentQuestion(1);
-        setAnswers('');
-      } else {
-        // All skills completed
-        handleSubmit();
-      }
-    }
-  };
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Please log in to take the test</h2>
+          <button
+            onClick={() => navigate('/login')}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-3xl font-bold">
-                {skills[currentSkill].icon} {skills[currentSkill].name} Test
-              </h1>
-              <Timer
-                duration={skills[currentSkill].duration}
-                onTimeUp={handleTimeUp}
-              />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-gray-900">
+              IELTS {skills[currentSkill].name} Test - {level} Level
+            </h1>
+            <Timer
+              duration={60}
+              onTimeUp={() => setTimeUp(true)}
+              className="text-lg font-semibold text-red-600"
+            />
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+            <div 
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentSkill + 1) / skills.length) * 100}%` }}
+            ></div>
+          </div>
+          
+          {/* Skills Progress */}
+          <div className="flex justify-between text-sm text-gray-600">
+            {skills.map((skill, index) => (
+              <div key={skill.id} className={`flex items-center ${index <= currentSkill ? 'text-blue-600' : 'text-gray-400'}`}>
+                <span className="mr-1">{skill.icon}</span>
+                {skill.name}
+                {index < skills.length - 1 && <span className="ml-2">→</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Test Content */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          {currentSkill === 0 && passage && (
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-3">Reading Passage:</h3>
+              <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: passage.replace(/\n/g, '<br/>') }} />
             </div>
-            
-            {/* Skills Progress */}
-            <div className="flex justify-center space-x-4 mb-4">
-              {skills.map((skillItem, index) => (
-                <div
-                  key={skillItem.id}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${
-                    index === currentSkill
-                      ? `bg-${skillItem.color}-100 border-2 border-${skillItem.color}-500`
-                      : index < currentSkill
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}
-                >
-                  <span className="text-lg">{skillItem.icon}</span>
-                  <span className="font-medium">{skillItem.name}</span>
-                  {index < currentSkill && <span className="text-green-600">✓</span>}
+          )}
+
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-3">
+              {skills[currentSkill].name} Questions:
+            </h3>
+            <div className="space-y-3">
+              {questions.map((question, index) => (
+                <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                  <p className="font-medium">{index + 1}. {question}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Progress */}
-          <div className="mb-8">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Question {currentQuestion} of {totalQuestions}</span>
-              <span>{Math.round(((currentQuestion - 1) / totalQuestions) * 100)}% Complete</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((currentQuestion - 1) / totalQuestions) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* Question */}
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Question {currentQuestion}:</h2>
-            
-            {/* Reading Passage for Reading Tests */}
-            {skills[currentSkill].id === 'reading' && passage && (
-              <div className="mb-6 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                <h3 className="font-semibold text-blue-800 mb-3">📖 Reading Passage:</h3>
-                <p className="text-gray-700 leading-relaxed">{passage}</p>
-              </div>
-            )}
-            
-            <p className="text-gray-700 mb-6 p-4 bg-gray-50 rounded-lg">
-              {questions[currentQuestion - 1] || "Loading question..."}
-            </p>
-
-            {timeUp && (
-              <div className="mb-4 p-4 bg-red-100 border border-red-300 rounded-lg">
-                <p className="text-red-800 font-semibold">⏰ Time's up! Test submitted automatically.</p>
-              </div>
-            )}
-          </div>
-
-          {/* Answer Input */}
-          <div className="mb-8">
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Your Answer:
+            </label>
             <textarea
               value={answers}
-              onChange={(e) => setAnswers(e.target.value)}
-              placeholder={`Enter your ${skill} response here...`}
-              className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={handleAnswerChange}
+              placeholder={`Enter your ${skills[currentSkill].name.toLowerCase()} answer here...`}
+              className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               disabled={timeUp}
             />
           </div>
 
-          {/* Navigation */}
-          <div className="flex justify-between">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-            >
-              ← Back to Dashboard
-            </button>
-
-            <div className="space-x-4">
-              {currentQuestion < totalQuestions ? (
-                <button
-                  onClick={handleNextQuestion}
-                  disabled={timeUp}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-                >
-                  Next Question →
-                </button>
-              ) : currentSkill < skills.length - 1 ? (
-                <button
-                  onClick={handleNextQuestion}
-                  disabled={timeUp}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-                >
-                  Next Skill: {skills[currentSkill + 1].icon} {skills[currentSkill + 1].name} →
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  disabled={timeUp}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-                >
-                  Submit Full Test ✓
-                </button>
-              )}
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-600">
+              Skill {currentSkill + 1} of {skills.length}: {skills[currentSkill].name}
             </div>
+            
+            {currentSkill < skills.length - 1 ? (
+              <button
+                onClick={handleNextSkill}
+                disabled={timeUp}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded transition-colors"
+              >
+                Next: {skills[currentSkill + 1].name} →
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={timeUp}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                Submit Full Test ✓
+              </button>
+            )}
           </div>
         </div>
       </div>
