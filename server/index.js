@@ -8,6 +8,7 @@ import paymentRoutes from './routes/payment.js';
 import upsellRoutes from './routes/upsell.js';
 import aiRoutes from './routes/ai.js';
 import realIELTSRoutes from './routes/realIELTS.js';
+import aiEngineRoutes from './routes/aiEngine.js';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/upsell', upsellRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api', realIELTSRoutes);
+app.use('/api/ai-engine', aiEngineRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
