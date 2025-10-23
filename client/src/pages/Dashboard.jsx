@@ -18,6 +18,9 @@ import QuickStart from '../components/QuickStart';
 import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
 import WelcomeBanner from '../components/WelcomeBanner';
+import ModernHeader from '../components/ModernHeader';
+import ModernStatsCard from '../components/ModernStatsCard';
+import ModernTestCard from '../components/ModernTestCard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -141,7 +144,7 @@ export default function Dashboard() {
   const greeting = personalization?.greeting || `👋 Chào ${user.name}!`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Onboarding */}
       <Onboarding onComplete={() => setShowOnboarding(false)} />
       
