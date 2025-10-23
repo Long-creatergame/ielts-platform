@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Timer from '../../components/Timer';
 import FeatureGuide from '../../components/FeatureGuide';
+import AudioPlayer from '../../components/AudioPlayer';
+import VoiceRecorder from '../../components/VoiceRecorder';
 
 export default function TestPage() {
   const { skill } = useParams();
@@ -14,6 +16,8 @@ export default function TestPage() {
   const [currentSkill, setCurrentSkill] = useState(0); // 0=reading, 1=listening, 2=writing, 3=speaking
   const [totalQuestions] = useState(5);
   const [level, setLevel] = useState('A2');
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [recordingBlob, setRecordingBlob] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [passage, setPassage] = useState('');
   const [testAnswers, setTestAnswers] = useState({
@@ -449,6 +453,36 @@ export default function TestPage() {
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
               <h3 className="text-lg font-semibold mb-3">Reading Passage:</h3>
               <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: passage.replace(/\n/g, '<br/>') }} />
+            </div>
+          )}
+
+          {currentSkill === 1 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-3">Listening Audio:</h3>
+              <AudioPlayer 
+                audioUrl={audioUrl || "/api/audio/ielts-listening-sample.mp3"}
+                className="mb-4"
+              />
+              <p className="text-sm text-gray-600">
+                Listen to the audio and answer the questions below. You can play the audio multiple times.
+              </p>
+            </div>
+          )}
+
+          {currentSkill === 3 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-3">Speaking Task:</h3>
+              <VoiceRecorder 
+                onRecordingComplete={(blob, url) => {
+                  setRecordingBlob(blob);
+                  setAudioUrl(url);
+                }}
+                maxDuration={120}
+                className="mb-4"
+              />
+              <p className="text-sm text-gray-600">
+                Record your response to the speaking questions. You have 2 minutes to complete your answer.
+              </p>
             </div>
           )}
 
