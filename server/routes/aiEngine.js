@@ -25,17 +25,56 @@ if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== '') {
 // 1. GENERATE IELTS QUESTIONS
 // POST /ai/generate
 router.post('/generate', async (req, res) => {
+  const { skill, topic, band = 6.5 } = req.body;
+  
   try {
     // Check if OpenAI is available
     if (!openai) {
+      // Return fallback question when AI is not available
+      const fallbackQuestions = {
+        writing: {
+          question: "Some people believe that technology has made our lives easier, while others think it has made life more complicated. Discuss both views and give your own opinion.",
+          instructions: "Write at least 250 words. You should spend about 40 minutes on this task.",
+          wordLimit: 250,
+          timeLimit: 40
+        },
+        speaking: {
+          question: "Describe a memorable journey you have taken. You should say: where you went, when you went there, who you went with, what you did there, and explain why this journey was memorable for you.",
+          instructions: "You have one minute to prepare your answer. Then speak for 1-2 minutes.",
+          wordLimit: 150,
+          timeLimit: 2
+        },
+        reading: {
+          question: "Read the following passage and answer the questions that follow. The passage discusses the impact of social media on modern communication.",
+          instructions: "Answer all questions. You have 60 minutes to complete this section.",
+          wordLimit: 100,
+          timeLimit: 60
+        },
+        listening: {
+          question: "Listen to a conversation between two students discussing their university courses and answer the questions.",
+          instructions: "You will hear the recording once. Answer all questions. You have 30 minutes.",
+          wordLimit: 50,
+          timeLimit: 30
+        }
+      };
+
+      const fallback = fallbackQuestions[skill] || fallbackQuestions.writing;
+      
       return res.json({
-        success: false,
-        error: 'AI features are currently disabled. Please contact support.'
+        success: true,
+        data: {
+          skill,
+          band,
+          topic: topic || 'General',
+          question: fallback.question,
+          instructions: fallback.instructions,
+          wordLimit: fallback.wordLimit,
+          timeLimit: fallback.timeLimit,
+          createdAt: new Date().toISOString()
+        }
       });
     }
 
-    const { skill, topic, band = 6.5 } = req.body;
-    
     if (!skill || !['writing', 'speaking', 'reading', 'listening'].includes(skill)) {
       return res.status(400).json({ error: 'Invalid skill. Must be writing, speaking, reading, or listening.' });
     }
@@ -48,7 +87,7 @@ Format it exactly as official IELTS question wording.
 Return JSON format with: { "question": "...", "instructions": "...", "wordLimit": number, "timeLimit": number }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: `Generate a ${skill} question for band ${band}` }
@@ -93,6 +132,53 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
 
   } catch (error) {
     console.error('AI Generate error:', error);
+    
+    // If OpenAI quota exceeded or other API errors, return fallback
+    if (error.code === 'insufficient_quota' || error.status === 429) {
+      const fallbackQuestions = {
+        writing: {
+          question: "Some people believe that technology has made our lives easier, while others think it has made life more complicated. Discuss both views and give your own opinion.",
+          instructions: "Write at least 250 words. You should spend about 40 minutes on this task.",
+          wordLimit: 250,
+          timeLimit: 40
+        },
+        speaking: {
+          question: "Describe a memorable journey you have taken. You should say: where you went, when you went there, who you went with, what you did there, and explain why this journey was memorable for you.",
+          instructions: "You have one minute to prepare your answer. Then speak for 1-2 minutes.",
+          wordLimit: 150,
+          timeLimit: 2
+        },
+        reading: {
+          question: "Read the following passage and answer the questions that follow. The passage discusses the impact of social media on modern communication.",
+          instructions: "Answer all questions. You have 60 minutes to complete this section.",
+          wordLimit: 100,
+          timeLimit: 60
+        },
+        listening: {
+          question: "Listen to a conversation between two students discussing their university courses and answer the questions.",
+          instructions: "You will hear the recording once. Answer all questions. You have 30 minutes.",
+          wordLimit: 50,
+          timeLimit: 30
+        }
+      };
+      
+      const fallback = fallbackQuestions[skill] || fallbackQuestions.writing;
+      
+      return res.json({
+        success: true,
+        data: {
+          skill,
+          band,
+          topic: topic || 'General',
+          question: fallback.question,
+          instructions: fallback.instructions,
+          wordLimit: fallback.wordLimit,
+          timeLimit: fallback.timeLimit,
+          createdAt: new Date().toISOString()
+        }
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Failed to generate IELTS question. Please try again.'
@@ -151,7 +237,7 @@ Return JSON format:
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: `Analyze this ${skill} submission:\n\n${textToAnalyze}` }
@@ -287,7 +373,7 @@ Return JSON format:
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: 'Generate personalized practice recommendations' }

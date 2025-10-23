@@ -50,7 +50,7 @@ const weaknessProfileSchema = new mongoose.Schema({
 });
 
 // Index for efficient queries
-weaknessProfileSchema.index({ user_id: 1 });
+weaknessProfileSchema.index({ user_id: 1 }, { unique: true });
 weaknessProfileSchema.index({ last_updated: -1 });
 
 // Method to update weakness profile

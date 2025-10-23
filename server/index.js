@@ -20,8 +20,6 @@ const connectDB = async () => {
   try {
     const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/ielts-platform';
     await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000, // 5 second timeout
       socketTimeoutMS: 45000, // 45 second timeout
     });
