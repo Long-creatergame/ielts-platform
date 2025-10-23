@@ -1,0 +1,172 @@
+{
+  "title": "IELTS Academic Reading Test",
+  "duration": 60,
+  "instructions": "Read the following passages and answer questions 1-40. You have 60 minutes to complete this test.",
+  "passages": [
+    {
+      "id": 1,
+      "title": "The Rise of Artificial Intelligence in Healthcare",
+      "content": "Artificial Intelligence (AI) is revolutionizing healthcare in unprecedented ways. From diagnostic imaging to drug discovery, AI technologies are transforming how medical professionals approach patient care and treatment. Machine learning algorithms can now analyze medical images with accuracy rates exceeding 95%, often outperforming human radiologists in detecting early-stage cancers and other diseases.\n\nThe integration of AI in healthcare has been particularly successful in areas such as radiology, pathology, and dermatology. For instance, Google's DeepMind has developed AI systems that can detect over 50 eye diseases from retinal scans with the same accuracy as world-leading specialists. Similarly, IBM's Watson has been used to analyze genetic data and recommend personalized treatment plans for cancer patients.\n\nHowever, the adoption of AI in healthcare is not without challenges. Privacy concerns, data security, and the need for extensive training data are significant obstacles. Additionally, there are ethical considerations regarding the replacement of human medical professionals and the potential for algorithmic bias in diagnosis and treatment recommendations.\n\nDespite these challenges, the potential benefits of AI in healthcare are enormous. The technology promises to improve diagnostic accuracy, reduce medical errors, and make healthcare more accessible and affordable worldwide. As AI continues to evolve, it is expected to play an increasingly important role in shaping the future of medicine.",
+      "questions": [
+        {
+          "id": 1,
+          "type": "multiple-choice",
+          "question": "According to the passage, AI in healthcare can achieve accuracy rates of:",
+          "options": [
+            "A. Over 90%",
+            "B. Over 95%",
+            "C. Over 98%",
+            "D. Over 99%"
+          ],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "type": "true-false-not-given",
+          "question": "Google's DeepMind can detect more than 50 eye diseases from retinal scans.",
+          "correct": true
+        },
+        {
+          "id": 3,
+          "type": "multiple-choice",
+          "question": "IBM's Watson is mentioned as being used for:",
+          "options": [
+            "A. Analyzing medical images",
+            "B. Detecting eye diseases",
+            "C. Analyzing genetic data",
+            "D. Replacing human doctors"
+          ],
+          "correct": 2
+        },
+        {
+          "id": 4,
+          "type": "true-false-not-given",
+          "question": "AI in healthcare has no ethical concerns.",
+          "correct": false
+        },
+        {
+          "id": 5,
+          "type": "multiple-choice",
+          "question": "The main challenges of AI in healthcare include:",
+          "options": [
+            "A. Only privacy concerns",
+            "B. Only data security",
+            "C. Privacy, security, and training data",
+            "D. Only algorithmic bias"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Urban Agriculture: Feeding Cities Sustainably",
+      "content": "Urban agriculture has emerged as a critical solution to the growing challenge of feeding an increasingly urbanized global population. With over 55% of the world's population now living in cities, and this figure expected to reach 68% by 2050, traditional rural farming alone cannot meet the rising demand for food. Urban agriculture offers a sustainable alternative that brings food production closer to consumers.\n\nVertical farming, one of the most innovative approaches to urban agriculture, involves growing crops in vertically stacked layers, often in controlled environments. This method can produce up to 390 times more food per square foot than traditional farming, while using 95% less water. Companies like AeroFarms and Plenty have demonstrated that vertical farms can operate year-round, producing fresh vegetables regardless of weather conditions.\n\nRooftop gardens represent another significant aspect of urban agriculture. These green spaces not only provide fresh produce but also help reduce the urban heat island effect, improve air quality, and create habitats for urban wildlife. Cities like New York, London, and Singapore have implemented large-scale rooftop farming initiatives, with some buildings producing enough food to feed hundreds of residents.\n\nCommunity gardens have also gained popularity, bringing together urban residents to grow their own food while fostering social connections. These spaces serve as educational platforms, teaching children and adults about sustainable food production and healthy eating habits. Research has shown that participation in community gardens can improve mental health and create stronger neighborhood bonds.\n\nDespite its benefits, urban agriculture faces several challenges. High initial costs, limited space, and the need for specialized knowledge can be barriers to widespread adoption. However, as technology advances and awareness grows, urban agriculture is becoming an increasingly viable solution for sustainable food production in cities.",
+      "questions": [
+        {
+          "id": 6,
+          "type": "multiple-choice",
+          "question": "By 2050, what percentage of the world's population is expected to live in cities?",
+          "options": [
+            "A. 55%",
+            "B. 60%",
+            "C. 65%",
+            "D. 68%"
+          ],
+          "correct": 3
+        },
+        {
+          "id": 7,
+          "type": "true-false-not-given",
+          "question": "Vertical farming uses 95% less water than traditional farming.",
+          "correct": true
+        },
+        {
+          "id": 8,
+          "type": "multiple-choice",
+          "question": "Vertical farming can produce how many times more food per square foot than traditional farming?",
+          "options": [
+            "A. 200 times",
+            "B. 300 times",
+            "C. 390 times",
+            "D. 500 times"
+          ],
+          "correct": 2
+        },
+        {
+          "id": 9,
+          "type": "true-false-not-given",
+          "question": "Rooftop gardens only provide fresh produce.",
+          "correct": false
+        },
+        {
+          "id": 10,
+          "type": "multiple-choice",
+          "question": "Community gardens help with:",
+          "options": [
+            "A. Only food production",
+            "B. Only social connections",
+            "C. Food production, education, and mental health",
+            "D. Only education"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "The Psychology of Consumer Behavior in Digital Age",
+      "content": "The digital revolution has fundamentally altered how consumers make purchasing decisions, creating new psychological patterns that marketers must understand to remain effective. Traditional models of consumer behavior, based on linear decision-making processes, are being replaced by more complex, multi-touchpoint journeys that reflect the interconnected nature of modern digital experiences.\n\nOne of the most significant changes is the phenomenon of 'showrooming,' where consumers research products online but make purchases in physical stores, or vice versa. This behavior reflects the integration of digital and physical shopping experiences, with consumers using smartphones to compare prices, read reviews, and access additional product information while shopping in traditional retail environments.\n\nSocial media has emerged as a powerful influence on consumer psychology, with peer recommendations and social proof becoming increasingly important in purchasing decisions. Studies have shown that consumers are more likely to trust recommendations from friends and family on social media than traditional advertising. This shift has led to the rise of influencer marketing, where brands partner with social media personalities to promote their products.\n\nPersonalization has become a key driver of consumer engagement, with AI-powered recommendation systems analyzing vast amounts of data to predict individual preferences. However, this approach raises important questions about privacy and the ethical use of personal data. Consumers are becoming more aware of data collection practices and are demanding greater transparency from companies.\n\nThe concept of 'choice overload' has also emerged as a significant challenge in the digital age. With millions of products available online, consumers often experience decision paralysis, leading to either delayed purchases or defaulting to familiar brands. This phenomenon has given rise to subscription services and curated shopping experiences that reduce the cognitive load on consumers.\n\nUnderstanding these psychological shifts is crucial for businesses seeking to thrive in the digital marketplace. Companies that can effectively navigate the complex interplay between technology and human psychology will be better positioned to build lasting relationships with their customers.",
+      "questions": [
+        {
+          "id": 11,
+          "type": "multiple-choice",
+          "question": "The term 'showrooming' refers to:",
+          "options": [
+            "A. Shopping only online",
+            "B. Shopping only in physical stores",
+            "C. Researching online but buying in stores",
+            "D. Comparing products online"
+          ],
+          "correct": 2
+        },
+        {
+          "id": 12,
+          "type": "true-false-not-given",
+          "question": "Consumers trust social media recommendations more than traditional advertising.",
+          "correct": true
+        },
+        {
+          "id": 13,
+          "type": "multiple-choice",
+          "question": "AI-powered recommendation systems help with:",
+          "options": [
+            "A. Only price comparison",
+            "B. Only product reviews",
+            "C. Predicting individual preferences",
+            "D. Only social media marketing"
+          ],
+          "correct": 2
+        },
+        {
+          "id": 14,
+          "type": "true-false-not-given",
+          "question": "Choice overload always leads to immediate purchases.",
+          "correct": false
+        },
+        {
+          "id": 15,
+          "type": "multiple-choice",
+          "question": "Subscription services help with:",
+          "options": [
+            "A. Increasing choice overload",
+            "B. Reducing cognitive load",
+            "C. Only increasing prices",
+            "D. Only online shopping"
+          ],
+          "correct": 1
+        }
+      ]
+    }
+  ]
+}

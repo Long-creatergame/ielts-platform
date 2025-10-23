@@ -1,0 +1,141 @@
+{
+  "title": "IELTS Academic Speaking Test",
+  "duration": 15,
+  "instructions": "The Speaking test consists of 3 parts and takes 11-14 minutes. You will be assessed on fluency, vocabulary, grammar, and pronunciation.",
+  "parts": [
+    {
+      "id": 1,
+      "title": "Part 1: Introduction and Interview",
+      "duration": "4-5 minutes",
+      "description": "The examiner will ask you questions about yourself and familiar topics.",
+      "topics": [
+        {
+          "topic": "Hometown",
+          "questions": [
+            "Where are you from?",
+            "What do you like most about your hometown?",
+            "Has your hometown changed much over the years?",
+            "What would you recommend visitors see in your hometown?"
+          ]
+        },
+        {
+          "topic": "Work/Studies",
+          "questions": [
+            "Do you work or are you a student?",
+            "What do you do for work/What are you studying?",
+            "Do you enjoy your job/studies?",
+            "What are your future career plans?"
+          ]
+        },
+        {
+          "topic": "Hobbies",
+          "questions": [
+            "What do you like to do in your free time?",
+            "How long have you been interested in this hobby?",
+            "Do you prefer indoor or outdoor activities?",
+            "Have you made any friends through your hobbies?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Part 2: Individual Long Turn",
+      "duration": "3-4 minutes",
+      "description": "You will be given a topic card and have 1 minute to prepare. You must speak for 1-2 minutes.",
+      "topics": [
+        {
+          "topic": "Describe a memorable journey you have taken",
+          "card": "Describe a memorable journey you have taken.\n\nYou should say:\n- where you went\n- when you went there\n- who you went with\n- what you did there\n- and explain why this journey was memorable for you\n\nYou have one minute to prepare your answer. You can make notes if you wish.",
+          "preparationTime": 60,
+          "speakingTime": 120
+        },
+        {
+          "topic": "Describe a person who has influenced you",
+          "card": "Describe a person who has influenced you in your life.\n\nYou should say:\n- who this person is\n- how you know this person\n- what this person has done\n- and explain how this person has influenced you\n\nYou have one minute to prepare your answer. You can make notes if you wish.",
+          "preparationTime": 60,
+          "speakingTime": 120
+        },
+        {
+          "topic": "Describe a book you have read",
+          "card": "Describe a book you have read that you found interesting.\n\nYou should say:\n- what the book is about\n- when you read it\n- why you chose to read it\n- and explain why you found it interesting\n\nYou have one minute to prepare your answer. You can make notes if you wish.",
+          "preparationTime": 60,
+          "speakingTime": 120
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Part 3: Two-way Discussion",
+      "duration": "4-5 minutes",
+      "description": "The examiner will ask you questions related to the topic in Part 2, but more abstract and complex.",
+      "topics": [
+        {
+          "topic": "Travel and Tourism",
+          "questions": [
+            "How has tourism changed in your country over the past decade?",
+            "What are the benefits and drawbacks of tourism for local communities?",
+            "Do you think virtual reality could replace actual travel in the future?",
+            "How important is it for people to travel to different countries?"
+          ]
+        },
+        {
+          "topic": "Education and Learning",
+          "questions": [
+            "How has education changed in your country in recent years?",
+            "What are the advantages and disadvantages of online learning?",
+            "Do you think traditional classroom learning will become obsolete?",
+            "How important is it for students to learn practical skills alongside academic subjects?"
+          ]
+        },
+        {
+          "topic": "Technology and Society",
+          "questions": [
+            "How has technology changed the way people communicate?",
+            "What are the positive and negative effects of social media on society?",
+            "Do you think artificial intelligence will replace human workers in the future?",
+            "How important is it for governments to regulate technology companies?"
+          ]
+        }
+      ]
+    }
+  ],
+  "assessmentCriteria": {
+    "fluencyCoherence": {
+      "description": "Speak at length without hesitation, organize ideas logically",
+      "bandDescriptors": {
+        "9": "Speaks fluently with only rare repetition or self-correction",
+        "8": "Speaks fluently with only occasional repetition or self-correction",
+        "7": "Speaks at length with some hesitation and repetition",
+        "6": "Speaks at length with noticeable hesitation and repetition"
+      }
+    },
+    "lexicalResource": {
+      "description": "Use vocabulary flexibly and precisely, demonstrate range",
+      "bandDescriptors": {
+        "9": "Uses vocabulary with full flexibility and precision",
+        "8": "Uses vocabulary flexibly and precisely",
+        "7": "Uses vocabulary with some flexibility and precision",
+        "6": "Uses vocabulary with limited flexibility and precision"
+      }
+    },
+    "grammaticalRange": {
+      "description": "Use a variety of sentence structures accurately",
+      "bandDescriptors": {
+        "9": "Uses a full range of structures with full flexibility and accuracy",
+        "8": "Uses a wide range of structures with flexibility and accuracy",
+        "7": "Uses a range of structures with some flexibility and accuracy",
+        "6": "Uses a mix of simple and complex structures with some accuracy"
+      }
+    },
+    "pronunciation": {
+      "description": "Produce clear speech with appropriate stress and intonation",
+      "bandDescriptors": {
+        "9": "Uses pronunciation features with full flexibility and precision",
+        "8": "Uses pronunciation features with flexibility and precision",
+        "7": "Uses pronunciation features with some flexibility and precision",
+        "6": "Uses pronunciation features with limited flexibility and precision"
+      }
+    }
+  }
+}
