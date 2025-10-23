@@ -113,8 +113,14 @@ const MyWeakness = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 My Weakness Profile</h2>
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-pink-600 rounded-3xl flex items-center justify-center mx-auto mb-4">
+          <span className="text-4xl">📈</span>
+        </div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">My Weakness Profile</h2>
+        <p className="text-gray-600 text-lg">Track your progress and identify areas for improvement</p>
+      </div>
       
       {/* Overall Progress */}
       <div className="mb-6">

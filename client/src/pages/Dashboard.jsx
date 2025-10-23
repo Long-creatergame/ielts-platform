@@ -133,115 +133,156 @@ export default function Dashboard() {
   const greeting = personalization?.greeting || `👋 Chào ${user.name}!`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Monetization Components */}
-        <UpgradeBanner user={user} />
-        <SmartUpgradePrompt />
-
-        {/* Personalized Greeting */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            {greeting}
-          </h1>
-          <div className="flex items-center space-x-4">
-            <LevelBadge level={user.currentLevel} size="lg" />
-            <span className="text-lg text-gray-600">
-              Mục tiêu: Band {user.targetBand} | Hiện tại: Band {statistics?.averageBand || 'N/A'}
-            </span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Header Section */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                <span className="text-white text-xl font-bold">🎯</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">{greeting}</h1>
+                <div className="flex items-center space-x-3 mt-1">
+                  <LevelBadge level={user.currentLevel} size="sm" />
+                  <span className="text-sm text-gray-600">
+                    Target: Band {user.targetBand} | Current: Band {statistics?.averageBand || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="hidden md:block">
+                <GoalProgressBar
+                  current={statistics?.averageBand || 0}
+                  target={user.targetBand}
+                  goal={user.goal}
+                />
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Goal Progress Bar */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Monetization Components */}
         <div className="mb-8">
-          <GoalProgressBar
-            current={statistics?.averageBand || 0}
-            target={user.targetBand}
-            goal={user.goal}
-          />
+          <UpgradeBanner user={user} />
+          <SmartUpgradePrompt />
         </div>
 
         {/* AI Engine Tabs */}
         <div className="mb-8">
-          <div className="bg-white rounded-2xl shadow-xl">
-            <div className="border-b border-gray-200">
-              <nav className="flex space-x-8 px-6">
+          <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            {/* Tab Navigation */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200/50">
+              <nav className="flex overflow-x-auto scrollbar-hide">
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
                     activeTab === 'overview'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
-                  📊 Overview
+                  <span className="text-lg">📊</span>
+                  <span>Overview</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('ai-practice')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
                     activeTab === 'ai-practice'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
-                  🧩 AI Practice
+                  <span className="text-lg">🧩</span>
+                  <span>AI Practice</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('my-weakness')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
                     activeTab === 'my-weakness'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
-                  📊 My Weakness
+                  <span className="text-lg">📈</span>
+                  <span>My Weakness</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('recommended')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
                     activeTab === 'recommended'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
-                  💡 Recommended Practice
+                  <span className="text-lg">💡</span>
+                  <span>Recommended</span>
                 </button>
               </nav>
             </div>
             
-            <div className="p-6">
+            <div className="p-8">
               {activeTab === 'overview' && (
-                <div>
+                <div className="space-y-8">
                   {/* Coach Message */}
                   {personalization?.coachMessage && (
-                    <div className="mb-8">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200/50">
                       <CoachMessage message={personalization.coachMessage} />
                     </div>
                   )}
 
                   {/* Statistics Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <ScoreCard
-                      title="Tests Completed"
-                      score={statistics?.totalTests || 0}
-                      color="blue"
-                    />
-                    <ScoreCard
-                      title="Average Band"
-                      score={statistics?.averageBand || 'N/A'}
-                      color="green"
-                    />
-                    <ScoreCard
-                      title="Streak Days"
-                      score={user.streakDays || 0}
-                      color="purple"
-                    />
-                    <div className="bg-white rounded-2xl shadow-xl p-6 text-center">
-                      <div className="text-4xl mb-2">🎯</div>
-                      <h3 className="text-lg font-semibold text-gray-700 mb-1">Target Band</h3>
-                      <p className="text-3xl font-bold text-orange-600">
-                        {user.targetBand}
-                      </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-blue-100 text-sm font-medium">Tests Completed</p>
+                          <p className="text-3xl font-bold">{statistics?.totalTests || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                          <span className="text-2xl">📝</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-green-100 text-sm font-medium">Average Band</p>
+                          <p className="text-3xl font-bold">{statistics?.averageBand || 'N/A'}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                          <span className="text-2xl">📊</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-purple-100 text-sm font-medium">Streak Days</p>
+                          <p className="text-3xl font-bold">{user.streakDays || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                          <span className="text-2xl">🔥</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-orange-100 text-sm font-medium">Target Band</p>
+                          <p className="text-3xl font-bold">{user.targetBand}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                          <span className="text-2xl">🎯</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -258,62 +299,118 @@ export default function Dashboard() {
                   )}
 
                   {/* Quick Actions */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Link
                       to="/test/start"
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-6 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"
+                      className="group bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
-                      <div className="text-4xl mb-3">📝</div>
-                      <h3 className="text-xl font-bold mb-2">Start New Test</h3>
-                      <p className="text-blue-100">Take a practice test</p>
+                      <div className="flex items-center space-x-4 mb-4">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                          <span className="text-3xl">📝</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold">Start New Test</h3>
+                          <p className="text-blue-100 text-sm">Take a practice test</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-blue-100 text-sm font-medium">
+                        <span>Begin Practice</span>
+                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
                     </Link>
 
                     <Link
                       to="/profile"
-                      className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"
+                      className="group bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
-                      <div className="text-4xl mb-3">👤</div>
-                      <h3 className="text-xl font-bold mb-2">View Profile</h3>
-                      <p className="text-green-100">Manage your account</p>
+                      <div className="flex items-center space-x-4 mb-4">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                          <span className="text-3xl">👤</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold">View Profile</h3>
+                          <p className="text-green-100 text-sm">Manage your account</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-green-100 text-sm font-medium">
+                        <span>View Profile</span>
+                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
                     </Link>
 
                     <Link
                       to="/pricing"
-                      className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"
+                      className="group bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
-                      <div className="text-4xl mb-3">💎</div>
-                      <h3 className="text-xl font-bold mb-2">Upgrade Plan</h3>
-                      <p className="text-purple-100">Unlock premium features</p>
+                      <div className="flex items-center space-x-4 mb-4">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                          <span className="text-3xl">💎</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold">Upgrade Plan</h3>
+                          <p className="text-purple-100 text-sm">Unlock premium features</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-purple-100 text-sm font-medium">
+                        <span>Upgrade Now</span>
+                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
                     </Link>
                   </div>
 
                   {/* Recent Tests */}
                   {dashboardData?.recentTests && dashboardData.recentTests.length > 0 && (
-                    <div className="bg-white rounded-2xl shadow-xl p-8">
-                      <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Tests</h2>
-                      <div className="space-y-4">
-                        {dashboardData.recentTests.slice(0, 5).map((test, index) => (
-                          <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                            <div className="flex items-center space-x-4">
-                              <div className="text-2xl">
-                                {test.skill === 'reading' ? '📖' :
-                                 test.skill === 'writing' ? '✍️' :
-                                 test.skill === 'listening' ? '🎧' : '🎤'}
-                              </div>
-                              <div>
-                                <h3 className="font-semibold text-gray-800 capitalize">
-                                  {test.skill} Test
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                  {new Date(test.date).toLocaleDateString()}
-                                </p>
+                    <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-800">Recent Tests</h2>
+                        <Link 
+                          to="/test/history" 
+                          className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center"
+                        >
+                          View All
+                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {dashboardData.recentTests.slice(0, 6).map((test, index) => (
+                          <div key={index} className="group bg-gradient-to-br from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-2xl p-6 border border-gray-200/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-xl">
+                                  {test.skill === 'reading' ? '📖' :
+                                   test.skill === 'writing' ? '✍️' :
+                                   test.skill === 'listening' ? '🎧' : '🎤'}
+                                </div>
+                                <div>
+                                  <h3 className="font-bold text-gray-800 capitalize text-lg">
+                                    {test.skill} Test
+                                  </h3>
+                                  <p className="text-sm text-gray-600">
+                                    {new Date(test.date).toLocaleDateString()}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-2xl font-bold text-blue-600">
-                                {test.bandScore}
+                            <div className="flex items-center justify-between">
+                              <div className="text-right">
+                                <div className="text-3xl font-bold text-blue-600">
+                                  {test.bandScore}
+                                </div>
+                                <div className="text-sm text-gray-600">Band Score</div>
                               </div>
-                              <div className="text-sm text-gray-600">Band Score</div>
+                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                              </div>
                             </div>
                           </div>
                         ))}
