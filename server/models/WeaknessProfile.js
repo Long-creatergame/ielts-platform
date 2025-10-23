@@ -4,8 +4,7 @@ const weaknessProfileSchema = new mongoose.Schema({
   user_id: {
     type: String,
     required: true,
-    unique: true,
-    index: true
+    unique: true
   },
   weakness: {
     grammar: {

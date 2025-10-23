@@ -15,10 +15,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/ielts-platform')
-  .then(() => console.log('✅ MongoDB connected successfully!'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+// Connect to MongoDB with better error handling
+const connectDB = async () => {
+  try {
+    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/ielts-platform';
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // 5 second timeout
+      socketTimeoutMS: 45000, // 45 second timeout
+    });
+    console.log('✅ MongoDB connected successfully!');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    // Don't exit process, let server continue without DB
+    console.log('⚠️ Server will continue without database connection');
+  }
+};
+
+connectDB();
 
 // CORS Middleware - ABSOLUTE FINAL FIX
 app.use((req, res, next) => {

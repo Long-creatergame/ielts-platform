@@ -1,6 +1,7 @@
 import express from 'express';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import WeaknessProfile from '../models/WeaknessProfile.js';
 import PracticeSet from '../models/PracticeSet.js';
 import AISubmission from '../models/AISubmission.js';
@@ -328,19 +329,29 @@ router.get('/weakness/:userId', async (req, res) => {
   }
 });
 
-// Helper functions
+// Helper functions with better error handling
 async function updateWeaknessProfile(userId, breakdown) {
   try {
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log('MongoDB not connected, skipping weakness profile update');
+      return null;
+    }
     const profile = await WeaknessProfile.updateUserWeakness(userId, breakdown);
     return profile;
   } catch (error) {
     console.error('Error updating weakness profile:', error);
-    throw error;
+    return null; // Don't throw error, just return null
   }
 }
 
 async function getWeaknessProfile(userId) {
   try {
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log('MongoDB not connected, returning null weakness profile');
+      return null;
+    }
     const profile = await WeaknessProfile.getUserWeakness(userId);
     return profile;
   } catch (error) {

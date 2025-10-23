@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 const aiSubmissionSchema = new mongoose.Schema({
   user_id: {
     type: String,
-    required: true,
-    index: true
+    required: true
   },
   skill: {
     type: String,
