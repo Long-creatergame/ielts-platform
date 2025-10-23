@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Timer from '../../components/Timer';
+import FeatureGuide from '../../components/FeatureGuide';
 
 export default function TestPage() {
   const { skill } = useParams();
@@ -406,7 +407,8 @@ export default function TestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <FeatureGuide feature="test-start">
+      <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">

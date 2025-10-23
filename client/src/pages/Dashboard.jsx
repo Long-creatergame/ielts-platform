@@ -17,6 +17,7 @@ import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
+import WelcomeBanner from '../components/WelcomeBanner';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -195,6 +196,11 @@ export default function Dashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Welcome Banner for New Users */}
+        <WelcomeBanner 
+          onStartOnboarding={() => setShowOnboarding(true)}
+          onQuickStart={() => setShowQuickStart(true)}
+        />
         {/* Monetization Components */}
         <div className="mb-8">
           <UpgradeBanner user={user} />
