@@ -143,7 +143,7 @@ Format your response as JSON:
     const prompt = assessmentPrompts[skill] || assessmentPrompts.writing;
     
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo-preview", // Use GPT-4 Turbo for better IELTS assessment
+      model: "gpt-4", // Use GPT-4 for better IELTS assessment
       messages: [
         {
           role: "system",

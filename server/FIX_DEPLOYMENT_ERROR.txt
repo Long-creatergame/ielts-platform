@@ -1,0 +1,4 @@
+FIX: Added missing OpenAI dependency to package.json
+- Added openai: ^4.20.1 to dependencies
+- This should fix the deployment error on Render
+- Force redeploy to test the fix
