@@ -121,7 +121,7 @@ export default function ModernDashboard() {
           />
           <ModernStatsCard
             title="Study Streak"
-            value={statistics?.studyStreak || '0'} + " days"
+            value={`${statistics?.studyStreak || '0'} days`}
             subtitle="Keep it up!"
             icon="🔥"
             color="orange"
@@ -129,7 +129,7 @@ export default function ModernDashboard() {
           />
           <ModernStatsCard
             title="Time Spent"
-            value={statistics?.totalTime || '0'} + "h"
+            value={`${statistics?.totalTime || '0'}h`}
             subtitle="This month"
             icon="⏱️"
             color="purple"

@@ -25,7 +25,13 @@ const ModernTestCard = ({ test, onStart }) => {
     <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200 hover:border-gray-300">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className={`w-10 h-10 rounded-lg bg-${getSkillColor(test.skill)}-50 flex items-center justify-center`}>
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+            getSkillColor(test.skill) === 'blue' ? 'bg-blue-50' :
+            getSkillColor(test.skill) === 'green' ? 'bg-green-50' :
+            getSkillColor(test.skill) === 'purple' ? 'bg-purple-50' :
+            getSkillColor(test.skill) === 'orange' ? 'bg-orange-50' :
+            'bg-gray-50'
+          }`}>
             <span className="text-lg">{getSkillIcon(test.skill)}</span>
           </div>
           <div>
