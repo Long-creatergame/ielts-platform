@@ -10,16 +10,30 @@ dotenv.config();
 
 const router = express.Router();
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1',
-});
+// Initialize OpenAI client only if API key is available
+let openai = null;
+if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== '') {
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: 'https://api.openai.com/v1',
+  });
+  console.log('✅ OpenAI client initialized');
+} else {
+  console.log('⚠️ OpenAI API key not found, AI features will be disabled');
+}
 
 // 1. GENERATE IELTS QUESTIONS
 // POST /ai/generate
 router.post('/generate', async (req, res) => {
   try {
+    // Check if OpenAI is available
+    if (!openai) {
+      return res.json({
+        success: false,
+        error: 'AI features are currently disabled. Please contact support.'
+      });
+    }
+
     const { skill, topic, band = 6.5 } = req.body;
     
     if (!skill || !['writing', 'speaking', 'reading', 'listening'].includes(skill)) {
@@ -90,6 +104,14 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
 // POST /ai/analyze
 router.post('/analyze', async (req, res) => {
   try {
+    // Check if OpenAI is available
+    if (!openai) {
+      return res.json({
+        success: false,
+        error: 'AI features are currently disabled. Please contact support.'
+      });
+    }
+
     const { user_id, skill, submission_text, audio_url } = req.body;
     
     if (!user_id || !skill || !submission_text) {
@@ -206,6 +228,24 @@ Return JSON format:
 // GET /ai/recommend/:userId
 router.get('/recommend/:userId', async (req, res) => {
   try {
+    // Check if OpenAI is available
+    if (!openai) {
+      return res.json({
+        success: true,
+        data: {
+          recommendations: [
+            {
+              type: 'general',
+              title: 'AI Features Disabled',
+              description: 'AI features are currently unavailable. Please contact support.',
+              difficulty: 'beginner',
+              estimatedTime: 'Contact support'
+            }
+          ]
+        }
+      });
+    }
+
     const { userId } = req.params;
     
     // Get user's weakness profile
