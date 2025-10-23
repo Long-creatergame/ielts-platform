@@ -8,7 +8,7 @@ const router = express.Router();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_BASE || 'https://api.groq.com/openai/v1',
+  baseURL: 'https://api.openai.com/v1', // Use OpenAI directly instead of Groq
 });
 
 // AI-powered IELTS assessment endpoint
@@ -61,65 +61,101 @@ Format your response as JSON:
   "feedback": "[detailed feedback]"
 }`,
 
-      writing: `You are an IELTS Writing examiner. Assess this writing task:
+      writing: `You are an official IELTS Writing examiner. Assess this writing task with the same standards as Cambridge Assessment:
 
 Answer: "${answer}"
 
-Evaluate based on IELTS Writing criteria:
-1. Task Achievement (25%)
-2. Coherence and Cohesion (25%)
-3. Lexical Resource (25%)
-4. Grammatical Range and Accuracy (25%)
+Evaluate based on OFFICIAL IELTS Writing criteria:
+
+**Task Achievement (25%):**
+- Does the answer address all parts of the task?
+- Is the position clear and consistent?
+- Are ideas relevant and well-developed?
+
+**Coherence and Cohesion (25%):**
+- Is the information organized logically?
+- Are cohesive devices used effectively?
+- Is there clear progression throughout?
+
+**Lexical Resource (25%):**
+- Is vocabulary used flexibly and precisely?
+- Are there attempts at less common vocabulary?
+- Is word formation and spelling accurate?
+
+**Grammatical Range and Accuracy (25%):**
+- Are a variety of sentence structures used?
+- Is grammar accurate and appropriate?
+- Are complex sentences attempted?
 
 Provide:
-1. Band Score (0-9)
+1. Band Score (0-9) with decimal precision
 2. Detailed feedback on each criterion
-3. Specific improvement suggestions
+3. Specific examples from the text
+4. Actionable improvement suggestions
 
 Format your response as JSON:
 {
   "bandScore": [number],
-  "feedback": "[detailed feedback]"
+  "feedback": "[detailed feedback with specific examples]"
 }`,
 
-      speaking: `You are an IELTS Speaking examiner. Assess this speaking response:
+      speaking: `You are an official IELTS Speaking examiner. Assess this speaking response with Cambridge Assessment standards:
 
 Answer: "${answer}"
 
-Evaluate based on IELTS Speaking criteria:
-1. Fluency and Coherence (25%)
-2. Lexical Resource (25%)
-3. Grammatical Range and Accuracy (25%)
-4. Pronunciation (25%)
+Evaluate based on OFFICIAL IELTS Speaking criteria:
+
+**Fluency and Coherence (25%):**
+- Can the candidate speak at length without hesitation?
+- Is speech coherent and logically organized?
+- Are there appropriate pauses and self-correction?
+
+**Lexical Resource (25%):**
+- Is vocabulary used flexibly and precisely?
+- Are there attempts at less common vocabulary?
+- Is paraphrasing attempted when necessary?
+
+**Grammatical Range and Accuracy (25%):**
+- Are a variety of sentence structures used?
+- Is grammar accurate and appropriate?
+- Are complex sentences attempted?
+
+**Pronunciation (25%):**
+- Are individual sounds clear and intelligible?
+- Is word stress and sentence stress appropriate?
+- Is intonation natural and varied?
+
+Note: Since this is text-based, focus on content, vocabulary, and grammar. Assume pronunciation would be assessed in live speaking.
 
 Provide:
-1. Band Score (0-9)
+1. Band Score (0-9) with decimal precision
 2. Detailed feedback on each criterion
-3. Specific improvement suggestions
+3. Specific examples from the response
+4. Actionable improvement suggestions
 
 Format your response as JSON:
 {
   "bandScore": [number],
-  "feedback": "[detailed feedback]"
+  "feedback": "[detailed feedback with specific examples]"
 }`
     };
 
     const prompt = assessmentPrompts[skill] || assessmentPrompts.writing;
     
     const response = await openai.chat.completions.create({
-      model: process.env.AI_MODEL || "llama3-8b-instant",
+      model: "gpt-4-turbo-preview", // Use GPT-4 Turbo for better IELTS assessment
       messages: [
         {
           role: "system",
-          content: "You are an expert IELTS examiner with 10+ years of experience. Provide accurate, professional assessments based on official IELTS criteria."
+          content: "You are an expert IELTS examiner with 10+ years of experience. Provide accurate, professional assessments based on official IELTS criteria. You have access to the latest IELTS scoring rubrics and assessment standards."
         },
         {
           role: "user",
           content: prompt
         }
       ],
-      temperature: 0.3,
-      max_tokens: 1000,
+      temperature: 0.2, // Lower temperature for more consistent scoring
+      max_tokens: 1500, // More tokens for detailed feedback
     });
 
     const aiResponse = response.choices[0].message.content;
