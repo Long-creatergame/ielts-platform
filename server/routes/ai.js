@@ -30,6 +30,14 @@ router.post('/assess', async (req, res) => {
       feedback: 'AI assessment temporarily disabled. Basic scoring applied. Please contact support if you need detailed feedback.'
     });
 
+  } catch (error) {
+    console.error('AI assessment error:', error);
+    res.status(500).json({
+      bandScore: 5.0,
+      feedback: 'AI assessment temporarily unavailable. Please try again later.'
+    });
+  }
+
     /* COMMENTED OUT TO FIX DEPLOYMENT
     // Create skill-specific assessment prompts
     const assessmentPrompts = {
