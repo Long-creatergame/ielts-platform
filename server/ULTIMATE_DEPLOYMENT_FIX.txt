@@ -1,5 +1,0 @@
-ULTIMATE FIX: Completely removed OpenAI imports and initialization
-- Commented out all OpenAI code
-- Server should now start without any API key requirements
-- This will definitely fix the deployment issue
-- TODO: Re-enable AI after fixing billing and environment variables

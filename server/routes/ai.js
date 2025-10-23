@@ -190,7 +190,7 @@ Format your response as JSON:
       feedback: 'AI assessment temporarily unavailable. Please try again later.'
     });
   }
-});
     */ // END COMMENTED OUT SECTION
+});
 
 export default router;

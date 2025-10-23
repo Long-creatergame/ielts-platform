@@ -68,30 +68,56 @@ export default function TestPage() {
   }, []);
 
   const loadSkillQuestions = (skillType, level) => {
-    // REAL IELTS question sets for all skills
-    const questionData = {
-      reading: {
-        A1: {
-          passage: "**IELTS Academic Reading Passage**\n\n**THE BENEFITS OF URBAN GARDENING**\n\nUrban gardening has become increasingly popular in cities worldwide as people seek to reconnect with nature and improve their quality of life. This practice involves growing plants, vegetables, and herbs in urban environments, often in limited spaces such as balconies, rooftops, or community gardens.\n\nResearch has shown that urban gardening provides numerous benefits beyond food production. Studies indicate that gardening activities can reduce stress levels by up to 30% and improve mental health. The physical activity involved in gardening also contributes to better cardiovascular health and increased mobility, particularly beneficial for elderly urban residents.\n\nFurthermore, urban gardens contribute significantly to environmental sustainability. They help reduce the urban heat island effect by providing natural cooling through vegetation. Urban gardens also improve air quality by absorbing carbon dioxide and other pollutants, while supporting local biodiversity by creating habitats for insects and small wildlife.\n\nEconomic benefits are another advantage of urban gardening. Families can save money on grocery bills by growing their own produce, and community gardens often provide fresh, organic vegetables at lower costs than commercial alternatives. In some cities, urban gardening initiatives have created employment opportunities and stimulated local economic development.",
-          questions: [
-            "What percentage reduction in stress levels can gardening activities provide?",
-            "What environmental benefit do urban gardens provide regarding temperature?", 
-            "How do urban gardens help improve air quality?",
-            "What economic advantage do families gain from urban gardening?",
-            "What type of vegetables are often available at lower costs in community gardens?"
-          ]
-        },
-        A2: {
-          passage: "**IELTS Academic Reading Passage**\n\n**ARTIFICIAL INTELLIGENCE IN MEDICAL DIAGNOSIS**\n\nArtificial Intelligence (AI) is revolutionizing the field of medical diagnosis, offering unprecedented opportunities to improve patient outcomes and healthcare efficiency. Machine learning algorithms can now analyze medical images, patient data, and symptoms with remarkable accuracy, often detecting diseases earlier than traditional methods.\n\nRecent studies have demonstrated that AI systems can identify skin cancer with 95% accuracy, outperforming human dermatologists in many cases. Similarly, AI-powered radiology systems can detect lung cancer from CT scans with 94% accuracy, significantly reducing the time required for diagnosis. These technologies are particularly valuable in areas with limited access to specialist medical professionals.\n\nHowever, the implementation of AI in healthcare faces several challenges. Data privacy concerns, the need for extensive training datasets, and the risk of algorithmic bias are significant obstacles. Additionally, there are ethical considerations regarding the replacement of human medical professionals and the potential for over-reliance on technology.\n\nDespite these challenges, the future of AI in medical diagnosis looks promising. The technology continues to evolve rapidly, with new applications emerging regularly. As AI systems become more sophisticated and accessible, they have the potential to democratize healthcare and improve outcomes for patients worldwide.",
-          questions: [
-            "What accuracy rate do AI systems achieve in identifying skin cancer?",
-            "What type of medical imaging can AI analyze for lung cancer detection?", 
-            "What is one significant challenge facing AI implementation in healthcare?",
-            "What ethical consideration is mentioned regarding AI in medical diagnosis?",
-            "What potential benefit does AI have for healthcare worldwide?"
-          ]
+    // Load REAL IELTS test data from backend
+    const loadRealIELTSData = async () => {
+      try {
+        let response;
+        switch(skillType) {
+          case 'reading':
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/reading/real-ielts`);
+            break;
+          case 'listening':
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listening/real-ielts`);
+            break;
+          case 'writing':
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/writing/real-ielts`);
+            break;
+          case 'speaking':
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/speaking/real-ielts`);
+            break;
+          default:
+            return;
         }
-      },
+        
+        if (response.ok) {
+          const data = await response.json();
+          setQuestions(data.questions || data.passages || data.tasks || data.parts);
+          setTestData(data);
+        } else {
+          // Fallback to basic questions if API fails
+          loadFallbackQuestions(skillType, level);
+        }
+      } catch (error) {
+        console.error('Error loading IELTS data:', error);
+        loadFallbackQuestions(skillType, level);
+      }
+    };
+
+    const loadFallbackQuestions = (skillType, level) => {
+      // Fallback questions if API fails
+      const fallbackData = {
+        reading: {
+          A1: {
+            passage: "**IELTS Academic Reading Passage**\n\n**THE BENEFITS OF URBAN GARDENING**\n\nUrban gardening has become increasingly popular in cities worldwide as people seek to reconnect with nature and improve their quality of life. This practice involves growing plants, vegetables, and herbs in urban environments, often in limited spaces such as balconies, rooftops, or community gardens.\n\nResearch has shown that urban gardening provides numerous benefits beyond food production. Studies indicate that gardening activities can reduce stress levels by up to 30% and improve mental health. The physical activity involved in gardening also contributes to better cardiovascular health and increased mobility, particularly beneficial for elderly urban residents.\n\nFurthermore, urban gardens contribute significantly to environmental sustainability. They help reduce the urban heat island effect by providing natural cooling through vegetation. Urban gardens also improve air quality by absorbing carbon dioxide and other pollutants, while supporting local biodiversity by creating habitats for insects and small wildlife.\n\nEconomic benefits are another advantage of urban gardening. Families can save money on grocery bills by growing their own produce, and community gardens often provide fresh, organic vegetables at lower costs than commercial alternatives. In some cities, urban gardening initiatives have created employment opportunities and stimulated local economic development.",
+            questions: [
+              "What percentage reduction in stress levels can gardening activities provide?",
+              "What environmental benefit do urban gardens provide regarding temperature?", 
+              "How do urban gardens help improve air quality?",
+              "What economic advantage do families gain from urban gardening?",
+              "What type of vegetables are often available at lower costs in community gardens?"
+            ]
+          }
+        },
       listening: {
         A1: [
           "Listen and identify: What is the person's name?",
