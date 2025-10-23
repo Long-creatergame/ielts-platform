@@ -13,12 +13,19 @@ import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
 import AIPractice from '../components/AIPractice';
 import MyWeakness from '../components/MyWeakness';
 import RecommendedPractice from '../components/RecommendedPractice';
+import Onboarding from '../components/Onboarding';
+import QuickStart from '../components/QuickStart';
+import FeatureGuide from '../components/FeatureGuide';
+import HelpCenter from '../components/HelpCenter';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showQuickStart, setShowQuickStart] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showHelpCenter, setShowHelpCenter] = useState(false);
 
   // Function to refresh dashboard data
   const refreshDashboardData = async () => {
@@ -134,6 +141,16 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Onboarding */}
+      <Onboarding onComplete={() => setShowOnboarding(false)} />
+      
+      {/* Quick Start Modal */}
+      {showQuickStart && (
+        <QuickStart onClose={() => setShowQuickStart(false)} />
+      )}
+      
+      {/* Help Center */}
+      <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
       {/* Header Section */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -152,15 +169,27 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="hidden md:block">
-                <GoalProgressBar
-                  current={statistics?.averageBand || 0}
-                  target={user.targetBand}
-                  goal={user.goal}
-                />
-              </div>
-            </div>
+                     <div className="flex items-center space-x-3">
+                       <button
+                         onClick={() => setShowQuickStart(true)}
+                         className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
+                       >
+                         🚀 Bắt đầu nhanh
+                       </button>
+                       <button
+                         onClick={() => setShowHelpCenter(true)}
+                         className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
+                       >
+                         📚 Trợ giúp
+                       </button>
+                       <div className="hidden md:block">
+                         <GoalProgressBar
+                           current={statistics?.averageBand || 0}
+                           target={user.targetBand}
+                           goal={user.goal}
+                         />
+                       </div>
+                     </div>
           </div>
         </div>
       </div>
@@ -420,17 +449,23 @@ export default function Dashboard() {
                 </div>
               )}
               
-              {activeTab === 'ai-practice' && (
-                <AIPractice />
-              )}
-              
-              {activeTab === 'my-weakness' && (
-                <MyWeakness />
-              )}
-              
-              {activeTab === 'recommended' && (
-                <RecommendedPractice />
-              )}
+                       {activeTab === 'ai-practice' && (
+                         <FeatureGuide feature="ai-practice">
+                           <AIPractice />
+                         </FeatureGuide>
+                       )}
+
+                       {activeTab === 'my-weakness' && (
+                         <FeatureGuide feature="weakness-analysis">
+                           <MyWeakness />
+                         </FeatureGuide>
+                       )}
+
+                       {activeTab === 'recommended' && (
+                         <FeatureGuide feature="recommendations">
+                           <RecommendedPractice />
+                         </FeatureGuide>
+                       )}
             </div>
           </div>
         </div>
