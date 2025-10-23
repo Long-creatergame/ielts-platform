@@ -1,15 +1,15 @@
 import express from 'express';
-import OpenAI from 'openai';
+// import OpenAI from 'openai'; // TEMPORARILY DISABLED
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const router = express.Router();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1', // Use OpenAI directly instead of Groq
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+//   baseURL: 'https://api.openai.com/v1', // Use OpenAI directly instead of Groq
+// }); // TEMPORARILY DISABLED
 
 // AI-powered IELTS assessment endpoint
 router.post('/assess', async (req, res) => {
@@ -30,6 +30,7 @@ router.post('/assess', async (req, res) => {
       feedback: 'AI assessment temporarily disabled. Basic scoring applied. Please contact support if you need detailed feedback.'
     });
 
+    /* COMMENTED OUT TO FIX DEPLOYMENT
     // Create skill-specific assessment prompts
     const assessmentPrompts = {
       reading: `You are an IELTS Reading examiner. Assess this reading comprehension answer:
@@ -190,5 +191,6 @@ Format your response as JSON:
     });
   }
 });
+    */ // END COMMENTED OUT SECTION
 
 export default router;
