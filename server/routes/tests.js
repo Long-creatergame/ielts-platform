@@ -1,6 +1,6 @@
-import express from 'express';
-import User from '../models/User.js';
-import Test from '../models/Test.js';
+const express = require('express');
+const User = require('../models/User');
+const Test = require('../models/Test');
 
 const router = express.Router();
 
@@ -172,4 +172,4 @@ router.get('/mine', authMiddleware, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

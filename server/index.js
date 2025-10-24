@@ -1,17 +1,17 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import authRoutes from './routes/auth.js';
-import dashboardRoutes from './routes/dashboard.js';
-import testRoutes from './routes/tests.js';
-import paymentRoutes from './routes/payment.js';
-import upsellRoutes from './routes/upsell.js';
-import aiRoutes from './routes/ai.js';
-import realIELTSRoutes from './routes/realIELTS.js';
-import aiEngineRoutes from './routes/aiEngine.js';
-import authenticIELTSRoutes from './routes/authenticIELTS.js';
-import aiRecommendationsRoutes from './routes/aiRecommendations.js';
-import progressTrackingRoutes from './routes/progressTracking.js';
+const express = require('express');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/auth.js');
+const dashboardRoutes = require('./routes/dashboard.js');
+const testRoutes = require('./routes/tests.js');
+const paymentRoutes = require('./routes/payment.js');
+const upsellRoutes = require('./routes/upsell.js');
+const aiRoutes = require('./routes/ai.js');
+const realIELTSRoutes = require('./routes/realIELTS.js');
+const aiEngineRoutes = require('./routes/aiEngine.js');
+const authenticIELTSRoutes = require('./routes/authenticIELTS.js');
+const aiRecommendationsRoutes = require('./routes/aiRecommendations.js');
+const progressTrackingRoutes = require('./routes/progressTracking.js');
 
 dotenv.config();
 
