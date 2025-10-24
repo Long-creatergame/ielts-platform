@@ -10,6 +10,8 @@ import aiRoutes from './routes/ai.js';
 import realIELTSRoutes from './routes/realIELTS.js';
 import aiEngineRoutes from './routes/aiEngine.js';
 import authenticIELTSRoutes from './routes/authenticIELTS.js';
+import aiRecommendationsRoutes from './routes/aiRecommendations.js';
+import progressTrackingRoutes from './routes/progressTracking.js';
 
 dotenv.config();
 
@@ -172,6 +174,8 @@ app.use('/api/ai', aiRoutes);
 app.use('/api', realIELTSRoutes);
 app.use('/api/ai-engine', aiEngineRoutes);
 app.use('/api/authentic-ielts', authenticIELTSRoutes);
+app.use('/api/ai-recommendations', aiRecommendationsRoutes);
+app.use('/api/progress-tracking', progressTrackingRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

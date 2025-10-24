@@ -13,6 +13,8 @@ import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
 import AIPractice from '../components/AIPractice';
 import MyWeakness from '../components/MyWeakness';
 import RecommendedPractice from '../components/RecommendedPractice';
+import AIRecommendations from '../components/AIRecommendations';
+import ProgressDashboard from '../components/ProgressDashboard';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import FeatureGuide from '../components/FeatureGuide';
@@ -260,6 +262,28 @@ export default function Dashboard() {
                   <span className="text-lg">💡</span>
                   <span>Recommended</span>
                 </button>
+                <button
+                  onClick={() => setActiveTab('ai-recommendations')}
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
+                    activeTab === 'ai-recommendations'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
+                  }`}
+                >
+                  <span className="text-lg">🤖</span>
+                  <span>AI Recommendations</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('progress-tracking')}
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
+                    activeTab === 'progress-tracking'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
+                  }`}
+                >
+                  <span className="text-lg">📊</span>
+                  <span>Progress Tracking</span>
+                </button>
               </nav>
             </div>
             
@@ -473,6 +497,18 @@ export default function Dashboard() {
                        {activeTab === 'recommended' && (
                          <FeatureGuide feature="recommendations">
                            <RecommendedPractice />
+                         </FeatureGuide>
+                       )}
+
+                       {activeTab === 'ai-recommendations' && (
+                         <FeatureGuide feature="ai-recommendations">
+                           <AIRecommendations />
+                         </FeatureGuide>
+                       )}
+
+                       {activeTab === 'progress-tracking' && (
+                         <FeatureGuide feature="progress-tracking">
+                           <ProgressDashboard />
                          </FeatureGuide>
                        )}
             </div>
