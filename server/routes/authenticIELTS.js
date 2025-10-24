@@ -9,13 +9,13 @@ const __dirname = path.dirname(__filename);
 const router = express.Router();
 
 // Load authentic IELTS content
-const loadAuthenticContent = () => {
+const loadAuthenticContent = (skill) => {
   try {
-    const contentPath = path.join(__dirname, '../data/authenticIELTS.json');
+    const contentPath = path.join(__dirname, `../data/authenticIELTS${skill ? skill.charAt(0).toUpperCase() + skill.slice(1) : ''}.json`);
     const content = fs.readFileSync(contentPath, 'utf8');
     return JSON.parse(content);
   } catch (error) {
-    console.error('Error loading authentic IELTS content:', error);
+    console.error(`Error loading authentic IELTS ${skill} content:`, error);
     return null;
   }
 };
@@ -23,7 +23,7 @@ const loadAuthenticContent = () => {
 // GET /authentic-ielts/reading - Get authentic reading passages
 router.get('/reading', (req, res) => {
   try {
-    const content = loadAuthenticContent();
+    const content = loadAuthenticContent('reading');
     if (!content || !content.reading) {
       return res.status(404).json({ error: 'Authentic reading content not found' });
     }
@@ -41,7 +41,7 @@ router.get('/reading', (req, res) => {
 // GET /authentic-ielts/listening - Get authentic listening sections
 router.get('/listening', (req, res) => {
   try {
-    const content = loadAuthenticContent();
+    const content = loadAuthenticContent('listening');
     if (!content || !content.listening) {
       return res.status(404).json({ error: 'Authentic listening content not found' });
     }
@@ -59,7 +59,7 @@ router.get('/listening', (req, res) => {
 // GET /authentic-ielts/writing - Get authentic writing tasks
 router.get('/writing', (req, res) => {
   try {
-    const content = loadAuthenticContent();
+    const content = loadAuthenticContent('writing');
     if (!content || !content.writing) {
       return res.status(404).json({ error: 'Authentic writing content not found' });
     }
@@ -77,7 +77,7 @@ router.get('/writing', (req, res) => {
 // GET /authentic-ielts/speaking - Get authentic speaking topics
 router.get('/speaking', (req, res) => {
   try {
-    const content = loadAuthenticContent();
+    const content = loadAuthenticContent('speaking');
     if (!content || !content.speaking) {
       return res.status(404).json({ error: 'Authentic speaking content not found' });
     }
@@ -95,14 +95,21 @@ router.get('/speaking', (req, res) => {
 // GET /authentic-ielts/complete - Get all authentic content
 router.get('/complete', (req, res) => {
   try {
-    const content = loadAuthenticContent();
-    if (!content) {
-      return res.status(404).json({ error: 'Authentic IELTS content not found' });
-    }
+    const readingContent = loadAuthenticContent('reading');
+    const listeningContent = loadAuthenticContent('listening');
+    const writingContent = loadAuthenticContent('writing');
+    const speakingContent = loadAuthenticContent('speaking');
+    
+    const completeContent = {
+      reading: readingContent?.reading || null,
+      listening: listeningContent?.listening || null,
+      writing: writingContent?.writing || null,
+      speaking: speakingContent?.speaking || null
+    };
 
     res.json({
       success: true,
-      data: content
+      data: completeContent
     });
   } catch (error) {
     console.error('Error fetching complete authentic content:', error);
