@@ -9,7 +9,6 @@ const upsellRoutes = require('./routes/upsell.js');
 const aiRoutes = require('./routes/ai.js');
 const realIELTSRoutes = require('./routes/realIELTS.js');
 const aiEngineRoutes = require('./routes/aiEngine.js');
-const authenticIELTSRoutes = require('./routes/authenticIELTS.js');
 const aiRecommendationsRoutes = require('./routes/aiRecommendations.js');
 const progressTrackingRoutes = require('./routes/progressTracking.js');
 
@@ -178,7 +177,6 @@ app.use('/api/upsell', upsellRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api', realIELTSRoutes);
 app.use('/api/ai-engine', aiEngineRoutes);
-app.use('/api/authentic-ielts', authenticIELTSRoutes);
 app.use('/api/ai-recommendations', aiRecommendationsRoutes);
 app.use('/api/progress-tracking', progressTrackingRoutes);
 
