@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 const weaknessProfileSchema = new mongoose.Schema({
   user_id: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   weakness: {
     grammar: {

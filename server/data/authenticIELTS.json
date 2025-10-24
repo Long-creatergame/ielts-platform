@@ -1,0 +1,129 @@
+{
+  "reading": {
+    "passages": [
+      {
+        "id": "passage_1",
+        "title": "The History of Chocolate",
+        "content": "Chocolate has a rich and fascinating history that spans over 3,000 years. The story begins in the tropical rainforests of Central and South America, where the cacao tree, Theobroma cacao, grows naturally. The ancient Maya and Aztec civilizations were the first to discover the potential of cacao beans, using them to create a bitter, frothy drink that was considered a luxury item reserved for royalty and religious ceremonies.\n\nThe Spanish conquistadors, led by Hernán Cortés, encountered chocolate during their conquest of the Aztec Empire in the early 16th century. They were initially unimpressed by the bitter taste, but after adding sugar and other European ingredients, chocolate quickly became popular among the Spanish nobility. By the 17th century, chocolate had spread throughout Europe, becoming a fashionable drink in royal courts and aristocratic circles.\n\nThe Industrial Revolution of the 18th and 19th centuries brought significant changes to chocolate production. The invention of the steam engine and other mechanical innovations allowed for the mass production of chocolate, making it accessible to the general public for the first time. The development of solid chocolate bars in the mid-19th century marked a turning point in chocolate's history, leading to the creation of the modern chocolate industry.\n\nToday, chocolate is one of the world's most popular foods, with global consumption exceeding 7.5 million tons annually. The industry has evolved to include a wide variety of products, from traditional chocolate bars to gourmet truffles and artisanal creations. However, the industry also faces significant challenges, including concerns about child labor in cocoa production and the environmental impact of large-scale farming operations.",
+        "questions": [
+          {
+            "id": "q1",
+            "type": "multiple_choice",
+            "question": "According to the passage, chocolate was first discovered by:",
+            "options": ["A) Spanish conquistadors", "B) Ancient Maya and Aztec civilizations", "C) European nobility", "D) Industrial Revolution inventors"],
+            "correct_answer": "B",
+            "explanation": "The passage states that 'The ancient Maya and Aztec civilizations were the first to discover the potential of cacao beans'."
+          },
+          {
+            "id": "q2",
+            "type": "true_false_not_given",
+            "question": "Chocolate was initially popular among all social classes in Europe.",
+            "correct_answer": "False",
+            "explanation": "The passage states that chocolate 'became popular among the Spanish nobility' and was 'a fashionable drink in royal courts and aristocratic circles', indicating it was limited to the upper classes initially."
+          },
+          {
+            "id": "q3",
+            "type": "fill_in_blank",
+            "question": "The Industrial Revolution made chocolate accessible to the _____ for the first time.",
+            "correct_answer": "general public",
+            "explanation": "The passage states that mass production 'made it accessible to the general public for the first time'."
+          }
+        ]
+      }
+    ]
+  },
+  "listening": {
+    "sections": [
+      {
+        "id": "section_1",
+        "title": "University Accommodation",
+        "audio_url": "/audio/university-accommodation.mp3",
+        "transcript": "Good morning, I'm Sarah from the Student Accommodation Office. I'm here to help you find suitable housing for your studies. Let me explain the different options available.\n\nFirst, we have university halls of residence. These are located on campus and offer single or shared rooms. The cost is around £120 per week, which includes meals. You'll need to apply early as places are limited.\n\nSecond, we have private student accommodation. These are managed by private companies and offer modern facilities like gyms and study rooms. The cost is typically £150-200 per week.\n\nThird, we have homestay options where you live with a local family. This costs around £100 per week and includes meals. It's a great way to practice English and learn about British culture.\n\nFinally, we have private rented accommodation. You can rent a room in a shared house or flat. This is usually the cheapest option, starting from £80 per week, but you'll need to arrange your own meals.",
+        "questions": [
+          {
+            "id": "l1",
+            "type": "multiple_choice",
+            "question": "What is the cost of university halls of residence?",
+            "options": ["A) £80 per week", "B) £100 per week", "C) £120 per week", "D) £150 per week"],
+            "correct_answer": "C"
+          },
+          {
+            "id": "l2",
+            "type": "fill_in_blank",
+            "question": "Private student accommodation costs between £_____ and £_____ per week.",
+            "correct_answer": "150, 200"
+          }
+        ]
+      }
+    ]
+  },
+  "writing": {
+    "task1": {
+      "sample": {
+        "question": "The chart below shows the percentage of households in different income brackets in a particular country from 2010 to 2020.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+        "chart_data": {
+          "description": "A bar chart showing income distribution",
+          "data": {
+            "2010": {"Low income": 25, "Middle income": 45, "High income": 30},
+            "2015": {"Low income": 20, "Middle income": 40, "High income": 40},
+            "2020": {"Low income": 15, "Middle income": 35, "High income": 50}
+          }
+        }
+      }
+    },
+    "task2": {
+      "sample": {
+        "question": "Some people believe that technology has made our lives easier, while others think it has made life more complicated.\n\nDiscuss both views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words."
+      }
+    }
+  },
+  "speaking": {
+    "part1": {
+      "topics": [
+        {
+          "topic": "Hometown",
+          "questions": [
+            "Where are you from?",
+            "Do you like your hometown?",
+            "What's the most interesting thing about your hometown?",
+            "Has your hometown changed much over the years?"
+          ]
+        },
+        {
+          "topic": "Work/Studies",
+          "questions": [
+            "Do you work or are you a student?",
+            "What do you do for a living?",
+            "Do you enjoy your job?",
+            "What are your future career plans?"
+          ]
+        }
+      ]
+    },
+    "part2": {
+      "topics": [
+        {
+          "topic": "Describe a memorable journey",
+          "cue_card": "Describe a memorable journey you have taken.\n\nYou should say:\n- where you went\n- when you went there\n- who you went with\n- what you did there\n- and explain why this journey was memorable for you.\n\nYou have one minute to prepare your answer. Then speak for 1-2 minutes."
+        },
+        {
+          "topic": "Describe a person who has influenced you",
+          "cue_card": "Describe a person who has influenced you.\n\nYou should say:\n- who this person is\n- how you know this person\n- what this person has done\n- and explain why this person has influenced you.\n\nYou have one minute to prepare your answer. Then speak for 1-2 minutes."
+        }
+      ]
+    },
+    "part3": {
+      "topics": [
+        {
+          "topic": "Travel and Tourism",
+          "questions": [
+            "What are the benefits of traveling to different countries?",
+            "How has tourism changed in your country over the years?",
+            "What impact does tourism have on the environment?",
+            "Do you think space tourism will become popular in the future?"
+          ]
+        }
+      ]
+    }
+  }
+}

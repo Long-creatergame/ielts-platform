@@ -9,29 +9,82 @@ import upsellRoutes from './routes/upsell.js';
 import aiRoutes from './routes/ai.js';
 import realIELTSRoutes from './routes/realIELTS.js';
 import aiEngineRoutes from './routes/aiEngine.js';
+import authenticIELTSRoutes from './routes/authenticIELTS.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Connect to MongoDB with better error handling
+// Connect to MongoDB with production-ready configuration
 const connectDB = async () => {
   try {
+    // Use production MongoDB Atlas or local fallback
     const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/ielts-platform';
+    
+    console.log('🔄 Attempting to connect to MongoDB...');
+    console.log('📍 URI:', mongoURI.includes('mongodb.net') ? 'MongoDB Atlas (Production)' : 'Local MongoDB');
+    
     await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 5000, // 5 second timeout
+      serverSelectionTimeoutMS: 10000, // 10 second timeout for production
       socketTimeoutMS: 45000, // 45 second timeout
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      serverApi: {
+        version: '1',
+        strict: false,
+        deprecationErrors: true,
+      },
+      // Remove deprecated options
     });
+    
     console.log('✅ MongoDB connected successfully!');
+    console.log('📊 Database:', mongoose.connection.db.databaseName);
+    console.log('🌐 Host:', mongoose.connection.host);
+    
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    // Don't exit process, let server continue without DB
+    console.error('❌ MongoDB connection error:', error.message);
+    
+    // More specific error handling
+    if (error.message.includes('ECONNREFUSED')) {
+      console.log('💡 Suggestion: MongoDB server is not running locally');
+      console.log('💡 For production, ensure MONGO_URI is set correctly');
+    } else if (error.message.includes('authentication failed')) {
+      console.log('💡 Suggestion: Check MongoDB credentials');
+    } else if (error.message.includes('network')) {
+      console.log('💡 Suggestion: Check network connection to MongoDB');
+    }
+    
     console.log('⚠️ Server will continue without database connection');
+    console.log('⚠️ Some features may not work properly');
   }
 };
 
 connectDB();
+
+// MongoDB connection monitoring
+mongoose.connection.on('connected', () => {
+  console.log('🟢 MongoDB connection established');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('🔴 MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('🟡 MongoDB disconnected');
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  try {
+    await mongoose.connection.close();
+    console.log('🔒 MongoDB connection closed through app termination');
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Error during MongoDB disconnection:', error);
+    process.exit(1);
+  }
+});
 
 // CORS Middleware - ABSOLUTE FINAL FIX
 app.use((req, res, next) => {
@@ -55,7 +108,38 @@ app.use(express.json());
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ message: 'Server is healthy and connected!' });
+  const dbStatus = mongoose.connection.readyState;
+  const dbStates = {
+    0: 'Disconnected',
+    1: 'Connected', 
+    2: 'Connecting',
+    3: 'Disconnecting'
+  };
+  
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    database: {
+      status: dbStates[dbStatus],
+      readyState: dbStatus,
+      host: mongoose.connection.host || 'N/A',
+      name: mongoose.connection.db?.databaseName || 'N/A'
+    },
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Database status endpoint
+app.get('/api/db-status', (req, res) => {
+  const isConnected = mongoose.connection.readyState === 1;
+  
+  res.json({
+    connected: isConnected,
+    host: mongoose.connection.host,
+    database: mongoose.connection.db?.databaseName,
+    collections: isConnected ? Object.keys(mongoose.connection.db.collections) : [],
+    uptime: process.uptime()
+  });
 });
 
 // Routes
@@ -67,6 +151,7 @@ app.use('/api/upsell', upsellRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api', realIELTSRoutes);
 app.use('/api/ai-engine', aiEngineRoutes);
+app.use('/api/authentic-ielts', authenticIELTSRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
