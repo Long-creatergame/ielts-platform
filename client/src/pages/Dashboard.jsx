@@ -363,7 +363,7 @@ export default function Dashboard() {
                   {/* Quick Actions */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Link
-                      to="/test/start"
+                      to="/quick-practice/reading"
                       className="group bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
                       <div className="flex items-center space-x-4 mb-4">
@@ -371,8 +371,8 @@ export default function Dashboard() {
                           <span className="text-3xl">📝</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold">Start New Test</h3>
-                          <p className="text-blue-100 text-sm">Take a practice test</p>
+                          <h3 className="text-xl font-bold">Quick Reading</h3>
+                          <p className="text-blue-100 text-sm">Quick reading practice</p>
                         </div>
                       </div>
                       <div className="flex items-center text-blue-100 text-sm font-medium">
@@ -384,20 +384,20 @@ export default function Dashboard() {
                     </Link>
 
                     <Link
-                      to="/profile"
+                      to="/quick-practice/writing"
                       className="group bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
                       <div className="flex items-center space-x-4 mb-4">
                         <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                          <span className="text-3xl">👤</span>
+                          <span className="text-3xl">✍️</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold">View Profile</h3>
-                          <p className="text-green-100 text-sm">Manage your account</p>
+                          <h3 className="text-xl font-bold">Quick Writing</h3>
+                          <p className="text-green-100 text-sm">Quick writing practice</p>
                         </div>
                       </div>
                       <div className="flex items-center text-green-100 text-sm font-medium">
-                        <span>View Profile</span>
+                        <span>Begin Practice</span>
                         <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -405,7 +405,7 @@ export default function Dashboard() {
                     </Link>
 
                     <Link
-                      to="/pricing"
+                      to="/quick-practice/listening"
                       className="group bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
                       <div className="flex items-center space-x-4 mb-4">
@@ -413,12 +413,12 @@ export default function Dashboard() {
                           <span className="text-3xl">💎</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold">Upgrade Plan</h3>
-                          <p className="text-purple-100 text-sm">Unlock premium features</p>
+                          <h3 className="text-xl font-bold">Quick Listening</h3>
+                          <p className="text-purple-100 text-sm">Quick listening practice</p>
                         </div>
                       </div>
                       <div className="flex items-center text-purple-100 text-sm font-medium">
-                        <span>Upgrade Now</span>
+                        <span>Begin Practice</span>
                         <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>

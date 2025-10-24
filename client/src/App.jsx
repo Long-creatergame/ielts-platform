@@ -12,6 +12,7 @@ import Pricing from './pages/Pricing';
 import TestIntro from './pages/Test/TestIntro';
 import TestPage from './pages/Test/TestPage';
 import TestResult from './pages/Test/TestResult';
+import QuickPractice from './pages/QuickPractice';
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/test/start" element={<TestIntro />} />
             <Route path="/test/:skill" element={<TestPage />} />
             <Route path="/test/result/:id" element={<TestResult />} />
+            <Route path="/quick-practice/:skill" element={<QuickPractice />} />
           </Routes>
         </div>
       </Router>
