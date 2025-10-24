@@ -500,35 +500,102 @@ export default function TestPage() {
             </div>
           )}
 
+          {/* IELTS Questions - Real Format */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3">
-              {skills[currentSkill].name} Questions:
-            </h3>
-            <div className="space-y-3">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                📋 {skills[currentSkill].name} Questions
+              </h3>
+              <p className="text-sm text-blue-700">
+                {currentSkill === 0 && "Answer the questions below based on the reading passage."}
+                {currentSkill === 1 && "Listen to the audio and answer the questions below."}
+                {currentSkill === 2 && "Complete the writing tasks below within the time limit."}
+                {currentSkill === 3 && "Answer the speaking questions clearly and fluently."}
+              </p>
+            </div>
+            
+            <div className="space-y-6">
               {questions && questions.length > 0 ? questions.map((question, index) => (
-                <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                  <p className="font-medium">{index + 1}. {question}</p>
+                <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                  <div className="flex items-start space-x-3">
+                    <span className="bg-blue-600 text-white text-sm font-bold px-2 py-1 rounded-full min-w-[24px] text-center">
+                      {index + 1}
+                    </span>
+                    <div className="flex-1">
+                      <p className="text-gray-800 font-medium mb-3">{question}</p>
+                      
+                      {/* Different input types based on skill */}
+                      {currentSkill === 0 && (
+                        <div className="space-y-2">
+                          {['A', 'B', 'C', 'D'].map((option) => (
+                            <label key={option} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                              <input
+                                type="radio"
+                                name={`question_${index}`}
+                                value={option}
+                                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                              />
+                              <span className="text-gray-700">
+                                <strong>{option}.</strong> This is a sample answer option for question {index + 1}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {currentSkill === 1 && (
+                        <div className="space-y-2">
+                          {['A', 'B', 'C', 'D'].map((option) => (
+                            <label key={option} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                              <input
+                                type="radio"
+                                name={`question_${index}`}
+                                value={option}
+                                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                              />
+                              <span className="text-gray-700">
+                                <strong>{option}.</strong> This is a sample answer option for question {index + 1}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {currentSkill === 2 && (
+                        <div className="space-y-3">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Your Answer:
+                          </label>
+                          <textarea
+                            placeholder="Write your answer here..."
+                            className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                      )}
+                      
+                      {currentSkill === 3 && (
+                        <div className="space-y-3">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Your Response:
+                          </label>
+                          <textarea
+                            placeholder="Record your speaking response here..."
+                            className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )) : (
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">Loading questions...</p>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <p className="text-gray-500 text-center">Loading questions...</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Your Answer:
-            </label>
-            <textarea
-              value={answers}
-              onChange={handleAnswerChange}
-              placeholder={`Enter your ${skills[currentSkill].name.toLowerCase()} answer here...`}
-              className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              disabled={timeUp}
-            />
-          </div>
+          {/* Removed old simple form - now using IELTS-specific format above */}
 
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-600">
