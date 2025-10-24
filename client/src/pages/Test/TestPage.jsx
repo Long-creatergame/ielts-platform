@@ -14,7 +14,7 @@ export default function TestPage() {
   const [timeUp, setTimeUp] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [currentSkill, setCurrentSkill] = useState(0); // 0=reading, 1=listening, 2=writing, 3=speaking
-  const [totalQuestions] = useState(5);
+  const [totalQuestions] = useState(40); // IELTS standard: 40 questions per skill
   const [level, setLevel] = useState('A2');
   const [audioUrl, setAudioUrl] = useState(null);
   const [recordingBlob, setRecordingBlob] = useState(null);
@@ -94,7 +94,42 @@ export default function TestPage() {
               "What environmental benefit do urban gardens provide regarding temperature?", 
               "How do urban gardens help improve air quality?",
               "What economic advantage do families gain from urban gardening?",
-              "What type of vegetables are often available at lower costs in community gardens?"
+              "What type of vegetables are often available at lower costs in community gardens?",
+              "According to the passage, what is the main reason people start urban gardening?",
+              "What physical health benefit is mentioned for elderly residents?",
+              "How do urban gardens contribute to environmental sustainability?",
+              "What percentage of stress reduction is mentioned in the research?",
+              "What economic benefit do families in New York City experience?",
+              "What social benefit do community gardens provide?",
+              "How do urban gardens help with food security?",
+              "What educational benefit is mentioned for children?",
+              "Why are city planners incorporating green spaces?",
+              "What is the main focus of the passage?",
+              "Which group benefits most from urban gardening according to the text?",
+              "What environmental problem do urban gardens help solve?",
+              "How much money can families save per month?",
+              "What type of learning approach is mentioned for students?",
+              "What is the future outlook for urban gardening?",
+              "What is the primary purpose of urban gardening?",
+              "Which age group is specifically mentioned as benefiting?",
+              "What natural process do urban gardens use for air purification?",
+              "What type of interaction do community gardens foster?",
+              "What is the main environmental benefit mentioned?",
+              "What economic impact do urban gardens have?",
+              "What educational benefit do schools gain?",
+              "What social benefit is emphasized?",
+              "What health benefit is specifically mentioned?",
+              "What environmental concern do urban gardens address?",
+              "What financial benefit do families experience?",
+              "What type of bonds do community gardens create?",
+              "What educational approach is mentioned?",
+              "What planning consideration is discussed?",
+              "What future trend is predicted?",
+              "What is the main environmental contribution?",
+              "What social benefit is highlighted?",
+              "What educational integration is mentioned?",
+              "What planning development is discussed?",
+              "What future importance is predicted?"
             ]
           }
         },
@@ -148,10 +183,14 @@ export default function TestPage() {
           setQuestions(skillData[level]);
         }
       } else {
-        // Default questions if level not found
+        // Default questions if level not found - IELTS Standard Format
         const defaultQuestions = skillType === 'reading' ? 
-          ['What is the main topic?', 'What are the key points?', 'What is the conclusion?'] :
-          ['Question 1', 'Question 2', 'Question 3'];
+          Array.from({length: 40}, (_, i) => `Reading Question ${i + 1}: What is the main topic of paragraph ${i + 1}?`) :
+          skillType === 'listening' ?
+          Array.from({length: 40}, (_, i) => `Listening Question ${i + 1}: Listen and identify the key information.`) :
+          skillType === 'writing' ?
+          ['Writing Task 1: Describe the chart/graph below.', 'Writing Task 2: Discuss the given topic.'] :
+          ['Speaking Part 1: Personal questions.', 'Speaking Part 2: Individual long turn.', 'Speaking Part 3: Two-way discussion.'];
         setQuestions(defaultQuestions);
       }
     };
