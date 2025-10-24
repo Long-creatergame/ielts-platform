@@ -126,7 +126,8 @@ function analyzeGrammaticalRange(answer, sentenceCount) {
   score += passiveCount * 0.1;
   
   // Sentence variety
-  const avgWordsPerSentence = wordCount / sentenceCount;
+  const wordCount = answer.trim().split(/\s+/).length;
+  const avgWordsPerSentence = sentenceCount > 0 ? wordCount / sentenceCount : 0;
   if (avgWordsPerSentence > 15) score += 0.5;
   else if (avgWordsPerSentence < 8) score -= 0.5;
   
