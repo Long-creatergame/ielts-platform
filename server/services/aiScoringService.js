@@ -1,5 +1,5 @@
-import OpenAI from 'openai';
-import dotenv from 'dotenv';
+const OpenAI = require('openai');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -255,4 +255,4 @@ Provide your response in this EXACT JSON format:
   }
 }
 
-export default new AIScoringService();
+module.exports = new AIScoringService();

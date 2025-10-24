@@ -1,4 +1,4 @@
-import Test from '../models/Test.js';
+const Test = require('../models/Test');
 
 class RecommendationService {
   constructor() {
@@ -248,4 +248,4 @@ class RecommendationService {
   }
 }
 
-export default new RecommendationService();
+module.exports = new RecommendationService();

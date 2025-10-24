@@ -23,7 +23,7 @@ const authRoutes = require('./routes/authRoutes');
 const testRoutes = require('./routes/testRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
-const aiRoutes = require('./routes/ai');
+const aiRoutes = require('./routes/ai.js');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tests', testRoutes);

@@ -1,7 +1,7 @@
-import express from 'express';
-import aiScoringService from '../services/aiScoringService.js';
-import recommendationService from '../services/recommendationService.js';
-import auth from '../middleware/auth.js';
+const express = require('express');
+const aiScoringService = require('../services/aiScoringService.js');
+const recommendationService = require('../services/recommendationService.js');
+const auth = require('../middleware/auth.js');
 
 const router = express.Router();
 
@@ -120,4 +120,4 @@ router.get('/status', (req, res) => {
   });
 });
 
-export default router;
+module.exports = router;
