@@ -85,15 +85,24 @@ export default function ModernDashboard() {
       {/* Header removed - using main Navbar instead */}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {user?.name || 'Student'}!
-          </h1>
-          <p className="text-gray-600">
-            Ready to continue your IELTS journey? Let's practice and improve your skills.
-          </p>
+        <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome back, {user?.name || 'Student'}! 👋
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Ready to continue your IELTS journey? Let's practice and improve your skills.
+              </p>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🎯</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Stats Grid */}
