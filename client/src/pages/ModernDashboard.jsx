@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import ModernHeader from '../components/ModernHeader';
+// ModernHeader removed to avoid duplicate headers
 import ModernStatsCard from '../components/ModernStatsCard';
 import ModernTestCard from '../components/ModernTestCard';
 import Onboarding from '../components/Onboarding';
@@ -82,12 +82,7 @@ export default function ModernDashboard() {
       {/* Help Center */}
       <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
       
-      {/* Modern Header */}
-      <ModernHeader 
-        user={user}
-        onQuickStart={() => setShowQuickStart(true)}
-        onHelp={() => setShowHelpCenter(true)}
-      />
+      {/* Header removed - using main Navbar instead */}
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

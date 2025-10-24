@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import QuickStart from './QuickStart';
+import HelpCenter from './HelpCenter';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showQuickStart, setShowQuickStart] = useState(false);
+  const [showHelpCenter, setShowHelpCenter] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -31,6 +35,18 @@ export default function Navbar() {
                 <Link to="/profile" className="text-gray-700 hover:text-blue-600">
                   Profile
                 </Link>
+                <button
+                  onClick={() => setShowQuickStart(true)}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Quick Start
+                </button>
+                <button
+                  onClick={() => setShowHelpCenter(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Help
+                </button>
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-600">👋 {user.name}</span>
                   <button
@@ -54,6 +70,14 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      
+      {/* Quick Start Modal */}
+      {showQuickStart && (
+        <QuickStart onClose={() => setShowQuickStart(false)} />
+      )}
+      
+      {/* Help Center */}
+      <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
     </nav>
   );
 }
