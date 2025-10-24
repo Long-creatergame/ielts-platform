@@ -16,6 +16,10 @@ router.post('/assess', async (req, res) => {
     }
 
     // Use real OpenAI API only
+    console.log('🔍 Debug - OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
+    console.log('🔍 Debug - OPENAI_API_KEY length:', process.env.OPENAI_API_KEY?.length || 0);
+    console.log('🔍 Debug - OPENAI_API_KEY prefix:', process.env.OPENAI_API_KEY?.substring(0, 10) || 'N/A');
+    
     if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === '') {
       return res.status(500).json({
         error: 'OpenAI API key not configured. Please contact administrator.'
