@@ -289,6 +289,127 @@ app.get('/api/authentic-ielts/:skill', async (req, res) => {
   }
 });
 
+// AI Recommendations API
+app.get('/api/ai-recommendations/my-recommendations', async (req, res) => {
+  try {
+    const { skill } = req.query;
+    
+    // Mock AI recommendations based on skill
+    const recommendations = {
+      reading: [
+        {
+          id: 1,
+          title: "Improve Reading Speed",
+          description: "Practice skimming and scanning techniques to read faster while maintaining comprehension.",
+          action: "Read 2 articles daily and time yourself",
+          timeframe: "2 weeks",
+          difficulty: "intermediate",
+          expectedImprovement: "0.5-1.0 band improvement",
+          resources: ["IELTS Reading Practice", "Speed Reading Techniques"],
+          progress: null
+        }
+      ],
+      writing: [
+        {
+          id: 2,
+          title: "Enhance Essay Structure",
+          description: "Focus on clear introduction, body paragraphs, and conclusion structure.",
+          action: "Write 3 essays per week with proper structure",
+          timeframe: "3 weeks",
+          difficulty: "intermediate",
+          expectedImprovement: "0.5-1.5 band improvement",
+          resources: ["Essay Templates", "Grammar Practice"],
+          progress: null
+        }
+      ],
+      listening: [
+        {
+          id: 3,
+          title: "Improve Note-taking Skills",
+          description: "Practice taking notes while listening to improve retention and accuracy.",
+          action: "Listen to 1 podcast daily and take notes",
+          timeframe: "2 weeks",
+          difficulty: "beginner",
+          expectedImprovement: "0.5-1.0 band improvement",
+          resources: ["IELTS Listening Practice", "Note-taking Techniques"],
+          progress: null
+        }
+      ],
+      speaking: [
+        {
+          id: 4,
+          title: "Enhance Fluency",
+          description: "Practice speaking continuously without long pauses to improve fluency.",
+          action: "Record yourself speaking for 2 minutes daily",
+          timeframe: "3 weeks",
+          difficulty: "intermediate",
+          expectedImprovement: "0.5-1.0 band improvement",
+          resources: ["Speaking Practice", "Fluency Exercises"],
+          progress: null
+        }
+      ]
+    };
+    
+    const skillRecommendations = skill && skill !== 'all' 
+      ? recommendations[skill] || []
+      : Object.values(recommendations).flat();
+    
+    res.json({
+      recommendations: skillRecommendations,
+      total: skillRecommendations.length,
+      generatedAt: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch recommendations' });
+  }
+});
+
+app.post('/api/ai-recommendations/generate-recommendations', async (req, res) => {
+  try {
+    const { skill, currentLevel } = req.body;
+    
+    // Mock AI-generated recommendations
+    const newRecommendations = [
+      {
+        id: Date.now(),
+        title: `Advanced ${skill} Practice`,
+        description: `Based on your ${currentLevel} level, focus on advanced ${skill} techniques.`,
+        action: `Practice advanced ${skill} exercises daily`,
+        timeframe: "4 weeks",
+        difficulty: "advanced",
+        expectedImprovement: "1.0-2.0 band improvement",
+        resources: [`Advanced ${skill} Materials`, "Expert Tips"],
+        progress: null
+      }
+    ];
+    
+    res.json({
+      recommendations: newRecommendations,
+      message: 'New recommendations generated successfully'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to generate recommendations' });
+  }
+});
+
+app.post('/api/ai-recommendations/track-progress', async (req, res) => {
+  try {
+    const { recommendationId, action, completed } = req.body;
+    
+    // Mock progress tracking
+    res.json({
+      success: true,
+      message: 'Progress tracked successfully',
+      recommendationId,
+      action,
+      completed,
+      updatedAt: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to track progress' });
+  }
+});
+
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
