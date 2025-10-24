@@ -185,12 +185,107 @@ export default function TestPage() {
       } else {
         // Default questions if level not found - IELTS Standard Format
         const defaultQuestions = skillType === 'reading' ? 
-          Array.from({length: 40}, (_, i) => `Reading Question ${i + 1}: What is the main topic of paragraph ${i + 1}?`) :
+          [
+            // Passage 1 Questions (1-13)
+            "According to the passage, what is the main purpose of urban gardening?",
+            "The author mentions that urban gardening can reduce stress by what percentage?",
+            "What does the passage say about the environmental benefits of urban gardens?",
+            "According to the text, which group benefits most from urban gardening?",
+            "What is mentioned about the economic advantages of urban gardening?",
+            "The passage states that urban gardens help with which environmental problem?",
+            "What does the text say about community gardens?",
+            "According to the passage, what educational benefit is mentioned?",
+            "What is the author's opinion about urban gardening?",
+            "The text mentions that urban gardens contribute to what?",
+            "What does the passage say about the future of urban gardening?",
+            "According to the text, what is the main advantage of urban gardening?",
+            "What does the passage suggest about urban gardening?",
+            // Passage 2 Questions (14-26)
+            "What is the main topic of the second passage?",
+            "According to the text, what is the primary concern?",
+            "What does the author suggest about the solution?",
+            "The passage mentions that which factor is important?",
+            "What is the author's main argument?",
+            "According to the text, what is the key point?",
+            "What does the passage say about the benefits?",
+            "The author suggests that what is necessary?",
+            "What is mentioned about the challenges?",
+            "According to the text, what is the main issue?",
+            "What does the passage say about the future?",
+            "The text mentions that what is required?",
+            // Passage 3 Questions (27-40)
+            "What is the main focus of the third passage?",
+            "According to the text, what is the primary objective?",
+            "What does the author argue about the importance?",
+            "The passage states that what is essential?",
+            "What is mentioned about the benefits?",
+            "According to the text, what is the key factor?",
+            "What does the passage say about the challenges?",
+            "The author suggests that what is necessary?",
+            "What is the main conclusion?",
+            "According to the text, what is the primary concern?",
+            "What does the passage say about the future?",
+            "The text mentions that what is important?",
+            "What is the author's main point?",
+            "According to the passage, what is the key issue?"
+          ] :
           skillType === 'listening' ?
-          Array.from({length: 40}, (_, i) => `Listening Question ${i + 1}: Listen and identify the key information.`) :
+          [
+            // Section 1 Questions (1-10)
+            "What is the person's name?",
+            "Where is the conversation taking place?",
+            "What time does the event start?",
+            "How much does the ticket cost?",
+            "What should the person bring?",
+            "Who is the speaker talking to?",
+            "What is the purpose of the meeting?",
+            "When is the deadline for registration?",
+            "What documents are required?",
+            "What is the contact information?",
+            // Section 2 Questions (11-20)
+            "What is the main topic of the presentation?",
+            "According to the speaker, what is the primary concern?",
+            "What does the speaker suggest about the solution?",
+            "The presentation mentions that which factor is important?",
+            "What is the speaker's main argument?",
+            "According to the presentation, what is the key point?",
+            "What does the speaker say about the benefits?",
+            "The presentation suggests that what is necessary?",
+            "What is mentioned about the challenges?",
+            "According to the speaker, what is the main issue?",
+            // Section 3 Questions (21-30)
+            "What is the main focus of the discussion?",
+            "According to the speakers, what is the primary objective?",
+            "What do the speakers argue about the importance?",
+            "The discussion states that what is essential?",
+            "What is mentioned about the benefits?",
+            "According to the speakers, what is the key factor?",
+            "What do the speakers say about the challenges?",
+            "The discussion suggests that what is necessary?",
+            "What is the main conclusion?",
+            "According to the speakers, what is the primary concern?",
+            // Section 4 Questions (31-40)
+            "What is the main topic of the lecture?",
+            "According to the lecturer, what is the primary concern?",
+            "What does the lecturer suggest about the solution?",
+            "The lecture mentions that which factor is important?",
+            "What is the lecturer's main argument?",
+            "According to the lecture, what is the key point?",
+            "What does the lecturer say about the benefits?",
+            "The lecture suggests that what is necessary?",
+            "What is mentioned about the challenges?",
+            "According to the lecturer, what is the main issue?"
+          ] :
           skillType === 'writing' ?
-          ['Writing Task 1: Describe the chart/graph below.', 'Writing Task 2: Discuss the given topic.'] :
-          ['Speaking Part 1: Personal questions.', 'Speaking Part 2: Individual long turn.', 'Speaking Part 3: Two-way discussion.'];
+          [
+            "**IELTS Writing Task 1**\n\nYou should spend about 20 minutes on this task.\n\nThe chart below shows the percentage of people who used different modes of transport in a city between 1990 and 2010.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+            "**IELTS Writing Task 2**\n\nYou should spend about 40 minutes on this task.\n\nSome people believe that technology has made our lives easier, while others think it has made life more complicated.\n\nDiscuss both views and give your own opinion.\n\nWrite at least 250 words."
+          ] :
+          [
+            "**IELTS Speaking Part 1**\n\nLet's talk about your hometown.\n\n- Where are you from?\n- What do you like most about your hometown?\n- Has your hometown changed much in recent years?\n- What would you like to change about your hometown?",
+            "**IELTS Speaking Part 2**\n\nDescribe a memorable trip you have taken.\n\nYou should say:\n- where you went\n- when you went there\n- who you went with\n- what you did there\n- and explain why it was memorable\n\nYou have one minute to prepare and should speak for 1-2 minutes.",
+            "**IELTS Speaking Part 3**\n\nLet's discuss education and learning.\n\n- How has education changed in your country in recent years?\n- What are the advantages and disadvantages of online learning?\n- Do you think traditional classroom learning will become obsolete?\n- How important is it for students to learn practical skills alongside academic subjects?"
+          ];
         setQuestions(defaultQuestions);
       }
     };
@@ -575,7 +670,22 @@ export default function TestPage() {
                                 className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                               />
                               <span className="text-gray-700">
-                                <strong>{option}.</strong> This is a sample answer option for question {index + 1}
+                                <strong>{option}.</strong> {
+                                  index < 13 ? 
+                                    option === 'A' ? 'To provide food for urban residents' :
+                                    option === 'B' ? 'To reduce stress and improve mental health' :
+                                    option === 'C' ? 'To create employment opportunities' :
+                                    'To reduce air pollution in cities' :
+                                  index < 26 ?
+                                    option === 'A' ? 'The main topic is environmental sustainability' :
+                                    option === 'B' ? 'The primary concern is economic development' :
+                                    option === 'C' ? 'The key factor is social interaction' :
+                                    'The main issue is urban planning' :
+                                    option === 'A' ? 'The main focus is technological advancement' :
+                                    option === 'B' ? 'The primary objective is educational reform' :
+                                    option === 'C' ? 'The key factor is social change' :
+                                    'The main issue is economic growth'
+                                }
                               </span>
                             </label>
                           ))}
@@ -593,7 +703,27 @@ export default function TestPage() {
                                 className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                               />
                               <span className="text-gray-700">
-                                <strong>{option}.</strong> This is a sample answer option for question {index + 1}
+                                <strong>{option}.</strong> {
+                                  index < 10 ? 
+                                    option === 'A' ? 'John Smith' :
+                                    option === 'B' ? 'Jane Doe' :
+                                    option === 'C' ? 'Mike Johnson' :
+                                    'Sarah Wilson' :
+                                  index < 20 ?
+                                    option === 'A' ? 'At the university' :
+                                    option === 'B' ? 'In the library' :
+                                    option === 'C' ? 'At the conference center' :
+                                    'In the office' :
+                                  index < 30 ?
+                                    option === 'A' ? '9:00 AM' :
+                                    option === 'B' ? '10:30 AM' :
+                                    option === 'C' ? '2:00 PM' :
+                                    '4:15 PM' :
+                                    option === 'A' ? 'The main topic is education' :
+                                    option === 'B' ? 'The primary concern is technology' :
+                                    option === 'C' ? 'The key factor is environment' :
+                                    'The main issue is health'
+                                }
                               </span>
                             </label>
                           ))}
