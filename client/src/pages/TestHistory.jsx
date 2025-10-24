@@ -13,6 +13,10 @@ const TestHistory = () => {
 
   const loadTestHistory = async () => {
     try {
+      // Always check localStorage first for debugging
+      const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      console.log('🔍 Debug: Saved tests from localStorage:', savedTests);
+      
       const response = await fetch('/api/tests/history', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -21,20 +25,23 @@ const TestHistory = () => {
       
       if (response.ok) {
         const data = await response.json();
+        console.log('🔍 Debug: API response:', data);
         setTestHistory(data.tests || []);
       } else {
         // Fallback to localStorage if API fails
-        const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+        console.log('🔍 Debug: API failed, using localStorage');
         setTestHistory(savedTests);
       }
     } catch (error) {
       console.error('Error loading test history:', error);
       // Fallback to localStorage
       const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      console.log('🔍 Debug: Error occurred, using localStorage:', savedTests);
       setTestHistory(savedTests);
       
       // If no saved tests, show mock data
       if (savedTests.length === 0) {
+        console.log('🔍 Debug: No saved tests, showing mock data');
         setTestHistory([
           {
             id: 1,
@@ -110,6 +117,41 @@ const TestHistory = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">📊 Test History</h1>
           <p className="mt-2 text-gray-600">View your completed IELTS tests and track your progress</p>
+        </div>
+
+        {/* Debug Controls */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+          <h3 className="text-sm font-semibold text-yellow-800 mb-2">🔧 Debug Controls</h3>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => {
+                console.log('🔍 Current localStorage:', localStorage.getItem('testHistory'));
+                alert('Check console for localStorage data');
+              }}
+              className="text-xs bg-yellow-200 hover:bg-yellow-300 text-yellow-800 px-2 py-1 rounded"
+            >
+              Check localStorage
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('testHistory');
+                setTestHistory([]);
+                alert('localStorage cleared!');
+              }}
+              className="text-xs bg-red-200 hover:bg-red-300 text-red-800 px-2 py-1 rounded"
+            >
+              Clear localStorage
+            </button>
+            <button
+              onClick={() => {
+                loadTestHistory();
+                alert('Test History reloaded!');
+              }}
+              className="text-xs bg-blue-200 hover:bg-blue-300 text-blue-800 px-2 py-1 rounded"
+            >
+              Reload History
+            </button>
+          </div>
         </div>
 
         {/* Test History List */}

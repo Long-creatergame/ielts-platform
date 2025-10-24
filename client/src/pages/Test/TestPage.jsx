@@ -538,6 +538,8 @@ export default function TestPage() {
     // Also save to localStorage as backup
     try {
       const existingHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      console.log('🔍 Debug: Existing history before save:', existingHistory);
+      
       const newTest = {
         id: Date.now(),
         testType: 'IELTS Academic',
@@ -555,11 +557,15 @@ export default function TestPage() {
         answers: testAnswers
       };
       
+      console.log('🔍 Debug: New test to save:', newTest);
+      
       existingHistory.unshift(newTest); // Add to beginning
       localStorage.setItem('testHistory', JSON.stringify(existingHistory));
-      console.log('Test saved to localStorage:', newTest);
+      
+      console.log('🔍 Debug: Updated history after save:', existingHistory);
+      console.log('✅ Test saved to localStorage successfully!');
     } catch (error) {
-      console.error('Error saving to localStorage:', error);
+      console.error('❌ Error saving to localStorage:', error);
     }
 
     // Save to backend
