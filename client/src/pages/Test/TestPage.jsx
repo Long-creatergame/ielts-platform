@@ -416,16 +416,27 @@ export default function TestPage() {
       <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-gradient-to-r from-red-50 to-blue-50 rounded-lg shadow-md p-6 mb-6 border border-red-200">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold text-gray-900">
-              IELTS {skills[currentSkill].name} Test - {level} Level
+              📚 Official IELTS {skills[currentSkill].name} Test - {level} Level
             </h1>
-            <Timer
-              duration={60}
-              onTimeUp={() => setTimeUp(true)}
-              className="text-lg font-semibold text-red-600"
-            />
+            <div className="flex items-center space-x-4">
+              <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                ⏰ Timed Test
+              </div>
+              <Timer
+                duration={60}
+                onTimeUp={() => setTimeUp(true)}
+                className="text-lg font-semibold text-red-600"
+              />
+            </div>
+          </div>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p className="text-sm text-red-800">
+              <strong>🎯 Official Test Mode:</strong> This is a formal IELTS assessment with time limits and strict scoring. 
+              Your performance will be evaluated according to official IELTS criteria.
+            </p>
           </div>
           
           {/* Progress Bar */}

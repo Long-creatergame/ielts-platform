@@ -152,18 +152,24 @@ export default function QuickPractice() {
       <FeatureGuide feature="quick-practice">
         <div className="max-w-4xl mx-auto p-6">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg shadow-md p-6 mb-6 border border-yellow-200">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold text-gray-800">
                 🚀 Quick {skill?.charAt(0).toUpperCase() + skill?.slice(1)} Practice
               </h1>
-              <div className="text-sm text-gray-500">
-                No time limit • General level
+              <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                ⚡ No Pressure Mode
               </div>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-2">
               {testData?.title || `Quick ${skill} practice session`}
             </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-800">
+                <strong>🎯 Quick Practice Goal:</strong> Just get comfortable with the language! 
+                No formal scoring, no time pressure - just practice and have fun!
+              </p>
+            </div>
           </div>
 
           {/* Content */}
@@ -213,26 +219,38 @@ export default function QuickPractice() {
               </div>
             )}
 
-            {/* Answer Input */}
+            {/* Quick Answer Input - Simple and Fast */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Answer
+                Quick Answer (No pressure, just practice!)
               </label>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-yellow-800">
+                  💡 <strong>Quick Practice Tip:</strong> Don't worry about perfect grammar or structure. 
+                  Just focus on expressing your ideas clearly and naturally.
+                </p>
+              </div>
               <textarea
                 value={answers}
                 onChange={(e) => setAnswers(e.target.value)}
-                placeholder="Type your answer here..."
-                className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Just write your thoughts here... No time pressure! 😊"
+                className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                This is just for practice - no scoring, no pressure!
+              </p>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end">
+            {/* Quick Submit Button */}
+            <div className="flex justify-between items-center">
+              <div className="text-sm text-gray-500">
+                ✨ Quick practice - no formal assessment
+              </div>
               <button
                 onClick={handleSubmit}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md hover:shadow-lg"
               >
-                Submit Quick Practice
+                🚀 Get Quick Feedback
               </button>
             </div>
           </div>
