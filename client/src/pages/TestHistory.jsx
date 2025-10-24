@@ -22,11 +22,20 @@ const TestHistory = () => {
       if (response.ok) {
         const data = await response.json();
         setTestHistory(data.tests || []);
+      } else {
+        // Fallback to localStorage if API fails
+        const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+        setTestHistory(savedTests);
       }
     } catch (error) {
       console.error('Error loading test history:', error);
-      // Mock data for demonstration
-      setTestHistory([
+      // Fallback to localStorage
+      const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      setTestHistory(savedTests);
+      
+      // If no saved tests, show mock data
+      if (savedTests.length === 0) {
+        setTestHistory([
         {
           id: 1,
           testType: 'IELTS Academic',

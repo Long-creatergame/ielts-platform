@@ -438,6 +438,14 @@ export default function TestPage() {
     return Math.min(9, score);
   };
 
+  const getBandLevel = (score) => {
+    if (score >= 8.0) return 'C2';
+    if (score >= 7.0) return 'B2';
+    if (score >= 6.0) return 'B1';
+    if (score >= 5.0) return 'A2';
+    return 'A1';
+  };
+
   const handleSubmit = async () => {
     // AI-powered IELTS band score calculation using GROQ AI
     const skillScores = {};
@@ -501,6 +509,58 @@ export default function TestPage() {
       completedAt: new Date().toISOString(),
       aiFeedback: 'AI assessment completed successfully.'
     };
+
+    // Save to Test History
+    try {
+      const saveResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          testType: 'IELTS Academic',
+          level: level,
+          answers: testAnswers,
+          scores: skillScores,
+          duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${(60 * 60 * 2.5 - timeLeft) % 60}s`
+        })
+      });
+
+      if (saveResponse.ok) {
+        const saveResult = await saveResponse.json();
+        console.log('Test saved to history:', saveResult);
+      }
+    } catch (error) {
+      console.error('Error saving to test history:', error);
+    }
+
+    // Also save to localStorage as backup
+    try {
+      const existingHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      const newTest = {
+        id: Date.now(),
+        testType: 'IELTS Academic',
+        level: level,
+        date: new Date().toISOString().split('T')[0],
+        duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
+        overallScore: overallBand,
+        skills: {
+          reading: { score: skillScores.reading || 0, band: getBandLevel(skillScores.reading || 0) },
+          listening: { score: skillScores.listening || 0, band: getBandLevel(skillScores.listening || 0) },
+          writing: { score: skillScores.writing || 0, band: getBandLevel(skillScores.writing || 0) },
+          speaking: { score: skillScores.speaking || 0, band: getBandLevel(skillScores.speaking || 0) }
+        },
+        status: 'completed',
+        answers: testAnswers
+      };
+      
+      existingHistory.unshift(newTest); // Add to beginning
+      localStorage.setItem('testHistory', JSON.stringify(existingHistory));
+      console.log('Test saved to localStorage:', newTest);
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
 
     // Save to backend
     try {
