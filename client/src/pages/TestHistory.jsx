@@ -36,37 +36,38 @@ const TestHistory = () => {
       // If no saved tests, show mock data
       if (savedTests.length === 0) {
         setTestHistory([
-        {
-          id: 1,
-          testType: 'IELTS Academic',
-          level: 'A2',
-          date: '2024-01-15',
-          duration: '2h 30m',
-          overallScore: 6.5,
-          skills: {
-            reading: { score: 6.5, band: 'B2' },
-            listening: { score: 7.0, band: 'B2' },
-            writing: { score: 6.0, band: 'B1' },
-            speaking: { score: 6.5, band: 'B2' }
+          {
+            id: 1,
+            testType: 'IELTS Academic',
+            level: 'A2',
+            date: '2024-01-15',
+            duration: '2h 30m',
+            overallScore: 6.5,
+            skills: {
+              reading: { score: 6.5, band: 'B2' },
+              listening: { score: 7.0, band: 'B2' },
+              writing: { score: 6.0, band: 'B1' },
+              speaking: { score: 6.5, band: 'B2' }
+            },
+            status: 'completed'
           },
-          status: 'completed'
-        },
-        {
-          id: 2,
-          testType: 'IELTS General',
-          level: 'B1',
-          date: '2024-01-10',
-          duration: '2h 15m',
-          overallScore: 7.0,
-          skills: {
-            reading: { score: 7.0, band: 'B2' },
-            listening: { score: 7.5, band: 'B2' },
-            writing: { score: 6.5, band: 'B2' },
-            speaking: { score: 7.0, band: 'B2' }
-          },
-          status: 'completed'
-        }
-      ]);
+          {
+            id: 2,
+            testType: 'IELTS General',
+            level: 'B1',
+            date: '2024-01-10',
+            duration: '2h 15m',
+            overallScore: 7.0,
+            skills: {
+              reading: { score: 7.0, band: 'B2' },
+              listening: { score: 7.5, band: 'B2' },
+              writing: { score: 6.5, band: 'B2' },
+              speaking: { score: 7.0, band: 'B2' }
+            },
+            status: 'completed'
+          }
+        ]);
+      }
     } finally {
       setLoading(false);
     }
