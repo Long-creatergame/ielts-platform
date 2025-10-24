@@ -289,6 +289,9 @@ app.get('/api/authentic-ielts/:skill', async (req, res) => {
   }
 });
 
+// Test History routes
+app.use('/api/tests', (await import('./server/routes/testHistory.js')).default);
+
 // AI Recommendations API
 app.get('/api/ai-recommendations/my-recommendations', async (req, res) => {
   try {

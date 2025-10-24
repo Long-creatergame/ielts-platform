@@ -47,6 +47,9 @@ export default function Navbar() {
                   <Link to="/test/start" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                     Take Test
                   </Link>
+                  <Link to="/test-history" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                    Test History
+                  </Link>
                   <Link to="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                     Profile
                   </Link>
@@ -125,6 +128,13 @@ export default function Navbar() {
               onClick={() => setShowMobileMenu(false)}
             >
               Take Test
+            </Link>
+            <Link 
+              to="/test-history" 
+              className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Test History
             </Link>
             <Link 
               to="/profile" 

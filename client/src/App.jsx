@@ -12,6 +12,7 @@ import Pricing from './pages/Pricing';
 import TestIntro from './pages/Test/TestIntro';
 import TestPage from './pages/Test/TestPage';
 import TestResult from './pages/Test/TestResult';
+import TestHistory from './pages/TestHistory';
 import QuickPractice from './pages/QuickPractice';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/test/start" element={<TestIntro />} />
             <Route path="/test/:skill" element={<TestPage />} />
             <Route path="/test/result/:id" element={<TestResult />} />
+            <Route path="/test-history" element={<TestHistory />} />
             <Route path="/quick-practice/:skill" element={<QuickPractice />} />
           </Routes>
         </div>
