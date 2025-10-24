@@ -29,8 +29,21 @@ export default function Register() {
     setError('');
     setLoading(true);
 
+    // Password validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Mật khẩu không khớp');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Mật khẩu phải có ít nhất 6 ký tự');
+      setLoading(false);
+      return;
+    }
+
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      setError('Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 số');
       setLoading(false);
       return;
     }
@@ -163,6 +176,9 @@ export default function Register() {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số
+            </p>
           </div>
 
           <div>
