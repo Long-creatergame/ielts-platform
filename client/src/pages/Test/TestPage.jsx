@@ -51,18 +51,19 @@ export default function TestPage() {
     const loadRealIELTSData = async () => {
       try {
         let response;
+        // Use new API endpoints for better content
         switch(skillType) {
           case 'reading':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/reading`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/reading`);
             break;
           case 'listening':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/listening`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/listening`);
             break;
           case 'writing':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/writing`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/writing`);
             break;
           case 'speaking':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/speaking`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/speaking`);
             break;
           default:
             return;
