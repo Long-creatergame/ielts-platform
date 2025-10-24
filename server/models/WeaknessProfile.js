@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const weaknessProfileSchema = new mongoose.Schema({
   user_id: {
@@ -108,4 +108,4 @@ weaknessProfileSchema.statics.updateUserWeakness = async function(userId, breakd
   return profile;
 };
 
-export default mongoose.model('WeaknessProfile', weaknessProfileSchema);
+module.exports = mongoose.model('WeaknessProfile', weaknessProfileSchema);

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const analyticsSchema = new mongoose.Schema({
   event: {
@@ -133,4 +133,4 @@ analyticsSchema.statics.getEngagementTrend = async function(userId, days = 30) {
 
 const Analytics = mongoose.model('Analytics', analyticsSchema);
 
-export default Analytics;
+module.exports = Analytics;

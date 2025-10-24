@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const progressTrackingSchema = new mongoose.Schema({
   userId: {
@@ -185,4 +185,4 @@ progressTrackingSchema.methods.completeResource = function(resourceId) {
   return this.save();
 };
 
-export default mongoose.model('ProgressTracking', progressTrackingSchema);
+module.exports = mongoose.model('ProgressTracking', progressTrackingSchema);

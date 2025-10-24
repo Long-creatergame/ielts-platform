@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const aiSubmissionSchema = new mongoose.Schema({
   user_id: {
@@ -148,4 +148,4 @@ aiSubmissionSchema.methods.addPracticeRecommendations = function(practiceIds) {
   return this.save();
 };
 
-export default mongoose.model('AISubmission', aiSubmissionSchema);
+module.exports = mongoose.model('AISubmission', aiSubmissionSchema);

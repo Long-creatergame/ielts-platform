@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const practiceSetSchema = new mongoose.Schema({
   user_id: {
@@ -124,4 +124,4 @@ practiceSetSchema.statics.createPractice = async function(userId, practiceData) 
   return await practice.save();
 };
 
-export default mongoose.model('PracticeSet', practiceSetSchema);
+module.exports = mongoose.model('PracticeSet', practiceSetSchema);
