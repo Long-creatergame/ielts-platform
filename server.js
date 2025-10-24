@@ -130,7 +130,134 @@ app.post('/api/ai/assess', async (req, res) => {
   }
 });
 
-// IELTS content routes
+// Quick Actions - Simple practice content
+app.get('/api/quick-practice/:skill', async (req, res) => {
+  try {
+    const { skill } = req.params;
+    
+    // Quick practice content - Simple, short exercises
+    const quickContent = {
+      reading: {
+        title: "Quick Reading Practice",
+        passage: "This is a short reading passage for quick practice. It contains basic vocabulary and simple sentence structures.",
+        questions: [
+          "What is the main topic?",
+          "What does the author suggest?",
+          "What is the purpose of this text?"
+        ],
+        timeLimit: null, // No time limit for quick practice
+        level: "General"
+      },
+      listening: {
+        title: "Quick Listening Practice",
+        audio: "quick_listening_sample.mp3",
+        questions: [
+          "What is the speaker talking about?",
+          "Where does this conversation take place?",
+          "What is the main point?"
+        ],
+        timeLimit: null, // No time limit for quick practice
+        level: "General"
+      },
+      writing: {
+        title: "Quick Writing Practice",
+        task: "Write a short paragraph (50-100 words) about your favorite hobby.",
+        timeLimit: null, // No time limit for quick practice
+        level: "General"
+      },
+      speaking: {
+        title: "Quick Speaking Practice",
+        questions: [
+          "What's your name?",
+          "Where are you from?",
+          "What do you like to do in your free time?"
+        ],
+        timeLimit: null, // No time limit for quick practice
+        level: "General"
+      }
+    };
+    
+    res.json(quickContent[skill] || { message: 'Skill not found' });
+  } catch (error) {
+    res.status(500).json({ message: 'Quick practice content not available' });
+  }
+});
+
+// Practice Tests - Full IELTS content
+app.get('/api/practice-tests/:skill', async (req, res) => {
+  try {
+    const { skill } = req.params;
+    
+    // Full practice test content - Complete IELTS format
+    const practiceContent = {
+      reading: {
+        title: "Academic Reading Test",
+        level: "6.5",
+        duration: "60 minutes",
+        passage: "This is a full-length IELTS Academic Reading passage. It contains complex vocabulary, academic language, and challenging comprehension questions that test your ability to understand detailed information, identify main ideas, and make inferences.",
+        questions: [
+          "According to the passage, what is the main argument?",
+          "What evidence supports the author's claim?",
+          "What can be inferred from paragraph 3?",
+          "What is the author's attitude towards the topic?",
+          "What is the purpose of the final paragraph?"
+        ],
+        timeLimit: 60, // 60 minutes
+        type: "Academic Reading Test"
+      },
+      listening: {
+        title: "Academic Listening Test",
+        level: "6.5",
+        duration: "40 minutes",
+        audio: "full_listening_test.mp3",
+        questions: [
+          "What is the main topic of the lecture?",
+          "According to the speaker, what are the three main points?",
+          "What example does the speaker give?",
+          "What is the speaker's conclusion?",
+          "What does the speaker recommend?"
+        ],
+        timeLimit: 40, // 40 minutes
+        type: "Academic Listening Test"
+      },
+      writing: {
+        title: "Academic Writing Test",
+        level: "6.5",
+        duration: "60 minutes",
+        task1: "The chart below shows the percentage of people who use different types of transportation in a city. Summarize the information by selecting and reporting the main features, and make comparisons where relevant.",
+        task2: "Some people believe that technology has made our lives more complicated, while others think it has made life easier. Discuss both views and give your own opinion.",
+        timeLimit: 60, // 60 minutes
+        type: "Academic Writing Test"
+      },
+      speaking: {
+        title: "Academic Speaking Test",
+        level: "6.5",
+        duration: "15 minutes",
+        part1: [
+          "What's your name?",
+          "Where are you from?",
+          "What do you do for work?",
+          "What do you like to do in your free time?"
+        ],
+        part2: "Describe a memorable trip you have taken. You should say: where you went, who you went with, what you did there, and explain why it was memorable.",
+        part3: [
+          "What are the benefits of traveling?",
+          "How has tourism changed in your country?",
+          "What impact does tourism have on the environment?",
+          "Do you think tourism will continue to grow in the future?"
+        ],
+        timeLimit: 15, // 15 minutes
+        type: "Academic Speaking Test"
+      }
+    };
+    
+    res.json(practiceContent[skill] || { message: 'Skill not found' });
+  } catch (error) {
+    res.status(500).json({ message: 'Practice test content not available' });
+  }
+});
+
+// IELTS content routes (for backward compatibility)
 app.get('/api/authentic-ielts/:skill', async (req, res) => {
   try {
     const { skill } = req.params;
