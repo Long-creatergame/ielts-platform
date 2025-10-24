@@ -20,6 +20,13 @@ export default function TestPage() {
   const [recordingBlob, setRecordingBlob] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [passage, setPassage] = useState('');
+  const [timeLeft, setTimeLeft] = useState(60 * 60 * 2.5); // 2.5 hours in seconds
+  const [startTime, setStartTime] = useState(Date.now());
+  
+  // Initialize timer when component mounts
+  useEffect(() => {
+    setStartTime(Date.now());
+  }, []);
   const [testAnswers, setTestAnswers] = useState({
     reading: '',
     listening: '',
@@ -523,7 +530,7 @@ export default function TestPage() {
           level: level,
           answers: testAnswers,
           scores: skillScores,
-          duration: `${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) / 60)}m ${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) % 60)}s`
+          duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`
         })
       });
 
@@ -545,7 +552,7 @@ export default function TestPage() {
         testType: 'IELTS Academic',
         level: level,
         date: new Date().toISOString().split('T')[0],
-        duration: `${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) / 60)}m ${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) % 60)}s`,
+        duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
         overallScore: overallBand,
         skills: {
           reading: { score: skillScores.reading || 0, band: getBandLevel(skillScores.reading || 0) },
@@ -629,8 +636,9 @@ export default function TestPage() {
                 ⏰ Timed Test
               </div>
               <Timer
-                duration={60}
+                duration={timeLeft}
                 onTimeUp={() => setTimeUp(true)}
+                onTimeChange={(newTime) => setTimeLeft(newTime)}
                 className="text-lg font-semibold text-red-600"
               />
             </div>
