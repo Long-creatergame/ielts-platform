@@ -18,6 +18,7 @@ import ProgressDashboard from '../components/ProgressDashboard';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import TestSelector from '../components/TestSelector';
+import RecentActivity from '../components/RecentActivity';
 import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
 import WelcomeBanner from '../components/WelcomeBanner';
@@ -433,7 +434,10 @@ export default function Dashboard() {
                     </Link>
                   </div>
 
-                  {/* Recent Tests */}
+                  {/* Recent Activity */}
+                  <RecentActivity />
+                  
+                  {/* Recent Tests - Fallback */}
                   {dashboardData?.recentTests && dashboardData.recentTests.length > 0 && (
                     <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
                       <div className="flex items-center justify-between mb-6">
