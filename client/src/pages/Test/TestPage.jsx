@@ -437,13 +437,15 @@ export default function TestPage() {
           
           {/* Skills Progress */}
           <div className="flex justify-between text-sm text-gray-600">
-            {skills.map((skill, index) => (
+            {skills && skills.length > 0 ? skills.map((skill, index) => (
               <div key={skill.id} className={`flex items-center ${index <= currentSkill ? 'text-blue-600' : 'text-gray-400'}`}>
                 <span className="mr-1">{skill.icon}</span>
                 {skill.name}
                 {index < skills.length - 1 && <span className="ml-2">→</span>}
               </div>
-            ))}
+            )) : (
+              <div className="text-gray-500">Loading skills...</div>
+            )}
           </div>
         </div>
 
@@ -491,11 +493,15 @@ export default function TestPage() {
               {skills[currentSkill].name} Questions:
             </h3>
             <div className="space-y-3">
-              {questions.map((question, index) => (
+              {questions && questions.length > 0 ? questions.map((question, index) => (
                 <div key={index} className="p-3 bg-gray-50 rounded-lg">
                   <p className="font-medium">{index + 1}. {question}</p>
                 </div>
-              ))}
+              )) : (
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500">Loading questions...</p>
+                </div>
+              )}
             </div>
           </div>
 

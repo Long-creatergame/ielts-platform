@@ -76,7 +76,7 @@ export default function TestIntro() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Chọn trình độ</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {levels.map((level) => (
+            {levels && levels.length > 0 ? levels.map((level) => (
               <button
                 key={level.id}
                 onClick={() => setSelectedLevel(level.id)}
@@ -89,7 +89,9 @@ export default function TestIntro() {
                 <div className="text-2xl font-bold mb-2">{level.id}</div>
                 <div className="text-sm font-medium">{level.name}</div>
               </button>
-            ))}
+            )) : (
+              <div className="col-span-full text-center text-gray-500">Loading levels...</div>
+            )}
           </div>
         </div>
 

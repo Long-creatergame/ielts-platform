@@ -174,12 +174,14 @@ export default function TestResult() {
               📋 Personalized Recommendations
             </h3>
             <ul className="space-y-3">
-              {recommendations.map((rec, index) => (
+              {recommendations && recommendations.length > 0 ? recommendations.map((rec, index) => (
                 <li key={index} className="flex items-start">
                   <span className="text-blue-500 mr-2">•</span>
                   <span className="text-gray-700">{rec}</span>
                 </li>
-              ))}
+              )) : (
+                <li className="text-gray-500">No recommendations available</li>
+              )}
             </ul>
           </div>
         </div>
