@@ -523,7 +523,7 @@ export default function TestPage() {
           level: level,
           answers: testAnswers,
           scores: skillScores,
-          duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${(60 * 60 * 2.5 - timeLeft) % 60}s`
+          duration: `${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) / 60)}m ${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) % 60)}s`
         })
       });
 
@@ -545,7 +545,7 @@ export default function TestPage() {
         testType: 'IELTS Academic',
         level: level,
         date: new Date().toISOString().split('T')[0],
-        duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
+        duration: `${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) / 60)}m ${Math.floor((60 * 60 * 2.5 - (timeLeft || 0)) % 60)}s`,
         overallScore: overallBand,
         skills: {
           reading: { score: skillScores.reading || 0, band: getBandLevel(skillScores.reading || 0) },

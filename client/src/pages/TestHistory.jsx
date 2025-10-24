@@ -39,6 +39,12 @@ const TestHistory = () => {
         console.log('🔍 Debug: API failed, using localStorage');
         setTestHistory(savedTests);
       }
+      
+      // Always set from localStorage as primary source
+      if (savedTests.length > 0) {
+        console.log('🔍 Debug: Setting test history from localStorage:', savedTests);
+        setTestHistory(savedTests);
+      }
     } catch (error) {
       console.error('Error loading test history:', error);
       // Fallback to localStorage
@@ -157,6 +163,17 @@ const TestHistory = () => {
               className="text-xs bg-blue-200 hover:bg-blue-300 text-blue-800 px-2 py-1 rounded"
             >
               Reload History
+            </button>
+            <button
+              onClick={() => {
+                const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+                console.log('🔍 Force load from localStorage:', savedTests);
+                setTestHistory(savedTests);
+                alert(`Loaded ${savedTests.length} tests from localStorage!`);
+              }}
+              className="text-xs bg-green-200 hover:bg-green-300 text-green-800 px-2 py-1 rounded"
+            >
+              Force Load
             </button>
           </div>
         </div>
