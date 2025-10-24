@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const __dirname = path.dirname(__filename);
+const __dirname = __dirname || path.dirname(process.argv[1]);
 
 const router = express.Router();
 
