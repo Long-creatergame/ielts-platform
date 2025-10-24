@@ -274,7 +274,6 @@ router.post('/assess', async (req, res) => {
     // Try to use real OpenAI API first
     if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '') {
       try {
-        const OpenAI = require('openai');
         const openai = new OpenAI({
           apiKey: process.env.OPENAI_API_KEY
         });
