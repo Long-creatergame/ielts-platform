@@ -142,6 +142,26 @@ app.get('/api/db-status', (req, res) => {
   });
 });
 
+// Simple uptime check for monitoring services
+app.get('/api/uptime', (req, res) => {
+  res.json({
+    status: 'OK',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
+// AI service status check
+app.get('/api/ai-status', (req, res) => {
+  const hasOpenAI = !!process.env.OPENAI_API_KEY;
+  res.json({
+    status: hasOpenAI ? 'OK' : 'DISABLED',
+    hasOpenAI,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
