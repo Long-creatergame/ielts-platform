@@ -1,71 +1,123 @@
 import express from 'express';
-import OpenAI from 'openai';
+import aiScoringService from '../services/aiScoringService.js';
+import recommendationService from '../services/recommendationService.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
-// POST /ai/assess - AI Assessment endpoint
-router.post('/assess', async (req, res) => {
+// AI Scoring endpoints
+router.post('/score', auth, async (req, res) => {
   try {
-    const { skill, answer, level } = req.body;
+    const { skill, answer, taskType } = req.body;
+    const userId = req.user._id;
 
-    if (!answer || answer.trim().length === 0) {
-      return res.json({
-        bandScore: 0,
-        feedback: 'No answer provided. Please complete the task to receive an assessment.'
+    if (!skill || !answer) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Skill and answer are required' 
       });
     }
 
-    // Use real OpenAI API only
-    console.log('🔍 Debug - OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
-    console.log('🔍 Debug - OPENAI_API_KEY length:', process.env.OPENAI_API_KEY?.length || 0);
-    console.log('🔍 Debug - OPENAI_API_KEY prefix:', process.env.OPENAI_API_KEY?.substring(0, 10) || 'N/A');
-    
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === '') {
-      return res.status(500).json({
-        error: 'OpenAI API key not configured. Please contact administrator.'
+    if (!['writing', 'speaking'].includes(skill.toLowerCase())) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'AI scoring is only available for Writing and Speaking' 
       });
     }
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+    let result;
+    if (skill.toLowerCase() === 'writing') {
+      result = await aiScoringService.scoreWriting(answer, taskType);
+    } else {
+      result = await aiScoringService.scoreSpeaking(answer, taskType);
+    }
+
+    res.json({
+      success: true,
+      data: result.data,
+      source: result.source,
+      timestamp: new Date().toISOString()
     });
-
-    const prompt = `You are an IELTS examiner. Assess this ${skill} answer and provide:
-1. Overall band score (0-9)
-2. Breakdown by IELTS criteria:
-   - Task Achievement/Response (0-9)
-   - Coherence and Cohesion (0-9)
-   - Lexical Resource (0-9)
-   - Grammatical Range and Accuracy (0-9)
-   - Fluency (0-9) ${skill === 'speaking' ? 'and Pronunciation (0-9)' : ''}
-3. Detailed feedback
-4. Improvement suggestions
-
-Answer: "${answer}"
-Level: ${level}
-
-Respond in JSON format only.`;
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 500,
-      temperature: 0.3
-    });
-
-    const aiResponse = completion.choices[0].message.content;
-    console.log('✅ Real AI Assessment:', aiResponse);
-    
-    const parsedResponse = JSON.parse(aiResponse);
-    return res.json(parsedResponse);
 
   } catch (error) {
-    console.error('AI assessment error:', error);
-    return res.status(500).json({
-      error: 'AI assessment failed. Please try again later.',
-      details: error.message
+    console.error('AI Scoring Error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'AI scoring service unavailable' 
     });
   }
+});
+
+// Generate practice questions
+router.post('/practice-questions', auth, async (req, res) => {
+  try {
+    const { skill, level } = req.body;
+    const userId = req.user._id;
+
+    if (!skill) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Skill is required' 
+      });
+    }
+
+    const result = await aiScoringService.generatePracticeQuestions(
+      skill, 
+      level || 'intermediate'
+    );
+
+    res.json({
+      success: true,
+      data: result.data,
+      source: result.source,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Practice Questions Error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Practice questions service unavailable' 
+    });
+  }
+});
+
+// Get personalized recommendations
+router.get('/recommendations', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const result = await recommendationService.generateRecommendations(userId);
+
+    res.json({
+      success: true,
+      data: result.data,
+      analysis: result.analysis,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Recommendations Error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Recommendations service unavailable' 
+    });
+  }
+});
+
+// Get AI service status
+router.get('/status', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      aiAvailable: aiScoringService.isAvailable,
+      features: {
+        scoring: true,
+        recommendations: true,
+        practiceQuestions: true
+      },
+      timestamp: new Date().toISOString()
+    }
+  });
 });
 
 export default router;
