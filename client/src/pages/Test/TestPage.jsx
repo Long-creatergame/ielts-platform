@@ -547,11 +547,27 @@ export default function TestPage() {
       const existingHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
       console.log('🔍 Debug: Existing history before save:', existingHistory);
       
+      // Debug: Check current date
+      const currentDate = new Date();
+      console.log('🔍 Debug: Current date:', currentDate);
+      console.log('🔍 Debug: Date string:', currentDate.toLocaleDateString('en-CA'));
+      console.log('🔍 Debug: ISO string:', currentDate.toISOString());
+      console.log('🔍 Debug: Year:', currentDate.getFullYear());
+      console.log('🔍 Debug: Month:', currentDate.getMonth() + 1);
+      console.log('🔍 Debug: Day:', currentDate.getDate());
+      
       const newTest = {
         id: Date.now(),
         testType: 'IELTS Academic',
         level: level,
-        date: new Date().toISOString().split('T')[0],
+        date: (() => {
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const day = String(currentDate.getDate()).padStart(2, '0');
+          const dateString = `${year}-${month}-${day}`;
+          console.log('🔍 Debug: Final date string:', dateString);
+          return dateString;
+        })(),
         duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
         overallScore: overallBand,
         skills: {
