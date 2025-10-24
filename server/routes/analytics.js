@@ -1,5 +1,5 @@
-import express from 'express';
-import Analytics from '../models/Analytics.js';
+const express = require('express');
+const Analytics = require('../models/Analytics');
 
 const router = express.Router();
 
@@ -180,4 +180,4 @@ router.get('/engagement/:userId', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

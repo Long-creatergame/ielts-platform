@@ -1,6 +1,6 @@
-import express from 'express';
-import ProgressTracking from '../models/ProgressTracking.js';
-import authMiddleware from './auth.js';
+const express = require('express');
+const ProgressTracking = require('../models/ProgressTracking');
+const authMiddleware = require('./auth.js');
 
 const router = express.Router();
 
@@ -318,4 +318,4 @@ router.get('/analytics', authMiddleware, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

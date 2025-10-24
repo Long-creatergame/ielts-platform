@@ -1,10 +1,10 @@
-import express from 'express';
-import OpenAI from 'openai';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import WeaknessProfile from '../models/WeaknessProfile.js';
-import PracticeSet from '../models/PracticeSet.js';
-import AISubmission from '../models/AISubmission.js';
+const express = require('express');
+const OpenAI = require('openai');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const WeaknessProfile = require('../models/WeaknessProfile');
+const PracticeSet = require('../models/PracticeSet');
+const AISubmission = require('../models/AISubmission');
 
 dotenv.config();
 
@@ -461,4 +461,4 @@ router.get('/weakness/:userId', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

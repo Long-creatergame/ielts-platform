@@ -1,8 +1,8 @@
-import express from 'express';
-import OpenAI from 'openai';
-import User from '../models/User.js';
-import Test from '../models/Test.js';
-import authMiddleware from './auth.js';
+const express = require('express');
+const OpenAI = require('openai');
+const User = require('../models/User');
+const Test = require('../models/Test');
+const authMiddleware = require('./auth.js');
 
 const router = express.Router();
 
@@ -419,4 +419,4 @@ function generateFallbackRecommendations(performanceAnalysis, skill) {
   return recommendations;
 }
 
-export default router;
+module.exports = router;

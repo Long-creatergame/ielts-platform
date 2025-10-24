@@ -1,5 +1,5 @@
-import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+const express = require('express');
+const { authenticateToken } = require('../middleware/auth.js');
 
 const router = express.Router();
 
@@ -187,4 +187,4 @@ router.post('/save', authenticateToken, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
