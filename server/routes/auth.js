@@ -16,25 +16,50 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password, goal, targetBand, currentLevel } = req.body;
 
-    // Validation
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
+    // Enhanced validation
+    const errors = {};
+    
+    if (!name || name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    }
+    
+    if (!email) {
+      errors.email = 'Email is required';
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        errors.email = 'Please provide a valid email address';
+      }
+    }
+    
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      errors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors
+      });
     }
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists with this email' });
+      return res.status(400).json({ 
+        message: 'User already exists with this email',
+        errors: { email: 'Email already exists' }
+      });
     }
 
     // Create user
     const user = await User.create({ 
-      name, 
-      email, 
+      name: name.trim(), 
+      email: email.toLowerCase().trim(), 
       password: password,
       goal: goal || 'Thử sức',
       targetBand: targetBand || 6.5,
