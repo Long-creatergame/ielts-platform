@@ -124,6 +124,9 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
   } catch (error) {
     console.error('AI Generate error:', error);
     
+    // Get skill from request body for fallback
+    const { skill: fallbackSkill } = req.body;
+    
     // Return fallback question on error
     const fallbackQuestions = {
       writing: {
@@ -152,7 +155,7 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
       }
     };
 
-    const fallback = fallbackQuestions[skill] || fallbackQuestions.writing;
+    const fallback = fallbackQuestions[fallbackSkill] || fallbackQuestions.writing;
     
     res.json({
       success: true,
