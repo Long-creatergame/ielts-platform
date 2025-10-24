@@ -13,9 +13,16 @@ const TestHistory = () => {
 
   const loadTestHistory = async () => {
     try {
-      // Always check localStorage first for debugging
-      const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
-      console.log('🔍 Debug: Saved tests from localStorage:', savedTests);
+      // Check both localStorage and sessionStorage
+      const localStorageTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      const sessionStorageTests = JSON.parse(sessionStorage.getItem('testHistory') || '[]');
+      
+      // Use localStorage if available, otherwise use sessionStorage
+      const savedTests = localStorageTests.length > 0 ? localStorageTests : sessionStorageTests;
+      
+      console.log('🔍 Debug: Saved tests from localStorage:', localStorageTests);
+      console.log('🔍 Debug: Saved tests from sessionStorage:', sessionStorageTests);
+      console.log('🔍 Debug: Using tests:', savedTests);
       
       const response = await fetch('/api/tests/history', {
         headers: {

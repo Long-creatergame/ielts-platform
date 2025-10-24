@@ -562,8 +562,11 @@ export default function TestPage() {
       existingHistory.unshift(newTest); // Add to beginning
       localStorage.setItem('testHistory', JSON.stringify(existingHistory));
       
+      // Also save to sessionStorage as backup
+      sessionStorage.setItem('testHistory', JSON.stringify(existingHistory));
+      
       console.log('🔍 Debug: Updated history after save:', existingHistory);
-      console.log('✅ Test saved to localStorage successfully!');
+      console.log('✅ Test saved to localStorage and sessionStorage successfully!');
     } catch (error) {
       console.error('❌ Error saving to localStorage:', error);
     }
