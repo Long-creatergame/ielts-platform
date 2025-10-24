@@ -1,0 +1,4 @@
+Force deploy Render with real AI assessment enabled
+Timestamp: 2025-10-24T02:58:00Z
+Real AI assessment with OpenAI API key is now enabled in code
+This should trigger a new deployment on Render
