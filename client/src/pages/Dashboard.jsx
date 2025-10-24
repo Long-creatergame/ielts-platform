@@ -522,31 +522,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <ScoreCard
-            title="Tests Completed"
-            score={statistics?.totalTests || 0}
-            color="blue"
-          />
-          <ScoreCard
-            title="Average Band"
-            score={statistics?.averageBand || 'N/A'}
-            color="green"
-          />
-          <ScoreCard
-            title="Streak Days"
-            score={user.streakDays || 0}
-            color="purple"
-          />
-          <div className="bg-white rounded-2xl shadow-xl p-6 text-center">
-            <div className="text-4xl mb-2">🎯</div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-1">Target Band</h3>
-            <p className="text-3xl font-bold text-orange-600">
-              {user.targetBand}
-            </p>
-          </div>
-        </div>
+        {/* Statistics Cards - Removed duplicate */}
 
         {/* Progress Ring */}
         {statistics?.averageBand > 0 && (
@@ -560,32 +536,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link
-              to="/test/start"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-center"
-            >
-              🎯 Take New Test
-            </Link>
-            <Link
-              to="/profile"
-              className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-center"
-            >
-              👤 View Profile
-            </Link>
-            {statistics?.latestTest && (
-              <Link
-                to={`/test/result/${statistics.latestTest._id}`}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-center"
-              >
-                📊 Latest Results
-              </Link>
-            )}
-          </div>
-        </div>
+        {/* Quick Actions - Removed duplicate */}
 
         {/* Recommendations */}
         {personalization?.recommendations && personalization.recommendations.length > 0 && (
