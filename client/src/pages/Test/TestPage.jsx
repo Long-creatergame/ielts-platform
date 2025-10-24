@@ -53,16 +53,16 @@ export default function TestPage() {
         let response;
         switch(skillType) {
           case 'reading':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/reading/real-ielts`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/reading`);
             break;
           case 'listening':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listening/real-ielts`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/listening`);
             break;
           case 'writing':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/writing/real-ielts`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/writing`);
             break;
           case 'speaking':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/speaking/real-ielts`);
+            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/speaking`);
             break;
           default:
             return;
