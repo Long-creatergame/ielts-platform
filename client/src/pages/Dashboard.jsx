@@ -17,6 +17,7 @@ import AIRecommendations from '../components/AIRecommendations';
 import ProgressDashboard from '../components/ProgressDashboard';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
+import TestSelector from '../components/TestSelector';
 import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
 import WelcomeBanner from '../components/WelcomeBanner';
@@ -32,6 +33,7 @@ export default function Dashboard() {
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
+  const [showTestSelector, setShowTestSelector] = useState(false);
 
   // Function to refresh dashboard data
   const refreshDashboardData = async () => {
@@ -155,6 +157,11 @@ export default function Dashboard() {
         <QuickStart onClose={() => setShowQuickStart(false)} />
       )}
       
+      {/* Test Selector Modal */}
+      {showTestSelector && (
+        <TestSelector onClose={() => setShowTestSelector(false)} />
+      )}
+      
       {/* Help Center */}
       <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
       {/* Header Section */}
@@ -177,10 +184,10 @@ export default function Dashboard() {
             </div>
                      <div className="flex items-center space-x-3">
                        <button
-                         onClick={() => setShowQuickStart(true)}
+                         onClick={() => setShowTestSelector(true)}
                          className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
                        >
-                         🚀 Bắt đầu nhanh
+                         🎯 Chọn bài kiểm tra
                        </button>
                        <button
                          onClick={() => setShowHelpCenter(true)}
