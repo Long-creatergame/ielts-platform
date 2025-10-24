@@ -270,9 +270,53 @@ router.post('/assess', async (req, res) => {
       });
     }
 
-    // Advanced Assessment Logic with IELTS-specific criteria
+    // Try to use real OpenAI API first
+    if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '') {
+      try {
+        const OpenAI = require('openai');
+        const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY
+        });
+
+        const prompt = `You are an IELTS examiner. Assess this ${skill} answer and provide:
+1. Overall band score (0-9)
+2. Breakdown by IELTS criteria:
+   - Task Achievement/Response (0-9)
+   - Coherence and Cohesion (0-9)
+   - Lexical Resource (0-9)
+   - Grammatical Range and Accuracy (0-9)
+   - Fluency (0-9) ${skill === 'speaking' ? 'and Pronunciation (0-9)' : ''}
+3. Detailed feedback
+4. Improvement suggestions
+
+Answer: "${answer}"
+Level: ${level}
+
+Respond in JSON format only.`;
+
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 500,
+          temperature: 0.3
+        });
+
+        const aiResponse = completion.choices[0].message.content;
+        console.log('✅ Real AI Assessment:', aiResponse);
+        
+        try {
+          const parsedResponse = JSON.parse(aiResponse);
+          return res.json(parsedResponse);
+        } catch (parseError) {
+          console.log('AI response parsing error, using fallback');
+        }
+      } catch (aiError) {
+        console.log('AI API error:', aiError.message);
+      }
+    }
+
+    // Fallback to enhanced assessment
     const assessment = generateAdvancedAssessment(skill, answer, level);
-    
     return res.json(assessment);
 
   } catch (error) {
