@@ -28,7 +28,7 @@ export default function Login() {
       // FIXED: Use environment variable directly (already includes /api)
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
