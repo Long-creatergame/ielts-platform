@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 // ModernHeader removed to avoid duplicate headers
 import ModernStatsCard from '../components/ModernStatsCard';
-import ModernTestCard from '../components/ModernTestCard';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import HelpCenter from '../components/HelpCenter';
@@ -46,9 +45,6 @@ export default function ModernDashboard() {
     }
   };
 
-  const handleStartTest = (test) => {
-    navigate(`/test/${test.skill}?level=${test.level}`);
-  };
 
   if (loading) {
     return (
@@ -62,12 +58,6 @@ export default function ModernDashboard() {
   }
 
   const { statistics } = dashboardData || {};
-  const tests = [
-    { skill: 'reading', level: '6.5', duration: '60 min', description: 'Academic Reading Test', completed: false },
-    { skill: 'listening', level: '6.5', duration: '40 min', description: 'Academic Listening Test', completed: false },
-    { skill: 'writing', level: '6.5', duration: '60 min', description: 'Academic Writing Test', completed: false },
-    { skill: 'speaking', level: '6.5', duration: '15 min', description: 'Academic Speaking Test', completed: false }
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -202,14 +192,56 @@ export default function ModernDashboard() {
               View all tests →
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {tests.map((test, index) => (
-              <ModernTestCard
-                key={index}
-                test={test}
-                onStart={handleStartTest}
-              />
-            ))}
+          {/* Single Full IELTS Test Card */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-8 text-white">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-2xl font-bold mb-2">🎯 Full IELTS Test</h3>
+                <p className="text-blue-100 mb-4">Complete 4-skills IELTS test with authentic format</p>
+                <div className="flex items-center space-x-6 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 bg-white rounded-full"></span>
+                    <span>Reading (60 min)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 bg-white rounded-full"></span>
+                    <span>Listening (40 min)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 bg-white rounded-full"></span>
+                    <span>Writing (60 min)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 bg-white rounded-full"></span>
+                    <span>Speaking (15 min)</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold">2.5h</div>
+                <div className="text-blue-100 text-sm">Total Duration</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
+                  📊 Detailed Assessment
+                </div>
+                <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
+                  🎯 Band Score
+                </div>
+                <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
+                  💡 AI Feedback
+                </div>
+              </div>
+              <button
+                onClick={() => navigate('/test/start')}
+                className="bg-white text-blue-600 hover:bg-blue-50 font-bold py-3 px-8 rounded-lg transition-colors"
+              >
+                Start Full Test →
+              </button>
+            </div>
           </div>
         </div>
 
