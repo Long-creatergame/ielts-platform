@@ -141,55 +141,62 @@ export default function ModernDashboard() {
           />
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        {/* Quick Actions - Short, Simple Practice */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">⚡ Quick Actions</h2>
+            <span className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded-full">5-10 min</span>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">Quick practice sessions to warm up or fill short breaks</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
-              onClick={() => navigate('/test/reading')}
-              className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              onClick={() => navigate('/quick-practice/reading')}
+              className="flex items-center space-x-3 p-4 rounded-lg border border-blue-200 hover:border-blue-300 hover:bg-blue-100 transition-colors bg-white"
             >
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">📖</span>
               </div>
               <div className="text-left">
-                <p className="font-medium text-gray-900">Reading Test</p>
-                <p className="text-sm text-gray-500">Practice reading skills</p>
+                <p className="font-medium text-gray-900">Quick Reading</p>
+                <p className="text-sm text-gray-500">Short passages & questions</p>
               </div>
             </button>
             <button
-              onClick={() => navigate('/test/listening')}
-              className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors"
+              onClick={() => navigate('/quick-practice/listening')}
+              className="flex items-center space-x-3 p-4 rounded-lg border border-green-200 hover:border-green-300 hover:bg-green-100 transition-colors bg-white"
             >
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">🎧</span>
               </div>
               <div className="text-left">
-                <p className="font-medium text-gray-900">Listening Test</p>
-                <p className="text-sm text-gray-500">Practice listening skills</p>
+                <p className="font-medium text-gray-900">Quick Listening</p>
+                <p className="text-sm text-gray-500">Short audio clips</p>
               </div>
             </button>
             <button
-              onClick={() => navigate('/test/writing')}
-              className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-colors"
+              onClick={() => navigate('/quick-practice/writing')}
+              className="flex items-center space-x-3 p-4 rounded-lg border border-yellow-200 hover:border-yellow-300 hover:bg-yellow-100 transition-colors bg-white"
             >
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">✍️</span>
               </div>
               <div className="text-left">
-                <p className="font-medium text-gray-900">Writing Test</p>
-                <p className="text-sm text-gray-500">Practice writing skills</p>
+                <p className="font-medium text-gray-900">Quick Writing</p>
+                <p className="text-sm text-gray-500">Short writing tasks</p>
               </div>
             </button>
           </div>
         </div>
 
-        {/* Practice Tests */}
+        {/* Practice Tests - Full IELTS Format */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Practice Tests</h2>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">📚 Practice Tests</h2>
+              <p className="text-sm text-gray-600 mt-1">Full IELTS format tests with detailed assessment</p>
+            </div>
             <button
-              onClick={() => navigate('/test-intro')}
+              onClick={() => navigate('/test/start')}
               className="text-blue-600 hover:text-blue-700 font-medium"
             >
               View all tests →
