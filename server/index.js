@@ -175,7 +175,7 @@ app.use('/api/tests', testRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/upsell', upsellRoutes);
 app.use('/api/ai', aiRoutes);
-app.use('/api', realIELTSRoutes);
+app.use('/api/real-ielts', realIELTSRoutes);
 app.use('/api/ai-engine', aiEngineRoutes);
 app.use('/api/ai-recommendations', aiRecommendationsRoutes);
 app.use('/api/progress-tracking', progressTrackingRoutes);

@@ -4,6 +4,16 @@ const path = require('path');
 
 const router = express.Router();
 
+// GET /api/real-ielts/status
+router.get('/status', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'Real IELTS routes are working',
+    availableTests: ['reading', 'listening', 'writing', 'speaking'],
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Load real IELTS data
 const loadIELTSData = (filename) => {
   try {
