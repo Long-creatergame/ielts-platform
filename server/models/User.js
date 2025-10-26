@@ -79,6 +79,15 @@ const userSchema = new mongoose.Schema({
   lastActiveDate: {
     type: Date,
     default: Date.now
+  },
+  milestones: {
+    type: Map,
+    of: Date,
+    default: {}
+  },
+  points: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true
