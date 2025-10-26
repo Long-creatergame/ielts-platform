@@ -68,16 +68,23 @@ router.get('/check', async (req, res) => {
       milestones.push('target_reached');
     }
 
-    // Update user milestones
+    // Update user milestones (handle Map type properly)
     if (milestones.length > 0) {
-      const updatedMilestones = user.milestones || {};
+      const updateQuery = {};
       milestones.forEach(milestone => {
-        updatedMilestones[milestone] = new Date();
+        updateQuery[`milestones.${milestone}`] = new Date();
       });
       
       await User.findByIdAndUpdate(user._id, {
-        $set: { milestones: updatedMilestones }
+        $set: updateQuery
       });
+      
+      // Also save to user.milestones Map
+      const updatedUser = await User.findById(user._id);
+      milestones.forEach(milestone => {
+        updatedUser.milestones.set(milestone, new Date());
+      });
+      await updatedUser.save();
     }
 
     res.json({

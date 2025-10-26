@@ -1,15 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ScoreCard from '../../components/ScoreCard';
 import CoachMessage from '../../components/CoachMessage';
 import ProgressRing from '../../components/ProgressRing';
+import AIEncouragement from '../../components/AIEncouragement';
+import MilestoneCelebration from '../../components/MilestoneCelebration';
+import { saveMilestoneToLocalStorage, saveTestActivityToLocalStorage } from '../../utils/activityHelper';
 
 export default function TestResult() {
   const { id } = useParams();
   const { user } = useAuth();
   const location = useLocation();
   const testResult = location.state?.testResult;
+  const [milestones, setMilestones] = useState([]);
+  const [showMilestone, setShowMilestone] = useState(null);
+  const [previousScore, setPreviousScore] = useState(0);
+
+  // Fetch milestones after test completion
+  useEffect(() => {
+    if (testResult && user) {
+      checkMilestones();
+      fetchPreviousScore();
+    }
+  }, [testResult, user]);
+
+  const checkMilestones = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/milestones/check`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.milestones && data.milestones.length > 0) {
+          setMilestones(data.milestones);
+          // Save milestones to localStorage for Recent Activity
+          data.milestones.forEach(milestone => {
+            saveMilestoneToLocalStorage(milestone, `You achieved: ${milestone}`);
+          });
+          // Show first milestone
+          setShowMilestone(data.milestones[0]);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking milestones:', error);
+    }
+  };
+
+  const fetchPreviousScore = async () => {
+    // Get previous score from test history
+    const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
+    if (history.length > 1) {
+      setPreviousScore(history[1].overallScore || 0);
+    }
+    
+    // Save current test to activity
+    if (testResult) {
+      saveTestActivityToLocalStorage({
+        testType: 'IELTS Test',
+        overallScore: testResult.overallBand,
+        skill: 'all'
+      });
+    }
+  };
 
   // SECURITY: Check if user is logged in
   if (!user) {
@@ -85,8 +140,34 @@ export default function TestResult() {
 
   const { feedback, recommendations } = generateAIFeedback(testResult.overallBand, testResult.skillScores);
 
+  // Format testResult for AI Encouragement component
+  const formattedTestResult = {
+    score: {
+      overall: testResult.overallBand,
+      reading: testResult.skillScores.reading,
+      listening: testResult.skillScores.listening,
+      writing: testResult.skillScores.writing,
+      speaking: testResult.skillScores.speaking
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      {/* AI Encouragement Popup */}
+      <AIEncouragement 
+        testResult={formattedTestResult}
+        previousScore={previousScore}
+        userName={user?.name}
+      />
+
+      {/* Milestone Celebration */}
+      {showMilestone && (
+        <MilestoneCelebration 
+          milestone={showMilestone}
+          onClose={() => setShowMilestone(null)}
+        />
+      )}
+
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
