@@ -2,51 +2,90 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const RecentActivity = () => {
-  const [recentTests, setRecentTests] = useState([]);
+  const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadRecentTests();
+    loadActivities();
   }, []);
 
-  const loadRecentTests = async () => {
+  const loadActivities = async () => {
     try {
-      // Load from localStorage first
+      // Load tests from localStorage
       const localStorageTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
       const sessionStorageTests = JSON.parse(sessionStorage.getItem('testHistory') || '[]');
-      
-      // Use localStorage if available, otherwise use sessionStorage
       const savedTests = localStorageTests.length > 0 ? localStorageTests : sessionStorageTests;
       
-      console.log('🔍 Debug: Recent Activity - Saved tests:', savedTests);
+      // Load milestones from localStorage
+      const milestones = JSON.parse(localStorage.getItem('milestones') || '[]');
       
-      // Get recent 3 tests
-      const recent = savedTests.slice(0, 3);
-      console.log('🔍 Debug: Recent Activity - Recent tests:', recent);
+      // Load daily challenges
+      const dailyChallenges = JSON.parse(localStorage.getItem('dailyChallenges') || '[]');
       
-      setRecentTests(recent);
+      // Combine all activities
+      const allActivities = [];
+      
+      // Add test activities
+      savedTests.slice(0, 2).forEach(test => {
+        allActivities.push({
+          type: 'test',
+          id: test.id || Date.now(),
+          title: test.testType || 'IELTS Test',
+          description: `Scored ${test.overallScore || 0} band`,
+          icon: '📝',
+          color: 'blue',
+          date: test.date,
+          score: test.overallScore
+        });
+      });
+      
+      // Add milestone activities
+      milestones.slice(0, 1).forEach(milestone => {
+        allActivities.push({
+          type: 'milestone',
+          id: milestone.id || Date.now(),
+          title: milestone.name || 'Achievement Unlocked',
+          description: milestone.description || 'Great progress!',
+          icon: '🏆',
+          color: 'yellow',
+          date: milestone.date
+        });
+      });
+      
+      // Add daily challenge activities
+      dailyChallenges.slice(0, 1).forEach(challenge => {
+        allActivities.push({
+          type: 'challenge',
+          id: challenge.id || Date.now(),
+          title: 'Daily Challenge Completed',
+          description: `Streak: ${challenge.streak || 0} days`,
+          icon: '🔥',
+          color: 'orange',
+          date: challenge.date
+        });
+      });
+      
+      // Sort by date (most recent first)
+      allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      // Get top 3 activities
+      setActivities(allActivities.slice(0, 3));
       setLoading(false);
     } catch (error) {
-      console.error('Error loading recent tests:', error);
+      console.error('Error loading activities:', error);
       setLoading(false);
     }
   };
 
-  const getSkillIcon = (skill) => {
-    const icons = {
-      reading: '📖',
-      listening: '🎧',
-      writing: '✍️',
-      speaking: '🗣️'
+  const getActivityColor = (color) => {
+    const colors = {
+      blue: 'bg-blue-100 text-blue-600',
+      yellow: 'bg-yellow-100 text-yellow-600',
+      orange: 'bg-orange-100 text-orange-600',
+      green: 'bg-green-100 text-green-600',
+      purple: 'bg-purple-100 text-purple-600'
     };
-    return icons[skill] || '📚';
-  };
-
-  const getBandColor = (band) => {
-    if (band >= 7) return 'text-green-600 bg-green-100';
-    if (band >= 6) return 'text-blue-600 bg-blue-100';
-    if (band >= 5) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    return colors[color] || colors.blue;
   };
 
   if (loading) {
@@ -72,25 +111,24 @@ const RecentActivity = () => {
         </Link>
       </div>
       
-      <div className="space-y-4">
-        {recentTests.length > 0 ? (
-          recentTests.map((test, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-lg">📝</span>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">{test.testType || 'IELTS Test'}</p>
-                  <p className="text-sm text-gray-500">{test.date}</p>
-                </div>
+      <div className="space-y-3">
+        {activities.length > 0 ? (
+          activities.map((activity, index) => (
+            <div key={activity.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div className={`w-10 h-10 ${getActivityColor(activity.color)} rounded-lg flex items-center justify-center`}>
+                <span className="text-lg">{activity.icon}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getBandColor(test.overallScore || 0)}`}>
-                  Band {test.overallScore || 0}
-                </span>
-                <span className="text-gray-400">→</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-gray-900 truncate">{activity.title}</p>
+                <p className="text-sm text-gray-500 truncate">{activity.description}</p>
               </div>
+              {activity.score && (
+                <div className="flex-shrink-0">
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-600">
+                    {activity.score} band
+                  </span>
+                </div>
+              )}
             </div>
           ))
         ) : (
