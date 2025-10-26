@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import QuickStart from './QuickStart';
 import HelpCenter from './HelpCenter';
+import LanguageSelector from './LanguageSelector';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -57,6 +58,7 @@ export default function Navbar() {
                 
                 {/* Action Buttons */}
                 <div className="flex items-center space-x-2">
+                  <LanguageSelector />
                   <button
                     onClick={() => setShowQuickStart(true)}
                     className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"

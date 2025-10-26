@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -60,7 +62,7 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          🎯 Đăng nhập IELTS
+          🎯 {t('auth.login')} IELTS
         </h1>
 
         {error && (
@@ -72,7 +74,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email
+              {t('auth.email')}
             </label>
             <input
               type="email"
@@ -87,7 +89,7 @@ export default function Login() {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Mật khẩu
+              {t('auth.password')}
             </label>
             <div className="relative">
               <input
@@ -120,7 +122,7 @@ export default function Login() {
               to="/forgot-password" 
               className="text-sm text-blue-600 hover:text-blue-800 block text-center"
             >
-              🔐 Forgot Password?
+              🔐 {t('auth.forgotPassword')}
             </Link>
           )}
 
@@ -129,16 +131,9 @@ export default function Login() {
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition-colors"
           >
-            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            {loading ? t('common.loading') : t('auth.signIn')}
           </button>
         </form>
-
-        <p className="text-center text-gray-600 mt-6">
-          Chưa có tài khoản?{' '}
-          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
-            Đăng ký ngay
-          </Link>
-        </p>
       </div>
     </div>
   );
