@@ -71,9 +71,13 @@ router.post('/register', async (req, res) => {
 
     // Send welcome email (async, don't wait for it)
     const { sendEmail } = require('../services/emailService');
-    sendEmail(user.email, 'welcome', user.name).catch(err => {
-      console.error('Welcome email error:', err);
-    });
+    sendEmail(user.email, 'welcome', user.name)
+      .then(result => {
+        console.log('✅ Welcome email sent successfully:', result);
+      })
+      .catch(err => {
+        console.error('❌ Welcome email error:', err);
+      });
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -107,14 +111,50 @@ router.post('/login', async (req, res) => {
     // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ 
+        message: 'Invalid email or password',
+        showForgotPassword: false
+      });
+    }
+
+    // Check if account is locked
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+      return res.status(401).json({ 
+        message: 'Account temporarily locked. Please try again later.',
+        showForgotPassword: true
+      });
     }
 
     // Check password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      // Increment login attempts
+      user.loginAttempts = (user.loginAttempts || 0) + 1;
+      
+      // Lock account after 3 failed attempts
+      if (user.loginAttempts >= 3) {
+        user.lockUntil = Date.now() + 3600000; // Lock for 1 hour
+        await user.save();
+        return res.status(401).json({ 
+          message: 'Account locked due to multiple failed attempts. Use forgot password.',
+          showForgotPassword: true,
+          attemptsRemaining: 0
+        });
+      }
+      
+      await user.save();
+      
+      return res.status(401).json({ 
+        message: 'Invalid email or password',
+        showForgotPassword: user.loginAttempts >= 2,
+        attemptsRemaining: 3 - user.loginAttempts
+      });
     }
+
+    // Reset login attempts on successful login
+    user.loginAttempts = 0;
+    user.lockUntil = undefined;
+    await user.save();
 
     // Generate token
     const token = generateToken(user._id);
@@ -226,6 +266,131 @@ router.get('/verify', authMiddleware, (req, res) => {
       plan: req.user.plan
     }
   });
+});
+
+// Forgot password - send reset email
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      // Don't reveal if email exists for security
+      return res.json({ 
+        message: 'If that email exists, we\'ve sent a reset link'
+      });
+    }
+
+    // Generate reset token
+    const resetToken = Math.random().toString(36).substring(2, 15) + 
+                      Math.random().toString(36).substring(2, 15);
+    
+    // Save reset token to user (expires in 1 hour)
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    // Send reset email
+    const { sendEmail } = require('../services/emailService');
+    await sendEmail(
+      user.email, 
+      'passwordReset', 
+      { 
+        userName: user.name,
+        resetCode: resetToken,
+        resetLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`
+      }
+    );
+
+    res.json({ 
+      success: true,
+      message: 'Password reset code sent to your email'
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Verify reset token
+router.post('/verify-reset-token', async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: 'Reset token is required' });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ 
+        message: 'Invalid or expired reset token' 
+      });
+    }
+
+    res.json({ 
+      success: true,
+      message: 'Token is valid'
+    });
+  } catch (error) {
+    console.error('Verify reset token error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Reset password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ message: 'Token and new password are required' });
+    }
+
+    // Validate password strength
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
+      return res.status(400).json({ 
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' 
+      });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ 
+        message: 'Invalid or expired reset token' 
+      });
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ 
+      success: true,
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 module.exports = router;

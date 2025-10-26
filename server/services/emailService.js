@@ -110,6 +110,34 @@ const templates = {
         <p>Keep up the great work! 🚀</p>
       </div>
     `
+  }),
+
+  passwordReset: (data) => ({
+    subject: '🔐 Reset Your Password',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #ef4444;">Password Reset Request</h1>
+        <p>Hi ${data.userName},</p>
+        <p>We received a request to reset your password for your IELTS Platform account.</p>
+        
+        <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 30px; border-radius: 12px; text-align: center; color: white; margin: 20px 0;">
+          <p style="margin: 0; font-size: 32px; font-weight: bold; letter-spacing: 4px;">${data.resetCode}</p>
+          <p style="margin: 10px 0 0 0; font-size: 14px;">Your Reset Code</p>
+        </div>
+
+        <p><strong>Or click the button below to reset your password:</strong></p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${data.resetLink}" 
+             style="background-color: #ef4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Reset Password
+          </a>
+        </div>
+
+        <p style="color: #6b7280; font-size: 12px;">This link will expire in 1 hour.</p>
+        <p style="color: #6b7280; font-size: 12px;">If you didn't request this, please ignore this email.</p>
+      </div>
+    `
   })
 };
 

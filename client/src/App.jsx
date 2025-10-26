@@ -13,6 +13,8 @@ import TestPage from './pages/Test/TestPage';
 import TestResult from './pages/Test/TestResult';
 import TestHistory from './pages/TestHistory';
 import QuickPractice from './pages/QuickPractice';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 export default function App() {
   return (
@@ -33,6 +35,8 @@ export default function App() {
             <Route path="/test/result/:id" element={<TestResult />} />
             <Route path="/test-history" element={<TestHistory />} />
             <Route path="/quick-practice/:skill" element={<QuickPractice />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
         </div>
       </Router>
