@@ -4,7 +4,7 @@ const path = require('path');
 const filesToFix = [
   'server/routes/progressTracking.js',
   'server/routes/aiEngine.js',
-  'server/routes/authenticIELTS.js',
+  // 'server/routes/authenticIELTS.js', // File doesn't exist
   'server/routes/auth.js',
   'server/routes/aiRecommendations.js',
   'server/routes/upsell.js',

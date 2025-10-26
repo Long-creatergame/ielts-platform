@@ -88,7 +88,23 @@ const userSchema = new mongoose.Schema({
   points: {
     type: Number,
     default: 0
-  }
+  },
+  notifications: [{
+    id: String,
+    type: String,
+    title: String,
+    message: String,
+    data: mongoose.Schema.Types.Mixed,
+    read: { type: Boolean, default: false },
+    readAt: Date,
+    createdAt: { type: Date, default: Date.now }
+  }],
+  aiRecommendations: [{
+    skill: String,
+    recommendations: Array,
+    generatedAt: Date,
+    expiresAt: Date
+  }]
 }, {
   timestamps: true
 });
