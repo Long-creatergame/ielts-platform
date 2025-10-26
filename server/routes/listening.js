@@ -9,7 +9,7 @@ dotenv.config();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_BASE || 'https://api.groq.com/openai/v1',
+  baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
 });
 
 // Helper to calculate IELTS Listening Band Score
@@ -39,7 +39,7 @@ function calculateBandScore(correctCount, totalQuestions) {
 async function generateListeningFeedback(correctCount, totalQuestions, bandScore, answerDetails) {
   try {
     const response = await openai.chat.completions.create({
-      model: process.env.AI_MODEL || "llama3-8b-instant",
+      model: process.env.AI_MODEL || "gpt-4o-mini",
       messages: [
         {
           role: "system",

@@ -92,7 +92,7 @@ Format it exactly as official IELTS question wording.
 Return JSON format with: { "question": "...", "instructions": "...", "wordLimit": number, "timeLimit": number }`;
 
         const response = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Generate a ${skill} question for band ${band} level` }
@@ -245,7 +245,7 @@ router.post('/analyze', async (req, res) => {
     Return JSON format with: { "band_estimate": number, "breakdown": { "taskAchievement": number, "coherenceCohesion": number, "lexicalResource": number, "grammaticalRange": number, "fluency": number, "pronunciation": number }, "feedback": "...", "suggestions": ["...", "..."] }`;
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: `Analyze this ${skill} submission: ${submission_text}` }

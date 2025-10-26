@@ -206,7 +206,7 @@ const scoreEssay = async (req, res) => {
     }
 
     const response = await openai.chat.completions.create({
-      model: process.env.AI_MODEL || "llama3-8b-instant",
+      model: process.env.AI_MODEL || "gpt-4o-mini",
       messages: [
         { 
           role: "system", 

@@ -8,7 +8,7 @@ dotenv.config();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_BASE || 'https://api.groq.com/openai/v1',
+  baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
 });
 
 function buildPrompt({ taskType, question, essay }) {
@@ -50,7 +50,7 @@ router.post('/writing/task1', async (req, res) => {
     }
 
     const response = await openai.chat.completions.create({
-      model: process.env.AI_MODEL || "llama3-8b-instant",
+      model: process.env.AI_MODEL || "gpt-4o-mini",
       messages: [
         { 
           role: "system", 
@@ -76,7 +76,7 @@ router.post('/writing/task1', async (req, res) => {
       essay,
       score,
       feedback: aiText,
-      model: process.env.AI_MODEL || "llama3-8b-instant",
+      model: process.env.AI_MODEL || "gpt-4o-mini",
     });
 
     // Auto-update achievements
