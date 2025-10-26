@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const AIPractice = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [generatedQuestion, setGeneratedQuestion] = useState(null);
   const [formData, setFormData] = useState({
@@ -205,8 +207,8 @@ const AIPractice = () => {
             </button>
             <button
               onClick={() => {
-                // TODO: Navigate to practice page
-                alert('Practice feature coming soon!');
+                // Navigate to quick practice for the generated skill
+                navigate(`/quick-practice/${generatedQuestion.skill}`);
               }}
               className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
             >

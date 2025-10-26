@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const MyWeakness = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [weaknessData, setWeaknessData] = useState(null);
   const [progressData, setProgressData] = useState([]);
@@ -213,8 +215,8 @@ const MyWeakness = () => {
         </button>
         <button
           onClick={() => {
-            // TODO: Navigate to practice recommendations
-            alert('Practice recommendations coming soon!');
+            // Navigate to AI Recommendations
+            window.location.href = '/dashboard#recommendations';
           }}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors"
         >

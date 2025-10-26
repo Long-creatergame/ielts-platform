@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const RecommendedPractice = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState('all');
@@ -53,8 +55,9 @@ const RecommendedPractice = () => {
   };
 
   const handleStartPractice = (recommendation) => {
-    // TODO: Navigate to practice page
-    alert(`Starting ${recommendation.title} practice...`);
+    // Navigate to quick practice for the specific skill
+    const skill = recommendation.skill || recommendation.type || 'reading';
+    navigate(`/quick-practice/${skill}`);
   };
 
   const filteredRecommendations = selectedSkill === 'all' 
@@ -116,8 +119,8 @@ const RecommendedPractice = () => {
           </p>
           <button
             onClick={() => {
-              // TODO: Navigate to AI Practice
-              alert('Go to AI Practice to generate questions!');
+              // Navigate to AI Practice tab on Dashboard
+              window.location.href = '/dashboard#ai-practice';
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
           >
@@ -184,8 +187,8 @@ const RecommendedPractice = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <button
             onClick={() => {
-              // TODO: Navigate to AI Practice
-              alert('AI Practice feature coming soon!');
+              // Navigate to AI Practice
+              window.location.href = '/dashboard#ai-practice';
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
           >
@@ -193,8 +196,8 @@ const RecommendedPractice = () => {
           </button>
           <button
             onClick={() => {
-              // TODO: Navigate to weakness profile
-              alert('Weakness profile feature coming soon!');
+              // Navigate to weakness tab
+              window.location.href = '/dashboard#my-weakness';
             }}
             className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition-colors"
           >
