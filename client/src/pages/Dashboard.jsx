@@ -25,6 +25,7 @@ import WelcomeBanner from '../components/WelcomeBanner';
 import ModernHeader from '../components/ModernHeader';
 import ModernStatsCard from '../components/ModernStatsCard';
 import ModernTestCard from '../components/ModernTestCard';
+import DailyChallenge from '../components/DailyChallenge';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -367,6 +368,9 @@ export default function Dashboard() {
                       />
                     </div>
                   )}
+
+                  {/* Daily Challenge - First Priority */}
+                  <DailyChallenge />
 
                   {/* Quick Actions */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

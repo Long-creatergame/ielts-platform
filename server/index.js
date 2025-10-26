@@ -11,6 +11,7 @@ const realIELTSRoutes = require('./routes/realIELTS.js');
 const aiEngineRoutes = require('./routes/aiEngine.js');
 const aiRecommendationsRoutes = require('./routes/aiRecommendations.js');
 const progressTrackingRoutes = require('./routes/progressTracking.js');
+const dailyChallengeRoutes = require('./routes/dailyChallenge.js');
 
 dotenv.config();
 
@@ -179,6 +180,7 @@ app.use('/api/real-ielts', realIELTSRoutes);
 app.use('/api/ai-engine', aiEngineRoutes);
 app.use('/api/ai-recommendations', aiRecommendationsRoutes);
 app.use('/api/progress-tracking', progressTrackingRoutes);
+app.use('/api/daily-challenge', dailyChallengeRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
