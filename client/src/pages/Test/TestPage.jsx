@@ -58,23 +58,39 @@ export default function TestPage() {
     const loadRealIELTSData = async () => {
       try {
         let response;
-        // Use new API endpoints for better content
-        switch(skillType) {
-          case 'reading':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/reading`);
-            break;
-          case 'listening':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/listening`);
-            break;
-          case 'writing':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/writing`);
-            break;
-          case 'speaking':
-            response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/practice-tests/speaking`);
-            break;
-          default:
-            return;
+        // Use new IELTS test API endpoints
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+        const token = localStorage.getItem('token');
+        
+        // Generate new test
+        const generateResponse = await fetch(`${API_BASE_URL}/api/ielts-test/generate`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            skill: skillType,
+            level: level
+          })
+        });
+        
+        if (generateResponse.ok) {
+          const data = await generateResponse.json();
+          setQuestions(data.data.content.questions || []);
+          setTestData(data.data);
+          setPassage(data.data.content.passage || '');
+          setTimeLeft(data.data.content.timeLimit * 60); // Convert minutes to seconds
+          return;
         }
+        
+        // Fallback to quick practice if IELTS test fails
+        response = await fetch(`${API_BASE_URL}/api/quick-practice/${skillType}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         
         if (response.ok) {
           const data = await response.json();

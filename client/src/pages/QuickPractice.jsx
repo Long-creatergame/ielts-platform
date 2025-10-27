@@ -27,12 +27,20 @@ export default function QuickPractice() {
   const loadQuickPracticeContent = async (skillType) => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quick-practice/${skillType}`);
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE_URL}/api/quick-practice/${skillType}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
       if (response.ok) {
         const data = await response.json();
-        setTestData(data);
-        setQuestions(data.questions || []);
+        setTestData(data.data);
+        setQuestions(data.data.questions || []);
       } else {
         // Fallback content for quick practice
         loadFallbackQuickContent(skillType);
