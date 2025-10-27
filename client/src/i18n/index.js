@@ -70,6 +70,14 @@ const resources = {
       'quickStart.skillFocus': 'Skill Focus',
       'quickStart.exploreFeatures': 'Explore Features',
       
+      // Test Selector
+      'testSelector.title': 'Choose Test Type',
+      'testSelector.duration': 'Duration',
+      'testSelector.skills': 'Skills',
+      'testSelector.difficulty': 'Difficulty',
+      'testSelector.start': 'Start',
+      'testSelector.suggestions': 'Suggestions',
+      
       // Test History
       'testHistory.title': 'Test History',
       'testHistory.subtitle': 'View all your test activities and results',
@@ -310,6 +318,7 @@ const resources = {
       'common.errorMessage': 'Chúng tôi xin lỗi, đã xảy ra sự cố không mong muốn. Vui lòng thử làm mới trang.',
       'common.refreshPage': 'Làm mới trang',
       'common.errorDetails': 'Chi tiết lỗi (Phát triển)',
+      'common.later': 'Để sau',
       
       // Help Center
       'help.title': 'Trung tâm trợ giúp',
@@ -321,6 +330,24 @@ const resources = {
       'help.gettingStarted': 'Bắt đầu',
       'help.features': 'Tính năng',
       'help.troubleshooting': 'Khắc phục sự cố',
+      
+      // Quick Start
+      'quickStart.title': 'Bắt đầu hành trình IELTS',
+      'quickStart.subtitle': 'Chọn cách bạn muốn bắt đầu để có trải nghiệm tốt nhất',
+      'quickStart.tipTitle': 'Mẹo cho người mới:',
+      'quickStart.tipContent': 'Nếu bạn chưa biết trình độ hiện tại, hãy bắt đầu với "Làm bài kiểm tra đầy đủ" để có đánh giá chính xác. Sau đó sử dụng "Luyện tập với AI" để cải thiện những điểm yếu.',
+      'quickStart.fullTest': 'Làm bài kiểm tra đầy đủ',
+      'quickStart.aiPractice': 'Luyện tập với AI',
+      'quickStart.skillFocus': 'Luyện tập kỹ năng cụ thể',
+      'quickStart.exploreFeatures': 'Khám phá tính năng',
+      
+      // Test Selector
+      'testSelector.title': 'Chọn loại bài kiểm tra',
+      'testSelector.duration': 'Thời gian',
+      'testSelector.skills': 'Kỹ năng',
+      'testSelector.difficulty': 'Độ khó',
+      'testSelector.start': 'Bắt đầu',
+      'testSelector.suggestions': 'Gợi ý',
       
       // Test History
       'testHistory.title': 'Lịch sử bài kiểm tra',
@@ -396,6 +423,7 @@ const resources = {
       'common.errorMessage': '抱歉，发生了意外情况。请尝试刷新页面。',
       'common.refreshPage': '刷新页面',
       'common.errorDetails': '错误详情（开发）',
+      'common.later': '稍后',
       
       // Help Center
       'help.title': '帮助中心',
@@ -407,6 +435,24 @@ const resources = {
       'help.gettingStarted': '开始使用',
       'help.features': '功能',
       'help.troubleshooting': '故障排除',
+      
+      // Quick Start
+      'quickStart.title': '开始您的雅思之旅',
+      'quickStart.subtitle': '选择您想要开始的方式以获得最佳体验',
+      'quickStart.tipTitle': '初学者提示：',
+      'quickStart.tipContent': '如果您不知道当前水平，请从"完整测试"开始以获得准确评估。然后使用"AI练习"来改善薄弱环节。',
+      'quickStart.fullTest': '完整测试',
+      'quickStart.aiPractice': 'AI练习',
+      'quickStart.skillFocus': '技能重点',
+      'quickStart.exploreFeatures': '探索功能',
+      
+      // Test Selector
+      'testSelector.title': '选择测试类型',
+      'testSelector.duration': '时长',
+      'testSelector.skills': '技能',
+      'testSelector.difficulty': '难度',
+      'testSelector.start': '开始',
+      'testSelector.suggestions': '建议',
       
       // Test History
       'testHistory.title': '测试历史',
@@ -560,6 +606,7 @@ const resources = {
       'common.errorMessage': '申し訳ございませんが、予期しない問題が発生しました。ページを更新してください。',
       'common.refreshPage': 'ページを更新',
       'common.errorDetails': 'エラー詳細（開発）',
+      'common.later': '後で',
       
       // Help Center
       'help.title': 'ヘルプセンター',
@@ -571,6 +618,24 @@ const resources = {
       'help.gettingStarted': '始める',
       'help.features': '機能',
       'help.troubleshooting': 'トラブルシューティング',
+      
+      // Quick Start
+      'quickStart.title': 'IELTSの旅を始めましょう',
+      'quickStart.subtitle': '最高の体験のために開始方法を選択してください',
+      'quickStart.tipTitle': '初心者向けのヒント：',
+      'quickStart.tipContent': '現在のレベルがわからない場合は、「フルテスト」から始めて正確な評価を得てください。その後「AI練習」を使用して弱点を改善してください。',
+      'quickStart.fullTest': 'フルテスト',
+      'quickStart.aiPractice': 'AI練習',
+      'quickStart.skillFocus': 'スキルフォーカス',
+      'quickStart.exploreFeatures': '機能を探索',
+      
+      // Test Selector
+      'testSelector.title': 'テストタイプを選択',
+      'testSelector.duration': '時間',
+      'testSelector.skills': 'スキル',
+      'testSelector.difficulty': '難易度',
+      'testSelector.start': '開始',
+      'testSelector.suggestions': '提案',
       
       // Test History
       'testHistory.title': 'テスト履歴',
@@ -724,6 +789,7 @@ const resources = {
       'common.errorMessage': '죄송합니다. 예상치 못한 문제가 발생했습니다. 페이지를 새로고침해 주세요.',
       'common.refreshPage': '페이지 새로고침',
       'common.errorDetails': '오류 세부사항 (개발)',
+      'common.later': '나중에',
       
       // Help Center
       'help.title': '도움말 센터',
@@ -735,6 +801,24 @@ const resources = {
       'help.gettingStarted': '시작하기',
       'help.features': '기능',
       'help.troubleshooting': '문제 해결',
+      
+      // Quick Start
+      'quickStart.title': 'IELTS 여정을 시작하세요',
+      'quickStart.subtitle': '최고의 경험을 위해 시작 방법을 선택하세요',
+      'quickStart.tipTitle': '초보자를 위한 팁:',
+      'quickStart.tipContent': '현재 수준을 모르신다면 "전체 테스트"로 시작하여 정확한 평가를 받으세요. 그런 다음 "AI 연습"을 사용하여 약점을 개선하세요.',
+      'quickStart.fullTest': '전체 테스트',
+      'quickStart.aiPractice': 'AI 연습',
+      'quickStart.skillFocus': '스킬 포커스',
+      'quickStart.exploreFeatures': '기능 탐색',
+      
+      // Test Selector
+      'testSelector.title': '테스트 유형 선택',
+      'testSelector.duration': '소요 시간',
+      'testSelector.skills': '스킬',
+      'testSelector.difficulty': '난이도',
+      'testSelector.start': '시작',
+      'testSelector.suggestions': '제안',
       
       // Test History
       'testHistory.title': '테스트 기록',

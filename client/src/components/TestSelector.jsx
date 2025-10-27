@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const TestSelector = ({ onClose }) => {
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState(null);
 
   const testTypes = [
@@ -44,7 +46,7 @@ const TestSelector = ({ onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">🎯 Chọn loại bài kiểm tra</h2>
+          <h2 className="text-2xl font-bold text-gray-900">🎯 {t('testSelector.title')}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -66,15 +68,15 @@ const TestSelector = ({ onClose }) => {
               
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="opacity-80">⏱️ Thời gian:</span>
+                  <span className="opacity-80">⏱️ {t('testSelector.duration')}:</span>
                   <span className="font-semibold">{type.duration}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="opacity-80">🎯 Kỹ năng:</span>
+                  <span className="opacity-80">🎯 {t('testSelector.skills')}:</span>
                   <span className="font-semibold">{type.skills}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="opacity-80">📊 Độ khó:</span>
+                  <span className="opacity-80">📊 {t('testSelector.difficulty')}:</span>
                   <span className="font-semibold">{type.difficulty}</span>
                 </div>
               </div>
@@ -88,7 +90,7 @@ const TestSelector = ({ onClose }) => {
                     }}
                     className="block w-full bg-white text-gray-900 font-bold py-3 px-4 rounded-lg text-center hover:bg-gray-100 transition-colors"
                   >
-                    Bắt đầu {type.title}
+                    {t('testSelector.start')} {type.title}
                   </button>
                 </div>
               )}
@@ -97,7 +99,7 @@ const TestSelector = ({ onClose }) => {
         </div>
 
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">💡 Gợi ý:</h4>
+          <h4 className="font-semibold text-gray-900 mb-2">💡 {t('testSelector.suggestions')}:</h4>
           <ul className="text-sm text-gray-600 space-y-1">
             <li>• <strong>Quick Assessment:</strong> Dành cho người mới bắt đầu</li>
             <li>• <strong>Skill Practice:</strong> Dành cho người muốn cải thiện kỹ năng cụ thể</li>
