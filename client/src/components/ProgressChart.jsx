@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   LineChart, 
   Line, 
@@ -11,12 +12,14 @@ import {
 } from 'recharts'
 
 const ProgressChart = ({ data }) => {
+  const { t } = useTranslation()
+  
   if (!data || data.length === 0) {
     return (
       <div className="text-center py-8">
-        <div className="text-gray-500 mb-2">No test data available</div>
+        <div className="text-gray-500 mb-2">{t('common.noData')}</div>
         <div className="text-sm text-gray-400">
-          Complete some tests to see your progress chart
+          {t('common.completeTestsToSeeProgress')}
         </div>
       </div>
     )
@@ -51,10 +54,10 @@ const ProgressChart = ({ data }) => {
               boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
             }}
             formatter={(value, name) => [
-              `${value} Band`,
-              name === 'overall' ? 'Overall Score' : 'Writing Score'
+              `${value} ${t('common.band')}`,
+              name === 'overall' ? t('common.overallScore') : t('common.writingScore')
             ]}
-            labelFormatter={(label) => `Date: ${label}`}
+            labelFormatter={(label) => `${t('common.date')}: ${label}`}
           />
           <Legend />
           
@@ -66,7 +69,7 @@ const ProgressChart = ({ data }) => {
             strokeWidth={3}
             dot={{ fill: '#35b86d', strokeWidth: 2, r: 6 }}
             activeDot={{ r: 8, stroke: '#35b86d', strokeWidth: 2 }}
-            name="Overall Score"
+            name={t('common.overallScore')}
           />
           
           {/* Writing Score Line (only if we have writing data) */}
@@ -78,7 +81,7 @@ const ProgressChart = ({ data }) => {
               strokeWidth={2}
               dot={{ fill: '#9ca3af', strokeWidth: 2, r: 5 }}
               activeDot={{ r: 7, stroke: '#9ca3af', strokeWidth: 2 }}
-              name="Writing Score"
+              name={t('common.writingScore')}
             />
           )}
         </LineChart>

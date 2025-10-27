@@ -39,6 +39,11 @@ const resources = {
       'common.daysAgo': '{{count}} days ago',
       'common.weeksAgo': '{{count}} weeks ago',
       'common.monthsAgo': '{{count}} months ago',
+      'common.noData': 'No test data available',
+      'common.completeTestsToSeeProgress': 'Complete some tests to see your progress chart',
+      'common.overallScore': 'Overall Score',
+      'common.writingScore': 'Writing Score',
+      'common.date': 'Date',
       
       // Test History
       'testHistory.title': 'Test History',
@@ -222,6 +227,11 @@ const resources = {
       'common.daysAgo': '{{count}} ngày trước',
       'common.weeksAgo': '{{count}} tuần trước',
       'common.monthsAgo': '{{count}} tháng trước',
+      'common.noData': 'Không có dữ liệu bài kiểm tra',
+      'common.completeTestsToSeeProgress': 'Hoàn thành một số bài kiểm tra để xem biểu đồ tiến độ',
+      'common.overallScore': 'Điểm tổng thể',
+      'common.writingScore': 'Điểm viết',
+      'common.date': 'Ngày',
       
       // Test History
       'testHistory.title': 'Lịch sử bài kiểm tra',
@@ -289,6 +299,11 @@ const resources = {
       'common.daysAgo': '{{count}} 天前',
       'common.weeksAgo': '{{count}} 周前',
       'common.monthsAgo': '{{count}} 个月前',
+      'common.noData': '没有测试数据',
+      'common.completeTestsToSeeProgress': '完成一些测试以查看进度图表',
+      'common.overallScore': '总分',
+      'common.writingScore': '写作分数',
+      'common.date': '日期',
       
       // Test History
       'testHistory.title': '测试历史',
@@ -409,6 +424,11 @@ const resources = {
       'common.daysAgo': '{{count}}日前',
       'common.weeksAgo': '{{count}}週間前',
       'common.monthsAgo': '{{count}}ヶ月前',
+      'common.noData': 'テストデータがありません',
+      'common.completeTestsToSeeProgress': 'テストを完了して進捗グラフを表示',
+      'common.overallScore': '総合スコア',
+      'common.writingScore': 'ライティングスコア',
+      'common.date': '日付',
       
       // Test History
       'testHistory.title': 'テスト履歴',
@@ -529,6 +549,11 @@ const resources = {
       'common.daysAgo': '{{count}}일 전',
       'common.weeksAgo': '{{count}}주 전',
       'common.monthsAgo': '{{count}}개월 전',
+      'common.noData': '테스트 데이터가 없습니다',
+      'common.completeTestsToSeeProgress': '테스트를 완료하여 진행 차트를 확인하세요',
+      'common.overallScore': '전체 점수',
+      'common.writingScore': '라이팅 점수',
+      'common.date': '날짜',
       
       // Test History
       'testHistory.title': '테스트 기록',
