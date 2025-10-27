@@ -248,7 +248,7 @@ export default function Dashboard() {
                       : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
-                  <span className="text-lg">📈</span>
+                  <span className="text-lg">🔍</span>
                   <span>{t('dashboard.myWeakness')}</span>
                 </button>
                 <button
