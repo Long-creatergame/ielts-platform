@@ -2,6 +2,7 @@ const express = require('express');
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const auth = require('../middleware/auth');
 const WeaknessProfile = require('../models/WeaknessProfile');
 const PracticeSet = require('../models/PracticeSet');
 const AISubmission = require('../models/AISubmission');
@@ -24,7 +25,7 @@ if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== '') {
 
 // 1. GENERATE IELTS QUESTIONS
 // POST /ai-engine/generate
-router.post('/generate', async (req, res) => {
+router.post('/generate', auth, async (req, res) => {
   const { skill, topic, band = 6.5 } = req.body;
   
   try {
@@ -109,7 +110,7 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
           
           // Save to database
           const practiceSet = new PracticeSet({
-            user_id: req.user?.id || 'anonymous',
+            user_id: req.user._id,
             skill,
             topic: topic || 'general',
             band,
@@ -133,33 +134,8 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
       }
     }
 
-    const content = response.choices[0].message.content;
-    const questionData = JSON.parse(content);
-
-    // Save to database
-    const practiceSet = new PracticeSet({
-      user_id: req.user?.id || 'anonymous',
-      skill,
-      topic: topic || 'general',
-      band,
-      question: questionData.question,
-      instructions: questionData.instructions,
-      wordLimit: questionData.wordLimit,
-      timeLimit: questionData.timeLimit
-    });
-
-    await practiceSet.save();
-
-    res.json({
-      success: true,
-      data: {
-        question: questionData.question,
-        instructions: questionData.instructions,
-        wordLimit: questionData.wordLimit,
-        timeLimit: questionData.timeLimit,
-        createdAt: new Date().toISOString()
-      }
-    });
+    // This code block is unreachable due to the try-catch above
+    // Remove this duplicate code
 
   } catch (error) {
     console.error('AI Generate error:', error);
@@ -212,7 +188,7 @@ Return JSON format with: { "question": "...", "instructions": "...", "wordLimit"
 
 // 2. ANALYZE SUBMISSION
 // POST /ai-engine/analyze
-router.post('/analyze', async (req, res) => {
+router.post('/analyze', auth, async (req, res) => {
   const { skill, submission_text, audio_url, user_id } = req.body;
   
   try {
@@ -312,7 +288,7 @@ router.post('/analyze', async (req, res) => {
 
 // 3. GET RECOMMENDATIONS
 // GET /ai-engine/recommend/:userId
-router.get('/recommend/:userId', async (req, res) => {
+router.get('/recommend/:userId', auth, async (req, res) => {
   const { userId } = req.params;
   
   try {
@@ -400,7 +376,7 @@ router.get('/recommend/:userId', async (req, res) => {
 
 // 4. GET WEAKNESS PROFILE
 // GET /ai-engine/weakness/:userId
-router.get('/weakness/:userId', async (req, res) => {
+router.get('/weakness/:userId', auth, async (req, res) => {
   const { userId } = req.params;
   
   try {

@@ -17,31 +17,38 @@ const AIPractice = () => {
 
   const handleGenerate = async () => {
     if (!user) {
-      alert('Please log in to use AI Practice');
+      alert(t('auth.pleaseLogin'));
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai-engine/generate`, {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE_URL}/api/ai-engine/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       
       if (data.success) {
         setGeneratedQuestion(data.data);
       } else {
-        alert('Failed to generate question. Please try again.');
+        throw new Error(data.error || 'Failed to generate question');
       }
     } catch (error) {
       console.error('Generate question error:', error);
-      alert('Error generating question. Please try again.');
+      alert(t('common.errorMessage') + ': ' + error.message);
     } finally {
       setLoading(false);
     }

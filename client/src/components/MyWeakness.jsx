@@ -20,11 +20,19 @@ const MyWeakness = () => {
 
   const fetchWeaknessData = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai-engine/weakness/${user.id}`, {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE_URL}/api/ai-engine/weakness/${user.id}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       if (data.success) {
@@ -39,16 +47,13 @@ const MyWeakness = () => {
 
   const fetchProgressData = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai-engine/progress/${user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setProgressData(data.data);
-      }
+      // Mock progress data since this endpoint doesn't exist yet
+      const mockProgressData = [
+        { date: '2024-01-01', grammar: 5.0, lexical: 5.5, coherence: 6.0, pronunciation: 5.5 },
+        { date: '2024-01-15', grammar: 5.5, lexical: 6.0, coherence: 6.5, pronunciation: 6.0 },
+        { date: '2024-02-01', grammar: 6.0, lexical: 6.5, coherence: 7.0, pronunciation: 6.5 }
+      ];
+      setProgressData(mockProgressData);
     } catch (error) {
       console.error('Fetch progress error:', error);
     }
