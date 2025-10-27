@@ -12,6 +12,7 @@ import CoachMessage from '../components/CoachMessage';
 import UpgradeBanner from '../components/UpgradeBanner';
 import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
 import AIPractice from '../components/AIPractice';
+import AIPersonalization from '../components/AIPersonalization';
 import MyWeakness from '../components/MyWeakness';
 import RecommendedPractice from '../components/RecommendedPractice';
 import AIRecommendations from '../components/AIRecommendations';
@@ -269,6 +270,17 @@ export default function Dashboard() {
                   <span>{t('dashboard.aiRecommendations')}</span>
                 </button>
                 <button
+                  onClick={() => setActiveTab('ai-personalization')}
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
+                    activeTab === 'ai-personalization'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
+                  }`}
+                >
+                  <span className="text-lg">🎯</span>
+                  <span>{t('aiPersonalization.title', 'AI Personalization')}</span>
+                </button>
+                <button
                   onClick={() => setActiveTab('progress-tracking')}
                   className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
                     activeTab === 'progress-tracking'
@@ -433,6 +445,10 @@ export default function Dashboard() {
                          <FeatureGuide feature="ai-practice">
                            <AIPractice />
                          </FeatureGuide>
+                       )}
+
+                       {activeTab === 'ai-personalization' && (
+                         <AIPersonalization />
                        )}
 
                        {activeTab === 'my-weakness' && (
