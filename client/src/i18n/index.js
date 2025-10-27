@@ -27,6 +27,12 @@ const resources = {
       'common.loading': 'Loading...',
       'common.error': 'Error',
       'common.success': 'Success',
+      'common.help': 'Help',
+      'common.tests': 'Take Test',
+      'common.target': 'Target',
+      'common.current': 'Current',
+      'common.noTestsYet': 'No tests yet',
+      'common.band': 'Band',
       
       // Auth
       'auth.login': 'Login',
@@ -43,6 +49,16 @@ const resources = {
       'dashboard.welcome': 'Welcome back!',
       'dashboard.quickActions': 'Quick Actions',
       'dashboard.recentTests': 'Recent Tests',
+      'dashboard.overview': 'Overview',
+      'dashboard.aiPractice': 'AI Practice',
+      'dashboard.myWeakness': 'My Weakness',
+      'dashboard.recommended': 'Recommended',
+      'dashboard.aiRecommendations': 'AI Recommendations',
+      'dashboard.progressTracking': 'Progress Tracking',
+      'dashboard.testsCompleted': 'Tests Completed',
+      'dashboard.averageBand': 'Average Band',
+      'dashboard.streakDays': 'Streak Days',
+      'dashboard.targetBand': 'Target Band',
       
       // Test
       'test.startTest': 'Start Test',
@@ -57,6 +73,7 @@ const resources = {
       'common.target': 'Target',
       'common.current': 'Current',
       'common.noTestsYet': 'No tests yet',
+      'common.band': 'Band',
     }
   },
   vi: {
@@ -98,6 +115,16 @@ const resources = {
       'dashboard.welcome': 'Chào mừng trở lại!',
       'dashboard.quickActions': 'Thao tác nhanh',
       'dashboard.recentTests': 'Bài kiểm tra gần đây',
+      'dashboard.overview': 'Tổng quan',
+      'dashboard.aiPractice': 'Luyện tập AI',
+      'dashboard.myWeakness': 'Điểm yếu của tôi',
+      'dashboard.recommended': 'Đề xuất',
+      'dashboard.aiRecommendations': 'Đề xuất AI',
+      'dashboard.progressTracking': 'Theo dõi tiến độ',
+      'dashboard.testsCompleted': 'Bài kiểm tra đã hoàn thành',
+      'dashboard.averageBand': 'Điểm trung bình',
+      'dashboard.streakDays': 'Ngày liên tiếp',
+      'dashboard.targetBand': 'Mục tiêu Band',
       
       // Test
       'test.startTest': 'Bắt đầu kiểm tra',
@@ -112,6 +139,7 @@ const resources = {
       'common.target': 'Mục tiêu',
       'common.current': 'Hiện tại',
       'common.noTestsYet': 'Chưa có bài kiểm tra',
+      'common.band': 'Band',
     }
   },
   zh: {
@@ -137,6 +165,12 @@ const resources = {
       'common.loading': '加载中...',
       'common.error': '错误',
       'common.success': '成功',
+      'common.help': '帮助',
+      'common.tests': '参加考试',
+      'common.target': '目标',
+      'common.current': '当前',
+      'common.noTestsYet': '还没有测试',
+      'common.band': '分数',
       
       // Auth
       'auth.login': '登录',
@@ -153,6 +187,16 @@ const resources = {
       'dashboard.welcome': '欢迎回来！',
       'dashboard.quickActions': '快速操作',
       'dashboard.recentTests': '最近的测试',
+      'dashboard.overview': '概览',
+      'dashboard.aiPractice': 'AI练习',
+      'dashboard.myWeakness': '我的弱点',
+      'dashboard.recommended': '推荐',
+      'dashboard.aiRecommendations': 'AI推荐',
+      'dashboard.progressTracking': '进度追踪',
+      'dashboard.testsCompleted': '已完成测试',
+      'dashboard.averageBand': '平均分数',
+      'dashboard.streakDays': '连续天数',
+      'dashboard.targetBand': '目标分数',
       
       // Test
       'test.startTest': '开始测试',

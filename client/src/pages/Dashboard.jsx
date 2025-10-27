@@ -238,7 +238,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span className="text-lg">📊</span>
-                  <span>Overview</span>
+                  <span>{t('dashboard.overview')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('ai-practice')}
@@ -249,7 +249,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span className="text-lg">🧩</span>
-                  <span>AI Practice</span>
+                  <span>{t('dashboard.aiPractice')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('my-weakness')}
@@ -260,7 +260,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span className="text-lg">📈</span>
-                  <span>My Weakness</span>
+                  <span>{t('dashboard.myWeakness')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('recommended')}
@@ -271,7 +271,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span className="text-lg">💡</span>
-                  <span>Recommended</span>
+                  <span>{t('dashboard.recommended')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('ai-recommendations')}
@@ -282,7 +282,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span className="text-lg">🤖</span>
-                  <span>AI Recommendations</span>
+                  <span>{t('dashboard.aiRecommendations')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('progress-tracking')}
@@ -293,7 +293,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span className="text-lg">📊</span>
-                  <span>Progress Tracking</span>
+                  <span>{t('dashboard.progressTracking')}</span>
                 </button>
               </nav>
             </div>
@@ -313,7 +313,7 @@ export default function Dashboard() {
                     <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-blue-100 text-sm font-medium">Tests Completed</p>
+                          <p className="text-blue-100 text-sm font-medium">{t('dashboard.testsCompleted')}</p>
                           <p className="text-3xl font-bold">{statistics?.totalTests || 0}</p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -325,7 +325,7 @@ export default function Dashboard() {
                     <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-green-100 text-sm font-medium">Average Band</p>
+                          <p className="text-green-100 text-sm font-medium">{t('dashboard.averageBand')}</p>
                           <p className="text-3xl font-bold">{statistics?.averageBand || 'N/A'}</p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
