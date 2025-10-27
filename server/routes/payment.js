@@ -1,6 +1,11 @@
 const express = require('express');
 const User = require('../models/User');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+// Initialize Stripe only if API key is available
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+}
 
 const router = express.Router();
 
@@ -63,6 +68,12 @@ router.get('/pricing', (req, res) => {
 // POST /api/payment/create - Create Stripe payment session
 router.post('/create', authMiddleware, async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(503).json({ 
+        message: 'Payment service not configured. Please contact support.' 
+      });
+    }
+
     const { planId } = req.body;
     const user = req.user;
 
@@ -118,6 +129,12 @@ router.post('/create', authMiddleware, async (req, res) => {
 // POST /api/payment/verify - Verify Stripe payment
 router.post('/verify', authMiddleware, async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(503).json({ 
+        message: 'Payment service not configured. Please contact support.' 
+      });
+    }
+
     const { sessionId } = req.body;
     const user = req.user;
 
@@ -155,6 +172,10 @@ router.post('/verify', authMiddleware, async (req, res) => {
 
 // POST /api/payment/webhook - Stripe webhook handler
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+  if (!stripe) {
+    return res.status(503).json({ message: 'Payment service not configured' });
+  }
+
   const sig = req.headers['stripe-signature'];
   let event;
 
