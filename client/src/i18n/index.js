@@ -268,6 +268,32 @@ const resources = {
     'notifications.markAllRead': 'Mark all as read',
     'notifications.empty': 'No notifications yet',
     'notifications.markRead': 'Mark as read',
+
+    // Unified Recommendations
+    'recommendations.title': 'Smart Recommendations',
+    'recommendations.subtitle': 'Personalized suggestions to improve your IELTS score',
+    'recommendations.all': 'All',
+    'recommendations.ai': 'AI Powered',
+    'recommendations.practice': 'Practice',
+    'recommendations.noRecommendations': 'No recommendations yet',
+    'recommendations.completeTests': 'Complete some tests to get personalized recommendations',
+
+    // Unified Progress Tracking
+    'progress.title': 'Progress Tracking',
+    'progress.subtitle': 'Track your IELTS journey and see your improvement',
+    'progress.overview': 'Overview',
+    'progress.charts': 'Charts',
+    'progress.analytics': 'Analytics',
+    'progress.testsCompleted': 'Tests Completed',
+    'progress.studyTime': 'Study Time',
+    'progress.currentStreak': 'Current Streak',
+    'progress.accuracy': 'Accuracy',
+    'progress.skillBreakdown': 'Skill Breakdown',
+    'progress.improvement': 'improvement',
+    'progress.ofTarget': 'of target',
+    'progress.dailyProgress': 'Daily Progress',
+    'progress.achievements': 'Achievements',
+    'progress.noData': 'No progress data available',
       
       // My Weakness
       'weakness.title': 'My Weakness Profile',
@@ -470,6 +496,32 @@ const resources = {
     'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
     'notifications.empty': 'Chưa có thông báo nào',
     'notifications.markRead': 'Đánh dấu đã đọc',
+
+    // Unified Recommendations
+    'recommendations.title': 'Đề xuất thông minh',
+    'recommendations.subtitle': 'Gợi ý cá nhân hóa để cải thiện điểm IELTS',
+    'recommendations.all': 'Tất cả',
+    'recommendations.ai': 'AI',
+    'recommendations.practice': 'Luyện tập',
+    'recommendations.noRecommendations': 'Chưa có đề xuất nào',
+    'recommendations.completeTests': 'Hoàn thành một số bài test để nhận đề xuất cá nhân hóa',
+
+    // Unified Progress Tracking
+    'progress.title': 'Theo dõi tiến độ',
+    'progress.subtitle': 'Theo dõi hành trình IELTS và xem sự cải thiện',
+    'progress.overview': 'Tổng quan',
+    'progress.charts': 'Biểu đồ',
+    'progress.analytics': 'Phân tích',
+    'progress.testsCompleted': 'Bài test đã hoàn thành',
+    'progress.studyTime': 'Thời gian học',
+    'progress.currentStreak': 'Chuỗi hiện tại',
+    'progress.accuracy': 'Độ chính xác',
+    'progress.skillBreakdown': 'Phân tích kỹ năng',
+    'progress.improvement': 'cải thiện',
+    'progress.ofTarget': 'của mục tiêu',
+    'progress.dailyProgress': 'Tiến độ hàng ngày',
+    'progress.achievements': 'Thành tích',
+    'progress.noData': 'Chưa có dữ liệu tiến độ',
       
       // My Weakness
       'weakness.title': 'Hồ sơ điểm yếu của tôi',

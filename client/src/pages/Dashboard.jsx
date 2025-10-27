@@ -14,9 +14,8 @@ import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
 import AIPractice from '../components/AIPractice';
 import AIPersonalization from '../components/AIPersonalization';
 import MyWeakness from '../components/MyWeakness';
-import RecommendedPractice from '../components/RecommendedPractice';
-import AIRecommendations from '../components/AIRecommendations';
-import ProgressDashboard from '../components/ProgressDashboard';
+import UnifiedRecommendations from '../components/UnifiedRecommendations';
+import UnifiedProgressTracking from '../components/UnifiedProgressTracking';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import TestSelector from '../components/TestSelector';
@@ -248,26 +247,15 @@ export default function Dashboard() {
                   <span>{t('dashboard.myWeakness')}</span>
                 </button>
                 <button
-                  onClick={() => setActiveTab('recommended')}
+                  onClick={() => setActiveTab('recommendations')}
                   className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
-                    activeTab === 'recommended'
+                    activeTab === 'recommendations'
                       ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
                       : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
                   <span className="text-lg">💡</span>
-                  <span>{t('dashboard.recommended')}</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab('ai-recommendations')}
-                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
-                    activeTab === 'ai-recommendations'
-                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
-                  }`}
-                >
-                  <span className="text-lg">🤖</span>
-                  <span>{t('dashboard.aiRecommendations')}</span>
+                  <span>{t('dashboard.recommendations', 'Recommendations')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('ai-personalization')}
@@ -457,21 +445,15 @@ export default function Dashboard() {
                          </FeatureGuide>
                        )}
 
-                       {activeTab === 'recommended' && (
+                       {activeTab === 'recommendations' && (
                          <FeatureGuide feature="recommendations">
-                           <RecommendedPractice />
-                         </FeatureGuide>
-                       )}
-
-                       {activeTab === 'ai-recommendations' && (
-                         <FeatureGuide feature="ai-recommendations">
-                           <AIRecommendations />
+                           <UnifiedRecommendations />
                          </FeatureGuide>
                        )}
 
                        {activeTab === 'progress-tracking' && (
                          <FeatureGuide feature="progress-tracking">
-                           <ProgressDashboard />
+                           <UnifiedProgressTracking />
                          </FeatureGuide>
                        )}
             </div>
