@@ -19,7 +19,7 @@ import ProgressDashboard from '../components/ProgressDashboard';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import TestSelector from '../components/TestSelector';
-import RecentActivity from '../components/RecentActivity';
+import RecentActivityAndTests from '../components/RecentActivityAndTests';
 import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
 import WelcomeBanner from '../components/WelcomeBanner';
@@ -441,63 +441,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Combined Activity & Tests Section */}
-                  <div className="space-y-6">
-                    <RecentActivity />
-                    
-                    {/* Recent Tests - Only show if there are tests */}
-                    {dashboardData?.recentTests && dashboardData.recentTests.length > 0 && (
-                      <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
-                        <div className="flex items-center justify-between mb-6">
-                          <h2 className="text-2xl font-bold text-gray-800">Recent Tests</h2>
-                          <button 
-                            onClick={() => window.location.href = '/test-history'}
-                            className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center"
-                          >
-                            View All
-                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {dashboardData.recentTests.slice(0, 6).map((test, index) => (
-                            <div key={index} className="group bg-gradient-to-br from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-2xl p-6 border border-gray-200/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg">
-                              <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center space-x-3">
-                                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-xl">
-                                    {test.skill === 'reading' ? '📖' :
-                                     test.skill === 'writing' ? '✍️' :
-                                     test.skill === 'listening' ? '🎧' : '🎤'}
-                                  </div>
-                                  <div>
-                                    <h3 className="font-bold text-gray-800 capitalize text-lg">
-                                      {test.skill} Test
-                                    </h3>
-                                    <p className="text-sm text-gray-600">
-                                      {new Date(test.date).toLocaleDateString()}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div className="text-right">
-                                  <div className="text-3xl font-bold text-blue-600">
-                                    {test.bandScore}
-                                  </div>
-                                  <div className="text-sm text-gray-600">Band Score</div>
-                                </div>
-                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                  </svg>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <RecentActivityAndTests />
                 </div>
               )}
               
@@ -572,46 +516,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Test History */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Tests</h2>
-          {dashboardData?.tests?.length > 0 ? (
-            <div className="space-y-4">
-              {dashboardData.tests.map((test, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="font-semibold text-gray-800">
-                        Test #{dashboardData.tests.length - index}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {new Date(test.dateTaken).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-blue-600">
-                        {test.totalBand}
-                      </p>
-                      <p className="text-sm text-gray-600">Overall Band</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">
-                No tests taken yet. Start your first test!
-              </p>
-              <button
-                onClick={() => window.location.href = '/test/start'}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Start Test
-              </button>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

@@ -1,123 +1,229 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
-const TestHistory = () => {
-  const { user } = useAuth();
-  const [testHistory, setTestHistory] = useState([]);
+export default function TestHistory() {
+  const { t } = useTranslation();
+  const [tests, setTests] = useState([]);
+  const [filteredTests, setFilteredTests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedTest, setSelectedTest] = useState(null);
+  const [filters, setFilters] = useState({
+    type: 'all', // all, reading, writing, listening, speaking, full-test, quick-practice
+    dateRange: 'all', // all, today, week, month, year
+    scoreRange: 'all', // all, high, medium, low
+    sortBy: 'date' // date, score, type
+  });
 
   useEffect(() => {
     loadTestHistory();
   }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [tests, filters]);
+
   const loadTestHistory = async () => {
     try {
-      // Check both localStorage and sessionStorage
+      setLoading(true);
+      
+      // Load from localStorage
       const localStorageTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
       const sessionStorageTests = JSON.parse(sessionStorage.getItem('testHistory') || '[]');
-      
-      // Use localStorage if available, otherwise use sessionStorage
       const savedTests = localStorageTests.length > 0 ? localStorageTests : sessionStorageTests;
       
-      console.log('🔍 Debug: Saved tests from localStorage:', localStorageTests);
-      console.log('🔍 Debug: Saved tests from sessionStorage:', sessionStorageTests);
-      console.log('🔍 Debug: Using tests:', savedTests);
+      // Load milestones
+      const milestones = JSON.parse(localStorage.getItem('milestones') || '[]');
       
-      const response = await fetch('/api/tests/history', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+      // Load daily challenges
+      const dailyChallenges = JSON.parse(localStorage.getItem('dailyChallenges') || '[]');
+      
+      // Combine all activities
+      const allActivities = [];
+      
+      // Add test activities
+      savedTests.forEach(test => {
+        allActivities.push({
+          id: test.id || Date.now() + Math.random(),
+          type: 'test',
+          testType: test.testType || 'IELTS Test',
+          skill: test.skill || 'full',
+          score: test.overallScore || test.bandScore || 0,
+          date: test.date || test.dateTaken || new Date().toISOString(),
+          duration: test.duration || 0,
+          status: test.status || 'completed',
+          details: test.details || {}
+        });
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        console.log('🔍 Debug: API response:', data);
-        setTestHistory(data.tests || []);
-      } else {
-        // Fallback to localStorage if API fails
-        console.log('🔍 Debug: API failed, using localStorage');
-        setTestHistory(savedTests);
-      }
+      // Add milestone activities
+      milestones.forEach(milestone => {
+        allActivities.push({
+          id: milestone.id || Date.now() + Math.random(),
+          type: 'milestone',
+          testType: 'Achievement',
+          skill: 'milestone',
+          score: null,
+          date: milestone.date || new Date().toISOString(),
+          duration: 0,
+          status: 'completed',
+          details: {
+            name: milestone.name,
+            description: milestone.description
+          }
+        });
+      });
       
-      // Always set from localStorage as primary source
-      if (savedTests.length > 0) {
-        console.log('🔍 Debug: Setting test history from localStorage:', savedTests);
-        setTestHistory(savedTests);
-      }
+      // Add daily challenge activities
+      dailyChallenges.forEach(challenge => {
+        allActivities.push({
+          id: challenge.id || Date.now() + Math.random(),
+          type: 'challenge',
+          testType: 'Daily Challenge',
+          skill: challenge.skill || 'mixed',
+          score: challenge.score || null,
+          date: challenge.date || new Date().toISOString(),
+          duration: challenge.duration || 0,
+          status: 'completed',
+          details: {
+            streak: challenge.streak,
+            description: challenge.description
+          }
+        });
+      });
+      
+      // Sort by date (most recent first)
+      allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      setTests(allActivities);
     } catch (error) {
       console.error('Error loading test history:', error);
-      // Fallback to localStorage
-      const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
-      console.log('🔍 Debug: Error occurred, using localStorage:', savedTests);
-      setTestHistory(savedTests);
-      
-      // If no saved tests, show mock data
-      if (savedTests.length === 0) {
-        console.log('🔍 Debug: No saved tests, showing mock data');
-        setTestHistory([
-          {
-            id: 1,
-            testType: 'IELTS Academic',
-            level: 'A2',
-            date: '2024-01-15',
-            duration: '2h 30m',
-            overallScore: 6.5,
-            skills: {
-              reading: { score: 6.5, band: 'B2' },
-              listening: { score: 7.0, band: 'B2' },
-              writing: { score: 6.0, band: 'B1' },
-              speaking: { score: 6.5, band: 'B2' }
-            },
-            status: 'completed'
-          },
-          {
-            id: 2,
-            testType: 'IELTS General',
-            level: 'B1',
-            date: '2024-01-10',
-            duration: '2h 15m',
-            overallScore: 7.0,
-            skills: {
-              reading: { score: 7.0, band: 'B2' },
-              listening: { score: 7.5, band: 'B2' },
-              writing: { score: 6.5, band: 'B2' },
-              speaking: { score: 7.0, band: 'B2' }
-            },
-            status: 'completed'
-          }
-        ]);
-      }
     } finally {
       setLoading(false);
     }
   };
 
-  const getBandColor = (band) => {
-    const bandColors = {
-      'A1': 'bg-red-100 text-red-800',
-      'A2': 'bg-orange-100 text-orange-800',
-      'B1': 'bg-yellow-100 text-yellow-800',
-      'B2': 'bg-blue-100 text-blue-800',
-      'C1': 'bg-green-100 text-green-800',
-      'C2': 'bg-purple-100 text-purple-800'
-    };
-    return bandColors[band] || 'bg-gray-100 text-gray-800';
+  const applyFilters = () => {
+    let filtered = [...tests];
+
+    // Filter by type
+    if (filters.type !== 'all') {
+      if (filters.type === 'full-test') {
+        filtered = filtered.filter(test => test.testType === 'IELTS Test' && test.skill === 'full');
+      } else if (filters.type === 'quick-practice') {
+        filtered = filtered.filter(test => test.testType === 'Quick Practice');
+      } else if (filters.type === 'milestone') {
+        filtered = filtered.filter(test => test.type === 'milestone');
+      } else if (filters.type === 'challenge') {
+        filtered = filtered.filter(test => test.type === 'challenge');
+      } else {
+        filtered = filtered.filter(test => test.skill === filters.type);
+      }
+    }
+
+    // Filter by date range
+    if (filters.dateRange !== 'all') {
+      const now = new Date();
+      const filterDate = new Date();
+      
+      switch (filters.dateRange) {
+        case 'today':
+          filterDate.setHours(0, 0, 0, 0);
+          break;
+        case 'week':
+          filterDate.setDate(now.getDate() - 7);
+          break;
+        case 'month':
+          filterDate.setMonth(now.getMonth() - 1);
+          break;
+        case 'year':
+          filterDate.setFullYear(now.getFullYear() - 1);
+          break;
+      }
+      
+      filtered = filtered.filter(test => new Date(test.date) >= filterDate);
+    }
+
+    // Filter by score range
+    if (filters.scoreRange !== 'all' && filters.type !== 'milestone' && filters.type !== 'challenge') {
+      filtered = filtered.filter(test => {
+        if (!test.score) return false;
+        switch (filters.scoreRange) {
+          case 'high':
+            return test.score >= 7.0;
+          case 'medium':
+            return test.score >= 5.0 && test.score < 7.0;
+          case 'low':
+            return test.score < 5.0;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'score':
+          return (b.score || 0) - (a.score || 0);
+        case 'type':
+          return a.testType.localeCompare(b.testType);
+        case 'date':
+        default:
+          return new Date(b.date) - new Date(a.date);
+      }
+    });
+
+    setFilteredTests(filtered);
   };
 
-  const getScoreColor = (score) => {
-    if (score >= 8.0) return 'text-green-600';
-    if (score >= 7.0) return 'text-blue-600';
-    if (score >= 6.0) return 'text-yellow-600';
-    return 'text-red-600';
+  const getTestIcon = (test) => {
+    if (test.type === 'milestone') return '🏆';
+    if (test.type === 'challenge') return '🔥';
+    
+    const skillIcons = {
+      reading: '📖',
+      writing: '✍️',
+      listening: '🎧',
+      speaking: '🎤',
+      full: '📝',
+      mixed: '🎯'
+    };
+    return skillIcons[test.skill] || '📚';
+  };
+
+  const getTestColor = (test) => {
+    if (test.type === 'milestone') return 'from-yellow-500 to-orange-500';
+    if (test.type === 'challenge') return 'from-orange-500 to-red-500';
+    
+    const skillColors = {
+      reading: 'from-blue-500 to-blue-600',
+      writing: 'from-green-500 to-green-600',
+      listening: 'from-purple-500 to-purple-600',
+      speaking: 'from-orange-500 to-orange-600',
+      full: 'from-indigo-500 to-indigo-600',
+      mixed: 'from-pink-500 to-pink-600'
+    };
+    return skillColors[test.skill] || 'from-gray-500 to-gray-600';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return 'Hôm qua';
+    if (diffDays < 7) return `${diffDays} ngày trước`;
+    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} tuần trước`;
+    if (diffDays < 365) return `${Math.ceil(diffDays / 30)} tháng trước`;
+    return date.toLocaleDateString('vi-VN');
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading test history...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading test history...</p>
         </div>
       </div>
     );
@@ -128,238 +234,176 @@ const TestHistory = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">📊 Test History</h1>
-          <p className="mt-2 text-gray-600">View your completed IELTS tests and track your progress</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">📚 Lịch sử bài kiểm tra</h1>
+          <p className="text-gray-600">Xem tất cả hoạt động và kết quả bài kiểm tra của bạn</p>
         </div>
 
-        {/* Debug Controls */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-          <h3 className="text-sm font-semibold text-yellow-800 mb-2">🔧 Debug Controls</h3>
-          <div className="flex space-x-2">
+        {/* Filters */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">🔍 Bộ lọc</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Test Type Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Loại bài kiểm tra</label>
+              <select
+                value={filters.type}
+                onChange={(e) => setFilters({...filters, type: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">Tất cả</option>
+                <option value="full-test">Bài thi đầy đủ</option>
+                <option value="quick-practice">Luyện tập nhanh</option>
+                <option value="reading">Reading</option>
+                <option value="writing">Writing</option>
+                <option value="listening">Listening</option>
+                <option value="speaking">Speaking</option>
+                <option value="milestone">Thành tích</option>
+                <option value="challenge">Thử thách</option>
+              </select>
+            </div>
+
+            {/* Date Range Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Khoảng thời gian</label>
+              <select
+                value={filters.dateRange}
+                onChange={(e) => setFilters({...filters, dateRange: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">Tất cả</option>
+                <option value="today">Hôm nay</option>
+                <option value="week">7 ngày qua</option>
+                <option value="month">1 tháng qua</option>
+                <option value="year">1 năm qua</option>
+              </select>
+            </div>
+
+            {/* Score Range Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Điểm số</label>
+              <select
+                value={filters.scoreRange}
+                onChange={(e) => setFilters({...filters, scoreRange: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={filters.type === 'milestone' || filters.type === 'challenge'}
+              >
+                <option value="all">Tất cả</option>
+                <option value="high">7.0+ (Cao)</option>
+                <option value="medium">5.0-6.9 (Trung bình)</option>
+                <option value="low">Dưới 5.0 (Thấp)</option>
+              </select>
+            </div>
+
+            {/* Sort By Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Sắp xếp theo</label>
+              <select
+                value={filters.sortBy}
+                onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="date">Ngày (mới nhất)</option>
+                <option value="score">Điểm số (cao nhất)</option>
+                <option value="type">Loại bài kiểm tra</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Clear Filters */}
+          <div className="mt-4 flex justify-end">
             <button
-              onClick={() => {
-                console.log('🔍 Current localStorage:', localStorage.getItem('testHistory'));
-                alert('Check console for localStorage data');
-              }}
-              className="text-xs bg-yellow-200 hover:bg-yellow-300 text-yellow-800 px-2 py-1 rounded"
+              onClick={() => setFilters({
+                type: 'all',
+                dateRange: 'all',
+                scoreRange: 'all',
+                sortBy: 'date'
+              })}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium"
             >
-              Check localStorage
-            </button>
-            <button
-              onClick={() => {
-                localStorage.removeItem('testHistory');
-                setTestHistory([]);
-                alert('localStorage cleared!');
-              }}
-              className="text-xs bg-red-200 hover:bg-red-300 text-red-800 px-2 py-1 rounded"
-            >
-              Clear localStorage
-            </button>
-            <button
-              onClick={() => {
-                loadTestHistory();
-                alert('Test History reloaded!');
-              }}
-              className="text-xs bg-blue-200 hover:bg-blue-300 text-blue-800 px-2 py-1 rounded"
-            >
-              Reload History
-            </button>
-            <button
-              onClick={() => {
-                const savedTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
-                console.log('🔍 Force load from localStorage:', savedTests);
-                setTestHistory(savedTests);
-                alert(`Loaded ${savedTests.length} tests from localStorage!`);
-              }}
-              className="text-xs bg-green-200 hover:bg-green-300 text-green-800 px-2 py-1 rounded"
-            >
-              Force Load
+              Xóa bộ lọc
             </button>
           </div>
         </div>
 
-        {/* Test History List */}
-        <div className="space-y-6">
-          {testHistory.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">📝</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Tests Completed Yet</h3>
-              <p className="text-gray-600 mb-6">Start your first IELTS test to see your results here</p>
-              <a
-                href="/dashboard"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-              >
-                Take Your First Test
-              </a>
+        {/* Results */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Kết quả ({filteredTests.length} bài kiểm tra)
+            </h2>
+            <div className="text-sm text-gray-500">
+              Hiển thị {filteredTests.length} trong tổng số {tests.length} hoạt động
+            </div>
+          </div>
+
+          {filteredTests.length > 0 ? (
+            <div className="space-y-4">
+              {filteredTests.map((test) => (
+                <div
+                  key={test.id}
+                  className="bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-xl p-6 border border-gray-200 hover:border-blue-200 transition-all duration-300 hover:shadow-lg"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${getTestColor(test)} rounded-xl flex items-center justify-center text-white text-xl`}>
+                        {getTestIcon(test)}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900 text-lg">
+                          {test.testType}
+                        </h3>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                          <span>{formatDate(test.date)}</span>
+                          {test.duration > 0 && (
+                            <span>⏱️ {test.duration} phút</span>
+                          )}
+                          {test.details?.streak && (
+                            <span>🔥 {test.details.streak} ngày</span>
+                          )}
+                        </div>
+                        {test.details?.description && (
+                          <p className="text-sm text-gray-500 mt-1">{test.details.description}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {test.score !== null && (
+                      <div className="text-right">
+                        <div className="text-3xl font-bold text-blue-600">
+                          {test.score}
+                        </div>
+                        <div className="text-sm text-gray-600">Band Score</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-            testHistory.map((test) => (
-              <div key={test.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{test.testType}</h3>
-                      <p className="text-sm text-gray-600">
-                        Level: <span className={`px-2 py-1 rounded-full text-xs font-medium ${getBandColor(test.level)}`}>
-                          {test.level}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">Completed on</p>
-                      <p className="font-medium text-gray-900">{new Date(test.date).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-
-                  {/* Overall Score */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">Overall Score</span>
-                      <span className={`text-2xl font-bold ${getScoreColor(test.overallScore)}`}>
-                        {test.overallScore}
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(test.overallScore / 9) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  {/* Skills Breakdown */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    {Object.entries(test.skills).map(([skill, data]) => (
-                      <div key={skill} className="text-center">
-                        <div className="text-sm font-medium text-gray-700 capitalize">{skill}</div>
-                        <div className={`text-lg font-bold ${getScoreColor(data.score)}`}>
-                          {data.score}
-                        </div>
-                        <div className={`text-xs px-2 py-1 rounded-full ${getBandColor(data.band)}`}>
-                          {data.band}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => setSelectedTest(test)}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                    >
-                      📊 View Details
-                    </button>
-                    <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors">
-                      📄 Download Report
-                    </button>
-                  </div>
-                </div>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">📚</span>
               </div>
-            ))
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Không có kết quả</h3>
+              <p className="text-gray-600 mb-6">
+                Không tìm thấy bài kiểm tra nào phù hợp với bộ lọc của bạn
+              </p>
+              <button
+                onClick={() => setFilters({
+                  type: 'all',
+                  dateRange: 'all',
+                  scoreRange: 'all',
+                  sortBy: 'date'
+                })}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Xóa bộ lọc
+              </button>
+            </div>
           )}
         </div>
-
-        {/* Test Details Modal */}
-        {selectedTest && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Test Details</h2>
-                  <button
-                    onClick={() => setSelectedTest(null)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Test Info */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2">Test Information</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">Test Type:</span>
-                        <span className="ml-2 font-medium">{selectedTest.testType}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Level:</span>
-                        <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${getBandColor(selectedTest.level)}`}>
-                          {selectedTest.level}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Date:</span>
-                        <span className="ml-2 font-medium">{new Date(selectedTest.date).toLocaleDateString()}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Duration:</span>
-                        <span className="ml-2 font-medium">{selectedTest.duration}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Skills Breakdown */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-4">Skills Breakdown</h3>
-                    <div className="space-y-4">
-                      {Object.entries(selectedTest.skills).map(([skill, data]) => (
-                        <div key={skill} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <span className="text-sm font-medium text-gray-700 capitalize w-20">{skill}</span>
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2">
-                                <span className={`text-lg font-bold ${getScoreColor(data.score)}`}>
-                                  {data.score}
-                                </span>
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getBandColor(data.band)}`}>
-                                  {data.band}
-                                </span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                                <div 
-                                  className="bg-blue-600 h-2 rounded-full" 
-                                  style={{ width: `${(data.score / 9) * 100}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Recommendations */}
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 mb-2">💡 Recommendations</h3>
-                    <ul className="text-sm text-blue-800 space-y-1">
-                      <li>• Focus on improving your weakest skill</li>
-                      <li>• Practice more with authentic IELTS materials</li>
-                      <li>• Consider taking another test in 2-3 weeks</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex space-x-3">
-                  <button
-                    onClick={() => setSelectedTest(null)}
-                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Close
-                  </button>
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                    📄 Download Report
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
-};
-
-export default TestHistory;
+}
