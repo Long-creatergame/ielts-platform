@@ -23,7 +23,6 @@ import RecentActivityAndTests from '../components/RecentActivityAndTests';
 import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
 import WelcomeBanner from '../components/WelcomeBanner';
-import ModernHeader from '../components/ModernHeader';
 import ModernStatsCard from '../components/ModernStatsCard';
 import ModernTestCard from '../components/ModernTestCard';
 import DailyChallenge from '../components/DailyChallenge';

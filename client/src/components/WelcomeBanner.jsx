@@ -91,17 +91,11 @@ const WelcomeBanner = ({ onStartOnboarding, onQuickStart }) => {
                 <span>Hướng dẫn chi tiết</span>
               </button>
               <button
-                onClick={handleQuickStart}
+                onClick={handleDismiss}
                 className="bg-white/20 hover:bg-white/30 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2"
               >
-                <span>⚡</span>
-                <span>Bắt đầu nhanh</span>
-              </button>
-              <button
-                onClick={handleDismiss}
-                className="text-white/80 hover:text-white font-medium py-3 px-4 rounded-xl transition-colors"
-              >
-                Để sau
+                <span>⏰</span>
+                <span>Để sau</span>
               </button>
             </div>
           </div>
