@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function GoalProgressBar({ current, target, goal, className = '' }) {
+  const { t } = useTranslation();
   const progress = Math.min((current / target) * 100, 100);
   
   const getProgressColor = () => {
@@ -12,12 +14,16 @@ export default function GoalProgressBar({ current, target, goal, className = '' 
 
   const getGoalIcon = (goal) => {
     switch (goal) {
-      case 'Du học': return '🎓';
-      case 'Định cư': return '🏠';
-      case 'Việc làm': return '💼';
-      case 'Thử sức': return '🎯';
+      case 'study': return '🎓';
+      case 'immigrate': return '🏠';
+      case 'work': return '💼';
+      case 'try': return '🎯';
       default: return '🎯';
     }
+  };
+  
+  const getGoalLabel = (goal) => {
+    return t(`auth.goalOptions.${goal}`, goal);
   };
 
   return (
@@ -25,7 +31,7 @@ export default function GoalProgressBar({ current, target, goal, className = '' 
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center">
           <span className="text-2xl mr-2">{getGoalIcon(goal)}</span>
-          <span className="font-semibold text-gray-700">Mục tiêu: {goal}</span>
+          <span className="font-semibold text-gray-700">{t('common.target')}: {getGoalLabel(goal)}</span>
         </div>
         <span className="text-sm text-gray-500">
           {current.toFixed(1)} / {target} Band
@@ -40,7 +46,7 @@ export default function GoalProgressBar({ current, target, goal, className = '' 
       </div>
       
       <div className="text-xs text-gray-600 text-center">
-        {progress >= 100 ? '🎉 Đã đạt mục tiêu!' : `Còn ${(target - current).toFixed(1)} band nữa`}
+        {progress >= 100 ? t('dashboard.goalReached') : t('dashboard.remainingBands', { count: (target - current).toFixed(1) })}
       </div>
     </div>
   );

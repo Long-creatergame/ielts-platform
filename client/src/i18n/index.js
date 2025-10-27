@@ -49,6 +49,11 @@ const resources = {
       'common.errorDetails': 'Error Details (Development)',
       'common.later': 'Later',
       
+      // Upgrade
+      'upgrade.freeTrialUsed': 'You have used up your free trial!',
+      'upgrade.upgradeToContinue': 'Upgrade to the Standard package to continue practicing and tracking your progress.',
+      'upgrade.upgradeNow': 'Upgrade Now',
+      
       // Help Center
       'help.title': 'Help Center',
       'help.subtitle': 'Learn how to use the platform most effectively',
@@ -213,6 +218,9 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': 'Welcome back!',
+      'dashboard.greeting': '👋 Hello',
+      'dashboard.goalReached': '🎉 Goal reached!',
+      'dashboard.remainingBands': '{{count}} bands remaining',
       'dashboard.quickActions': 'Quick Actions',
       'dashboard.recentTests': 'Recent Tests',
       'dashboard.overview': 'Overview',
@@ -325,6 +333,9 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': 'Chào mừng trở lại!',
+      'dashboard.greeting': '👋 Chào',
+      'dashboard.goalReached': '🎉 Đã đạt mục tiêu!',
+      'dashboard.remainingBands': 'Còn {{count}} band nữa',
       'dashboard.quickActions': 'Thao tác nhanh',
       'dashboard.recentTests': 'Bài kiểm tra gần đây',
       'dashboard.overview': 'Tổng quan',
@@ -385,6 +396,11 @@ const resources = {
       'common.refreshPage': 'Làm mới trang',
       'common.errorDetails': 'Chi tiết lỗi (Phát triển)',
       'common.later': 'Để sau',
+      
+      // Upgrade
+      'upgrade.freeTrialUsed': 'Bạn đã dùng hết lượt thi miễn phí!',
+      'upgrade.upgradeToContinue': 'Nâng cấp gói Standard để tiếp tục luyện tập và theo dõi tiến trình nhé.',
+      'upgrade.upgradeNow': 'Nâng cấp ngay',
       
       // Help Center
       'help.title': 'Trung tâm trợ giúp',
@@ -557,6 +573,11 @@ const resources = {
       'common.errorDetails': '错误详情（开发）',
       'common.later': '稍后',
       
+      // Upgrade
+      'upgrade.freeTrialUsed': '您已用完免费试用次数！',
+      'upgrade.upgradeToContinue': '升级到标准套餐以继续练习并跟踪进度。',
+      'upgrade.upgradeNow': '立即升级',
+      
       // Help Center
       'help.title': '帮助中心',
       'help.subtitle': '学习如何最有效地使用平台',
@@ -721,6 +742,9 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': '欢迎回来！',
+      'dashboard.greeting': '👋 你好',
+      'dashboard.goalReached': '🎉 达成目标！',
+      'dashboard.remainingBands': '还剩 {{count}} 个分数',
       'dashboard.quickActions': '快速操作',
       'dashboard.recentTests': '最近的测试',
       'dashboard.overview': '概览',
@@ -805,6 +829,11 @@ const resources = {
       'common.refreshPage': 'ページを更新',
       'common.errorDetails': 'エラー詳細（開発）',
       'common.later': '後で',
+      
+      // Upgrade
+      'upgrade.freeTrialUsed': '無料トライアルを使い切りました！',
+      'upgrade.upgradeToContinue': 'Standardプランにアップグレードして練習と進捗追跡を続けてください。',
+      'upgrade.upgradeNow': '今すぐアップグレード',
       
       // Help Center
       'help.title': 'ヘルプセンター',
@@ -970,6 +999,9 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': 'おかえりなさい！',
+      'dashboard.greeting': '👋 こんにちは',
+      'dashboard.goalReached': '🎉 目標達成！',
+      'dashboard.remainingBands': 'あと {{count}} バンド',
       'dashboard.quickActions': 'クイックアクション',
       'dashboard.recentTests': '最近のテスト',
       'dashboard.overview': '概要',
@@ -1054,6 +1086,11 @@ const resources = {
       'common.refreshPage': '페이지 새로고침',
       'common.errorDetails': '오류 세부사항 (개발)',
       'common.later': '나중에',
+      
+      // Upgrade
+      'upgrade.freeTrialUsed': '무료 체험을 모두 사용하셨습니다!',
+      'upgrade.upgradeToContinue': 'Standard 패키지로 업그레이드하여 연습 및 진행 상황 추적을 계속하세요.',
+      'upgrade.upgradeNow': '지금 업그레이드',
       
       // Help Center
       'help.title': '도움말 센터',
@@ -1219,6 +1256,9 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': '다시 오신 것을 환영합니다!',
+      'dashboard.greeting': '👋 안녕하세요',
+      'dashboard.goalReached': '🎉 목표 달성!',
+      'dashboard.remainingBands': '{{count}} 밴드 남았습니다',
       'dashboard.quickActions': '빠른 작업',
       'dashboard.recentTests': '최근 테스트',
       'dashboard.overview': '개요',

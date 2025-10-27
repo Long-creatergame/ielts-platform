@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const UpgradeBanner = ({ user }) => {
+  const { t } = useTranslation();
   if (!user || user.paid || user.freeTestsUsed < 1) return null;
 
   return (
@@ -10,9 +12,9 @@ const UpgradeBanner = ({ user }) => {
         <div className="flex items-center space-x-3">
           <div className="text-2xl">🎯</div>
           <div>
-            <h3 className="font-bold text-lg">Bạn đã dùng hết lượt thi miễn phí!</h3>
+            <h3 className="font-bold text-lg">{t('upgrade.freeTrialUsed')}</h3>
             <p className="text-sm opacity-90">
-              Nâng cấp gói Standard để tiếp tục luyện tập và theo dõi tiến trình nhé.
+              {t('upgrade.upgradeToContinue')}
             </p>
           </div>
         </div>
@@ -20,7 +22,7 @@ const UpgradeBanner = ({ user }) => {
           to="/pricing"
           className="bg-white text-green-600 hover:bg-gray-100 font-bold py-2 px-4 rounded-lg transition-colors whitespace-nowrap"
         >
-          Nâng cấp ngay
+{t('upgrade.upgradeNow')}
         </Link>
       </div>
     </div>

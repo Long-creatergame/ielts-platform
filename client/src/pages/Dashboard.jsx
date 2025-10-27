@@ -149,7 +149,7 @@ export default function Dashboard() {
   }
 
   const { statistics, personalization } = dashboardData || {};
-  const greeting = personalization?.greeting || `👋 Chào ${user.name}!`;
+  const greeting = personalization?.greeting || `${t('dashboard.greeting')} ${user.name}!`;
 
   return (
     <div className="min-h-screen bg-gray-50">
