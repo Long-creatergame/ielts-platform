@@ -7,7 +7,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
 
   const helpCategories = {
     'getting-started': {
-      title: `🚀 ${t('help.gettingStarted')}`,
+      title: t('help.gettingStarted'),
       icon: '🚀',
       color: 'from-blue-500 to-blue-600',
       articles: [
@@ -45,7 +45,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
       ]
     },
     'features': {
-      title: `⚙️ ${t('help.features')}`,
+      title: t('help.features'),
       icon: '⚙️',
       color: 'from-purple-500 to-purple-600',
       articles: [
@@ -82,7 +82,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
       ]
     },
     'troubleshooting': {
-      title: `🔧 ${t('help.troubleshooting')}`,
+      title: t('help.troubleshooting'),
       icon: '🔧',
       color: 'from-red-500 to-red-600',
       articles: [
