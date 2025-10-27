@@ -19,6 +19,7 @@ const progressTrackingRoutes = require('./routes/progress-tracking.js');
 const dailyChallengeRoutes = require('./routes/dailyChallenge.js');
 const milestonesRoutes = require('./routes/milestones.js');
 const notificationsRoutes = require('./routes/notifications.js');
+const featureUsageRoutes = require('./routes/featureUsage.js');
 
 dotenv.config();
 
@@ -195,6 +196,7 @@ app.use('/api/progress-tracking', progressTrackingRoutes);
 app.use('/api/daily-challenge', dailyChallengeRoutes);
 app.use('/api/milestones', milestonesRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/feature-usage', featureUsageRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

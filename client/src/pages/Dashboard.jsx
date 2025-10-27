@@ -12,11 +12,14 @@ import CoachMessage from '../components/CoachMessage';
 import UpgradeBanner from '../components/UpgradeBanner';
 import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
 import FreeTrialProgress from '../components/FreeTrialProgress';
+import PremiumFeatureLock from '../components/PremiumFeatureLock';
+import LimitedAccess from '../components/LimitedAccess';
 import AIPractice from '../components/AIPractice';
 import AIPersonalization from '../components/AIPersonalization';
 import MyWeakness from '../components/MyWeakness';
 import UnifiedRecommendations from '../components/UnifiedRecommendations';
 import UnifiedProgressTracking from '../components/UnifiedProgressTracking';
+import { FEATURE_ACCESS } from '../utils/featureAccess';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
 import TestSelector from '../components/TestSelector';
@@ -432,31 +435,33 @@ export default function Dashboard() {
               )}
               
                        {activeTab === 'ai-practice' && (
-                         <FeatureGuide feature="ai-practice">
+                         <LimitedAccess feature={FEATURE_ACCESS.FREE.LIMITED_AI_PRACTICE}>
                            <AIPractice />
-                         </FeatureGuide>
+                         </LimitedAccess>
                        )}
 
                        {activeTab === 'ai-personalization' && (
-                         <AIPersonalization />
+                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.AI_PERSONALIZATION}>
+                           <AIPersonalization />
+                         </PremiumFeatureLock>
                        )}
 
                        {activeTab === 'my-weakness' && (
-                         <FeatureGuide feature="weakness-analysis">
+                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.WEAKNESS_ANALYSIS}>
                            <MyWeakness />
-                         </FeatureGuide>
+                         </PremiumFeatureLock>
                        )}
 
                        {activeTab === 'recommendations' && (
-                         <FeatureGuide feature="recommendations">
+                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.ADVANCED_RECOMMENDATIONS}>
                            <UnifiedRecommendations />
-                         </FeatureGuide>
+                         </PremiumFeatureLock>
                        )}
 
                        {activeTab === 'progress-tracking' && (
-                         <FeatureGuide feature="progress-tracking">
+                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.DETAILED_PROGRESS}>
                            <UnifiedProgressTracking />
-                         </FeatureGuide>
+                         </PremiumFeatureLock>
                        )}
             </div>
           </div>

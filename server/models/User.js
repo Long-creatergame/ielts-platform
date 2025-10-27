@@ -67,6 +67,21 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 3  // Tăng từ 1 lên 3 test miễn phí
   },
+  // Track daily usage for limited features
+  aiPracticeUsedToday: {
+    type: Number,
+    default: 0
+  },
+  lastAiPracticeDate: {
+    type: Date,
+    default: null
+  },
+  // Track feature usage
+  featureUsage: {
+    weaknessAnalysis: { type: Number, default: 0 },
+    aiPersonalization: { type: Number, default: 0 },
+    advancedRecommendations: { type: Number, default: 0 }
+  },
   subscriptionPlan: {
     type: String,
     enum: ["free", "standard", "premium", "ultimate"],

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SocialProof from '../components/SocialProof';
+import FeatureComparison from '../components/FeatureComparison';
 
 const Pricing = () => {
   const { user } = useAuth();
@@ -96,6 +97,9 @@ const Pricing = () => {
 
         {/* Social Proof */}
         <SocialProof />
+        
+        {/* Feature Comparison */}
+        <FeatureComparison />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
