@@ -130,22 +130,7 @@ export default function Dashboard() {
     return <Loader />;
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-6">🎯 IELTS Platform</h1>
-          <p className="text-lg text-gray-600 mb-8">{t('auth.pleaseLogin')}</p>
-          <Link
-            to="/login"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
-          >
-            {t('auth.login')}
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // User authentication is now handled by ProtectedRoute
 
   const { statistics, personalization } = dashboardData || {};
   const greeting = personalization?.greeting || `${t('dashboard.greeting')} ${user.name}!`;

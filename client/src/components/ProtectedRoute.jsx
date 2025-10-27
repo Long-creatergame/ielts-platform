@@ -18,6 +18,10 @@ export const ProtectedRoute = ({ children }) => {
     );
   }
 
-  // Allow access even if not logged in (guest mode)
+  // Redirect to login if not authenticated
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
   return children;
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import './i18n';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
@@ -24,18 +25,18 @@ export default function App() {
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/payment/:testId" element={<Payment />} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/payment/:testId" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/test/start" element={<TestIntro />} />
-            <Route path="/test/:skill" element={<TestPage />} />
-            <Route path="/test/result/:id" element={<TestResult />} />
-            <Route path="/test-history" element={<TestHistory />} />
-            <Route path="/quick-practice/:skill" element={<QuickPractice />} />
+            <Route path="/test/start" element={<ProtectedRoute><TestIntro /></ProtectedRoute>} />
+            <Route path="/test/:skill" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
+            <Route path="/test/result/:id" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
+            <Route path="/test-history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
+            <Route path="/quick-practice/:skill" element={<ProtectedRoute><QuickPractice /></ProtectedRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
