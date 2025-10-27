@@ -17,7 +17,6 @@ const audioRoutes = require('./routes/audio.js');
 const dashboardRoutes = require('./routes/dashboard.js');
 const recommendationsRoutes = require('./routes/recommendations.js');
 const progressTrackingRoutes = require('./routes/progress-tracking.js');
-const progressTrackingRoutes = require('./routes/progressTracking.js');
 const dailyChallengeRoutes = require('./routes/dailyChallenge.js');
 const milestonesRoutes = require('./routes/milestones.js');
 const notificationsRoutes = require('./routes/notifications.js');

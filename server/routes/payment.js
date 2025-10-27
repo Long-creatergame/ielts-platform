@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const router = express.Router();
 
@@ -59,19 +60,54 @@ router.get('/pricing', (req, res) => {
   });
 });
 
-// POST /api/payment/create - Create payment session
+// POST /api/payment/create - Create Stripe payment session
 router.post('/create', authMiddleware, async (req, res) => {
   try {
     const { planId } = req.body;
     const user = req.user;
 
-    // For demo purposes, we'll just return a mock payment URL
-    const paymentUrl = `https://ielts-platform-two.vercel.app/payment/success?plan=${planId}&userId=${user._id}`;
+    // Define pricing plans
+    const plans = {
+      standard: { price: 129000, name: 'Standard Plan' },
+      premium: { price: 249000, name: 'Premium Plan' },
+      ultimate: { price: 499000, name: 'Ultimate Plan' }
+    };
+
+    const selectedPlan = plans[planId];
+    if (!selectedPlan) {
+      return res.status(400).json({ message: 'Invalid plan selected' });
+    }
+
+    // Create Stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'vnd',
+            product_data: {
+              name: selectedPlan.name,
+              description: `IELTS Platform - ${selectedPlan.name}`,
+            },
+            unit_amount: selectedPlan.price,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.CLIENT_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/payment/cancel`,
+      customer_email: user.email,
+      metadata: {
+        userId: user._id.toString(),
+        planId: planId
+      }
+    });
 
     res.json({
       message: 'Payment session created successfully',
-      paymentUrl,
-      sessionId: `session_${Date.now()}`
+      sessionId: session.id,
+      paymentUrl: session.url
     });
   } catch (error) {
     console.error('Payment creation error:', error);
@@ -79,16 +115,25 @@ router.post('/create', authMiddleware, async (req, res) => {
   }
 });
 
-// POST /api/payment/verify - Verify payment
+// POST /api/payment/verify - Verify Stripe payment
 router.post('/verify', authMiddleware, async (req, res) => {
   try {
-    const { sessionId, planId } = req.body;
+    const { sessionId } = req.body;
     const user = req.user;
 
-    // For demo purposes, we'll just mark user as paid
-    user.paid = true;
-    user.subscriptionPlan = planId;
+    // Retrieve the checkout session from Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status !== 'paid') {
+      return res.status(400).json({ message: 'Payment not completed' });
+    }
+
+    // Update user subscription
+    user.plan = 'paid';
+    user.subscriptionPlan = session.metadata.planId;
     user.subscriptionExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+    user.stripeCustomerId = session.customer;
+    user.stripeSubscriptionId = session.subscription;
     await user.save();
 
     res.json({
@@ -97,14 +142,51 @@ router.post('/verify', authMiddleware, async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        paid: user.paid,
-        subscriptionPlan: user.subscriptionPlan
+        plan: user.plan,
+        subscriptionPlan: user.subscriptionPlan,
+        subscriptionExpires: user.subscriptionExpires
       }
     });
   } catch (error) {
     console.error('Payment verification error:', error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// POST /api/payment/webhook - Stripe webhook handler
+router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.log(`Webhook signature verification failed.`, err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      console.log('Payment succeeded:', session.id);
+      // Handle successful payment
+      break;
+    case 'customer.subscription.updated':
+      const subscription = event.data.object;
+      console.log('Subscription updated:', subscription.id);
+      // Handle subscription update
+      break;
+    case 'customer.subscription.deleted':
+      const deletedSubscription = event.data.object;
+      console.log('Subscription cancelled:', deletedSubscription.id);
+      // Handle subscription cancellation
+      break;
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.json({received: true});
 });
 
 module.exports = router;
