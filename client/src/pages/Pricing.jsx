@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import SocialProof from '../components/SocialProof';
 
 const Pricing = () => {
   const { user } = useAuth();
@@ -93,6 +94,9 @@ const Pricing = () => {
           </p>
         </div>
 
+        {/* Social Proof */}
+        <SocialProof />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
             <div
@@ -110,8 +114,11 @@ const Pricing = () => {
               <div className="text-center mb-6">
                 <div className="text-3xl mb-2">{plan.name}</div>
                 <div className="text-4xl font-bold text-blue-600 mb-2">
-                  {plan.price === 0 ? 'Miễn phí' : `${plan.price.toLocaleString()}đ`}
+                  {plan.price === 0 ? 'Miễn phí' : `299,000đ`}
                 </div>
+                {plan.price > 0 && (
+                  <div className="text-sm text-gray-500 line-through mb-1">599,000đ</div>
+                )}
                 <p className="text-gray-600 text-sm">{plan.description}</p>
               </div>
 
@@ -144,8 +151,14 @@ const Pricing = () => {
         <div className="text-center mt-12">
           <div className="bg-white rounded-2xl shadow-lg p-8 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              🎁 Ưu đãi đặc biệt cho người dùng mới
+              🔥 Ưu đãi giới hạn - Chỉ còn 48 giờ!
             </h2>
+            <div className="bg-red-100 border border-red-300 rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-center text-red-800 font-bold">
+                <span className="text-lg mr-2">⏰</span>
+                Giảm 50% - Chỉ còn 299,000đ (Giá gốc: 599,000đ)
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <div className="font-bold text-blue-800">💳 Thanh toán an toàn</div>

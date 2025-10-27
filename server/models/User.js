@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  freeTestsLimit: {
+    type: Number,
+    default: 3  // Tăng từ 1 lên 3 test miễn phí
+  },
   subscriptionPlan: {
     type: String,
     enum: ["free", "standard", "premium", "ultimate"],
