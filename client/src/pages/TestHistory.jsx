@@ -234,13 +234,13 @@ export default function TestHistory() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">📚 Lịch sử bài kiểm tra</h1>
-          <p className="text-gray-600">Xem tất cả hoạt động và kết quả bài kiểm tra của bạn</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">📚 {t('testHistory.title')}</h1>
+          <p className="text-gray-600">{t('testHistory.subtitle')}</p>
         </div>
 
         {/* Filters */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">🔍 Bộ lọc</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">🔍 {t('testHistory.filters')}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Test Type Filter */}
