@@ -218,6 +218,51 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': 'Welcome back!',
+      
+      // AI Practice
+      'aiPractice.title': 'AI Practice Generator',
+      'aiPractice.subtitle': 'Generate personalized IELTS questions with AI',
+      'aiPractice.skill': 'Skill',
+      'aiPractice.topic': 'Topic (Optional)',
+      'aiPractice.bandLevel': 'Band Level',
+      'aiPractice.generateButton': 'Generate AI Practice Question',
+      
+      // My Weakness
+      'weakness.title': 'My Weakness Profile',
+      'weakness.subtitle': 'Track your progress and identify areas for improvement',
+      'weakness.overallProgress': 'Overall Progress',
+      'weakness.totalSubmissions': 'Total Submissions',
+      'weakness.improvementTrend': 'Improvement Trend',
+      'weakness.lastUpdated': 'Last Updated',
+      'weakness.skillBreakdown': 'Skill Breakdown',
+      'weakness.refreshData': 'Refresh Data',
+      'weakness.getRecommendations': 'Get Practice Recommendations',
+      'weakness.strong': 'Strong',
+      'weakness.good': 'Good',
+      'weakness.fair': 'Fair',
+      'weakness.needsImprovement': 'Needs Improvement',
+      'weakness.noData': 'No weakness data available yet.',
+      'weakness.noDataDesc': 'Complete some AI assessments to see your weakness profile.',
+      
+      // Recommended Practice
+      'recommended.title': 'Recommended Practice',
+      'recommended.filterBySkill': 'Filter by Skill',
+      'recommended.allSkills': 'All Skills',
+      'recommended.refresh': 'Refresh',
+      'recommended.startPractice': 'Start Practice',
+      'recommended.quickActions': 'Quick Actions',
+      'recommended.generateQuestion': 'Generate New Question',
+      'recommended.viewWeakness': 'View My Weakness',
+      'recommended.getRecommendations': 'Get New Recommendations',
+      
+      // Progress Dashboard
+      'progress.title': 'Progress Dashboard',
+      'progress.subtitle': 'Track your IELTS skill improvement journey with detailed analytics.',
+      'progress.skill': 'Skill:',
+      'progress.timeRange': 'Time Range:',
+      'progress.last30Days': 'Last 30 days',
+      'progress.noData': 'No progress data available',
+      'progress.noDataDesc': 'Start working on AI recommendations to see your progress here!',
       'dashboard.greeting': '👋 Hello',
       'dashboard.goalReached': '🎉 Goal reached!',
       'dashboard.remainingBands': '{{count}} bands remaining',
