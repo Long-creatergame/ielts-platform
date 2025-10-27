@@ -81,13 +81,15 @@ const TestSelector = ({ onClose }) => {
 
               {selectedType?.id === type.id && (
                 <div className="mt-4 pt-4 border-t border-white border-opacity-30">
-                  <Link
-                    to={type.link}
+                  <button
+                    onClick={() => {
+                      onClose();
+                      window.location.href = type.link;
+                    }}
                     className="block w-full bg-white text-gray-900 font-bold py-3 px-4 rounded-lg text-center hover:bg-gray-100 transition-colors"
-                    onClick={onClose}
                   >
                     Bắt đầu {type.title}
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>

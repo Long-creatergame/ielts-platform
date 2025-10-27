@@ -38,8 +38,8 @@ const DailyChallenge = () => {
   };
 
   const startChallenge = () => {
-    // Navigate to challenge page
-    window.location.href = `/daily-challenge/${challenge.id}`;
+    // Navigate to test page for the challenge skill
+    window.location.href = `/test/${challenge.skill}`;
   };
 
   const getSkillIcon = (skill) => {

@@ -142,13 +142,15 @@ const QuickStart = ({ onClose }) => {
             Để sau
           </button>
           {selectedOption && (
-            <Link
-              to={selectedOption.link}
-              onClick={handleStart}
+            <button
+              onClick={() => {
+                handleStart();
+                window.location.href = selectedOption.link;
+              }}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
             >
               {selectedOption.action}
-            </Link>
+            </button>
           )}
         </div>
       </div>

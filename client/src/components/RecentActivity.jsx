@@ -138,12 +138,12 @@ const RecentActivity = () => {
             </div>
             <p className="text-gray-500 font-medium">No recent activity</p>
             <p className="text-sm text-gray-400 mt-1">Start your first test to see your progress here</p>
-            <Link
-              to="/dashboard"
+            <button
+              onClick={() => window.location.href = '/test/start'}
               className="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Start Test
-            </Link>
+            </button>
           </div>
         )}
       </div>

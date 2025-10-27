@@ -337,7 +337,7 @@ export default function Dashboard() {
                     <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-purple-100 text-sm font-medium">Streak Days</p>
+                          <p className="text-purple-100 text-sm font-medium">{t('dashboard.streakDays')}</p>
                           <p className="text-3xl font-bold">{user.streakDays || 0}</p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -349,7 +349,7 @@ export default function Dashboard() {
                     <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-orange-100 text-sm font-medium">Target Band</p>
+                          <p className="text-orange-100 text-sm font-medium">{t('dashboard.targetBand')}</p>
                           <p className="text-3xl font-bold">{user.targetBand}</p>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -376,8 +376,8 @@ export default function Dashboard() {
 
                   {/* Quick Actions */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Link
-                      to="/quick-practice/reading"
+                    <button
+                      onClick={() => window.location.href = '/quick-practice/reading'}
                       className="group bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
                       <div className="flex items-center space-x-4 mb-4">
@@ -395,10 +395,10 @@ export default function Dashboard() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
-                    </Link>
+                    </button>
 
-                    <Link
-                      to="/quick-practice/writing"
+                    <button
+                      onClick={() => window.location.href = '/quick-practice/writing'}
                       className="group bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
                       <div className="flex items-center space-x-4 mb-4">
@@ -416,10 +416,10 @@ export default function Dashboard() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
-                    </Link>
+                    </button>
 
-                    <Link
-                      to="/quick-practice/listening"
+                    <button
+                      onClick={() => window.location.href = '/quick-practice/listening'}
                       className="group bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
                     >
                       <div className="flex items-center space-x-4 mb-4">
@@ -437,7 +437,7 @@ export default function Dashboard() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
-                    </Link>
+                    </button>
                   </div>
 
                   {/* Combined Activity & Tests Section */}
@@ -449,15 +449,15 @@ export default function Dashboard() {
                       <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
                         <div className="flex items-center justify-between mb-6">
                           <h2 className="text-2xl font-bold text-gray-800">Recent Tests</h2>
-                          <Link 
-                            to="/test-history" 
+                          <button 
+                            onClick={() => window.location.href = '/test-history'}
                             className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center"
                           >
                             View All
                             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
-                          </Link>
+                          </button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {dashboardData.recentTests.slice(0, 6).map((test, index) => (
@@ -599,9 +599,17 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-600 text-center py-8">
-              No tests taken yet. Start your first test!
-            </p>
+            <div className="text-center py-8">
+              <p className="text-gray-600 mb-4">
+                No tests taken yet. Start your first test!
+              </p>
+              <button
+                onClick={() => window.location.href = '/test/start'}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Start Test
+              </button>
+            </div>
           )}
         </div>
       </div>
