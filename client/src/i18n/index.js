@@ -245,8 +245,29 @@ const resources = {
       'aiPersonalization.recommendations': 'AI Recommendations',
       'aiPersonalization.analytics': 'Learning Analytics',
       'aiPersonalization.totalStudyTime': 'Total Study Time (minutes)',
-      'aiPersonalization.predictedBand': 'Predicted Band Score',
-      'aiPersonalization.confidenceLevel': 'AI Confidence Level',
+    'aiPersonalization.predictedBand': 'Predicted Band Score',
+    'aiPersonalization.confidenceLevel': 'AI Confidence Level',
+
+    // Voice Recorder
+    'voiceRecorder.title': 'Voice Recorder',
+    'voiceRecorder.start': 'Start Recording',
+    'voiceRecorder.pause': 'Pause',
+    'voiceRecorder.resume': 'Resume',
+    'voiceRecorder.stop': 'Stop',
+    'voiceRecorder.playback': 'Playback',
+    'voiceRecorder.instructions': 'Click start to begin recording. You can pause and resume as needed. The recording will automatically stop after the maximum duration.',
+    'voiceRecorder.notSupported': 'Voice recording is not supported in this browser',
+    'voiceRecorder.microphoneError': 'Could not access microphone. Please check permissions.',
+
+    // Notifications
+    'notifications.title': 'Notifications',
+    'notifications.unread': 'unread',
+    'notifications.total': 'total',
+    'notifications.all': 'All',
+    'notifications.today': 'Today',
+    'notifications.markAllRead': 'Mark all as read',
+    'notifications.empty': 'No notifications yet',
+    'notifications.markRead': 'Mark as read',
       
       // My Weakness
       'weakness.title': 'My Weakness Profile',
@@ -426,8 +447,29 @@ const resources = {
       'aiPersonalization.recommendations': 'Đề xuất AI',
       'aiPersonalization.analytics': 'Phân tích học tập',
       'aiPersonalization.totalStudyTime': 'Tổng thời gian học (phút)',
-      'aiPersonalization.predictedBand': 'Điểm Band dự đoán',
-      'aiPersonalization.confidenceLevel': 'Mức độ tin cậy AI',
+    'aiPersonalization.predictedBand': 'Điểm Band dự đoán',
+    'aiPersonalization.confidenceLevel': 'Mức độ tin cậy AI',
+
+    // Voice Recorder
+    'voiceRecorder.title': 'Ghi âm giọng nói',
+    'voiceRecorder.start': 'Bắt đầu ghi âm',
+    'voiceRecorder.pause': 'Tạm dừng',
+    'voiceRecorder.resume': 'Tiếp tục',
+    'voiceRecorder.stop': 'Dừng',
+    'voiceRecorder.playback': 'Phát lại',
+    'voiceRecorder.instructions': 'Nhấn bắt đầu để ghi âm. Bạn có thể tạm dừng và tiếp tục khi cần. Ghi âm sẽ tự động dừng sau thời gian tối đa.',
+    'voiceRecorder.notSupported': 'Trình duyệt này không hỗ trợ ghi âm giọng nói',
+    'voiceRecorder.microphoneError': 'Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập.',
+
+    // Notifications
+    'notifications.title': 'Thông báo',
+    'notifications.unread': 'chưa đọc',
+    'notifications.total': 'tổng cộng',
+    'notifications.all': 'Tất cả',
+    'notifications.today': 'Hôm nay',
+    'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
+    'notifications.empty': 'Chưa có thông báo nào',
+    'notifications.markRead': 'Đánh dấu đã đọc',
       
       // My Weakness
       'weakness.title': 'Hồ sơ điểm yếu của tôi',

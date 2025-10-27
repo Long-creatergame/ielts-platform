@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 const Test = require('../models/Test');
+const { getRandomContent } = require('../services/contentGenerator');
 
 const router = express.Router();
 
@@ -15,7 +16,8 @@ router.post('/generate', auth, async (req, res) => {
     }
 
     // Generate test content based on skill and level
-    const testContent = generateIELTSTestContent(skill, level);
+    const randomContent = getRandomContent(skill, level);
+    const testContent = randomContent ? formatContentForTest(randomContent, skill) : generateIELTSTestContent(skill, level);
     
     // Create test record
     const testRecord = new Test({
@@ -123,6 +125,53 @@ router.get('/result/:testId', auth, async (req, res) => {
   }
 });
 
+function formatContentForTest(content, skill) {
+  switch (skill) {
+    case 'reading':
+      return {
+        title: `IELTS Academic Reading - ${content.title}`,
+        instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section.",
+        timeLimit: 60,
+        passage: content.content,
+        questions: content.questions
+      };
+    case 'writing':
+      return {
+        title: `IELTS Academic Writing - ${content.type}`,
+        instructions: `You should spend about ${content.timeLimit} minutes on this task. Write at least ${content.wordCount} words.`,
+        timeLimit: content.timeLimit,
+        task: content.task,
+        taskType: content.type,
+        wordCount: content.wordCount,
+        criteria: [
+          "Task Achievement - Address all parts of the task",
+          "Coherence and Cohesion - Organize information logically",
+          "Lexical Resource - Use appropriate vocabulary",
+          "Grammar Range and Accuracy - Use varied sentence structures"
+        ]
+      };
+    case 'listening':
+      return {
+        title: `IELTS Academic Listening - ${content.title}`,
+        instructions: "Listen to the recording and answer the questions below. You will hear the recording once.",
+        timeLimit: 30,
+        audioUrl: content.audioUrl,
+        questions: content.questions
+      };
+    case 'speaking':
+      return {
+        title: `IELTS Academic Speaking - Part ${content.part}`,
+        instructions: "Answer the questions below clearly and in detail.",
+        timeLimit: content.part === 1 ? 5 : content.part === 2 ? 4 : 5,
+        questions: content.questions || [content.task],
+        preparationTime: content.preparationTime,
+        speakingTime: content.speakingTime
+      };
+    default:
+      return content;
+  }
+}
+
 function generateIELTSTestContent(skill, level) {
   const baseContent = {
     reading: {
@@ -198,19 +247,73 @@ Despite these challenges, the trend toward renewable energy is accelerating. Man
       title: "IELTS Academic Listening",
       instructions: "Listen to the recording and answer questions 1-10. You will hear the recording once.",
       timeLimit: 30,
-      audioUrl: "/audio/ielts-listening-sample.mp3",
+      audioUrl: "/api/audio/ielts-listening-sample-1.mp3",
+      transcript: "Good morning, everyone. Today we're going to discuss the course requirements for this semester. First, let me introduce myself. I'm Professor Johnson, and I'll be teaching this course on Environmental Science...",
       questions: [
         {
           id: 1,
-          question: "What is the main topic of the lecture?",
+          question: "What is the professor's name?",
           type: "multiple_choice",
           options: [
-            "Climate change",
-            "Renewable energy",
-            "Environmental policy",
-            "Sustainable development"
+            "Professor Smith",
+            "Professor Johnson", 
+            "Professor Brown",
+            "Professor Davis"
           ],
-          correctAnswer: 1
+          correctAnswer: 1,
+          explanation: "The professor introduces himself as Professor Johnson."
+        },
+        {
+          id: 2,
+          question: "What subject does the professor teach?",
+          type: "multiple_choice",
+          options: [
+            "Biology",
+            "Environmental Science",
+            "Chemistry",
+            "Physics"
+          ],
+          correctAnswer: 1,
+          explanation: "The professor mentions teaching Environmental Science."
+        },
+        {
+          id: 3,
+          question: "When are the lectures held?",
+          type: "multiple_choice",
+          options: [
+            "Monday and Wednesday",
+            "Tuesday and Thursday",
+            "Monday and Friday",
+            "Wednesday and Friday"
+          ],
+          correctAnswer: 1,
+          explanation: "Lectures are held every Tuesday and Thursday."
+        },
+        {
+          id: 4,
+          question: "What time do lectures start?",
+          type: "multiple_choice",
+          options: [
+            "8:00 AM",
+            "9:00 AM",
+            "10:00 AM",
+            "11:00 AM"
+          ],
+          correctAnswer: 1,
+          explanation: "Lectures are from 9 AM to 10:30 AM."
+        },
+        {
+          id: 5,
+          question: "Where are the lectures held?",
+          type: "multiple_choice",
+          options: [
+            "Room 105",
+            "Room 205",
+            "Room 305",
+            "Room 405"
+          ],
+          correctAnswer: 1,
+          explanation: "Lectures are held in Room 205."
         }
       ]
     },

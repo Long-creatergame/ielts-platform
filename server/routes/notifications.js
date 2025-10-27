@@ -1,166 +1,164 @@
 const express = require('express');
-const User = require('../models/User');
+const auth = require('../middleware/auth');
+const Notification = require('../models/Notification');
+
 const router = express.Router();
 
-// Get all notifications for user
-router.get('/', async (req, res) => {
+// Get user notifications
+router.get('/', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
-    const user = await User.findById(decoded.userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Get notifications from user
-    const notifications = user.notifications || [];
+    const userId = req.user._id;
+    const { page = 1, limit = 20, unreadOnly = false } = req.query;
     
-    // Filter unread notifications
-    const unreadNotifications = notifications.filter(n => !n.read);
+    const query = { userId };
+    if (unreadOnly === 'true') {
+      query.read = false;
+    }
+    
+    const notifications = await Notification.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    
+    const total = await Notification.countDocuments(query);
     
     res.json({
-      notifications,
-      unreadCount: unreadNotifications.length
+      success: true,
+      data: {
+        notifications,
+        pagination: {
+          current: parseInt(page),
+          pages: Math.ceil(total / limit),
+          total
+        }
+      }
     });
-
   } catch (error) {
     console.error('Get notifications error:', error);
-    res.status(500).json({ error: 'Failed to get notifications' });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Mark notification as read
-router.put('/:notificationId/read', async (req, res) => {
+router.patch('/:id/read', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
-    const user = await User.findById(decoded.userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const { notificationId } = req.params;
-    const notifications = user.notifications || [];
+    const { id } = req.params;
+    const userId = req.user._id;
     
-    // Mark notification as read
-    notifications.forEach(notif => {
-      if (notif.id === notificationId) {
-        notif.read = true;
-        notif.readAt = new Date();
-      }
+    const notification = await Notification.findOneAndUpdate(
+      { _id: id, userId },
+      { read: true, readAt: new Date() },
+      { new: true }
+    );
+    
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: notification
     });
-
-    await User.findByIdAndUpdate(user._id, {
-      $set: { notifications }
-    });
-
-    res.json({ success: true });
-
   } catch (error) {
-    console.error('Mark notification read error:', error);
-    res.status(500).json({ error: 'Failed to mark notification as read' });
+    console.error('Mark notification as read error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Mark all as read
-router.put('/read-all', async (req, res) => {
+// Mark all notifications as read
+router.patch('/read-all', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
-    const user = await User.findById(decoded.userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const notifications = user.notifications || [];
-    notifications.forEach(notif => {
-      notif.read = true;
-      notif.readAt = new Date();
+    const userId = req.user._id;
+    
+    await Notification.updateMany(
+      { userId, read: false },
+      { read: true, readAt: new Date() }
+    );
+    
+    res.json({
+      success: true,
+      message: 'All notifications marked as read'
     });
-
-    await User.findByIdAndUpdate(user._id, {
-      $set: { notifications }
-    });
-
-    res.json({ success: true });
-
   } catch (error) {
-    console.error('Mark all read error:', error);
-    res.status(500).json({ error: 'Failed to mark all as read' });
+    console.error('Mark all notifications as read error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Create notification helper function
-const createNotification = async (userId, type, title, message, data = {}) => {
+// Delete notification
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const user = await User.findById(userId);
-    if (!user) return;
+    const { id } = req.params;
+    const userId = req.user._id;
+    
+    const notification = await Notification.findOneAndDelete({ _id: id, userId });
+    
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Notification deleted'
+    });
+  } catch (error) {
+    console.error('Delete notification error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
-    const notification = {
-      id: `notif-${Date.now()}-${Math.random()}`,
-      type, // 'daily_challenge', 'milestone', 'reminder', 'update'
+// Create notification (internal use)
+router.post('/create', auth, async (req, res) => {
+  try {
+    const { type, title, message, actionUrl, priority = 'medium' } = req.body;
+    const userId = req.user._id;
+    
+    const notification = new Notification({
+      userId,
+      type,
       title,
       message,
-      data,
-      read: false,
-      createdAt: new Date()
-    };
-
-    const notifications = user.notifications || [];
-    notifications.unshift(notification);
-    
-    // Keep only last 50 notifications
-    const recentNotifications = notifications.slice(0, 50);
-
-    await User.findByIdAndUpdate(userId, {
-      $set: { notifications: recentNotifications }
+      actionUrl,
+      priority,
+      read: false
     });
-
-    return notification;
+    
+    await notification.save();
+    
+    res.json({
+      success: true,
+      data: notification
+    });
   } catch (error) {
     console.error('Create notification error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
-};
+});
 
-// Daily challenge reminder
-router.post('/create-daily-reminder', async (req, res) => {
+// Get notification stats
+router.get('/stats', auth, async (req, res) => {
   try {
-    const users = await User.find({ 'subscriptionPlan': { $ne: 'free' } });
+    const userId = req.user._id;
     
-    for (const user of users) {
-      await createNotification(
-        user._id,
-        'daily_challenge',
-        '🔥 Your Daily Challenge Awaits!',
-        'Complete today\'s challenge to maintain your streak and earn points!',
-        { action: 'daily_challenge' }
-      );
-    }
-
-    res.json({ success: true, message: 'Daily reminders sent' });
+    const total = await Notification.countDocuments({ userId });
+    const unread = await Notification.countDocuments({ userId, read: false });
+    const today = await Notification.countDocuments({
+      userId,
+      createdAt: { $gte: new Date().setHours(0, 0, 0, 0) }
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        total,
+        unread,
+        today
+      }
+    });
   } catch (error) {
-    console.error('Daily reminder error:', error);
-    res.status(500).json({ error: 'Failed to send reminders' });
+    console.error('Get notification stats error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 module.exports = router;
-module.exports.createNotification = createNotification;

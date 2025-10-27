@@ -1,0 +1,131 @@
+{
+  "name": "IELTS Platform",
+  "short_name": "IELTS",
+  "description": "Professional IELTS test preparation platform with AI-powered assessment",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Reading Test",
+      "short_name": "Reading",
+      "description": "Start a new IELTS Reading test",
+      "url": "/test/reading",
+      "icons": [
+        {
+          "src": "/icons/reading-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Start Listening Test",
+      "short_name": "Listening",
+      "description": "Start a new IELTS Listening test",
+      "url": "/test/listening",
+      "icons": [
+        {
+          "src": "/icons/listening-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Start Writing Test",
+      "short_name": "Writing",
+      "description": "Start a new IELTS Writing test",
+      "url": "/test/writing",
+      "icons": [
+        {
+          "src": "/icons/writing-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Start Speaking Test",
+      "short_name": "Speaking",
+      "description": "Start a new IELTS Speaking test",
+      "url": "/test/speaking",
+      "icons": [
+        {
+          "src": "/icons/speaking-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "IELTS Platform Dashboard"
+    },
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Test Interface"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
