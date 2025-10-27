@@ -7,111 +7,111 @@ const HelpCenter = ({ isOpen, onClose }) => {
 
   const helpCategories = {
     'getting-started': {
-      title: '🚀 Bắt đầu',
+      title: `🚀 ${t('help.gettingStarted')}`,
       icon: '🚀',
       color: 'from-blue-500 to-blue-600',
       articles: [
         {
-          title: 'Làm thế nào để bắt đầu học IELTS?',
-          content: 'Bắt đầu bằng cách làm bài kiểm tra đầy đủ để đánh giá trình độ hiện tại, sau đó sử dụng AI Practice để luyện tập các kỹ năng cụ thể.',
+          title: t('help.articles.howToStart.title'),
+          content: t('help.articles.howToStart.content'),
           steps: [
-            'Nhấn "Bắt đầu nhanh" trên dashboard',
-            'Chọn "Làm bài kiểm tra đầy đủ"',
-            'Hoàn thành 4 kỹ năng: Reading, Writing, Listening, Speaking',
-            'Xem kết quả và nhận lời khuyên từ AI'
+            t('help.articles.howToStart.step1'),
+            t('help.articles.howToStart.step2'),
+            t('help.articles.howToStart.step3'),
+            t('help.articles.howToStart.step4')
           ]
         },
         {
-          title: 'Cách sử dụng AI Practice?',
-          content: 'AI Practice giúp bạn tạo câu hỏi tùy chỉnh phù hợp với trình độ và mục tiêu của bạn.',
+          title: t('help.articles.aiPractice.title'),
+          content: t('help.articles.aiPractice.content'),
           steps: [
-            'Vào tab "AI Practice" trên dashboard',
-            'Chọn kỹ năng muốn luyện tập',
-            'Nhập chủ đề quan tâm (tùy chọn)',
-            'Chọn band level phù hợp',
-            'Nhấn "Generate" để tạo câu hỏi'
+            t('help.articles.aiPractice.step1'),
+            t('help.articles.aiPractice.step2'),
+            t('help.articles.aiPractice.step3'),
+            t('help.articles.aiPractice.step4'),
+            t('help.articles.aiPractice.step5')
           ]
         },
         {
-          title: 'Hiểu về điểm số và đánh giá',
-          content: 'Hệ thống sử dụng thang điểm IELTS chuẩn (0-9) và AI để đánh giá chính xác.',
+          title: t('help.articles.scoring.title'),
+          content: t('help.articles.scoring.content'),
           steps: [
-            'Điểm số được tính theo tiêu chí IELTS chính thức',
-            'AI phân tích và đưa ra feedback chi tiết',
-            'Theo dõi tiến độ qua dashboard',
-            'Nhận gợi ý cải thiện cụ thể'
+            t('help.articles.scoring.step1'),
+            t('help.articles.scoring.step2'),
+            t('help.articles.scoring.step3'),
+            t('help.articles.scoring.step4')
           ]
         }
       ]
     },
     'features': {
-      title: '⚙️ Tính năng',
+      title: `⚙️ ${t('help.features')}`,
       icon: '⚙️',
       color: 'from-purple-500 to-purple-600',
       articles: [
         {
-          title: 'Dashboard - Trung tâm điều khiển',
-          content: 'Dashboard cung cấp cái nhìn tổng quan về tiến độ học tập của bạn.',
+          title: t('help.articles.dashboard.title'),
+          content: t('help.articles.dashboard.content'),
           features: [
-            'Xem thống kê học tập: số bài test, điểm trung bình, chuỗi ngày học',
-            'Theo dõi mục tiêu band score',
-            'Nhận lời khuyên từ AI Coach',
-            'Truy cập nhanh các tính năng chính'
+            t('help.articles.dashboard.feature1'),
+            t('help.articles.dashboard.feature2'),
+            t('help.articles.dashboard.feature3'),
+            t('help.articles.dashboard.feature4')
           ]
         },
         {
-          title: 'AI Practice - Luyện tập thông minh',
-          content: 'Tạo câu hỏi IELTS tùy chỉnh với AI dựa trên trình độ và sở thích của bạn.',
+          title: t('help.articles.aiPracticeFeature.title'),
+          content: t('help.articles.aiPracticeFeature.content'),
           features: [
-            'Tạo câu hỏi cho 4 kỹ năng: Reading, Writing, Listening, Speaking',
-            'Tùy chỉnh chủ đề và độ khó',
-            'Câu hỏi theo format IELTS chính thức',
-            'Hướng dẫn chi tiết và thời gian làm bài'
+            t('help.articles.aiPracticeFeature.feature1'),
+            t('help.articles.aiPracticeFeature.feature2'),
+            t('help.articles.aiPracticeFeature.feature3'),
+            t('help.articles.aiPracticeFeature.feature4')
           ]
         },
         {
-          title: 'Phân tích điểm yếu',
-          content: 'AI phân tích kết quả và chỉ ra những điểm cần cải thiện.',
+          title: t('help.articles.weaknessAnalysis.title'),
+          content: t('help.articles.weaknessAnalysis.content'),
           features: [
-            'Biểu đồ phân tích chi tiết từng kỹ năng',
-            'Xác định điểm mạnh và điểm yếu',
-            'Gợi ý cải thiện cụ thể',
-            'Theo dõi tiến độ theo thời gian'
+            t('help.articles.weaknessAnalysis.feature1'),
+            t('help.articles.weaknessAnalysis.feature2'),
+            t('help.articles.weaknessAnalysis.feature3'),
+            t('help.articles.weaknessAnalysis.feature4')
           ]
         }
       ]
     },
     'troubleshooting': {
-      title: '🔧 Khắc phục sự cố',
+      title: `🔧 ${t('help.troubleshooting')}`,
       icon: '🔧',
       color: 'from-red-500 to-red-600',
       articles: [
         {
-          title: 'Không thể submit bài test?',
-          content: 'Kiểm tra kết nối internet và thử lại. Nếu vẫn không được, hãy liên hệ support.',
+          title: t('help.articles.submitIssue.title'),
+          content: t('help.articles.submitIssue.content'),
           solutions: [
-            'Kiểm tra kết nối internet',
-            'Refresh trang và thử lại',
-            'Xóa cache trình duyệt',
-            'Liên hệ support nếu vấn đề vẫn tiếp tục'
+            t('help.articles.submitIssue.solution1'),
+            t('help.articles.submitIssue.solution2'),
+            t('help.articles.submitIssue.solution3'),
+            t('help.articles.submitIssue.solution4')
           ]
         },
         {
-          title: 'AI không tạo được câu hỏi?',
-          content: 'Có thể do quota API đã hết. Hệ thống sẽ tự động chuyển sang câu hỏi mẫu.',
+          title: t('help.articles.aiIssue.title'),
+          content: t('help.articles.aiIssue.content'),
           solutions: [
-            'Hệ thống sẽ tự động sử dụng câu hỏi mẫu',
-            'Vẫn có thể luyện tập bình thường',
-            'AI sẽ hoạt động trở lại sau khi quota được reset'
+            t('help.articles.aiIssue.solution1'),
+            t('help.articles.aiIssue.solution2'),
+            t('help.articles.aiIssue.solution3')
           ]
         },
         {
-          title: 'Không lưu được kết quả?',
-          content: 'Kiểm tra kết nối database. Dữ liệu sẽ được lưu tự động khi kết nối ổn định.',
+          title: t('help.articles.saveIssue.title'),
+          content: t('help.articles.saveIssue.content'),
           solutions: [
-            'Kiểm tra kết nối internet',
-            'Thử refresh trang',
-            'Kết quả sẽ được lưu tự động khi kết nối ổn định'
+            t('help.articles.saveIssue.solution1'),
+            t('help.articles.saveIssue.solution2'),
+            t('help.articles.saveIssue.solution3')
           ]
         }
       ]

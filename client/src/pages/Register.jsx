@@ -10,7 +10,7 @@ export default function Register() {
     email: '',
     password: '',
     confirmPassword: '',
-    goal: 'Thử sức',
+    goal: 'try',
     targetBand: 6.5,
     currentLevel: 'A2'
   });
@@ -115,10 +115,10 @@ export default function Register() {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Thử sức">🎯 {t('auth.goalOptions.try')}</option>
-              <option value="Du học">🎓 {t('auth.goalOptions.study')}</option>
-              <option value="Định cư">🏠 {t('auth.goalOptions.immigrate')}</option>
-              <option value="Việc làm">💼 {t('auth.goalOptions.work')}</option>
+              <option value="try">🎯 {t('auth.goalOptions.try')}</option>
+              <option value="study">🎓 {t('auth.goalOptions.study')}</option>
+              <option value="immigrate">🏠 {t('auth.goalOptions.immigrate')}</option>
+              <option value="work">💼 {t('auth.goalOptions.work')}</option>
             </select>
           </div>
 
