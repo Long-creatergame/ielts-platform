@@ -86,6 +86,31 @@ const resources = {
       'auth.signUp': 'Sign Up',
       'auth.name': 'Name',
       'auth.pleaseLogin': 'Please login to access your dashboard',
+      'auth.createAccount': 'Create IELTS Account',
+      'auth.fullName': 'Full Name',
+      'auth.ieltsGoal': 'IELTS Goal',
+      'auth.targetBand': 'Target Band',
+      'auth.currentLevel': 'Current Level',
+      'auth.passwordRequirements': 'Password must be at least 6 characters, including uppercase, lowercase and numbers',
+      'auth.passwordMismatch': 'Passwords do not match',
+      'auth.passwordTooShort': 'Password must be at least 6 characters',
+      'auth.passwordComplexity': 'Password must include at least 1 uppercase, 1 lowercase and 1 number',
+      'auth.creatingAccount': 'Creating account...',
+      'auth.alreadyHaveAccount': 'Already have an account?',
+      'auth.goalOptions': {
+        'try': 'Try it out',
+        'study': 'Study abroad',
+        'immigrate': 'Immigrate',
+        'work': 'Work'
+      },
+      'auth.levelOptions': {
+        'A1': 'A1 - Beginner',
+        'A2': 'A2 - Elementary',
+        'B1': 'B1 - Intermediate',
+        'B2': 'B2 - Upper Intermediate',
+        'C1': 'C1 - Advanced',
+        'C2': 'C2 - Proficient'
+      },
       
       // Dashboard
       'dashboard.welcome': 'Welcome back!',
@@ -173,6 +198,31 @@ const resources = {
       'auth.signUp': 'Đăng ký',
       'auth.name': 'Tên',
       'auth.pleaseLogin': 'Vui lòng đăng nhập để truy cập dashboard',
+      'auth.createAccount': 'Tạo tài khoản IELTS',
+      'auth.fullName': 'Họ và tên',
+      'auth.ieltsGoal': 'Mục tiêu học IELTS',
+      'auth.targetBand': 'Band mục tiêu',
+      'auth.currentLevel': 'Trình độ hiện tại',
+      'auth.passwordRequirements': 'Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số',
+      'auth.passwordMismatch': 'Mật khẩu không khớp',
+      'auth.passwordTooShort': 'Mật khẩu phải có ít nhất 6 ký tự',
+      'auth.passwordComplexity': 'Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 số',
+      'auth.creatingAccount': 'Đang tạo tài khoản...',
+      'auth.alreadyHaveAccount': 'Đã có tài khoản?',
+      'auth.goalOptions': {
+        'try': 'Thử sức',
+        'study': 'Du học',
+        'immigrate': 'Định cư',
+        'work': 'Việc làm'
+      },
+      'auth.levelOptions': {
+        'A1': 'A1 - Beginner',
+        'A2': 'A2 - Elementary',
+        'B1': 'B1 - Intermediate',
+        'B2': 'B2 - Upper Intermediate',
+        'C1': 'C1 - Advanced',
+        'C2': 'C2 - Proficient'
+      },
       
       // Dashboard
       'dashboard.welcome': 'Chào mừng trở lại!',
@@ -346,6 +396,31 @@ const resources = {
       'auth.signUp': '注册',
       'auth.name': '姓名',
       'auth.pleaseLogin': '请登录以访问您的仪表板',
+      'auth.createAccount': '创建雅思账户',
+      'auth.fullName': '姓名',
+      'auth.ieltsGoal': '雅思目标',
+      'auth.targetBand': '目标分数',
+      'auth.currentLevel': '当前水平',
+      'auth.passwordRequirements': '密码必须至少6个字符，包括大写、小写和数字',
+      'auth.passwordMismatch': '密码不匹配',
+      'auth.passwordTooShort': '密码必须至少6个字符',
+      'auth.passwordComplexity': '密码必须包含至少1个大写字母、1个小写字母和1个数字',
+      'auth.creatingAccount': '正在创建账户...',
+      'auth.alreadyHaveAccount': '已有账户？',
+      'auth.goalOptions': {
+        'try': '试试看',
+        'study': '留学',
+        'immigrate': '移民',
+        'work': '工作'
+      },
+      'auth.levelOptions': {
+        'A1': 'A1 - 初学者',
+        'A2': 'A2 - 基础',
+        'B1': 'B1 - 中级',
+        'B2': 'B2 - 中高级',
+        'C1': 'C1 - 高级',
+        'C2': 'C2 - 精通'
+      },
       
       // Dashboard
       'dashboard.welcome': '欢迎回来！',
@@ -471,6 +546,31 @@ const resources = {
       'auth.signUp': '登録',
       'auth.name': '名前',
       'auth.pleaseLogin': 'ダッシュボードにアクセスするにはログインしてください',
+      'auth.createAccount': 'IELTSアカウント作成',
+      'auth.fullName': '氏名',
+      'auth.ieltsGoal': 'IELTS目標',
+      'auth.targetBand': '目標バンド',
+      'auth.currentLevel': '現在のレベル',
+      'auth.passwordRequirements': 'パスワードは6文字以上で、大文字、小文字、数字を含む必要があります',
+      'auth.passwordMismatch': 'パスワードが一致しません',
+      'auth.passwordTooShort': 'パスワードは6文字以上である必要があります',
+      'auth.passwordComplexity': 'パスワードには大文字、小文字、数字をそれぞれ1つ以上含める必要があります',
+      'auth.creatingAccount': 'アカウント作成中...',
+      'auth.alreadyHaveAccount': 'すでにアカウントをお持ちですか？',
+      'auth.goalOptions': {
+        'try': '試してみる',
+        'study': '留学',
+        'immigrate': '移住',
+        'work': '仕事'
+      },
+      'auth.levelOptions': {
+        'A1': 'A1 - 初心者',
+        'A2': 'A2 - 初級',
+        'B1': 'B1 - 中級',
+        'B2': 'B2 - 中上級',
+        'C1': 'C1 - 上級',
+        'C2': 'C2 - 熟練'
+      },
       
       // Dashboard
       'dashboard.welcome': 'おかえりなさい！',
@@ -596,6 +696,31 @@ const resources = {
       'auth.signUp': '가입',
       'auth.name': '이름',
       'auth.pleaseLogin': '대시보드에 액세스하려면 로그인하세요',
+      'auth.createAccount': 'IELTS 계정 만들기',
+      'auth.fullName': '성명',
+      'auth.ieltsGoal': 'IELTS 목표',
+      'auth.targetBand': '목표 밴드',
+      'auth.currentLevel': '현재 수준',
+      'auth.passwordRequirements': '비밀번호는 6자 이상이어야 하며 대문자, 소문자, 숫자를 포함해야 합니다',
+      'auth.passwordMismatch': '비밀번호가 일치하지 않습니다',
+      'auth.passwordTooShort': '비밀번호는 6자 이상이어야 합니다',
+      'auth.passwordComplexity': '비밀번호는 대문자, 소문자, 숫자를 각각 1개 이상 포함해야 합니다',
+      'auth.creatingAccount': '계정 생성 중...',
+      'auth.alreadyHaveAccount': '이미 계정이 있으신가요?',
+      'auth.goalOptions': {
+        'try': '시도해보기',
+        'study': '유학',
+        'immigrate': '이민',
+        'work': '취업'
+      },
+      'auth.levelOptions': {
+        'A1': 'A1 - 초급',
+        'A2': 'A2 - 기초',
+        'B1': 'B1 - 중급',
+        'B2': 'B2 - 중상급',
+        'C1': 'C1 - 고급',
+        'C2': 'C2 - 숙련'
+      },
       
       // Dashboard
       'dashboard.welcome': '다시 오신 것을 환영합니다!',
