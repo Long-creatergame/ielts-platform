@@ -136,12 +136,12 @@ export default function Dashboard() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-6">🎯 IELTS Platform</h1>
-          <p className="text-lg text-gray-600 mb-8">Please login to access your dashboard</p>
+          <p className="text-lg text-gray-600 mb-8">{t('auth.pleaseLogin')}</p>
           <Link
             to="/login"
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
           >
-            Login
+            {t('auth.login')}
           </Link>
         </div>
       </div>
@@ -181,7 +181,7 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3 mt-1">
                   <LevelBadge level={user.currentLevel} size="sm" />
                   <span className="text-sm text-gray-600">
-                    Target: Band {user.targetBand} | Current: {statistics?.averageBand > 0 ? `Band ${statistics.averageBand.toFixed(1)}` : 'No tests yet'}
+                    {t('dashboard.target')}: Band {user.targetBand} | {t('dashboard.current')}: {statistics?.averageBand > 0 ? `Band ${statistics.averageBand.toFixed(1)}` : t('dashboard.noTestsYet')}
                   </span>
                 </div>
               </div>
@@ -362,7 +362,7 @@ export default function Dashboard() {
                   {/* Progress Ring */}
                   {statistics?.averageBand > 0 && (
                     <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 text-center">
-                      <h2 className="text-2xl font-bold text-gray-800 mb-6">Progress Overview</h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('dashboard.progressOverview')}</h2>
                       <ProgressRing
                         current={statistics.averageBand}
                         target={user.targetBand}
@@ -385,12 +385,12 @@ export default function Dashboard() {
                           <span className="text-3xl">📝</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold">Quick Reading</h3>
-                          <p className="text-blue-100 text-sm">Quick reading practice</p>
+                          <h3 className="text-xl font-bold">{t('dashboard.quickReading')}</h3>
+                          <p className="text-blue-100 text-sm">{t('dashboard.quickReadingDesc')}</p>
                         </div>
                       </div>
                       <div className="flex items-center text-blue-100 text-sm font-medium">
-                        <span>Begin Practice</span>
+                        <span>{t('dashboard.beginPractice')}</span>
                         <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -406,12 +406,12 @@ export default function Dashboard() {
                           <span className="text-3xl">✍️</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold">Quick Writing</h3>
-                          <p className="text-green-100 text-sm">Quick writing practice</p>
+                          <h3 className="text-xl font-bold">{t('dashboard.quickWriting')}</h3>
+                          <p className="text-green-100 text-sm">{t('dashboard.quickWritingDesc')}</p>
                         </div>
                       </div>
                       <div className="flex items-center text-green-100 text-sm font-medium">
-                        <span>Begin Practice</span>
+                        <span>{t('dashboard.beginPractice')}</span>
                         <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -427,12 +427,12 @@ export default function Dashboard() {
                           <span className="text-3xl">💎</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold">Quick Listening</h3>
-                          <p className="text-purple-100 text-sm">Quick listening practice</p>
+                          <h3 className="text-xl font-bold">{t('dashboard.quickListening')}</h3>
+                          <p className="text-purple-100 text-sm">{t('dashboard.quickListeningDesc')}</p>
                         </div>
                       </div>
                       <div className="flex items-center text-purple-100 text-sm font-medium">
-                        <span>Begin Practice</span>
+                        <span>{t('dashboard.beginPractice')}</span>
                         <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>

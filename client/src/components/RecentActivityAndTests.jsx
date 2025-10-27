@@ -145,12 +145,12 @@ const RecentActivityAndTests = () => {
   return (
     <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Recent Activity & Tests</h2>
+        <h2 className="text-2xl font-bold text-gray-800">{t('dashboard.recentActivityTests')}</h2>
         <button 
           onClick={() => window.location.href = '/test-history'}
           className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center"
         >
-          View All
+          {t('dashboard.viewAll')}
           <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
@@ -191,20 +191,20 @@ const RecentActivityAndTests = () => {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">📚</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Chưa có hoạt động nào</h3>
-            <p className="text-gray-600 mb-6">Bắt đầu bài kiểm tra đầu tiên để xem tiến độ của bạn</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('dashboard.noActivityYet')}</h3>
+            <p className="text-gray-600 mb-6">{t('dashboard.startFirstTest')}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => window.location.href = '/test/start'}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
-                🚀 Bắt đầu bài kiểm tra
+                🚀 {t('dashboard.startTest')}
               </button>
               <button
                 onClick={() => window.location.href = '/quick-practice/reading'}
                 className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
-                ⚡ Luyện tập nhanh
+                ⚡ {t('dashboard.quickPractice')}
               </button>
             </div>
           </div>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const DailyChallenge = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [challenge, setChallenge] = useState(null);
   const [streak, setStreak] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -73,8 +75,8 @@ const DailyChallenge = () => {
   if (!challenge) {
     return (
       <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 shadow-xl">
-        <h3 className="text-white text-xl font-bold mb-2">🎯 No Challenge Today</h3>
-        <p className="text-indigo-100 text-sm">Check back tomorrow for a new challenge!</p>
+        <h3 className="text-white text-xl font-bold mb-2">🎯 {t('dashboard.noChallengeToday')}</h3>
+        <p className="text-indigo-100 text-sm">{t('dashboard.checkBackTomorrow')}</p>
       </div>
     );
   }
