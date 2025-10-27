@@ -179,7 +179,7 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3 mt-1">
                   <LevelBadge level={user.currentLevel} size="sm" />
                   <span className="text-sm text-gray-600">
-                    Target: Band {user.targetBand} | Current: Band {statistics?.averageBand || 'N/A'}
+                    Target: Band {user.targetBand} | Current: {statistics?.averageBand > 0 ? `Band ${statistics.averageBand.toFixed(1)}` : 'No tests yet'}
                   </span>
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function Dashboard() {
                        </button>
                        <div className="hidden md:block">
                          <GoalProgressBar
-                           current={statistics?.averageBand || 0}
+                           current={statistics?.averageBand > 0 ? statistics.averageBand : 0}
                            target={user.targetBand}
                            goal={user.goal}
                          />
