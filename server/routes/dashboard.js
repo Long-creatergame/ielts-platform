@@ -1,101 +1,178 @@
 const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
+const AIPersonalization = require('../models/AIPersonalization');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Auth middleware
-const authMiddleware = async (req, res, next) => {
+// Get dashboard data
+router.get('/', auth, async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const userId = req.user._id;
     
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
-    const user = await User.findById(decoded.userId).select('-password');
-    
+    // Get user data
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(401).json({ message: 'Token is not valid' });
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
-
-// GET /api/dashboard - Get user dashboard data
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-    const user = req.user;
-    
     // Get user's tests
-    const tests = await Test.find({ userId: user._id }).sort({ createdAt: -1 }).limit(5);
+    const tests = await Test.find({ userId }).sort({ createdAt: -1 }).limit(10);
     
     // Calculate statistics
-    const totalTests = await Test.countDocuments({ userId: user._id });
-    const completedTests = await Test.countDocuments({ userId: user._id, completed: true });
-    const averageBand = await Test.aggregate([
-      { $match: { userId: user._id, completed: true } },
-      { $group: { _id: null, avgBand: { $avg: '$totalBand' } } }
-    ]);
+    const totalTests = tests.length;
+    const completedTests = tests.filter(test => test.status === 'completed').length;
+    const averageBand = tests.length > 0 
+      ? tests.reduce((sum, test) => sum + (test.bandScore || 0), 0) / tests.length 
+      : 0;
 
-    // Generate coach message based on performance
-    let coachMessage = {
-      message: "🤖 AI Coach: Welcome to IELTS Platform! Start your first test to get personalized feedback.",
-      type: "welcome"
-    };
+    // Calculate streak (consecutive days with tests)
+    const streakDays = calculateStreak(tests);
 
-    if (completedTests > 0) {
-      const latestTest = tests[0];
-      if (latestTest.overallBand >= 7.0) {
-        coachMessage = {
-          message: `🎉 Excellent work ${user.name}! Your latest test scored ${latestTest.overallBand}. Keep up the great performance!`,
-          type: "success"
-        };
-      } else if (latestTest.overallBand >= 6.0) {
-        coachMessage = {
-          message: `👍 Good progress ${user.name}! You scored ${latestTest.overallBand}. Focus on your weakest skill to improve further.`,
-          type: "encouragement"
-        };
-      } else {
-        coachMessage = {
-          message: `💪 Keep practicing ${user.name}! Every test helps you improve. Your score: ${latestTest.overallBand}`,
-          type: "motivation"
+    // Get AI personalization data
+    let personalization = null;
+    try {
+      const aiData = await AIPersonalization.findOne({ userId });
+      if (aiData) {
+        personalization = {
+          greeting: aiData.greeting || `Hello ${user.name}!`,
+          strengths: aiData.strengths || [],
+          weaknesses: aiData.weaknesses || [],
+          recommendations: aiData.recommendations || []
         };
       }
+    } catch (error) {
+      console.error('Error fetching personalization:', error);
     }
+
+    // Get recent activity
+    const recentActivity = tests.slice(0, 5).map(test => ({
+      id: test._id,
+      type: 'test',
+      skill: test.skill,
+      status: test.status,
+      score: test.bandScore,
+      date: test.createdAt,
+      title: `${test.skill.charAt(0).toUpperCase() + test.skill.slice(1)} Test`
+    }));
+
+    // Get coach message based on user progress
+    const coachMessage = generateCoachMessage(user, tests, averageBand);
 
     const dashboardData = {
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        goal: user.goal,
+        plan: user.plan,
+        isTrialUsed: user.isTrialUsed,
         targetBand: user.targetBand,
         currentLevel: user.currentLevel,
-        paid: user.paid,
-        freeTestsUsed: user.freeTestsUsed
+        goal: user.goal
       },
       statistics: {
         totalTests,
         completedTests,
-        averageBand: averageBand.length > 0 ? Math.round(averageBand[0].avgBand * 10) / 10 : 0,
-        streakDays: user.streakDays
+        averageBand: Math.round(averageBand * 10) / 10,
+        streakDays,
+        accuracy: calculateAccuracy(tests)
       },
-      recentTests: tests,
+      recentTests: tests.slice(0, 5),
+      recentActivity,
+      personalization,
       coachMessage
     };
 
-    res.json(dashboardData);
+    res.json({ success: true, data: dashboardData });
   } catch (error) {
     console.error('Dashboard error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ success: false, error: 'Failed to fetch dashboard data' });
   }
 });
+
+// Helper function to calculate streak
+function calculateStreak(tests) {
+  if (tests.length === 0) return 0;
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  let streak = 0;
+  let currentDate = new Date(today);
+  
+  // Check each day going backwards
+  for (let i = 0; i < 30; i++) { // Check last 30 days max
+    const dayStart = new Date(currentDate);
+    const dayEnd = new Date(currentDate);
+    dayEnd.setHours(23, 59, 59, 999);
+    
+    const hasTest = tests.some(test => {
+      const testDate = new Date(test.createdAt);
+      return testDate >= dayStart && testDate <= dayEnd;
+    });
+    
+    if (hasTest) {
+      streak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
+
+// Helper function to calculate accuracy
+function calculateAccuracy(tests) {
+  if (tests.length === 0) return 0;
+  
+  const completedTests = tests.filter(test => test.status === 'completed');
+  if (completedTests.length === 0) return 0;
+  
+  const totalQuestions = completedTests.reduce((sum, test) => {
+    return sum + (test.questions?.length || 0);
+  }, 0);
+  
+  const correctAnswers = completedTests.reduce((sum, test) => {
+    return sum + (test.correctAnswers || 0);
+  }, 0);
+  
+  return totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+}
+
+// Helper function to generate coach message
+function generateCoachMessage(user, tests, averageBand) {
+  const completedTests = tests.filter(test => test.status === 'completed');
+  
+  if (completedTests.length === 0) {
+    return {
+      message: "🎯 Welcome! Start your first test to begin your IELTS journey.",
+      type: "welcome"
+    };
+  }
+  
+  if (averageBand >= 7.0) {
+    return {
+      message: "🌟 Excellent work! You're performing at a high level. Keep it up!",
+      type: "excellent"
+    };
+  } else if (averageBand >= 6.0) {
+    return {
+      message: "💪 Great progress! You're on track to reach your target band score.",
+      type: "good"
+    };
+  } else if (averageBand >= 5.0) {
+    return {
+      message: "📈 Good start! Focus on your weak areas to improve faster.",
+      type: "encouraging"
+    };
+  } else {
+    return {
+      message: "🎯 Don't worry! Every expert was once a beginner. Keep practicing!",
+      type: "motivational"
+    };
+  }
+}
 
 module.exports = router;

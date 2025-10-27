@@ -294,6 +294,20 @@ const resources = {
     'progress.dailyProgress': 'Daily Progress',
     'progress.achievements': 'Achievements',
     'progress.noData': 'No progress data available',
+
+    // Test Result
+    'testResult.title': 'Test Results',
+    'testResult.subtitle': 'Your IELTS Academic Test Performance',
+    'testResult.overallBand': 'Overall Band Score',
+    'testResult.skillBreakdown': 'Skill Breakdown',
+    'testResult.aiFeedback': 'AI Analysis & Feedback',
+    'testResult.strengths': 'Strengths',
+    'testResult.weaknesses': 'Areas for Improvement',
+    'testResult.recommendations': 'Recommendations',
+    'testResult.nextSteps': 'What\'s Next?',
+    'testResult.retakeTest': 'Retake Test',
+    'testResult.startPractice': 'Start Practice',
+    'testResult.viewHistory': 'View History',
       
       // My Weakness
       'weakness.title': 'My Weakness Profile',
@@ -522,6 +536,20 @@ const resources = {
     'progress.dailyProgress': 'Tiến độ hàng ngày',
     'progress.achievements': 'Thành tích',
     'progress.noData': 'Chưa có dữ liệu tiến độ',
+
+    // Test Result
+    'testResult.title': 'Kết quả bài test',
+    'testResult.subtitle': 'Hiệu suất bài thi IELTS Academic của bạn',
+    'testResult.overallBand': 'Điểm Band tổng thể',
+    'testResult.skillBreakdown': 'Phân tích kỹ năng',
+    'testResult.aiFeedback': 'Phân tích & Đánh giá AI',
+    'testResult.strengths': 'Điểm mạnh',
+    'testResult.weaknesses': 'Lĩnh vực cần cải thiện',
+    'testResult.recommendations': 'Đề xuất',
+    'testResult.nextSteps': 'Bước tiếp theo?',
+    'testResult.retakeTest': 'Làm lại bài test',
+    'testResult.startPractice': 'Bắt đầu luyện tập',
+    'testResult.viewHistory': 'Xem lịch sử',
       
       // My Weakness
       'weakness.title': 'Hồ sơ điểm yếu của tôi',
