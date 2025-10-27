@@ -15,7 +15,7 @@ const languages = [
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
@@ -53,10 +53,10 @@ export default function Navbar() {
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center space-x-6">
                   <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                    Dashboard
+                    {t('nav.dashboard')}
                   </Link>
                   <Link to="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                    Profile
+                    {t('nav.profile')}
                   </Link>
                 </div>
                 
@@ -66,13 +66,13 @@ export default function Navbar() {
                     onClick={() => setShowQuickStart(true)}
                     className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
                   >
-                    Quick Start
+                    {t('nav.quickStart')}
                   </button>
                   <button
                     onClick={() => setShowHelpCenter(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
                   >
-                    Help
+                    {t('common.help')}
                   </button>
                 </div>
                 
@@ -106,7 +106,7 @@ export default function Navbar() {
                         
                         {/* Language Selector */}
                         <div className="px-4 py-2 border-b border-gray-200">
-                          <p className="text-xs text-gray-500 mb-2 font-medium">🌐 Language</p>
+                          <p className="text-xs text-gray-500 mb-2 font-medium">🌐 {t('common.language')}</p>
                           <div className="grid grid-cols-2 gap-1">
                             {languages.map((lang) => (
                               <button
@@ -136,7 +136,7 @@ export default function Navbar() {
                             className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
                           >
                             <span>🚪</span>
-                            <span>Logout</span>
+                            <span>{t('nav.logout')}</span>
                           </button>
                         </div>
                       </div>
@@ -147,10 +147,10 @@ export default function Navbar() {
             ) : (
               <>
                 <Link to="/login" className="text-gray-700 hover:text-blue-600">
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link to="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                  Register
+                  {t('nav.register')}
                 </Link>
               </>
             )}
@@ -172,14 +172,14 @@ export default function Navbar() {
               className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setShowMobileMenu(false)}
             >
-              Dashboard
+              {t('nav.dashboard')}
             </Link>
             <Link 
               to="/profile" 
               className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setShowMobileMenu(false)}
             >
-              Profile
+              {t('nav.profile')}
             </Link>
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="px-3 py-2 flex items-center space-x-2">

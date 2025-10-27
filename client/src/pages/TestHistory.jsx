@@ -211,11 +211,11 @@ export default function TestHistory() {
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 1) return 'Hôm qua';
-    if (diffDays < 7) return `${diffDays} ngày trước`;
-    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} tuần trước`;
-    if (diffDays < 365) return `${Math.ceil(diffDays / 30)} tháng trước`;
-    return date.toLocaleDateString('vi-VN');
+    if (diffDays === 1) return t('common.yesterday');
+    if (diffDays < 7) return t('common.daysAgo', { count: diffDays });
+    if (diffDays < 30) return t('common.weeksAgo', { count: Math.ceil(diffDays / 7) });
+    if (diffDays < 365) return t('common.monthsAgo', { count: Math.ceil(diffDays / 30) });
+    return date.toLocaleDateString();
   };
 
   if (loading) {
@@ -223,7 +223,7 @@ export default function TestHistory() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading test history...</p>
+          <p className="text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );

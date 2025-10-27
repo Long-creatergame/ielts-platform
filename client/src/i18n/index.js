@@ -16,6 +16,7 @@ const resources = {
       'nav.login': 'Login',
       'nav.register': 'Register',
       'nav.logout': 'Logout',
+      'nav.quickStart': 'Quick Start',
       
       // Common
       'common.start': 'Start',
@@ -33,6 +34,41 @@ const resources = {
       'common.current': 'Current',
       'common.noTestsYet': 'No tests yet',
       'common.band': 'Band',
+      'common.language': 'Language',
+      'common.yesterday': 'Yesterday',
+      'common.daysAgo': '{{count}} days ago',
+      'common.weeksAgo': '{{count}} weeks ago',
+      'common.monthsAgo': '{{count}} months ago',
+      
+      // Test History
+      'testHistory.title': 'Test History',
+      'testHistory.subtitle': 'View all your test activities and results',
+      'testHistory.filters': 'Filters',
+      'testHistory.testType': 'Test Type',
+      'testHistory.dateRange': 'Date Range',
+      'testHistory.scoreRange': 'Score Range',
+      'testHistory.sortBy': 'Sort By',
+      'testHistory.all': 'All',
+      'testHistory.fullTest': 'Full Test',
+      'testHistory.quickPractice': 'Quick Practice',
+      'testHistory.milestone': 'Achievement',
+      'testHistory.challenge': 'Challenge',
+      'testHistory.today': 'Today',
+      'testHistory.week': 'Past 7 days',
+      'testHistory.month': 'Past month',
+      'testHistory.year': 'Past year',
+      'testHistory.high': '7.0+ (High)',
+      'testHistory.medium': '5.0-6.9 (Medium)',
+      'testHistory.low': 'Below 5.0 (Low)',
+      'testHistory.dateNewest': 'Date (Newest)',
+      'testHistory.scoreHighest': 'Score (Highest)',
+      'testHistory.testType': 'Test Type',
+      'testHistory.clearFilters': 'Clear Filters',
+      'testHistory.results': 'Results',
+      'testHistory.showing': 'Showing {{count}} of {{total}} activities',
+      'testHistory.noResults': 'No Results',
+      'testHistory.noResultsDesc': 'No tests found matching your filters',
+      'testHistory.bandScore': 'Band Score',
       
       // Auth
       'auth.login': 'Login',
@@ -108,6 +144,7 @@ const resources = {
       'nav.login': 'Đăng nhập',
       'nav.register': 'Đăng ký',
       'nav.logout': 'Đăng xuất',
+      'nav.quickStart': 'Bắt đầu nhanh',
       
       // Common
       'common.start': 'Bắt đầu',
@@ -180,6 +217,11 @@ const resources = {
       'common.current': 'Hiện tại',
       'common.noTestsYet': 'Chưa có bài kiểm tra',
       'common.band': 'Band',
+      'common.language': 'Ngôn ngữ',
+      'common.yesterday': 'Hôm qua',
+      'common.daysAgo': '{{count}} ngày trước',
+      'common.weeksAgo': '{{count}} tuần trước',
+      'common.monthsAgo': '{{count}} tháng trước',
     }
   },
   zh: {
@@ -194,6 +236,7 @@ const resources = {
       'nav.login': '登录',
       'nav.register': '注册',
       'nav.logout': '登出',
+      'nav.quickStart': '快速开始',
       
       // Common
       'common.start': '开始',
@@ -211,6 +254,11 @@ const resources = {
       'common.current': '当前',
       'common.noTestsYet': '还没有测试',
       'common.band': '分数',
+      'common.language': '语言',
+      'common.yesterday': '昨天',
+      'common.daysAgo': '{{count}} 天前',
+      'common.weeksAgo': '{{count}} 周前',
+      'common.monthsAgo': '{{count}} 个月前',
       
       // Auth
       'auth.login': '登录',
@@ -278,6 +326,7 @@ const resources = {
       'nav.login': 'ログイン',
       'nav.register': '登録',
       'nav.logout': 'ログアウト',
+      'nav.quickStart': 'クイックスタート',
       
       // Common
       'common.start': '開始',
@@ -295,6 +344,11 @@ const resources = {
       'common.current': '現在',
       'common.noTestsYet': 'まだテストがありません',
       'common.band': 'バンド',
+      'common.language': '言語',
+      'common.yesterday': '昨日',
+      'common.daysAgo': '{{count}}日前',
+      'common.weeksAgo': '{{count}}週間前',
+      'common.monthsAgo': '{{count}}ヶ月前',
       
       // Auth
       'auth.login': 'ログイン',
@@ -362,6 +416,7 @@ const resources = {
       'nav.login': '로그인',
       'nav.register': '가입',
       'nav.logout': '로그아웃',
+      'nav.quickStart': '빠른 시작',
       
       // Common
       'common.start': '시작',
@@ -379,6 +434,11 @@ const resources = {
       'common.current': '현재',
       'common.noTestsYet': '아직 테스트가 없습니다',
       'common.band': '밴드',
+      'common.language': '언어',
+      'common.yesterday': '어제',
+      'common.daysAgo': '{{count}}일 전',
+      'common.weeksAgo': '{{count}}주 전',
+      'common.monthsAgo': '{{count}}개월 전',
       
       // Auth
       'auth.login': '로그인',
