@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const AIPractice = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -58,8 +60,8 @@ const AIPractice = () => {
         <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-4">
           <span className="text-4xl">🧩</span>
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">AI Practice Generator</h2>
-        <p className="text-gray-600 text-lg">Generate personalized IELTS questions with AI</p>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('aiPractice.title')}</h2>
+        <p className="text-gray-600 text-lg">{t('aiPractice.subtitle')}</p>
       </div>
       
       {/* Form */}
@@ -67,7 +69,7 @@ const AIPractice = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
-              Skill
+              {t('aiPractice.skill')}
             </label>
             <select
               name="skill"
@@ -84,7 +86,7 @@ const AIPractice = () => {
           
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
-              Topic (Optional)
+              {t('aiPractice.topic')}
             </label>
             <input
               type="text"
@@ -98,7 +100,7 @@ const AIPractice = () => {
           
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
-              Band Level
+              {t('aiPractice.bandLevel')}
             </label>
             <select
               name="band"
@@ -133,7 +135,7 @@ const AIPractice = () => {
             ) : (
               <>
                 <span className="text-xl">🧩</span>
-                <span>Generate AI Practice Question</span>
+                <span>{t('aiPractice.generateButton')}</span>
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

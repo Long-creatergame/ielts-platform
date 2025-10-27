@@ -378,6 +378,51 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': 'Chào mừng trở lại!',
+      
+      // AI Practice
+      'aiPractice.title': 'AI Practice Generator',
+      'aiPractice.subtitle': 'Tạo câu hỏi IELTS cá nhân hóa với AI',
+      'aiPractice.skill': 'Kỹ năng',
+      'aiPractice.topic': 'Chủ đề (Tùy chọn)',
+      'aiPractice.bandLevel': 'Cấp độ Band',
+      'aiPractice.generateButton': 'Tạo câu hỏi luyện tập AI',
+      
+      // My Weakness
+      'weakness.title': 'Hồ sơ điểm yếu của tôi',
+      'weakness.subtitle': 'Theo dõi tiến độ và xác định các lĩnh vực cần cải thiện',
+      'weakness.overallProgress': 'Tiến độ tổng thể',
+      'weakness.totalSubmissions': 'Tổng số bài nộp',
+      'weakness.improvementTrend': 'Xu hướng cải thiện',
+      'weakness.lastUpdated': 'Cập nhật lần cuối',
+      'weakness.skillBreakdown': 'Phân tích kỹ năng',
+      'weakness.refreshData': 'Làm mới dữ liệu',
+      'weakness.getRecommendations': 'Nhận đề xuất luyện tập',
+      'weakness.strong': 'Mạnh',
+      'weakness.good': 'Tốt',
+      'weakness.fair': 'Trung bình',
+      'weakness.needsImprovement': 'Cần cải thiện',
+      'weakness.noData': 'Chưa có dữ liệu điểm yếu.',
+      'weakness.noDataDesc': 'Hoàn thành một số đánh giá AI để xem hồ sơ điểm yếu của bạn.',
+      
+      // Recommended Practice
+      'recommended.title': 'Luyện tập được đề xuất',
+      'recommended.filterBySkill': 'Lọc theo kỹ năng',
+      'recommended.allSkills': 'Tất cả kỹ năng',
+      'recommended.refresh': 'Làm mới',
+      'recommended.startPractice': 'Bắt đầu luyện tập',
+      'recommended.quickActions': 'Thao tác nhanh',
+      'recommended.generateQuestion': 'Tạo câu hỏi mới',
+      'recommended.viewWeakness': 'Xem điểm yếu của tôi',
+      'recommended.getRecommendations': 'Nhận đề xuất mới',
+      
+      // Progress Dashboard
+      'progress.title': 'Bảng theo dõi tiến độ',
+      'progress.subtitle': 'Theo dõi hành trình cải thiện kỹ năng IELTS của bạn với phân tích chi tiết.',
+      'progress.skill': 'Kỹ năng:',
+      'progress.timeRange': 'Khoảng thời gian:',
+      'progress.last30Days': '30 ngày qua',
+      'progress.noData': 'Không có dữ liệu tiến độ',
+      'progress.noDataDesc': 'Bắt đầu làm việc với đề xuất AI để xem tiến độ của bạn ở đây!',
       'dashboard.greeting': '👋 Chào',
       'dashboard.goalReached': '🎉 Đã đạt mục tiêu!',
       'dashboard.remainingBands': 'Còn {{count}} band nữa',
@@ -787,6 +832,51 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': '欢迎回来！',
+      
+      // AI Practice
+      'aiPractice.title': 'AI练习生成器',
+      'aiPractice.subtitle': '使用AI生成个性化IELTS问题',
+      'aiPractice.skill': '技能',
+      'aiPractice.topic': '主题（可选）',
+      'aiPractice.bandLevel': '分数等级',
+      'aiPractice.generateButton': '生成AI练习问题',
+      
+      // My Weakness
+      'weakness.title': '我的弱点档案',
+      'weakness.subtitle': '跟踪您的进度并识别需要改进的领域',
+      'weakness.overallProgress': '整体进度',
+      'weakness.totalSubmissions': '总提交数',
+      'weakness.improvementTrend': '改进趋势',
+      'weakness.lastUpdated': '最后更新',
+      'weakness.skillBreakdown': '技能分解',
+      'weakness.refreshData': '刷新数据',
+      'weakness.getRecommendations': '获取练习建议',
+      'weakness.strong': '强',
+      'weakness.good': '好',
+      'weakness.fair': '一般',
+      'weakness.needsImprovement': '需要改进',
+      'weakness.noData': '暂无弱点数据。',
+      'weakness.noDataDesc': '完成一些AI评估以查看您的弱点档案。',
+      
+      // Recommended Practice
+      'recommended.title': '推荐练习',
+      'recommended.filterBySkill': '按技能筛选',
+      'recommended.allSkills': '所有技能',
+      'recommended.refresh': '刷新',
+      'recommended.startPractice': '开始练习',
+      'recommended.quickActions': '快速操作',
+      'recommended.generateQuestion': '生成新问题',
+      'recommended.viewWeakness': '查看我的弱点',
+      'recommended.getRecommendations': '获取新建议',
+      
+      // Progress Dashboard
+      'progress.title': '进度仪表板',
+      'progress.subtitle': '通过详细分析跟踪您的IELTS技能改进之旅。',
+      'progress.skill': '技能：',
+      'progress.timeRange': '时间范围：',
+      'progress.last30Days': '过去30天',
+      'progress.noData': '无进度数据',
+      'progress.noDataDesc': '开始使用AI建议以在此处查看您的进度！',
       'dashboard.greeting': '👋 你好',
       'dashboard.goalReached': '🎉 达成目标！',
       'dashboard.remainingBands': '还剩 {{count}} 个分数',
@@ -1044,6 +1134,51 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': 'おかえりなさい！',
+      
+      // AI Practice
+      'aiPractice.title': 'AI練習ジェネレーター',
+      'aiPractice.subtitle': 'AIで個人化されたIELTS問題を生成',
+      'aiPractice.skill': 'スキル',
+      'aiPractice.topic': 'トピック（オプション）',
+      'aiPractice.bandLevel': 'バンドレベル',
+      'aiPractice.generateButton': 'AI練習問題を生成',
+      
+      // My Weakness
+      'weakness.title': '私の弱点プロフィール',
+      'weakness.subtitle': '進捗を追跡し、改善が必要な領域を特定',
+      'weakness.overallProgress': '全体的な進捗',
+      'weakness.totalSubmissions': '総提出数',
+      'weakness.improvementTrend': '改善傾向',
+      'weakness.lastUpdated': '最終更新',
+      'weakness.skillBreakdown': 'スキル分析',
+      'weakness.refreshData': 'データを更新',
+      'weakness.getRecommendations': '練習推奨を取得',
+      'weakness.strong': '強い',
+      'weakness.good': '良い',
+      'weakness.fair': '普通',
+      'weakness.needsImprovement': '改善が必要',
+      'weakness.noData': '弱点データがまだありません。',
+      'weakness.noDataDesc': '弱点プロフィールを表示するために、いくつかのAI評価を完了してください。',
+      
+      // Recommended Practice
+      'recommended.title': '推奨練習',
+      'recommended.filterBySkill': 'スキルでフィルター',
+      'recommended.allSkills': 'すべてのスキル',
+      'recommended.refresh': '更新',
+      'recommended.startPractice': '練習開始',
+      'recommended.quickActions': 'クイックアクション',
+      'recommended.generateQuestion': '新しい問題を生成',
+      'recommended.viewWeakness': '私の弱点を表示',
+      'recommended.getRecommendations': '新しい推奨を取得',
+      
+      // Progress Dashboard
+      'progress.title': '進捗ダッシュボード',
+      'progress.subtitle': '詳細な分析でIELTSスキル向上の旅を追跡。',
+      'progress.skill': 'スキル：',
+      'progress.timeRange': '時間範囲：',
+      'progress.last30Days': '過去30日',
+      'progress.noData': '進捗データがありません',
+      'progress.noDataDesc': 'AI推奨に取り組んで、ここで進捗を確認してください！',
       'dashboard.greeting': '👋 こんにちは',
       'dashboard.goalReached': '🎉 目標達成！',
       'dashboard.remainingBands': 'あと {{count}} バンド',
@@ -1301,6 +1436,51 @@ const resources = {
       
       // Dashboard
       'dashboard.welcome': '다시 오신 것을 환영합니다!',
+      
+      // AI Practice
+      'aiPractice.title': 'AI 연습 생성기',
+      'aiPractice.subtitle': 'AI로 개인화된 IELTS 문제 생성',
+      'aiPractice.skill': '스킬',
+      'aiPractice.topic': '주제 (선택사항)',
+      'aiPractice.bandLevel': '밴드 레벨',
+      'aiPractice.generateButton': 'AI 연습 문제 생성',
+      
+      // My Weakness
+      'weakness.title': '내 약점 프로필',
+      'weakness.subtitle': '진행 상황을 추적하고 개선이 필요한 영역 식별',
+      'weakness.overallProgress': '전체 진행 상황',
+      'weakness.totalSubmissions': '총 제출 수',
+      'weakness.improvementTrend': '개선 추세',
+      'weakness.lastUpdated': '마지막 업데이트',
+      'weakness.skillBreakdown': '스킬 분석',
+      'weakness.refreshData': '데이터 새로고침',
+      'weakness.getRecommendations': '연습 추천 받기',
+      'weakness.strong': '강함',
+      'weakness.good': '좋음',
+      'weakness.fair': '보통',
+      'weakness.needsImprovement': '개선 필요',
+      'weakness.noData': '아직 약점 데이터가 없습니다.',
+      'weakness.noDataDesc': '약점 프로필을 보려면 일부 AI 평가를 완료하세요.',
+      
+      // Recommended Practice
+      'recommended.title': '추천 연습',
+      'recommended.filterBySkill': '스킬별 필터',
+      'recommended.allSkills': '모든 스킬',
+      'recommended.refresh': '새로고침',
+      'recommended.startPractice': '연습 시작',
+      'recommended.quickActions': '빠른 작업',
+      'recommended.generateQuestion': '새 문제 생성',
+      'recommended.viewWeakness': '내 약점 보기',
+      'recommended.getRecommendations': '새 추천 받기',
+      
+      // Progress Dashboard
+      'progress.title': '진행 상황 대시보드',
+      'progress.subtitle': '상세한 분석으로 IELTS 스킬 향상 여정을 추적하세요.',
+      'progress.skill': '스킬:',
+      'progress.timeRange': '시간 범위:',
+      'progress.last30Days': '지난 30일',
+      'progress.noData': '진행 데이터가 없습니다',
+      'progress.noDataDesc': 'AI 추천에 작업하여 여기서 진행 상황을 확인하세요!',
       'dashboard.greeting': '👋 안녕하세요',
       'dashboard.goalReached': '🎉 목표 달성!',
       'dashboard.remainingBands': '{{count}} 밴드 남았습니다',

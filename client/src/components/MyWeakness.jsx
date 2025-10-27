@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const MyWeakness = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -105,10 +107,10 @@ const MyWeakness = () => {
   if (!weaknessData) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">📊 My Weakness Profile</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">📊 {t('weakness.title')}</h2>
         <div className="text-center py-8">
-          <p className="text-gray-600 mb-4">No weakness data available yet.</p>
-          <p className="text-sm text-gray-500">Complete some AI assessments to see your weakness profile.</p>
+          <p className="text-gray-600 mb-4">{t('weakness.noData')}</p>
+          <p className="text-sm text-gray-500">{t('weakness.noDataDesc')}</p>
         </div>
       </div>
     );
@@ -120,20 +122,20 @@ const MyWeakness = () => {
         <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-pink-600 rounded-3xl flex items-center justify-center mx-auto mb-4">
           <span className="text-4xl">📈</span>
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">My Weakness Profile</h2>
-        <p className="text-gray-600 text-lg">Track your progress and identify areas for improvement</p>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('weakness.title')}</h2>
+        <p className="text-gray-600 text-lg">{t('weakness.subtitle')}</p>
       </div>
       
       {/* Overall Progress */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-3">Overall Progress</h3>
+        <h3 className="text-lg font-semibold mb-3">{t('weakness.overallProgress')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="text-sm text-gray-600">Total Submissions</div>
+            <div className="text-sm text-gray-600">{t('weakness.totalSubmissions')}</div>
             <div className="text-2xl font-bold text-blue-600">{weaknessData.total_submissions || 0}</div>
           </div>
           <div className="bg-green-50 p-4 rounded-lg">
-            <div className="text-sm text-gray-600">Improvement Trend</div>
+            <div className="text-sm text-gray-600">{t('weakness.improvementTrend')}</div>
             <div className={`text-2xl font-bold ${
               weaknessData.improvement_trend === 'improving' ? 'text-green-600' :
               weaknessData.improvement_trend === 'stable' ? 'text-blue-600' : 'text-red-600'
@@ -142,7 +144,7 @@ const MyWeakness = () => {
             </div>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg">
-            <div className="text-sm text-gray-600">Last Updated</div>
+            <div className="text-sm text-gray-600">{t('weakness.lastUpdated')}</div>
             <div className="text-sm font-bold text-purple-600">
               {new Date(weaknessData.last_updated).toLocaleDateString()}
             </div>

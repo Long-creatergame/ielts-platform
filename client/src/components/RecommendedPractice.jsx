@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const RecommendedPractice = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -82,26 +84,26 @@ const RecommendedPractice = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">💡 Recommended Practice</h2>
+        <h2 className="text-2xl font-bold text-gray-900">💡 {t('recommended.title')}</h2>
         <button
           onClick={fetchRecommendations}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
         >
-          Refresh
+{t('recommended.refresh')}
         </button>
       </div>
 
       {/* Filter */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Filter by Skill
+{t('recommended.filterBySkill')}
         </label>
         <select
           value={selectedSkill}
           onChange={(e) => setSelectedSkill(e.target.value)}
           className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
-          <option value="all">All Skills</option>
+          <option value="all">{t('recommended.allSkills')}</option>
           <option value="writing">Writing</option>
           <option value="speaking">Speaking</option>
           <option value="reading">Reading</option>
@@ -157,7 +159,7 @@ const RecommendedPractice = () => {
                   onClick={() => handleStartPractice(recommendation)}
                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors"
                 >
-                  Start Practice
+{t('recommended.startPractice')}
                 </button>
               </div>
 
@@ -183,7 +185,7 @@ const RecommendedPractice = () => {
 
       {/* Quick Actions */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('recommended.quickActions')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <button
             onClick={() => {
@@ -192,7 +194,7 @@ const RecommendedPractice = () => {
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
           >
-            Generate New Question
+{t('recommended.generateQuestion')}
           </button>
           <button
             onClick={() => {
@@ -201,13 +203,13 @@ const RecommendedPractice = () => {
             }}
             className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition-colors"
           >
-            View My Weakness
+{t('recommended.viewWeakness')}
           </button>
           <button
             onClick={fetchRecommendations}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors"
           >
-            Get New Recommendations
+{t('recommended.getRecommendations')}
           </button>
         </div>
       </div>

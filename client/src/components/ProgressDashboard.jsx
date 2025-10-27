@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const ProgressDashboard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [progressData, setProgressData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -71,16 +73,16 @@ const ProgressDashboard = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">
-          📊 Progress Dashboard
+          📊 {t('progress.title')}
         </h2>
         <p className="text-gray-600 mb-6">
-          Track your IELTS skill improvement journey with detailed analytics.
+          {t('progress.subtitle')}
         </p>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Skill:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('progress.skill')}</label>
             <select
               value={selectedSkill}
               onChange={(e) => setSelectedSkill(e.target.value)}
@@ -94,14 +96,14 @@ const ProgressDashboard = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time Range:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('progress.timeRange')}</label>
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="7">Last 7 days</option>
-              <option value="30">Last 30 days</option>
+              <option value="30">{t('progress.last30Days')}</option>
               <option value="90">Last 90 days</option>
               <option value="365">Last year</option>
             </select>
@@ -251,10 +253,10 @@ const ProgressDashboard = () => {
         <div className="text-center py-12">
           <div className="text-6xl mb-4">📊</div>
           <h3 className="text-xl font-semibold text-gray-700 mb-2">
-            No progress data available
+            {t('progress.noData')}
           </h3>
           <p className="text-gray-500 mb-4">
-            Start working on AI recommendations to see your progress here!
+            {t('progress.noDataDesc')}
           </p>
         </div>
       )}
