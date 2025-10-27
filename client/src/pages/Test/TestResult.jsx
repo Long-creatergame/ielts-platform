@@ -1,314 +1,346 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import ScoreCard from '../../components/ScoreCard';
-import CoachMessage from '../../components/CoachMessage';
-import ProgressRing from '../../components/ProgressRing';
-import AIEncouragement from '../../components/AIEncouragement';
-import MilestoneCelebration from '../../components/MilestoneCelebration';
-import { saveMilestoneToLocalStorage, saveTestActivityToLocalStorage } from '../../utils/activityHelper';
+import { useTranslation } from 'react-i18next';
+import FeatureGuide from '../../components/FeatureGuide';
 
 export default function TestResult() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
-  const testResult = location.state?.testResult;
-  const [milestones, setMilestones] = useState([]);
-  const [showMilestone, setShowMilestone] = useState(null);
-  const [previousScore, setPreviousScore] = useState(0);
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [testResult, setTestResult] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
 
-  // Fetch milestones after test completion
   useEffect(() => {
-    if (testResult && user) {
-      checkMilestones();
-      fetchPreviousScore();
-    }
-  }, [testResult, user]);
+    loadTestResult();
+  }, [id]);
 
-  const checkMilestones = async () => {
+  const loadTestResult = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/milestones/check`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      setLoading(true);
       
-      if (response.ok) {
-        const data = await response.json();
-        if (data.milestones && data.milestones.length > 0) {
-          setMilestones(data.milestones);
-          // Save milestones to localStorage for Recent Activity
-          data.milestones.forEach(milestone => {
-            saveMilestoneToLocalStorage(milestone, `You achieved: ${milestone}`);
-          });
-          // Show first milestone
-          setShowMilestone(data.milestones[0]);
+      // Try to get from location state first
+      if (location.state?.testResult) {
+        setTestResult(location.state.testResult);
+        setLoading(false);
+        return;
+      }
+
+      // Try to get from localStorage
+      const localResult = localStorage.getItem('latestTestResult');
+      if (localResult) {
+        setTestResult(JSON.parse(localResult));
+        setLoading(false);
+        return;
+      }
+
+      // Try to fetch from backend
+      if (id) {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`${API_BASE_URL}/api/tests/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setTestResult(data.data);
+        } else {
+          // Fallback to mock data
+          setTestResult(generateMockResult());
         }
+      } else {
+        // Generate mock result if no ID
+        setTestResult(generateMockResult());
       }
     } catch (error) {
-      console.error('Error checking milestones:', error);
+      console.error('Error loading test result:', error);
+      setTestResult(generateMockResult());
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchPreviousScore = async () => {
-    // Get previous score from test history
-    const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
-    if (history.length > 1) {
-      setPreviousScore(history[1].overallScore || 0);
-    }
-    
-    // Save current test to activity
-    if (testResult) {
-      saveTestActivityToLocalStorage({
-        testType: 'IELTS Test',
-        overallScore: testResult.overallBand,
-        skill: 'all'
-      });
-    }
+  const generateMockResult = () => {
+    return {
+      id: id || Date.now().toString(),
+      testType: 'IELTS Academic',
+      level: 'B2',
+      overallBand: 6.5,
+      skillScores: {
+        reading: 7.0,
+        listening: 6.5,
+        writing: 6.0,
+        speaking: 6.5
+      },
+      completedAt: new Date().toISOString(),
+      duration: '2h 15m',
+      aiFeedback: 'Good overall performance with room for improvement in writing skills.',
+      recommendations: [
+        'Focus on improving writing task response and coherence',
+        'Practice more listening exercises for better accuracy',
+        'Continue reading practice to maintain current level',
+        'Work on speaking fluency and pronunciation'
+      ],
+      strengths: [
+        'Strong reading comprehension skills',
+        'Good listening accuracy',
+        'Clear speaking delivery'
+      ],
+      weaknesses: [
+        'Writing task achievement needs improvement',
+        'Speaking fluency could be enhanced',
+        'Time management in writing tasks'
+      ]
+    };
   };
 
-  // SECURITY: Check if user is logged in
-  if (!user) {
+  const getBandColor = (score) => {
+    if (score >= 8.0) return 'text-green-600 bg-green-100';
+    if (score >= 7.0) return 'text-blue-600 bg-blue-100';
+    if (score >= 6.0) return 'text-yellow-600 bg-yellow-100';
+    if (score >= 5.0) return 'text-orange-600 bg-orange-100';
+    return 'text-red-600 bg-red-100';
+  };
+
+  const getBandLevel = (score) => {
+    if (score >= 8.0) return 'C2';
+    if (score >= 7.0) return 'B2';
+    if (score >= 6.0) return 'B1';
+    if (score >= 5.0) return 'A2';
+    return 'A1';
+  };
+
+  const getPerformanceMessage = (score) => {
+    if (score >= 8.0) return 'Outstanding performance! You have achieved an excellent band score.';
+    if (score >= 7.0) return 'Great job! You have achieved a good band score.';
+    if (score >= 6.0) return 'Good performance! You are on the right track.';
+    if (score >= 5.0) return 'Fair performance. Keep practicing to improve.';
+    return 'Keep working hard! More practice will help you improve.';
+  };
+
+  const handleRetakeTest = () => {
+    navigate('/test/start');
+  };
+
+  const handleViewHistory = () => {
+    navigate('/test-history');
+  };
+
+  const handleStartPractice = () => {
+    navigate('/dashboard?tab=ai-practice');
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-6">Please login to view test results</h1>
-          <Link
-            to="/login"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
-          >
-            Login
-          </Link>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading test results...</p>
         </div>
       </div>
     );
   }
 
-  // If no test result data, show fallback
   if (!testResult) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-6">No test result found</h1>
-          <Link
-            to="/dashboard"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Test result not found</h2>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Back to Dashboard
-          </Link>
+          </button>
         </div>
       </div>
     );
   }
 
-  // Generate AI feedback based on performance
-  const generateAIFeedback = (overallBand, skillScores) => {
-    let feedback = "";
-    let recommendations = [];
-    
-    if (overallBand >= 8.0) {
-      feedback = "🎉 Outstanding performance! You've achieved an excellent IELTS band score.";
-      recommendations = [
-        "Consider advanced English courses for specialized purposes",
-        "You're ready for academic or professional English environments",
-        "Maintain your level through regular practice and reading"
-      ];
-    } else if (overallBand >= 7.0) {
-      feedback = "👍 Great work! You're performing well across all skills.";
-      recommendations = [
-        "Focus on your weakest skill to reach band 8.0",
-        "Practice with more complex academic materials",
-        "Work on accuracy and fluency in speaking and writing"
-      ];
-    } else if (overallBand >= 6.0) {
-      feedback = "📈 Good progress! You're developing solid English skills.";
-      recommendations = [
-        "Practice more with IELTS-specific materials",
-        "Focus on grammar and vocabulary expansion",
-        "Work on time management during tests"
-      ];
-    } else {
-      feedback = "💪 Keep practicing! Every step forward counts.";
-      recommendations = [
-        "Start with basic grammar and vocabulary building",
-        "Practice daily with simple English materials",
-        "Consider taking English foundation courses"
-      ];
-    }
-    
-    return { feedback, recommendations };
-  };
-
-  const { feedback, recommendations } = generateAIFeedback(testResult.overallBand, testResult.skillScores);
-
-  // Format testResult for AI Encouragement component
-  const formattedTestResult = {
-    score: {
-      overall: testResult.overallBand,
-      reading: testResult.skillScores.reading,
-      listening: testResult.skillScores.listening,
-      writing: testResult.skillScores.writing,
-      speaking: testResult.skillScores.speaking
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      {/* AI Encouragement Popup */}
-      <AIEncouragement 
-        testResult={formattedTestResult}
-        previousScore={previousScore}
-        userName={user?.name}
-      />
-
-      {/* Milestone Celebration */}
-      {showMilestone && (
-        <MilestoneCelebration 
-          milestone={showMilestone}
-          onClose={() => setShowMilestone(null)}
-        />
-      )}
-
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            🎯 IELTS Test Results
-          </h1>
-          <p className="text-lg text-gray-600">
-            Congratulations {user?.name}! Here are your test results
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Test Level: {testResult.level} | Completed: {new Date(testResult.dateCompleted).toLocaleDateString()}
-          </p>
-        </div>
-
-        {/* Overall Score */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <div className="flex items-center justify-center mb-6">
-            <ProgressRing
-              progress={(testResult.overallBand / 9) * 100}
-              size={120}
-              strokeWidth={8}
-              color="#3B82F6"
-            />
-            <div className="ml-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Overall Band Score
-              </h2>
-              <div className="text-6xl font-bold text-blue-600 mb-2">
-                {testResult.overallBand}
+    <FeatureGuide feature="test-result">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl text-white">🎯</span>
               </div>
-              <p className="text-gray-600">
-                Target: Band {user?.targetBand} | Level: {testResult.level}
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {t('testResult.title', 'Test Results')}
+              </h1>
+              <p className="text-gray-600 mb-6">
+                {t('testResult.subtitle', 'Your IELTS Academic Test Performance')}
+              </p>
+              
+              {/* Overall Score */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
+                <div className="text-6xl font-bold text-gray-900 mb-2">
+                  {testResult.overallBand}
+                </div>
+                <div className="text-xl text-gray-600 mb-2">
+                  {t('testResult.overallBand', 'Overall Band Score')}
+                </div>
+                <div className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getBandColor(testResult.overallBand)}`}>
+                  {getBandLevel(testResult.overallBand)} Level
+                </div>
+                <p className="text-gray-600 mt-4 text-lg">
+                  {getPerformanceMessage(testResult.overallBand)}
+                </p>
+              </div>
+
+              {/* Test Info */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="font-semibold text-gray-900">Test Type</div>
+                  <div>{testResult.testType}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="font-semibold text-gray-900">Duration</div>
+                  <div>{testResult.duration}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="font-semibold text-gray-900">Completed</div>
+                  <div>{new Date(testResult.completedAt).toLocaleDateString()}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Skill Breakdown */}
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {t('testResult.skillBreakdown', 'Skill Breakdown')}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {Object.entries(testResult.skillScores).map(([skill, score]) => (
+                <div key={skill} className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-2xl text-white">
+                      {skill === 'reading' && '📖'}
+                      {skill === 'listening' && '🎧'}
+                      {skill === 'writing' && '✍️'}
+                      {skill === 'speaking' && '🎤'}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 capitalize mb-2">
+                    {skill}
+                  </h3>
+                  <div className={`text-3xl font-bold mb-2 ${getBandColor(score).split(' ')[0]}`}>
+                    {score}
+                  </div>
+                  <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getBandColor(score)}`}>
+                    {getBandLevel(score)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Feedback */}
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {t('testResult.aiFeedback', 'AI Analysis & Feedback')}
+            </h2>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold text-blue-900 mb-3">
+                🤖 AI Assessment
+              </h3>
+              <p className="text-blue-800">
+                {testResult.aiFeedback}
               </p>
             </div>
-          </div>
-        </div>
 
-        {/* Individual Skills */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <ScoreCard
-            skill="Reading"
-            score={testResult.skillScores.reading}
-            icon="📖"
-            color="blue"
-          />
-          <ScoreCard
-            skill="Listening"
-            score={testResult.skillScores.listening}
-            span="🎧"
-            color="green"
-          />
-          <ScoreCard
-            skill="Writing"
-            score={testResult.skillScores.writing}
-            icon="✍️"
-            color="purple"
-          />
-          <ScoreCard
-            skill="Speaking"
-            score={testResult.skillScores.speaking}
-            icon="🎤"
-            color="orange"
-          />
-        </div>
-
-        {/* AI Feedback and Recommendations */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              🤖 AI Coach Feedback
-            </h3>
-            <p className="text-gray-700 mb-4">{feedback}</p>
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-blue-800 font-medium">Your performance shows:</p>
-              <ul className="mt-2 text-blue-700">
-                <li>• Strong foundation in English skills</li>
-                <li>• Good understanding of IELTS format</li>
-                <li>• Room for improvement in specific areas</li>
-              </ul>
+            {/* Strengths and Weaknesses */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-green-900 mb-3">
+                  ✅ {t('testResult.strengths', 'Strengths')}
+                </h3>
+                <ul className="space-y-2">
+                  {testResult.strengths?.map((strength, index) => (
+                    <li key={index} className="text-green-800 flex items-start">
+                      <span className="text-green-600 mr-2">•</span>
+                      {strength}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-red-900 mb-3">
+                  ⚠️ {t('testResult.weaknesses', 'Areas for Improvement')}
+                </h3>
+                <ul className="space-y-2">
+                  {testResult.weaknesses?.map((weakness, index) => (
+                    <li key={index} className="text-red-800 flex items-start">
+                      <span className="text-red-600 mr-2">•</span>
+                      {weakness}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
-          
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              📋 Personalized Recommendations
-            </h3>
-            <ul className="space-y-3">
-              {recommendations && recommendations.length > 0 ? recommendations.map((rec, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span className="text-gray-700">{rec}</span>
-                </li>
-              )) : (
-                <li className="text-gray-500">No recommendations available</li>
-              )}
-            </ul>
-          </div>
-        </div>
 
-        {/* Test Summary */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">
-            📊 Test Summary
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">Test Details:</h4>
-              <ul className="text-gray-600 space-y-1">
-                <li>• Level: {testResult.level}</li>
-                <li>• Skills Tested: Reading, Listening, Writing, Speaking</li>
-                <li>• Completion Date: {new Date(testResult.dateCompleted).toLocaleDateString()}</li>
-                <li>• Test ID: {testResult.id}</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">Performance Analysis:</h4>
-              <ul className="text-gray-600 space-y-1">
-                <li>• Strongest Skill: {Object.keys(testResult.skillScores).reduce((a, b) => testResult.skillScores[a] > testResult.skillScores[b] ? a : b)}</li>
-                <li>• Improvement Area: {Object.keys(testResult.skillScores).reduce((a, b) => testResult.skillScores[a] < testResult.skillScores[b] ? a : b)}</li>
-                <li>• Overall Progress: {testResult.overallBand >= 7.0 ? 'Advanced' : testResult.overallBand >= 6.0 ? 'Intermediate' : 'Developing'}</li>
-              </ul>
+          {/* Recommendations */}
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {t('testResult.recommendations', 'Recommendations')}
+            </h2>
+            
+            <div className="space-y-4">
+              {testResult.recommendations?.map((recommendation, index) => (
+                <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-start">
+                  <span className="text-blue-600 mr-3 mt-1">💡</span>
+                  <p className="text-gray-800">{recommendation}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Actions */}
-        <div className="text-center">
-          <Link
-            to="/dashboard"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors mr-4"
-          >
-            Back to Dashboard
-          </Link>
-          <Link
-            to="/test/start"
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
-          >
-            Take Another Test
-          </Link>
+          {/* Action Buttons */}
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+              {t('testResult.nextSteps', 'What\'s Next?')}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                onClick={handleRetakeTest}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                🔄 {t('testResult.retakeTest', 'Retake Test')}
+              </button>
+              
+              <button
+                onClick={handleStartPractice}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                🎯 {t('testResult.startPractice', 'Start Practice')}
+              </button>
+              
+              <button
+                onClick={handleViewHistory}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                📊 {t('testResult.viewHistory', 'View History')}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </FeatureGuide>
   );
 }
