@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const QuickStart = ({ onClose }) => {
+  const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState(null);
 
   const quickStartOptions = [
@@ -61,8 +63,8 @@ const QuickStart = ({ onClose }) => {
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-2">🚀 Bắt đầu hành trình IELTS</h2>
-              <p className="text-blue-100">Chọn cách bạn muốn bắt đầu để có trải nghiệm tốt nhất</p>
+              <h2 className="text-2xl font-bold mb-2">🚀 {t('quickStart.title')}</h2>
+              <p className="text-blue-100">{t('quickStart.subtitle')}</p>
             </div>
             <button
               onClick={onClose}
@@ -123,10 +125,9 @@ const QuickStart = ({ onClose }) => {
                 💡
               </div>
               <div>
-                <h4 className="font-bold text-gray-900 mb-1">Mẹo cho người mới:</h4>
+                <h4 className="font-bold text-gray-900 mb-1">{t('quickStart.tipTitle')}</h4>
                 <p className="text-gray-700 text-sm">
-                  Nếu bạn chưa biết trình độ hiện tại, hãy bắt đầu với "Làm bài kiểm tra đầy đủ" để có đánh giá chính xác. 
-                  Sau đó sử dụng "Luyện tập với AI" để cải thiện những điểm yếu.
+                  {t('quickStart.tipContent')}
                 </p>
               </div>
             </div>
@@ -139,7 +140,7 @@ const QuickStart = ({ onClose }) => {
             onClick={onClose}
             className="px-6 py-2 text-gray-600 font-medium rounded-lg hover:bg-gray-200 transition-colors"
           >
-            Để sau
+            {t('common.later')}
           </button>
           {selectedOption && (
             <button

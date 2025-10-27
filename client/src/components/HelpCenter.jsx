@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const HelpCenter = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('getting-started');
 
   const helpCategories = {
@@ -125,8 +127,8 @@ const HelpCenter = ({ isOpen, onClose }) => {
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-2">📚 Trung tâm trợ giúp</h2>
-              <p className="text-blue-100">Tìm hiểu cách sử dụng platform hiệu quả nhất</p>
+              <h2 className="text-2xl font-bold mb-2">📚 {t('help.title')}</h2>
+              <p className="text-blue-100">{t('help.subtitle')}</p>
             </div>
             <button
               onClick={onClose}
@@ -142,7 +144,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
         <div className="flex h-[600px]">
           {/* Sidebar */}
           <div className="w-1/3 bg-gray-50 border-r border-gray-200 p-4">
-            <h3 className="font-bold text-gray-900 mb-4">Danh mục</h3>
+            <h3 className="font-bold text-gray-900 mb-4">{t('help.categories')}</h3>
             <div className="space-y-2">
               {Object.entries(helpCategories).map(([key, category]) => (
                 <button
@@ -182,7 +184,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
                   
                   {article.steps && (
                     <div className="bg-blue-50 rounded-xl p-4">
-                      <h5 className="font-semibold text-blue-900 mb-3">Các bước thực hiện:</h5>
+                      <h5 className="font-semibold text-blue-900 mb-3">{t('help.steps')}</h5>
                       <ol className="space-y-2">
                         {article.steps.map((step, stepIndex) => (
                           <li key={stepIndex} className="flex items-start space-x-3">
@@ -198,7 +200,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
 
                   {article.features && (
                     <div className="bg-green-50 rounded-xl p-4">
-                      <h5 className="font-semibold text-green-900 mb-3">Tính năng chính:</h5>
+                      <h5 className="font-semibold text-green-900 mb-3">{t('help.keyFeatures')}</h5>
                       <ul className="space-y-2">
                         {article.features.map((feature, featureIndex) => (
                           <li key={featureIndex} className="flex items-start space-x-3">
@@ -214,7 +216,7 @@ const HelpCenter = ({ isOpen, onClose }) => {
 
                   {article.solutions && (
                     <div className="bg-orange-50 rounded-xl p-4">
-                      <h5 className="font-semibold text-orange-900 mb-3">Giải pháp:</h5>
+                      <h5 className="font-semibold text-orange-900 mb-3">{t('help.solutions')}</h5>
                       <ul className="space-y-2">
                         {article.solutions.map((solution, solutionIndex) => (
                           <li key={solutionIndex} className="flex items-start space-x-3">

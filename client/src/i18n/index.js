@@ -47,6 +47,28 @@ const resources = {
       'common.errorMessage': 'We\'re sorry, but something unexpected happened. Please try refreshing the page.',
       'common.refreshPage': 'Refresh Page',
       'common.errorDetails': 'Error Details (Development)',
+      'common.later': 'Later',
+      
+      // Help Center
+      'help.title': 'Help Center',
+      'help.subtitle': 'Learn how to use the platform most effectively',
+      'help.categories': 'Categories',
+      'help.steps': 'Steps to follow:',
+      'help.keyFeatures': 'Key features:',
+      'help.solutions': 'Solutions:',
+      'help.gettingStarted': 'Getting Started',
+      'help.features': 'Features',
+      'help.troubleshooting': 'Troubleshooting',
+      
+      // Quick Start
+      'quickStart.title': 'Start Your IELTS Journey',
+      'quickStart.subtitle': 'Choose how you want to start for the best experience',
+      'quickStart.tipTitle': 'Tips for Beginners:',
+      'quickStart.tipContent': 'If you don\'t know your current level, start with "Full Test" for accurate assessment. Then use "AI Practice" to improve weak points.',
+      'quickStart.fullTest': 'Full Test',
+      'quickStart.aiPractice': 'AI Practice',
+      'quickStart.skillFocus': 'Skill Focus',
+      'quickStart.exploreFeatures': 'Explore Features',
       
       // Test History
       'testHistory.title': 'Test History',
@@ -289,6 +311,17 @@ const resources = {
       'common.refreshPage': 'Làm mới trang',
       'common.errorDetails': 'Chi tiết lỗi (Phát triển)',
       
+      // Help Center
+      'help.title': 'Trung tâm trợ giúp',
+      'help.subtitle': 'Tìm hiểu cách sử dụng platform hiệu quả nhất',
+      'help.categories': 'Danh mục',
+      'help.steps': 'Các bước thực hiện:',
+      'help.keyFeatures': 'Tính năng chính:',
+      'help.solutions': 'Giải pháp:',
+      'help.gettingStarted': 'Bắt đầu',
+      'help.features': 'Tính năng',
+      'help.troubleshooting': 'Khắc phục sự cố',
+      
       // Test History
       'testHistory.title': 'Lịch sử bài kiểm tra',
       'testHistory.subtitle': 'Xem tất cả hoạt động và kết quả bài kiểm tra của bạn',
@@ -363,6 +396,17 @@ const resources = {
       'common.errorMessage': '抱歉，发生了意外情况。请尝试刷新页面。',
       'common.refreshPage': '刷新页面',
       'common.errorDetails': '错误详情（开发）',
+      
+      // Help Center
+      'help.title': '帮助中心',
+      'help.subtitle': '学习如何最有效地使用平台',
+      'help.categories': '分类',
+      'help.steps': '执行步骤:',
+      'help.keyFeatures': '主要功能:',
+      'help.solutions': '解决方案:',
+      'help.gettingStarted': '开始使用',
+      'help.features': '功能',
+      'help.troubleshooting': '故障排除',
       
       // Test History
       'testHistory.title': '测试历史',
@@ -517,6 +561,17 @@ const resources = {
       'common.refreshPage': 'ページを更新',
       'common.errorDetails': 'エラー詳細（開発）',
       
+      // Help Center
+      'help.title': 'ヘルプセンター',
+      'help.subtitle': 'プラットフォームを最も効果的に使用する方法を学ぶ',
+      'help.categories': 'カテゴリ',
+      'help.steps': '実行手順:',
+      'help.keyFeatures': '主要機能:',
+      'help.solutions': '解決策:',
+      'help.gettingStarted': '始める',
+      'help.features': '機能',
+      'help.troubleshooting': 'トラブルシューティング',
+      
       // Test History
       'testHistory.title': 'テスト履歴',
       'testHistory.subtitle': 'すべてのテスト活動と結果を表示',
@@ -669,6 +724,17 @@ const resources = {
       'common.errorMessage': '죄송합니다. 예상치 못한 문제가 발생했습니다. 페이지를 새로고침해 주세요.',
       'common.refreshPage': '페이지 새로고침',
       'common.errorDetails': '오류 세부사항 (개발)',
+      
+      // Help Center
+      'help.title': '도움말 센터',
+      'help.subtitle': '플랫폼을 가장 효과적으로 사용하는 방법을 배우세요',
+      'help.categories': '카테고리',
+      'help.steps': '실행 단계:',
+      'help.keyFeatures': '주요 기능:',
+      'help.solutions': '해결책:',
+      'help.gettingStarted': '시작하기',
+      'help.features': '기능',
+      'help.troubleshooting': '문제 해결',
       
       // Test History
       'testHistory.title': '테스트 기록',
