@@ -78,6 +78,9 @@ const resources = {
       'testSelector.start': 'Start',
       'testSelector.suggestions': 'Suggestions',
       
+      // Feature Guide
+      'featureGuide.helpTitle': 'Usage Guide',
+      
       // Test History
       'testHistory.title': 'Test History',
       'testHistory.subtitle': 'View all your test activities and results',
@@ -349,6 +352,9 @@ const resources = {
       'testSelector.start': 'Bắt đầu',
       'testSelector.suggestions': 'Gợi ý',
       
+      // Feature Guide
+      'featureGuide.helpTitle': 'Hướng dẫn sử dụng',
+      
       // Test History
       'testHistory.title': 'Lịch sử bài kiểm tra',
       'testHistory.subtitle': 'Xem tất cả hoạt động và kết quả bài kiểm tra của bạn',
@@ -453,6 +459,9 @@ const resources = {
       'testSelector.difficulty': '难度',
       'testSelector.start': '开始',
       'testSelector.suggestions': '建议',
+      
+      // Feature Guide
+      'featureGuide.helpTitle': '使用指南',
       
       // Test History
       'testHistory.title': '测试历史',
@@ -637,6 +646,9 @@ const resources = {
       'testSelector.start': '開始',
       'testSelector.suggestions': '提案',
       
+      // Feature Guide
+      'featureGuide.helpTitle': '使用ガイド',
+      
       // Test History
       'testHistory.title': 'テスト履歴',
       'testHistory.subtitle': 'すべてのテスト活動と結果を表示',
@@ -819,6 +831,9 @@ const resources = {
       'testSelector.difficulty': '난이도',
       'testSelector.start': '시작',
       'testSelector.suggestions': '제안',
+      
+      // Feature Guide
+      'featureGuide.helpTitle': '사용 가이드',
       
       // Test History
       'testHistory.title': '테스트 기록',

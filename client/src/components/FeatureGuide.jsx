@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import TutorialTooltip from './TutorialTooltip';
 
 const FeatureGuide = ({ feature, children, onComplete }) => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
@@ -132,7 +134,7 @@ const FeatureGuide = ({ feature, children, onComplete }) => {
         <button
           onClick={startGuide}
           className="absolute top-2 right-2 w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold transition-colors z-10"
-          title="Hướng dẫn sử dụng"
+          title={t('featureGuide.helpTitle')}
         >
           ?
         </button>
@@ -156,7 +158,7 @@ const FeatureGuide = ({ feature, children, onComplete }) => {
         <button
           onClick={startGuide}
           className="absolute top-2 right-2 w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold transition-colors z-10"
-          title="Hướng dẫn sử dụng"
+          title={t('featureGuide.helpTitle')}
         >
           ?
         </button>
