@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { dashboardAPI } from '../api/dashboard';
 import ScoreCard from '../components/ScoreCard';
 import Loader from '../components/Loader';
@@ -29,6 +30,7 @@ import DailyChallenge from '../components/DailyChallenge';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -189,13 +191,13 @@ export default function Dashboard() {
                          onClick={() => setShowTestSelector(true)}
                          className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
                        >
-                         🎯 Chọn bài kiểm tra
+                         🎯 {t('nav.tests')}
                        </button>
                        <button
                          onClick={() => setShowHelpCenter(true)}
                          className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
                        >
-                         📚 Trợ giúp
+                         📚 {t('common.help', 'Help')}
                        </button>
                        <div className="hidden md:block">
                          <GoalProgressBar

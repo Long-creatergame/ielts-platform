@@ -50,6 +50,13 @@ const resources = {
       'test.submit': 'Submit Test',
       'test.result': 'Test Result',
       'test.bandScore': 'Band Score',
+      
+      // Common additional
+      'common.help': 'Help',
+      'common.tests': 'Take Test',
+      'common.target': 'Target',
+      'common.current': 'Current',
+      'common.noTestsYet': 'No tests yet',
     }
   },
   vi: {
@@ -98,6 +105,13 @@ const resources = {
       'test.submit': 'Nộp bài',
       'test.result': 'Kết quả kiểm tra',
       'test.bandScore': 'Điểm Band',
+      
+      // Common additional
+      'common.help': 'Trợ giúp',
+      'common.tests': 'Chọn bài kiểm tra',
+      'common.target': 'Mục tiêu',
+      'common.current': 'Hiện tại',
+      'common.noTestsYet': 'Chưa có bài kiểm tra',
     }
   },
   zh: {
