@@ -11,8 +11,8 @@ router.get('/can-start', auth, async (req, res) => {
     
     // User can start test if:
     // 1. They have a paid plan, OR
-    // 2. They have trial plan and haven't used trial yet
-    const allowed = user.plan === 'paid' || (user.plan === 'trial' && !user.isTrialUsed);
+    // 2. They have trial plan and haven't exceeded free limit
+    const allowed = user.plan === 'paid' || (user.plan === 'trial' && user.freeTestsUsed < user.freeTestsLimit);
     
     res.json({ allowed });
   } catch (error) {
@@ -32,26 +32,32 @@ router.post('/submit', auth, async (req, res) => {
     }
 
     // Check if user can submit
-    const canSubmit = user.plan === 'paid' || (user.plan === 'trial' && !user.isTrialUsed);
+    const canSubmit = user.plan === 'paid' || (user.plan === 'trial' && user.freeTestsUsed < user.freeTestsLimit);
     
     if (!canSubmit) {
-      return res.status(403).json({ error: 'Cannot submit test. Trial used or insufficient permissions.' });
+      return res.status(403).json({ 
+        error: 'Cannot submit test. Free trial limit reached or insufficient permissions.',
+        freeTestsUsed: user.freeTestsUsed,
+        freeTestsLimit: user.freeTestsLimit
+      });
     }
 
     // Add test to user's tests array
     user.tests.push({ skill });
     
-    // Mark trial as used if this is a trial user
-    if (user.plan === 'trial' && !user.isTrialUsed) {
-      user.isTrialUsed = true;
+    // Increment free tests used if this is a trial user
+    if (user.plan === 'trial') {
+      user.freeTestsUsed += 1;
     }
 
     await user.save();
 
     res.json({ 
       message: 'Test submitted successfully',
-      isTrialUsed: user.isTrialUsed,
-      plan: user.plan
+      freeTestsUsed: user.freeTestsUsed,
+      freeTestsLimit: user.freeTestsLimit,
+      plan: user.plan,
+      remainingTests: user.plan === 'trial' ? user.freeTestsLimit - user.freeTestsUsed : 'unlimited'
     });
   } catch (error) {
     console.error('Submit test error:', error);

@@ -11,6 +11,7 @@ import GoalProgressBar from '../components/GoalProgressBar';
 import CoachMessage from '../components/CoachMessage';
 import UpgradeBanner from '../components/UpgradeBanner';
 import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
+import FreeTrialProgress from '../components/FreeTrialProgress';
 import AIPractice from '../components/AIPractice';
 import AIPersonalization from '../components/AIPersonalization';
 import MyWeakness from '../components/MyWeakness';
@@ -201,8 +202,9 @@ export default function Dashboard() {
           onStartOnboarding={() => setShowOnboarding(true)}
           onQuickStart={() => setShowQuickStart(true)}
         />
-        {/* Monetization Components */}
+        {/* Trial Progress & Monetization Components */}
         <div className="mb-8">
+          <FreeTrialProgress user={user} />
           <UpgradeBanner user={user} />
           <SmartUpgradePrompt />
         </div>

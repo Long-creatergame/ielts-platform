@@ -16,7 +16,7 @@ const createCheckoutSession = async (req, res) => {
             name: 'IELTS Test Access (Full)',
             description: 'Unlimited access to all IELTS test modules'
           },
-          unit_amount: 999, // $9.99
+          unit_amount: 29900, // 299,000 VND (~$12)
         },
         quantity: 1,
       }],
