@@ -44,6 +44,9 @@ const resources = {
       'common.overallScore': 'Overall Score',
       'common.writingScore': 'Writing Score',
       'common.date': 'Date',
+      'common.errorMessage': 'We\'re sorry, but something unexpected happened. Please try refreshing the page.',
+      'common.refreshPage': 'Refresh Page',
+      'common.errorDetails': 'Error Details (Development)',
       
       // Test History
       'testHistory.title': 'Test History',
@@ -282,6 +285,9 @@ const resources = {
       'common.overallScore': 'Điểm tổng thể',
       'common.writingScore': 'Điểm viết',
       'common.date': 'Ngày',
+      'common.errorMessage': 'Chúng tôi xin lỗi, đã xảy ra sự cố không mong muốn. Vui lòng thử làm mới trang.',
+      'common.refreshPage': 'Làm mới trang',
+      'common.errorDetails': 'Chi tiết lỗi (Phát triển)',
       
       // Test History
       'testHistory.title': 'Lịch sử bài kiểm tra',
@@ -354,6 +360,9 @@ const resources = {
       'common.overallScore': '总分',
       'common.writingScore': '写作分数',
       'common.date': '日期',
+      'common.errorMessage': '抱歉，发生了意外情况。请尝试刷新页面。',
+      'common.refreshPage': '刷新页面',
+      'common.errorDetails': '错误详情（开发）',
       
       // Test History
       'testHistory.title': '测试历史',
@@ -504,6 +513,9 @@ const resources = {
       'common.overallScore': '総合スコア',
       'common.writingScore': 'ライティングスコア',
       'common.date': '日付',
+      'common.errorMessage': '申し訳ございませんが、予期しない問題が発生しました。ページを更新してください。',
+      'common.refreshPage': 'ページを更新',
+      'common.errorDetails': 'エラー詳細（開発）',
       
       // Test History
       'testHistory.title': 'テスト履歴',
@@ -654,6 +666,9 @@ const resources = {
       'common.overallScore': '전체 점수',
       'common.writingScore': '라이팅 점수',
       'common.date': '날짜',
+      'common.errorMessage': '죄송합니다. 예상치 못한 문제가 발생했습니다. 페이지를 새로고침해 주세요.',
+      'common.refreshPage': '페이지 새로고침',
+      'common.errorDetails': '오류 세부사항 (개발)',
       
       // Test History
       'testHistory.title': '테스트 기록',
