@@ -23,6 +23,7 @@ const notificationsRoutes = require('./routes/notifications.js');
 const featureUsageRoutes = require('./routes/featureUsage.js');
 const analyticsRoutes = require('./routes/analytics.js');
 const leaderboardRoutes = require('./routes/leaderboard.js');
+const weeklyReportRoutes = require('./routes/weeklyReport.js');
 
 dotenv.config();
 
@@ -211,6 +212,7 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/feature-usage', featureUsageRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/weekly-report', weeklyReportRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

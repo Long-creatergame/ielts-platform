@@ -316,7 +316,7 @@ export default function TestResult() {
               {t('testResult.nextSteps', 'What\'s Next?')}
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <button
                 onClick={handleRetakeTest}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
@@ -332,11 +332,34 @@ export default function TestResult() {
               </button>
               
               <button
+                onClick={() => navigate('/ai-practice?plan=7day')}
+                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                📅 Tạo kế hoạch 7 ngày
+              </button>
+              
+              <button
                 onClick={handleViewHistory}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
               >
                 📊 {t('testResult.viewHistory', 'View History')}
               </button>
+            </div>
+            
+            {/* 7-day plan CTA highlight */}
+            <div className="mt-6 bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 rounded-xl p-4">
+              <div className="text-center">
+                <h3 className="text-lg font-bold text-orange-900 mb-2">🚀 Tăng tốc với kế hoạch cá nhân hóa</h3>
+                <p className="text-orange-800 text-sm mb-3">
+                  AI sẽ tạo lộ trình học 7 ngày dựa trên kết quả test của bạn
+                </p>
+                <button
+                  onClick={() => navigate('/ai-practice?plan=7day')}
+                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200"
+                >
+                  Tạo ngay miễn phí
+                </button>
+              </div>
             </div>
           </div>
         </div>
