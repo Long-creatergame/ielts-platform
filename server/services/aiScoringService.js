@@ -13,7 +13,7 @@ class AIScoringService {
     this.isAvailable = !!process.env.OPENAI_API_KEY;
   }
 
-  async scoreWriting(answer, taskType = 'Task 2') {
+  async scoreWriting(answer, taskType = 'Task 2', options = {}) {
     if (!this.isAvailable) {
       return this.getFallbackScore('writing');
     }
@@ -21,14 +21,20 @@ class AIScoringService {
     try {
       const prompt = this.createWritingPrompt(answer, taskType);
       const response = await this.callOpenAI(prompt);
-      return this.parseResponse(response, 'writing');
+      const parsed = this.parseResponse(response, 'writing');
+      return this.applyWeights(parsed, {
+        coherence: options.weights?.coherence ?? 0.25,
+        lexical: options.weights?.lexical ?? 0.25,
+        grammar: options.weights?.grammar ?? 0.25,
+        taskResponse: options.weights?.taskResponse ?? 0.25,
+      });
     } catch (error) {
       console.error('AI Scoring Error:', error);
       return this.getFallbackScore('writing');
     }
   }
 
-  async scoreSpeaking(answer, taskType = 'Part 2') {
+  async scoreSpeaking(answer, taskType = 'Part 2', options = {}) {
     if (!this.isAvailable) {
       return this.getFallbackScore('speaking');
     }
@@ -36,7 +42,13 @@ class AIScoringService {
     try {
       const prompt = this.createSpeakingPrompt(answer, taskType);
       const response = await this.callOpenAI(prompt);
-      return this.parseResponse(response, 'speaking');
+      const parsed = this.parseResponse(response, 'speaking');
+      return this.applyWeights(parsed, {
+        fluency: options.weights?.fluency ?? 0.25,
+        lexical: options.weights?.lexical ?? 0.25,
+        grammar: options.weights?.grammar ?? 0.25,
+        pronunciation: options.weights?.pronunciation ?? 0.25,
+      });
     } catch (error) {
       console.error('AI Scoring Error:', error);
       return this.getFallbackScore('speaking');
@@ -139,6 +151,27 @@ Make sure the feedback is constructive and specific, around 50-100 words.
     }
 
     return this.getFallbackScore(skill);
+  }
+
+  applyWeights(result, weights) {
+    try {
+      if (!result?.data) return result;
+      const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+      let weighted = 0;
+      let total = 0;
+      Object.entries(weights).forEach(([k, w]) => {
+        if (typeof result.data[k] === 'number') {
+          weighted += result.data[k] * w;
+          total += w;
+        }
+      });
+      if (total > 0) {
+        const overall = clamp(Number((weighted / total).toFixed(1)), 0, 9);
+        result.data.overall = overall;
+        result.data.bandLevel = String(overall);
+      }
+    } catch (_) {}
+    return result;
   }
 
   getFallbackScore(skill) {

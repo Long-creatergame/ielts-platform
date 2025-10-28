@@ -30,10 +30,13 @@ import WelcomeBanner from '../components/WelcomeBanner';
 import ModernStatsCard from '../components/ModernStatsCard';
 import ModernTestCard from '../components/ModernTestCard';
 import DailyChallenge from '../components/DailyChallenge';
+import RealtimeClient from '../components/RealtimeClient';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -141,6 +144,10 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <RealtimeClient
+        onTestStarted={() => refreshDashboardData()}
+        onTestCompleted={() => refreshDashboardData()}
+      />
       {/* Onboarding */}
       <Onboarding onComplete={() => setShowOnboarding(false)} />
       
@@ -200,6 +207,15 @@ export default function Dashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Leaderboard CTA */}
+        <div className="mb-6 flex items-center justify-between">
+          <button
+            onClick={() => navigate('/leaderboard')}
+            className="text-blue-600 hover:text-blue-800 font-medium"
+          >
+            🏆 Xem bảng xếp hạng
+          </button>
+        </div>
         {/* Welcome Banner for New Users */}
         <WelcomeBanner 
           onStartOnboarding={() => setShowOnboarding(true)}

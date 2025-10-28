@@ -21,11 +21,16 @@ const dailyChallengeRoutes = require('./routes/dailyChallenge.js');
 const milestonesRoutes = require('./routes/milestones.js');
 const notificationsRoutes = require('./routes/notifications.js');
 const featureUsageRoutes = require('./routes/featureUsage.js');
+const analyticsRoutes = require('./routes/analytics.js');
+const leaderboardRoutes = require('./routes/leaderboard.js');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const http = require('http');
+const server = http.createServer(app);
+let io = null;
 
 // Connect to MongoDB with production-ready configuration
 const connectDB = async () => {
@@ -204,6 +209,8 @@ app.use('/api/daily-challenge', dailyChallengeRoutes);
 app.use('/api/milestones', milestonesRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/feature-usage', featureUsageRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -216,6 +223,34 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
+// WebSocket (Socket.IO) setup
+try {
+  const { Server } = require('socket.io');
+  io = new Server(server, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    }
+  });
+
+  io.on('connection', (socket) => {
+    console.log('🔌 Client connected:', socket.id);
+
+    socket.on('join', (room) => {
+      if (room) socket.join(room);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('🔌 Client disconnected:', socket.id);
+    });
+  });
+
+  app.set('io', io);
+  console.log('🛰️  WebSocket (Socket.IO) initialized');
+} catch (e) {
+  console.warn('Socket.IO not available, skipping realtime features');
+}
+
+server.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
