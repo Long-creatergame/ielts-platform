@@ -17,7 +17,38 @@ const EnhancedAudioPlayer = ({
   const [error, setError] = useState(null);
   const [showTranscript, setShowTranscript] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [currentAudioUrl, setCurrentAudioUrl] = useState(audioUrl);
+  const [fallbackIndex, setFallbackIndex] = useState(0);
   const audioRef = useRef(null);
+
+  // High-quality audio fallback URLs
+  const fallbackUrls = [
+    audioUrl,
+    '/api/audio/ielts-listening-sample-1.mp3',
+    '/api/audio/ielts-listening-sample-2.mp3',
+    '/api/audio/ielts-listening-sample-3.mp3',
+    '/api/audio/ielts-listening-sample-4.mp3',
+    '/api/audio/ielts-listening-sample.mp3'
+  ].filter(Boolean);
+
+  // Update current audio URL when prop changes
+  useEffect(() => {
+    setCurrentAudioUrl(audioUrl);
+    setFallbackIndex(0);
+    setError(null);
+  }, [audioUrl]);
+
+  // Try next fallback URL on error
+  const tryNextFallback = () => {
+    const nextIndex = fallbackIndex + 1;
+    if (nextIndex < fallbackUrls.length) {
+      setFallbackIndex(nextIndex);
+      setCurrentAudioUrl(fallbackUrls[nextIndex]);
+      setError(null);
+    } else {
+      setError('All audio sources failed to load');
+    }
+  };
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -36,10 +67,13 @@ const EnhancedAudioPlayer = ({
     };
 
     const handleLoadStart = () => setIsLoading(true);
-    const handleCanPlay = () => setIsLoading(false);
-    const handleError = () => {
-      setError('Failed to load audio');
+    const handleCanPlay = () => {
       setIsLoading(false);
+      setError(null);
+    };
+    const handleError = () => {
+      console.warn(`Audio failed to load: ${currentAudioUrl}`);
+      tryNextFallback();
     };
 
     audio.addEventListener('timeupdate', updateTime);
@@ -57,7 +91,7 @@ const EnhancedAudioPlayer = ({
       audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('error', handleError);
     };
-  }, [audioUrl, onTimeUpdate, onEnded]);
+  }, [currentAudioUrl, fallbackIndex, onTimeUpdate, onEnded]);
 
   const togglePlayPause = async () => {
     const audio = audioRef.current;
@@ -143,15 +177,27 @@ const EnhancedAudioPlayer = ({
           <span className="font-medium">Audio Error</span>
         </div>
         <p className="text-red-600 text-sm mb-3">{error}</p>
-        <button
-          onClick={() => {
-            setError(null);
-            setIsLoading(false);
-          }}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-        >
-          Retry
-        </button>
+        <div className="space-y-2">
+          <button
+            onClick={() => {
+              setError(null);
+              setIsLoading(false);
+              setFallbackIndex(0);
+              setCurrentAudioUrl(audioUrl);
+            }}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          >
+            Retry Original
+          </button>
+          {fallbackUrls.length > 1 && (
+            <button
+              onClick={tryNextFallback}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors ml-2"
+            >
+              Try Fallback
+            </button>
+          )}
+        </div>
       </div>
     );
   }
@@ -175,8 +221,9 @@ const EnhancedAudioPlayer = ({
       
       <audio
         ref={audioRef}
-        src={audioUrl}
-        preload="metadata"
+        src={currentAudioUrl}
+        preload="auto"
+        crossOrigin="anonymous"
         className="w-full"
       />
       
