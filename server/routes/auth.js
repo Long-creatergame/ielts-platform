@@ -70,15 +70,20 @@ router.post('/register', async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
-    // Send welcome email (async, don't wait for it)
-    const { sendEmail } = require('../services/emailService');
-    sendEmail(user.email, 'welcome', user.name)
-      .then(result => {
-        console.log('✅ Welcome email sent successfully:', result);
-      })
-      .catch(err => {
-        console.error('❌ Welcome email error:', err);
-      });
+    // Send welcome email (best-effort, don't block registration if service missing)
+    try {
+      const { sendEmail } = require('../services/emailService');
+      Promise.resolve(sendEmail(user.email, 'welcome', user.name))
+        .then(result => {
+          console.log('✅ Welcome email sent successfully:', result);
+        })
+        .catch(err => {
+          console.error('❌ Welcome email error:', err);
+        });
+    } catch (e) {
+      // email service not configured in some environments
+      console.warn('✉️  Email service not configured, skipping welcome email');
+    }
 
     res.status(201).json({
       message: 'User registered successfully',
