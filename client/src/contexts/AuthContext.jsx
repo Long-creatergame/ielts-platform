@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { mockAPI, mockUser } from "../utils/mockData";
 
 const AuthContext = createContext();
 
@@ -41,9 +42,34 @@ export const AuthProvider = ({ children }) => {
     console.log("✅ Login successful, user data saved to localStorage");
   };
 
+  const loginUser = async (email, password) => {
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Login failed');
+      }
+
+      const data = await response.json();
+      login(data.user, data.token);
+      return { success: true, user: data.user };
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  };
+
   const register = async (userData) => {
     try {
-      // FIXED: Use environment variable directly (already includes /api)
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
@@ -53,16 +79,17 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify(userData)
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || 'Registration failed');
       }
-      
+
       const data = await response.json();
       login(data.user, data.token);
-      return data;
+      return { success: true, user: data.user };
     } catch (error) {
+      console.error('Registration error:', error);
       throw error;
     }
   };
@@ -83,7 +110,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, getUserId }}>
+    <AuthContext.Provider value={{ user, token, login, loginUser, register, logout, getUserId }}>
       {children}
     </AuthContext.Provider>
   );

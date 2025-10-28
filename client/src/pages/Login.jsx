@@ -14,7 +14,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [attemptsRemaining, setAttemptsRemaining] = useState(null);
-  const { login, user } = useAuth();
+  const { login, loginUser, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -37,26 +37,8 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // FIXED: Use environment variable directly (already includes /api)
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        setShowForgotPassword(error.showForgotPassword || false);
-        setAttemptsRemaining(error.attemptsRemaining || null);
-        throw new Error(error.message || 'Login failed');
-      }
-
-      const data = await response.json();
-      login(data.user, data.token);
+      // Use mock API for now
+      await loginUser(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
