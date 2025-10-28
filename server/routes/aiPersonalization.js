@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const AIPersonalizationService = require('../services/aiPersonalizationService');
 const AIPersonalization = require('../models/AIPersonalization');
+// mockData removed for production deploy
 
 const router = express.Router();
 

@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const { mockUsers, createMockUser } = require('../middleware/mockData');
+// mockData removed for production deploy
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-this-in-production';
