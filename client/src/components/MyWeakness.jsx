@@ -307,7 +307,7 @@ const MyWeakness = () => {
         <button
           onClick={() => {
             // Navigate to AI Recommendations
-            window.location.href = '/dashboard#recommendations';
+            navigate('/dashboard?tab=recommendations');
           }}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors"
         >

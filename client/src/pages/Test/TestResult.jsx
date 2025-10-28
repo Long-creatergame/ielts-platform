@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import FeatureGuide from '../../components/FeatureGuide';
+import AIEncouragement from '../../components/AIEncouragement';
 
 export default function TestResult() {
   const { id } = useParams();
@@ -13,10 +14,34 @@ export default function TestResult() {
   const [testResult, setTestResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
+  const [previousScore, setPreviousScore] = useState(null);
 
   useEffect(() => {
     loadTestResult();
   }, [id]);
+
+  const loadPreviousScore = async () => {
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE_URL}/api/tests/user-tests?limit=2`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && data.data.length > 1) {
+          setPreviousScore(data.data[1].score?.overall || 0);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading previous score:', error);
+    }
+  };
 
   const loadTestResult = async () => {
     try {
@@ -25,6 +50,7 @@ export default function TestResult() {
       // Try to get from location state first
       if (location.state?.testResult) {
         setTestResult(location.state.testResult);
+        loadPreviousScore();
         setLoading(false);
         return;
       }
@@ -52,6 +78,8 @@ export default function TestResult() {
         if (response.ok) {
           const data = await response.json();
           setTestResult(data.data);
+          // Load previous score for comparison
+          loadPreviousScore();
         } else {
           // Fallback to mock data
           setTestResult(generateMockResult());
@@ -168,6 +196,14 @@ export default function TestResult() {
   return (
     <FeatureGuide feature="test-result">
       <div className="min-h-screen bg-gray-50">
+        {/* AI Encouragement */}
+        {testResult && (
+          <AIEncouragement 
+            testResult={testResult}
+            previousScore={previousScore}
+            userName={user?.name || 'Student'}
+          />
+        )}
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
