@@ -1,3 +1,49 @@
+let queue = [];
+let flushing = false;
+
+function getBase() {
+  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+}
+
+export function track(event, data = {}) {
+  try {
+    const payload = {
+      event,
+      userId: localStorage.getItem('userId') || null,
+      sessionId: localStorage.getItem('sessionId') || null,
+      timestamp: Date.now(),
+      url: window.location.href,
+      data
+    };
+    queue.push(payload);
+    flushSoon();
+  } catch (_) {}
+}
+
+function flushSoon() {
+  if (flushing) return;
+  flushing = true;
+  setTimeout(flush, 1000);
+}
+
+async function flush() {
+  const batch = queue.splice(0, queue.length);
+  flushing = false;
+  if (batch.length === 0) return;
+  try {
+    await fetch(`${getBase()}/api/analytics/batch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ events: batch })
+    });
+  } catch (_) {
+    // Re-queue on failure (best-effort)
+    queue = batch.concat(queue);
+  }
+}
+
+export default { track };
+
 class AnalyticsService {
   constructor() {
     this.apiBase = import.meta.env.VITE_API_BASE_URL;

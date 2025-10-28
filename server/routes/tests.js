@@ -91,6 +91,19 @@ router.post('/start', authMiddleware, async (req, res) => {
 
     await test.save();
 
+    // Emit realtime update to user room
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(String(user._id)).emit('test:started', {
+          testId: test._id,
+          level,
+          skill,
+          timestamp: Date.now()
+        });
+      }
+    } catch (_) {}
+
     // Increment free trial usage if this is free test
     if (user.freeTestsUsed < user.freeTestsLimit && !user.paid) {
       user.freeTestsUsed += 1;
@@ -129,6 +142,45 @@ router.post('/submit', authMiddleware, async (req, res) => {
     });
 
     await test.save();
+
+    // Emit realtime update for test result + analytics + leaderboard
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(String(user._id)).emit('test:completed', {
+          testId: test._id,
+          overallBand,
+          skillScores,
+          timestamp: Date.now()
+        });
+      }
+    } catch (_) {}
+
+    // Track analytics (best-effort)
+    try {
+      const fetch = require('node-fetch');
+      fetch(`${process.env.FRONTEND_URL || 'http://localhost:4000'}/api/analytics/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'test_complete',
+          userId: String(user._id),
+          timestamp: Date.now(),
+          data: { overallBand, skillScores }
+        })
+      }).catch(() => {});
+    } catch (_) {}
+
+    // Award leaderboard points (best-effort)
+    try {
+      const fetch = require('node-fetch');
+      const points = Math.round((overallBand || 0) * 10);
+      fetch(`${process.env.FRONTEND_URL || 'http://localhost:4000'}/api/leaderboard/add-points`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': req.header('Authorization') || '' },
+        body: JSON.stringify({ points })
+      }).catch(() => {});
+    } catch (_) {}
 
     // Update user statistics
     user.totalTests += 1;

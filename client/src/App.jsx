@@ -18,6 +18,7 @@ import TestHistory from './pages/TestHistory';
 import QuickPractice from './pages/QuickPractice';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Leaderboard from './pages/Leaderboard';
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/quick-practice/:skill" element={<ProtectedRoute><QuickPractice /></ProtectedRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             </Routes>
           </div>
         </ErrorBoundary>
