@@ -29,7 +29,7 @@ const PremiumFeatureLock = ({
   };
   
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative group ${className}`}>
       {/* Blurred content preview */}
       {showPreview && (
         <div className="filter blur-sm pointer-events-none opacity-60">
@@ -61,6 +61,20 @@ const PremiumFeatureLock = ({
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* Hover tooltip with benefits */}
+      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
+        <div className="text-center">
+          <div className="font-semibold mb-1">✨ Unlock Premium Benefits</div>
+          <div className="text-gray-300 text-xs">
+            • AI-powered feedback<br/>
+            • Unlimited practice tests<br/>
+            • Advanced analytics<br/>
+            • Priority support
+          </div>
+        </div>
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
       </div>
     </div>
   );

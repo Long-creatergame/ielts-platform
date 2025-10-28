@@ -31,6 +31,8 @@ import ModernStatsCard from '../components/ModernStatsCard';
 import ModernTestCard from '../components/ModernTestCard';
 import DailyChallenge from '../components/DailyChallenge';
 import RealtimeClient from '../components/RealtimeClient';
+import StickyPricingCTA from '../components/StickyPricingCTA';
+import WeeklyReport from '../components/WeeklyReport';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -506,6 +508,9 @@ export default function Dashboard() {
 
         {/* Quick Actions - Removed duplicate */}
 
+        {/* Weekly Report */}
+        <WeeklyReport />
+
         {/* Recommendations */}
         {personalization?.recommendations && personalization.recommendations.length > 0 && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
@@ -522,6 +527,9 @@ export default function Dashboard() {
         )}
 
       </div>
+      
+      {/* Sticky Pricing CTA */}
+      <StickyPricingCTA />
     </div>
   );
 }
