@@ -15,7 +15,36 @@ const generateToken = (userId) => {
 // Register route
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, goal, targetBand, currentLevel } = req.body;
+    const { name, email, password } = req.body;
+    let { goal, targetBand, currentLevel } = req.body;
+
+    // Normalize incoming values from various clients
+    const normalizeGoal = (g) => {
+      if (!g) return 'Thử sức';
+      const key = String(g).toLowerCase();
+      const map = {
+        'thu suc': 'Thử sức', 'thú sức': 'Thử sức', 'try': 'Thử sức', 'test': 'Thử sức', '7': 'Thử sức',
+        'du hoc': 'Du học', 'study': 'Du học',
+        'viec lam': 'Việc làm', 'work': 'Việc làm', 'job': 'Việc làm',
+        'dinh cu': 'Định cư', 'immigrate': 'Định cư'
+      };
+      return map[key] || g;
+    };
+    const normalizeLevel = (l) => {
+      if (!l) return 'A2';
+      const key = String(l).toLowerCase();
+      const map = {
+        'beginner': 'A2', 'elementary': 'A2',
+        'intermediate': 'B1',
+        'upper-intermediate': 'B2', 'upper_intermediate': 'B2',
+        'advanced': 'C1',
+        'proficient': 'C2'
+      };
+      return map[key] || l;
+    };
+    goal = normalizeGoal(goal);
+    currentLevel = normalizeLevel(currentLevel);
+    targetBand = Number(targetBand || 6.5);
 
     // Enhanced validation
     const errors = {};
@@ -100,6 +129,14 @@ router.post('/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Registration error:', error);
+    // Surface mongoose validation / duplicate key errors clearly
+    if (error?.code === 11000) {
+      return res.status(400).json({ message: 'Email already exists', errors: { email: 'Email already exists' } });
+    }
+    if (error?.name === 'ValidationError') {
+      const errors = Object.fromEntries(Object.entries(error.errors).map(([k, v]) => [k, v.message]));
+      return res.status(400).json({ message: 'Validation failed', errors });
+    }
     res.status(500).json({ message: 'Server error during registration' });
   }
 });
