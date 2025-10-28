@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
-import { mockAPI } from '../utils/mockData';
+// Removed mockAPI import for production build
 
 const MyWeakness = () => {
   const { t } = useTranslation();
