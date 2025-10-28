@@ -57,7 +57,8 @@ router.get('/', async (req, res) => {
     const streakDays = user.streakDays || 0;
     
     // Check if completed today
-    const completedToday = false; // TODO: Check from database
+    const todayStr = today.toDateString();
+    const completedToday = user.completedChallenges && user.completedChallenges.includes(todayStr);
 
     const challenge = {
       id: `challenge-${today.toDateString()}`,
@@ -124,11 +125,18 @@ router.post('/complete', async (req, res) => {
     const newPoints = (user.points || 0) + pointsEarned;
 
     // Update user
+    const todayStr = today.toDateString();
+    const completedChallenges = user.completedChallenges || [];
+    if (!completedChallenges.includes(todayStr)) {
+      completedChallenges.push(todayStr);
+    }
+
     await User.findByIdAndUpdate(user._id, {
       $set: {
         lastActiveDate: today,
         streakDays: newStreak,
-        points: newPoints
+        points: newPoints,
+        completedChallenges: completedChallenges
       }
     });
 
