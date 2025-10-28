@@ -29,8 +29,13 @@ const PORT = process.env.PORT || 4000;
 // Connect to MongoDB with production-ready configuration
 const connectDB = async () => {
   try {
-    // Use production MongoDB Atlas or local fallback
-    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/ielts-platform';
+    // Prefer cloud connection strings if provided by the environment
+    const mongoURI = (
+      process.env.MONGO_URI ||
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URL ||
+      'mongodb://localhost:27017/ielts-platform'
+    );
     
     console.log('🔄 Attempting to connect to MongoDB...');
     console.log('📍 URI:', mongoURI.includes('mongodb.net') ? 'MongoDB Atlas (Production)' : 'Local MongoDB');

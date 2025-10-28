@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { mockAPI } from '../utils/mockData';
 
 const MyWeakness = () => {
   const { t } = useTranslation();
