@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { mockAPI, mockUser } from "../utils/mockData";
+// Removed mock imports for production build
 
 const AuthContext = createContext();
 
