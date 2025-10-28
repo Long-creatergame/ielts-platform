@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import './i18n';
 import Navbar from './components/Navbar';
+import ErrorBoundary from './components/ErrorBoundary';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -22,9 +23,10 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
-          <Routes>
+        <ErrorBoundary>
+          <div className="min-h-screen bg-gray-50">
+            <Navbar />
+            <Routes>
             <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/login" element={<Login />} />
@@ -39,8 +41,9 @@ export default function App() {
             <Route path="/quick-practice/:skill" element={<ProtectedRoute><QuickPractice /></ProtectedRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-          </Routes>
-        </div>
+            </Routes>
+          </div>
+        </ErrorBoundary>
       </Router>
     </AuthProvider>
   );

@@ -44,18 +44,28 @@ const MobileOptimizedTestPage = () => {
   const loadTestData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/authentic-ielts/${currentSkill}`);
+      setError(null);
+      
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_BASE_URL}/api/authentic-ielts/${currentSkill}`);
+      
       if (response.ok) {
         const data = await response.json();
-        setQuestions(data.data || []);
-        setCurrentQuestion(0);
-        setAnswers({});
-        setTimeLeft(getTimeLimit(currentSkill));
+        if (data.success && data.data) {
+          setQuestions(data.data || []);
+          setCurrentQuestion(0);
+          setAnswers({});
+          setTimeLeft(getTimeLimit(currentSkill));
+        } else {
+          throw new Error(data.error || 'Invalid response format');
+        }
       } else {
-        throw new Error('Failed to load test data');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to load test data`);
       }
     } catch (err) {
-      setError(err.message);
+      console.error('Load test data error:', err);
+      setError(err.message || 'Failed to load test data');
     } finally {
       setLoading(false);
     }

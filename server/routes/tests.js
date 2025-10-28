@@ -34,11 +34,11 @@ router.get('/can-start', authMiddleware, async (req, res) => {
     const user = req.user;
     
     // Check free trial usage
-    if (user.freeTestsUsed < 1) {
+    if (user.freeTestsUsed < user.freeTestsLimit) {
       return res.json({ 
         allowed: true, 
         isFree: true,
-        message: 'You can start your free trial test'
+        message: `You can start your free trial test (${user.freeTestsUsed}/${user.freeTestsLimit} used)`
       });
     }
 
@@ -71,10 +71,10 @@ router.post('/start', authMiddleware, async (req, res) => {
     const { level, skill } = req.body;
     
     // Check if user can start test
-    if (user.freeTestsUsed >= 1 && !user.paid) {
+    if (user.freeTestsUsed >= user.freeTestsLimit && !user.paid) {
       return res.status(403).json({ 
         paywall: true,
-        message: 'Payment required to start test',
+        message: `Free trial completed (${user.freeTestsUsed}/${user.freeTestsLimit} used). Payment required to continue.`,
         upgradeUrl: '/pricing'
       });
     }
@@ -92,7 +92,7 @@ router.post('/start', authMiddleware, async (req, res) => {
     await test.save();
 
     // Increment free trial usage if this is free test
-    if (user.freeTestsUsed < 1) {
+    if (user.freeTestsUsed < user.freeTestsLimit && !user.paid) {
       user.freeTestsUsed += 1;
       await user.save();
     }

@@ -131,13 +131,31 @@ router.post('/register', async (req, res) => {
     console.error('Registration error:', error);
     // Surface mongoose validation / duplicate key errors clearly
     if (error?.code === 11000) {
-      return res.status(400).json({ message: 'Email already exists', errors: { email: 'Email already exists' } });
+      return res.status(400).json({ 
+        message: 'Email already exists', 
+        errors: { email: 'Email already exists' } 
+      });
     }
     if (error?.name === 'ValidationError') {
-      const errors = Object.fromEntries(Object.entries(error.errors).map(([k, v]) => [k, v.message]));
-      return res.status(400).json({ message: 'Validation failed', errors });
+      const errors = Object.fromEntries(
+        Object.entries(error.errors).map(([k, v]) => [k, v.message])
+      );
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors 
+      });
     }
-    res.status(500).json({ message: 'Server error during registration' });
+    // Handle database connection errors
+    if (error?.name === 'MongoNetworkError' || error?.name === 'MongoServerSelectionError') {
+      return res.status(503).json({ 
+        message: 'Database temporarily unavailable. Please try again later.',
+        retryAfter: 30
+      });
+    }
+    res.status(500).json({ 
+      message: 'Server error during registration',
+      ...(process.env.NODE_ENV === 'development' && { details: error.message })
+    });
   }
 });
 
@@ -217,7 +235,17 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    // Handle database connection errors
+    if (error?.name === 'MongoNetworkError' || error?.name === 'MongoServerSelectionError') {
+      return res.status(503).json({ 
+        message: 'Database temporarily unavailable. Please try again later.',
+        retryAfter: 30
+      });
+    }
+    res.status(500).json({ 
+      message: 'Server error during login',
+      ...(process.env.NODE_ENV === 'development' && { details: error.message })
+    });
   }
 });
 

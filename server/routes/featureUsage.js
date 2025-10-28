@@ -102,7 +102,17 @@ router.post('/track', auth, async (req, res) => {
     
   } catch (error) {
     console.error('Feature usage tracking error:', error);
-    res.status(500).json({ error: 'Server error' });
+    // Handle database connection errors
+    if (error?.name === 'MongoNetworkError' || error?.name === 'MongoServerSelectionError') {
+      return res.status(503).json({ 
+        error: 'Database temporarily unavailable. Please try again later.',
+        retryAfter: 30
+      });
+    }
+    res.status(500).json({ 
+      error: 'Server error',
+      ...(process.env.NODE_ENV === 'development' && { details: error.message })
+    });
   }
 });
 
@@ -125,7 +135,17 @@ router.get('/stats', auth, async (req, res) => {
     
   } catch (error) {
     console.error('Get feature stats error:', error);
-    res.status(500).json({ error: 'Server error' });
+    // Handle database connection errors
+    if (error?.name === 'MongoNetworkError' || error?.name === 'MongoServerSelectionError') {
+      return res.status(503).json({ 
+        error: 'Database temporarily unavailable. Please try again later.',
+        retryAfter: 30
+      });
+    }
+    res.status(500).json({ 
+      error: 'Server error',
+      ...(process.env.NODE_ENV === 'development' && { details: error.message })
+    });
   }
 });
 
