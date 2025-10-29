@@ -9,24 +9,40 @@ class EmailService {
 
   initializeTransporter() {
     try {
-      // Check if email configuration is available
-      if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.warn('Email service not configured. Set EMAIL_HOST, EMAIL_USER, EMAIL_PASS environment variables.');
+      // Prefer SendGrid if available
+      if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
+        this.transporter = nodemailer.createTransport({
+          host: 'smtp.sendgrid.net',
+          port: 587,
+          secure: false,
+          auth: { user: 'apikey', pass: process.env.SENDGRID_API_KEY }
+        });
+        this.fromAddress = process.env.SENDGRID_FROM_EMAIL;
+        this.isConfigured = true;
+        console.log('Email service initialized with SendGrid SMTP');
         return;
       }
 
-      this.transporter = nodemailer.createTransporter({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT || 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
-        }
-      });
+      // Fallback to generic SMTP
+      if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+        this.transporter = nodemailer.createTransport({
+          host: process.env.EMAIL_HOST,
+          port: process.env.EMAIL_PORT || 587,
+          secure: false,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        });
+        this.fromAddress = process.env.EMAIL_USER;
+        this.isConfigured = true;
+        console.log('Email service initialized with generic SMTP');
+        return;
+      }
 
-      this.isConfigured = true;
-      console.log('Email service initialized successfully');
+      console.warn('Email service not configured. Set SENDGRID_API_KEY/SENDGRID_FROM_EMAIL or EMAIL_HOST/EMAIL_USER/EMAIL_PASS');
+      return;
+
     } catch (error) {
       console.error('Failed to initialize email service:', error);
       this.isConfigured = false;
@@ -40,8 +56,9 @@ class EmailService {
     }
 
     try {
+      const from = this.fromAddress || process.env.EMAIL_USER || process.env.SENDGRID_FROM_EMAIL;
       const mailOptions = {
-        from: `"IELTS Platform" <${process.env.EMAIL_USER}>`,
+        from: `"IELTS Platform" <${from}>`,
         to: to,
         subject: subject,
         html: html,
