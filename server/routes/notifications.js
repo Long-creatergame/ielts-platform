@@ -1,190 +1,226 @@
 const express = require('express');
-const Notification = require('../models/Notification');
+const User = require('../models/User');
+const Test = require('../models/Test');
+const emailService = require('../services/emailService');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Get user notifications
-router.get('/:userId', auth, async (req, res) => {
+// Send welcome email to new user
+router.post('/welcome', async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body;
     
-    if (req.user._id.toString() !== userId) {
-      return res.status(403).json({ success: false, error: 'Unauthorized access' });
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
     }
 
-    const { page = 1, limit = 20, filter = 'all' } = req.query;
-    const skip = (page - 1) * limit;
-
-    let query = { userId };
-    
-    if (filter === 'unread') {
-      query.read = false;
-    } else if (filter === 'today') {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      query.createdAt = { $gte: today };
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    const notifications = await Notification.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Notification.countDocuments(query);
-    const unreadCount = await Notification.countDocuments({ userId, read: false });
-
+    const result = await emailService.sendWelcomeEmail(user);
+    
     res.json({
-      success: true,
-      data: {
-        notifications,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / limit)
-        },
-        unreadCount
-      }
+      success: result.success,
+      message: result.success ? 'Welcome email sent successfully' : 'Failed to send welcome email',
+      error: result.error
     });
   } catch (error) {
-    console.error('Get notifications error:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch notifications' });
+    console.error('Welcome email error:', error);
+    res.status(500).json({ error: 'Failed to send welcome email' });
   }
 });
 
-// Mark notification as read
-router.patch('/:notificationId/read', auth, async (req, res) => {
+// Send weekly report email
+router.post('/weekly-report', auth, async (req, res) => {
   try {
-    const { notificationId } = req.params;
+    const userId = req.user._id;
+    const user = await User.findById(userId);
     
-    const notification = await Notification.findOneAndUpdate(
-      { _id: notificationId, userId: req.user._id },
-      { read: true, readAt: new Date() },
-      { new: true }
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Generate weekly report data
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const analytics = await Test.find({
+      userId: String(userId),
+      completedAt: { $gte: oneWeekAgo }
+    }).sort({ completedAt: -1 });
+
+    const testCompletions = analytics.filter(test => test.completed);
+    const totalTests = testCompletions.length;
+    const averageScore = testCompletions.length > 0 
+      ? testCompletions.reduce((sum, test) => sum + (test.score?.overall || 0), 0) / testCompletions.length
+      : 0;
+
+    const reportData = {
+      week: {
+        start: oneWeekAgo.toISOString().split('T')[0],
+        end: new Date().toISOString().split('T')[0]
+      },
+      metrics: {
+        totalTests,
+        averageScore: Math.round(averageScore * 10) / 10
+      },
+      insights: [],
+      recommendations: []
+    };
+
+    // Generate insights
+    if (totalTests > 0) {
+      reportData.insights.push(`You completed ${totalTests} practice test${totalTests > 1 ? 's' : ''} this week!`);
+    }
+    
+    if (averageScore > 0) {
+      reportData.insights.push(`Your average score was ${averageScore.toFixed(1)}/9.0`);
+    }
+
+    if (totalTests < 3) {
+      reportData.recommendations.push('Try to complete at least 3 practice tests per week for better progress');
+    }
+
+    const result = await emailService.sendWeeklyReport(user, reportData);
+    
+    res.json({
+      success: result.success,
+      message: result.success ? 'Weekly report sent successfully' : 'Failed to send weekly report',
+      error: result.error
+    });
+  } catch (error) {
+    console.error('Weekly report error:', error);
+    res.status(500).json({ error: 'Failed to send weekly report' });
+  }
+});
+
+// Send test completion email
+router.post('/test-completion', auth, async (req, res) => {
+  try {
+    const { testId } = req.body;
+    
+    if (!testId) {
+      return res.status(400).json({ error: 'Test ID is required' });
+    }
+
+    const test = await Test.findById(testId);
+    if (!test) {
+      return res.status(404).json({ error: 'Test not found' });
+    }
+
+    const user = await User.findById(test.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const result = await emailService.sendTestCompletionEmail(user, test);
+    
+    res.json({
+      success: result.success,
+      message: result.success ? 'Test completion email sent successfully' : 'Failed to send test completion email',
+      error: result.error
+    });
+  } catch (error) {
+    console.error('Test completion email error:', error);
+    res.status(500).json({ error: 'Failed to send test completion email' });
+  }
+});
+
+// Send milestone achievement email
+router.post('/milestone', auth, async (req, res) => {
+  try {
+    const { milestone } = req.body;
+    
+    if (!milestone) {
+      return res.status(400).json({ error: 'Milestone is required' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const result = await emailService.sendMilestoneEmail(user, milestone);
+    
+    res.json({
+      success: result.success,
+      message: result.success ? 'Milestone email sent successfully' : 'Failed to send milestone email',
+      error: result.error
+    });
+  } catch (error) {
+    console.error('Milestone email error:', error);
+    res.status(500).json({ error: 'Failed to send milestone email' });
+  }
+});
+
+// Get notification preferences
+router.get('/preferences', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const preferences = {
+      welcomeEmail: user.notificationPreferences?.welcomeEmail ?? true,
+      weeklyReport: user.notificationPreferences?.weeklyReport ?? true,
+      testCompletion: user.notificationPreferences?.testCompletion ?? true,
+      milestones: user.notificationPreferences?.milestones ?? true,
+      marketing: user.notificationPreferences?.marketing ?? false
+    };
+
+    res.json({ success: true, data: preferences });
+  } catch (error) {
+    console.error('Get preferences error:', error);
+    res.status(500).json({ error: 'Failed to get notification preferences' });
+  }
+});
+
+// Update notification preferences
+router.put('/preferences', auth, async (req, res) => {
+  try {
+    const { preferences } = req.body;
+    
+    if (!preferences) {
+      return res.status(400).json({ error: 'Preferences are required' });
+    }
+
+    await User.findByIdAndUpdate(req.user._id, {
+      $set: { notificationPreferences: preferences }
+    });
+
+    res.json({ success: true, message: 'Notification preferences updated successfully' });
+  } catch (error) {
+    console.error('Update preferences error:', error);
+    res.status(500).json({ error: 'Failed to update notification preferences' });
+  }
+});
+
+// Test email service
+router.post('/test', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const result = await emailService.sendEmail(
+      user.email,
+      'Test Email from IELTS Platform',
+      '<h1>Test Email</h1><p>This is a test email to verify email functionality.</p>'
     );
 
-    if (!notification) {
-      return res.status(404).json({ success: false, error: 'Notification not found' });
-    }
-
-    res.json({ success: true, data: notification });
-  } catch (error) {
-    console.error('Mark notification read error:', error);
-    res.status(500).json({ success: false, error: 'Failed to mark notification as read' });
-  }
-});
-
-// Mark all notifications as read
-router.patch('/mark-all-read/:userId', auth, async (req, res) => {
-  try {
-    const { userId } = req.params;
-    
-    if (req.user._id.toString() !== userId) {
-      return res.status(403).json({ success: false, error: 'Unauthorized access' });
-    }
-
-    const result = await Notification.updateMany(
-      { userId, read: false },
-      { read: true, readAt: new Date() }
-    );
-
-    res.json({ 
-      success: true, 
-      data: { 
-        modifiedCount: result.modifiedCount,
-        message: `${result.modifiedCount} notifications marked as read`
-      }
-    });
-  } catch (error) {
-    console.error('Mark all notifications read error:', error);
-    res.status(500).json({ success: false, error: 'Failed to mark all notifications as read' });
-  }
-});
-
-// Delete notification
-router.delete('/:notificationId', auth, async (req, res) => {
-  try {
-    const { notificationId } = req.params;
-    
-    const notification = await Notification.findOneAndDelete({
-      _id: notificationId,
-      userId: req.user._id
-    });
-
-    if (!notification) {
-      return res.status(404).json({ success: false, error: 'Notification not found' });
-    }
-
-    res.json({ success: true, message: 'Notification deleted successfully' });
-  } catch (error) {
-    console.error('Delete notification error:', error);
-    res.status(500).json({ success: false, error: 'Failed to delete notification' });
-  }
-});
-
-// Create notification (internal use)
-router.post('/create', auth, async (req, res) => {
-  try {
-    const { userId, type, title, message, data = {} } = req.body;
-
-    const notification = new Notification({
-      userId,
-      type,
-      title,
-      message,
-      data,
-      read: false
-    });
-
-    await notification.save();
-
-    res.status(201).json({ success: true, data: notification });
-  } catch (error) {
-    console.error('Create notification error:', error);
-    res.status(500).json({ success: false, error: 'Failed to create notification' });
-  }
-});
-
-// Get notification statistics
-router.get('/stats/:userId', auth, async (req, res) => {
-  try {
-    const { userId } = req.params;
-    
-    if (req.user._id.toString() !== userId) {
-      return res.status(403).json({ success: false, error: 'Unauthorized access' });
-    }
-
-    const total = await Notification.countDocuments({ userId });
-    const unread = await Notification.countDocuments({ userId, read: false });
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayCount = await Notification.countDocuments({ 
-      userId, 
-      createdAt: { $gte: today } 
-    });
-
-    // Count by type
-    const typeStats = await Notification.aggregate([
-      { $match: { userId } },
-      { $group: { _id: '$type', count: { $sum: 1 } } }
-    ]);
-
     res.json({
-      success: true,
-      data: {
-        total,
-        unread,
-        today: todayCount,
-        byType: typeStats.reduce((acc, item) => {
-          acc[item._id] = item.count;
-          return acc;
-        }, {})
-      }
+      success: result.success,
+      message: result.success ? 'Test email sent successfully' : 'Failed to send test email',
+      error: result.error
     });
   } catch (error) {
-    console.error('Get notification stats error:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch notification statistics' });
+    console.error('Test email error:', error);
+    res.status(500).json({ error: 'Failed to send test email' });
   }
 });
 
