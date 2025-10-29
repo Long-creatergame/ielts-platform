@@ -32,10 +32,16 @@ const Pricing = () => {
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'}/payment/plans`);
         if (response.ok) {
           const data = await response.json();
-          setPlans(data.plans);
+          const safePlans = Array.isArray(data.plans) ? data.plans : [];
+          setPlans(safePlans);
         }
       } catch (error) {
         console.error('Error fetching plans:', error);
+        // Fallback basic plans to avoid render crash
+        setPlans([
+          { id: 'free', name: 'Free', price: 0, description: 'Dùng thử 3 bài', features: ['3 bài test', 'AI Practice 1/ngày'] },
+          { id: 'premium', name: 'Premium', price: 299000, description: 'Toàn bộ tính năng', features: ['Không giới hạn test', 'AI đầy đủ', 'Báo cáo nâng cao'] }
+        ]);
       } finally {
         setLoading(false);
       }
@@ -127,7 +133,7 @@ const Pricing = () => {
               </div>
 
               <div className="space-y-3 mb-6">
-                {plan.features.map((feature, index) => (
+                {(plan.features || []).map((feature, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <span className="text-green-500">✓</span>
                     <span className="text-sm text-gray-700">{feature}</span>
