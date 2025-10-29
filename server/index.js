@@ -24,10 +24,18 @@ const featureUsageRoutes = require('./routes/featureUsage.js');
 const analyticsRoutes = require('./routes/analytics.js');
 const leaderboardRoutes = require('./routes/leaderboard.js');
 const weeklyReportRoutes = require('./routes/weeklyReport.js');
+const healthRoutes = require('./routes/health.js');
 
 dotenv.config();
 
 const app = express();
+// Validate critical environment early
+try {
+  const { validateCriticalEnv } = require('./utils/envValidation');
+  validateCriticalEnv();
+} catch (e) {
+  console.error('Environment validation failed:', e.message);
+}
 const PORT = process.env.PORT || 4000;
 const http = require('http');
 const server = http.createServer(app);
@@ -213,6 +221,7 @@ app.use('/api/feature-usage', featureUsageRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/weekly-report', weeklyReportRoutes);
+app.use('/api/health', healthRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

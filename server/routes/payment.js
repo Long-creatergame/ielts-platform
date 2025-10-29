@@ -33,36 +33,33 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-// GET /api/payment/pricing - Get pricing plans
-router.get('/pricing', (req, res) => {
-  const pricingPlans = [
-    {
-      id: 'standard',
-      name: 'Standard',
-      price: 129000,
-      description: '4 đề luyện/tháng + phân tích chi tiết',
-      features: ['4 bài thi/tháng', 'Phân tích chi tiết', 'Theo dõi tiến trình']
-    },
-    {
-      id: 'premium',
-      name: 'Premium',
-      price: 249000,
-      description: 'Không giới hạn đề + feedback AI chi tiết',
-      features: ['Không giới hạn bài thi', 'Feedback AI chi tiết', 'Phân tích nâng cao']
-    },
-    {
-      id: 'ultimate',
-      name: 'Ultimate',
-      price: 499000,
-      description: 'Có Speaking AI + Writing coach',
-      features: ['Speaking AI', 'Writing coach', 'Hỗ trợ 1-1', 'Tất cả tính năng Premium']
+// GET /api/payment/plans - Get pricing plans from Stripe
+router.get('/plans', async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({ message: 'Payment service not configured' });
     }
-  ];
 
-  res.json({
-    message: 'Pricing plans fetched successfully',
-    plans: pricingPlans
-  });
+    // List active prices with product data
+    const prices = await stripe.prices.list({ active: true, expand: ['data.product'], limit: 50 });
+
+    const plans = prices.data
+      .filter((p) => p.type === 'one_time' || p.recurring) // support both one-time and subscriptions
+      .map((price) => ({
+        id: price.id,
+        name: typeof price.product === 'object' ? price.product.name : 'Plan',
+        price: price.unit_amount,
+        currency: price.currency,
+        interval: price.recurring ? price.recurring.interval : 'one_time',
+        description: typeof price.product === 'object' ? price.product.description : '',
+        features: [],
+      }));
+
+    return res.json({ success: true, plans });
+  } catch (error) {
+    console.error('Fetch Stripe plans error:', error);
+    res.status(500).json({ message: 'Failed to fetch plans' });
+  }
 });
 
 // POST /api/payment/create - Create Stripe payment session
