@@ -156,6 +156,14 @@ router.post('/submit', authMiddleware, async (req, res) => {
       }
     } catch (_) {}
 
+    // Send test completion email
+    try {
+      const emailService = require('../services/emailService');
+      emailService.sendTestCompletionEmail(user, test).catch(err => {
+        console.error('Test completion email error:', err);
+      });
+    } catch (_) {}
+
     // Track analytics (best-effort)
     try {
       const fetch = require('node-fetch');

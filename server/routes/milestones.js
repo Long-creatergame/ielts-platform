@@ -78,6 +78,16 @@ router.get('/check', async (req, res) => {
       await User.findByIdAndUpdate(user._id, {
         $set: { milestones: currentMilestones }
       });
+
+      // Send milestone achievement emails
+      try {
+        const emailService = require('../services/emailService');
+        milestones.forEach(milestone => {
+          emailService.sendMilestoneEmail(user, milestone).catch(err => {
+            console.error('Milestone email error:', err);
+          });
+        });
+      } catch (_) {}
     }
 
     res.json({

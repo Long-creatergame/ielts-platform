@@ -101,8 +101,8 @@ router.post('/register', async (req, res) => {
 
     // Send welcome email (best-effort, don't block registration if service missing)
     try {
-      const { sendEmail } = require('../services/emailService');
-      Promise.resolve(sendEmail(user.email, 'welcome', user.name))
+      const emailService = require('../services/emailService');
+      Promise.resolve(emailService.sendWelcomeEmail(user))
         .then(result => {
           console.log('✅ Welcome email sent successfully:', result);
         })

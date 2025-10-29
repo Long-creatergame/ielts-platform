@@ -1,0 +1,363 @@
+{
+  "reading": {
+    "academic": [
+      {
+        "id": "reading_academic_1",
+        "title": "The Impact of Climate Change on Arctic Ecosystems",
+        "passage": "The Arctic region is experiencing unprecedented changes due to global warming. Rising temperatures have led to the melting of permafrost, which has been frozen for thousands of years. This melting releases methane, a potent greenhouse gas, into the atmosphere, creating a feedback loop that accelerates climate change.\n\nArctic ecosystems are particularly vulnerable to these changes. Polar bears, for instance, rely on sea ice for hunting seals. As the ice melts earlier each year and forms later, polar bears have less time to hunt and build up fat reserves for the winter. This has led to declining populations and smaller body sizes among polar bears.\n\nMarine life is also affected. The warming waters have caused some fish species to migrate northward, while others that depend on cold water are struggling to survive. The food chain is being disrupted, affecting everything from microscopic plankton to large marine mammals.\n\nIndigenous communities in the Arctic have lived in harmony with these ecosystems for centuries. Their traditional knowledge and practices are now being challenged by the rapid pace of environmental change. They are adapting their hunting and fishing practices, but the future remains uncertain.\n\nScientists are working to understand these changes better through extensive research programs. They use satellite imagery, field studies, and computer models to track the changes and predict future impacts. However, the complexity of Arctic ecosystems makes accurate predictions difficult.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "multiple_choice",
+            "question": "What is the main cause of methane release in the Arctic?",
+            "options": ["Rising sea levels", "Melting permafrost", "Increased snowfall", "Ocean currents"],
+            "correct": 1,
+            "explanation": "The passage states that melting permafrost releases methane into the atmosphere."
+          },
+          {
+            "id": 2,
+            "type": "true_false",
+            "question": "Polar bears are finding it easier to hunt seals due to climate change.",
+            "correct": false,
+            "explanation": "The passage explains that polar bears have less time to hunt as ice melts earlier and forms later."
+          },
+          {
+            "id": 3,
+            "type": "fill_blank",
+            "question": "The warming waters have caused some fish species to migrate _____.",
+            "correct": "northward",
+            "explanation": "The passage states that fish species are migrating northward due to warming waters."
+          },
+          {
+            "id": 4,
+            "type": "multiple_choice",
+            "question": "What method do scientists NOT use to study Arctic changes?",
+            "options": ["Satellite imagery", "Field studies", "Computer models", "Underwater cities"],
+            "correct": 3,
+            "explanation": "The passage mentions satellite imagery, field studies, and computer models, but not underwater cities."
+          },
+          {
+            "id": 5,
+            "type": "short_answer",
+            "question": "How long has permafrost been frozen?",
+            "correct": "thousands of years",
+            "explanation": "The passage states that permafrost has been frozen for thousands of years."
+          }
+        ],
+        "timeLimit": 20,
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "reading_academic_2",
+        "title": "The Psychology of Decision Making",
+        "passage": "Human decision-making is a complex process influenced by numerous psychological factors. Research in behavioral economics has revealed that people often make irrational decisions that deviate from what traditional economic theory would predict.\n\nOne key factor is cognitive bias. Confirmation bias, for example, leads people to seek information that confirms their existing beliefs while ignoring contradictory evidence. This can result in poor decisions, especially in important matters like financial investments or medical choices.\n\nAnother significant influence is emotional state. Studies have shown that people make different decisions when they are happy versus when they are sad or angry. Happy individuals tend to be more optimistic and take more risks, while those in negative emotional states are more conservative and risk-averse.\n\nSocial pressure also plays a crucial role. People often conform to group decisions even when they personally disagree, a phenomenon known as groupthink. This can lead to disastrous outcomes, as seen in historical examples like the Bay of Pigs invasion or the Challenger space shuttle disaster.\n\nHeuristics, or mental shortcuts, help people make quick decisions but can also lead to systematic errors. The availability heuristic, for instance, causes people to overestimate the probability of events that are easily recalled, such as plane crashes after seeing news reports about aviation accidents.\n\nUnderstanding these psychological factors is crucial for improving decision-making processes. Organizations are increasingly using this knowledge to design better systems and training programs that help individuals make more rational choices.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "multiple_choice",
+            "question": "What does confirmation bias cause people to do?",
+            "options": ["Make quick decisions", "Seek confirming information", "Avoid all information", "Trust experts completely"],
+            "correct": 1,
+            "explanation": "Confirmation bias leads people to seek information that confirms their existing beliefs."
+          },
+          {
+            "id": 2,
+            "type": "true_false",
+            "question": "Happy people tend to take fewer risks than sad people.",
+            "correct": false,
+            "explanation": "The passage states that happy individuals tend to take more risks, while those in negative states are more conservative."
+          },
+          {
+            "id": 3,
+            "type": "fill_blank",
+            "question": "The phenomenon where people conform to group decisions is called _____.",
+            "correct": "groupthink",
+            "explanation": "The passage defines groupthink as conforming to group decisions even when personally disagreeing."
+          },
+          {
+            "id": 4,
+            "type": "multiple_choice",
+            "question": "What is the availability heuristic?",
+            "options": ["Making decisions based on emotions", "Overestimating easily recalled events", "Following group consensus", "Avoiding all risks"],
+            "correct": 1,
+            "explanation": "The availability heuristic causes people to overestimate the probability of events that are easily recalled."
+          },
+          {
+            "id": 5,
+            "type": "short_answer",
+            "question": "What are mental shortcuts called?",
+            "correct": "heuristics",
+            "explanation": "The passage defines heuristics as mental shortcuts that help people make quick decisions."
+          }
+        ],
+        "timeLimit": 20,
+        "difficulty": "advanced"
+      }
+    ],
+    "general": [
+      {
+        "id": "reading_general_1",
+        "title": "Healthy Living in the Modern World",
+        "passage": "Maintaining good health in today's fast-paced world can be challenging, but it's more important than ever. With increasing work pressures, sedentary lifestyles, and processed food consumption, many people struggle to maintain a healthy balance.\n\nRegular exercise is fundamental to good health. The World Health Organization recommends at least 150 minutes of moderate-intensity physical activity per week. This doesn't have to mean expensive gym memberships or complicated workout routines. Simple activities like walking, cycling, or dancing can be just as effective.\n\nNutrition plays an equally important role. A balanced diet should include plenty of fruits, vegetables, whole grains, and lean proteins. Processed foods, while convenient, often contain high levels of sugar, salt, and unhealthy fats that can contribute to various health problems.\n\nMental health is often overlooked but equally crucial. Stress management techniques such as meditation, deep breathing, or yoga can help maintain emotional well-being. Getting adequate sleep is also essential for both physical and mental recovery.\n\nSocial connections are another vital component of health. Studies have shown that people with strong social networks tend to live longer and have better mental health. Making time for family and friends, joining clubs or groups, or volunteering can all contribute to a healthier, happier life.\n\nTechnology can be both a help and a hindrance to health. While fitness apps and online resources can provide motivation and guidance, excessive screen time can negatively impact sleep and physical activity levels. Finding the right balance is key.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "multiple_choice",
+            "question": "How much exercise does the WHO recommend per week?",
+            "options": ["100 minutes", "150 minutes", "200 minutes", "300 minutes"],
+            "correct": 1,
+            "explanation": "The WHO recommends at least 150 minutes of moderate-intensity physical activity per week."
+          },
+          {
+            "id": 2,
+            "type": "true_false",
+            "question": "Processed foods are generally better for health than fresh foods.",
+            "correct": false,
+            "explanation": "The passage states that processed foods often contain high levels of sugar, salt, and unhealthy fats."
+          },
+          {
+            "id": 3,
+            "type": "fill_blank",
+            "question": "People with strong social networks tend to live _____.",
+            "correct": "longer",
+            "explanation": "The passage states that people with strong social networks tend to live longer."
+          },
+          {
+            "id": 4,
+            "type": "multiple_choice",
+            "question": "What can help with stress management?",
+            "options": ["More screen time", "Meditation", "Processed foods", "Isolation"],
+            "correct": 1,
+            "explanation": "The passage mentions meditation, deep breathing, and yoga as stress management techniques."
+          },
+          {
+            "id": 5,
+            "type": "short_answer",
+            "question": "What is essential for both physical and mental recovery?",
+            "correct": "adequate sleep",
+            "explanation": "The passage states that getting adequate sleep is essential for both physical and mental recovery."
+          }
+        ],
+        "timeLimit": 20,
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  "listening": {
+    "academic": [
+      {
+        "id": "listening_academic_1",
+        "title": "University Library Tour",
+        "audioUrl": "/api/audio/ielts-listening-academic-1.mp3",
+        "transcript": "Welcome to the university library. I'm Sarah, and I'll be showing you around today. The library is open 24 hours a day, seven days a week during term time, which is really convenient for students who prefer to study late at night or early in the morning.\n\nOn the ground floor, you'll find the main reception desk where you can get help with any queries. There's also a café here that serves hot drinks and light snacks. The café is open from 8 AM to 10 PM, Monday to Friday, and from 10 AM to 6 PM on weekends.\n\nThe first floor contains our fiction collection and study areas. We have over 50,000 fiction books, including both classic literature and contemporary works. The study areas are equipped with individual desks and power outlets for laptops.\n\nMoving up to the second floor, this is where you'll find the science and technology section. We have an extensive collection of journals and research papers, both in print and digital format. The computers here are equipped with specialized software for data analysis and research.\n\nThe third floor houses our social sciences collection and group study rooms. The group study rooms can be booked in advance through our online system. Each room accommodates up to six people and is equipped with a whiteboard and presentation facilities.\n\nFinally, the fourth floor contains our rare books collection and quiet study areas. The rare books section is only accessible with special permission, but the quiet study areas are open to all students. These areas are designed for silent study, so please remember to keep noise to a minimum.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "multiple_choice",
+            "question": "What are the library's opening hours during term time?",
+            "options": ["8 AM to 10 PM", "24 hours a day", "10 AM to 6 PM", "Monday to Friday only"],
+            "correct": 1,
+            "explanation": "The library is open 24 hours a day, seven days a week during term time."
+          },
+          {
+            "id": 2,
+            "type": "fill_blank",
+            "question": "The café serves _____ and light snacks.",
+            "correct": "hot drinks",
+            "explanation": "The café serves hot drinks and light snacks."
+          },
+          {
+            "id": 3,
+            "type": "multiple_choice",
+            "question": "How many fiction books does the library have?",
+            "options": ["5,000", "15,000", "50,000", "500,000"],
+            "correct": 2,
+            "explanation": "The library has over 50,000 fiction books."
+          },
+          {
+            "id": 4,
+            "type": "fill_blank",
+            "question": "The group study rooms can accommodate up to _____ people.",
+            "correct": "six",
+            "explanation": "Each group study room accommodates up to six people."
+          },
+          {
+            "id": 5,
+            "type": "true_false",
+            "question": "The rare books section is open to all students.",
+            "correct": false,
+            "explanation": "The rare books section is only accessible with special permission."
+          }
+        ],
+        "timeLimit": 30,
+        "difficulty": "intermediate"
+      }
+    ],
+    "general": [
+      {
+        "id": "listening_general_1",
+        "title": "Job Interview Advice",
+        "audioUrl": "/api/audio/ielts-listening-general-1.mp3",
+        "transcript": "Good morning, everyone. Today I'm going to share some valuable advice about job interviews. Whether you're a recent graduate or someone looking to change careers, these tips will help you make a great impression.\n\nFirst impressions are crucial. Arrive 10-15 minutes early, but not too early as this can be inconvenient for the interviewer. Dress appropriately for the company culture - if you're unsure, it's better to be slightly overdressed than underdressed.\n\nResearch the company thoroughly before your interview. Visit their website, read recent news about them, and understand their mission and values. This knowledge will help you ask intelligent questions and show genuine interest in the position.\n\nPrepare specific examples of your achievements using the STAR method - Situation, Task, Action, and Result. This structured approach helps you provide clear, compelling answers that demonstrate your skills and experience.\n\nPractice common interview questions, but don't memorize your answers. Instead, prepare key points you want to cover. This will make your responses sound natural and authentic.\n\nDuring the interview, maintain good eye contact and positive body language. Listen carefully to questions and ask for clarification if needed. It's perfectly acceptable to take a moment to think before responding.\n\nFinally, prepare thoughtful questions to ask the interviewer. This shows your interest in the role and gives you valuable information about the company and position. Good questions might include asking about the team structure, growth opportunities, or company culture.\n\nRemember, an interview is a two-way conversation. You're evaluating them as much as they're evaluating you. Stay confident, be yourself, and let your personality shine through.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "multiple_choice",
+            "question": "How early should you arrive for an interview?",
+            "options": ["30 minutes", "10-15 minutes", "5 minutes", "Exactly on time"],
+            "correct": 1,
+            "explanation": "You should arrive 10-15 minutes early, but not too early."
+          },
+          {
+            "id": 2,
+            "type": "fill_blank",
+            "question": "The STAR method stands for Situation, Task, Action, and _____.",
+            "correct": "Result",
+            "explanation": "STAR method includes Situation, Task, Action, and Result."
+          },
+          {
+            "id": 3,
+            "type": "true_false",
+            "question": "You should memorize your answers to common interview questions.",
+            "correct": false,
+            "explanation": "You should prepare key points but not memorize answers to sound natural."
+          },
+          {
+            "id": 4,
+            "type": "multiple_choice",
+            "question": "What should you do if you don't understand a question?",
+            "options": ["Guess the answer", "Ask for clarification", "Skip the question", "Change the topic"],
+            "correct": 1,
+            "explanation": "It's perfectly acceptable to ask for clarification if needed."
+          },
+          {
+            "id": 5,
+            "type": "fill_blank",
+            "question": "An interview is a _____ conversation.",
+            "correct": "two-way",
+            "explanation": "An interview is a two-way conversation where both parties are evaluating each other."
+          }
+        ],
+        "timeLimit": 30,
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  "writing": {
+    "task1": [
+      {
+        "id": "writing_task1_1",
+        "type": "academic",
+        "title": "Bar Chart - Energy Consumption",
+        "description": "The chart below shows the energy consumption in different sectors in Country X from 1990 to 2010. Summarize the information by selecting and reporting the main features, and make comparisons where relevant.",
+        "data": {
+          "type": "bar_chart",
+          "title": "Energy Consumption by Sector (1990-2010)",
+          "xAxis": "Year",
+          "yAxis": "Energy Consumption (TWh)",
+          "data": [
+            {"sector": "Residential", "1990": 45, "1995": 52, "2000": 58, "2005": 62, "2010": 65},
+            {"sector": "Industrial", "1990": 120, "1995": 135, "2000": 142, "2005": 138, "2010": 145},
+            {"sector": "Transportation", "1990": 35, "1995": 42, "2000": 48, "2005": 55, "2010": 58},
+            {"sector": "Commercial", "1990": 25, "1995": 28, "2000": 32, "2005": 35, "2010": 38}
+          ]
+        },
+        "wordCount": 150,
+        "timeLimit": 20,
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "writing_task1_2",
+        "type": "general",
+        "title": "Letter - Complaint",
+        "description": "You recently bought a product from an online store, but you are not satisfied with it. Write a letter to the store manager. In your letter:\n- Describe the product you bought\n- Explain why you are not satisfied\n- Say what you would like the manager to do",
+        "wordCount": 150,
+        "timeLimit": 20,
+        "difficulty": "intermediate"
+      }
+    ],
+    "task2": [
+      {
+        "id": "writing_task2_1",
+        "type": "academic",
+        "title": "Education and Technology",
+        "description": "Some people believe that technology has made education more accessible, while others think it has created more problems. Discuss both views and give your own opinion.",
+        "wordCount": 250,
+        "timeLimit": 40,
+        "difficulty": "advanced"
+      },
+      {
+        "id": "writing_task2_2",
+        "type": "general",
+        "title": "Work-Life Balance",
+        "description": "Many people believe that work-life balance is important for a healthy lifestyle. Others think that focusing on career success is more important. Discuss both views and give your own opinion.",
+        "wordCount": 250,
+        "timeLimit": 40,
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  "speaking": {
+    "part1": [
+      {
+        "id": "speaking_part1_1",
+        "topic": "Hometown",
+        "questions": [
+          "Where are you from?",
+          "Do you like your hometown?",
+          "What do you like most about your hometown?",
+          "Has your hometown changed much over the years?",
+          "Would you like to live in your hometown in the future?"
+        ],
+        "timeLimit": 5,
+        "difficulty": "easy"
+      },
+      {
+        "id": "speaking_part1_2",
+        "topic": "Work/Study",
+        "questions": [
+          "Do you work or are you a student?",
+          "What do you do for work? / What do you study?",
+          "Do you like your job? / Do you enjoy studying?",
+          "What are the main responsibilities in your job? / What subjects do you study?",
+          "Would you like to change your job? / What would you like to do after graduation?"
+        ],
+        "timeLimit": 5,
+        "difficulty": "easy"
+      }
+    ],
+    "part2": [
+      {
+        "id": "speaking_part2_1",
+        "topic": "Describe a memorable trip",
+        "cueCard": "Describe a memorable trip you have taken. You should say:\n- where you went\n- who you went with\n- what you did there\n- and explain why it was memorable",
+        "preparationTime": 1,
+        "speakingTime": 2,
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "speaking_part2_2",
+        "topic": "Describe a person who influenced you",
+        "cueCard": "Describe a person who has influenced you. You should say:\n- who this person is\n- how you know them\n- what they have done\n- and explain how they have influenced you",
+        "preparationTime": 1,
+        "speakingTime": 2,
+        "difficulty": "intermediate"
+      }
+    ],
+    "part3": [
+      {
+        "id": "speaking_part3_1",
+        "topic": "Travel and Tourism",
+        "questions": [
+          "What are the benefits of traveling?",
+          "How has tourism changed in your country over the years?",
+          "What impact does tourism have on local communities?",
+          "Do you think travel will become more or less popular in the future?",
+          "What advice would you give to someone planning to visit your country?"
+        ],
+        "timeLimit": 5,
+        "difficulty": "advanced"
+      }
+    ]
+  }
+}
