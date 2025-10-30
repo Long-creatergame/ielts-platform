@@ -274,6 +274,11 @@ try {
   console.warn('Socket.IO not available, skipping realtime features');
 }
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
+// In test mode, export app without starting the listener to avoid EADDRINUSE
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
