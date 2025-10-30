@@ -19,6 +19,7 @@ import QuickPractice from './pages/QuickPractice';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Leaderboard from './pages/Leaderboard';
+import ZaloChatButton from './components/ZaloChatButton';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <ErrorBoundary>
           <div className="min-h-screen bg-gray-50">
             <Navbar />
+            <ZaloChatButton zaloUrl={process.env.REACT_APP_ZALO_URL || 'https://zalo.me/0923456789'} />
             <Routes>
             <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
