@@ -34,6 +34,7 @@ export default function TestPage() {
     speaking: ''
   });
   const [testData, setTestData] = useState(null);
+  const [questionAnswers, setQuestionAnswers] = useState({}); // Store answers for each question
 
   const skills = [
     { id: 'reading', name: 'Reading', icon: '📖' },
@@ -321,11 +322,36 @@ export default function TestPage() {
     setAnswers(e.target.value);
   };
 
+  // Handle individual question answer change
+  const handleQuestionAnswerChange = (questionIndex, answer) => {
+    setQuestionAnswers(prev => ({
+      ...prev,
+      [questionIndex]: answer
+    }));
+  };
+
+  // Collect all question answers when moving to next skill
+  const collectCurrentSkillAnswers = () => {
+    const skillAnswers = [];
+    questions.forEach((question, index) => {
+      const answer = questionAnswers[index] || '';
+      skillAnswers.push({
+        questionId: `q${index + 1}`,
+        answer: answer,
+        skill: skills[currentSkill].id
+      });
+    });
+    return skillAnswers;
+  };
+
   const handleNextSkill = () => {
-    // Save current skill answers
+    // ✅ Collect all question answers for current skill
+    const collectedAnswers = collectCurrentSkillAnswers();
+    
+    // Save current skill answers with proper structure
     setTestAnswers(prev => ({
       ...prev,
-      [skills[currentSkill].id]: answers
+      [skills[currentSkill].id]: collectedAnswers
     }));
 
     // Move to next skill
@@ -338,9 +364,10 @@ export default function TestPage() {
       handleSubmit();
     }
 
-    // Reset current question when switching skills
+    // Reset current question and answers when switching skills
     setCurrentQuestion(1);
     setAnswers('');
+    setQuestionAnswers({}); // Clear question answers for next skill
   };
 
   // AI Analysis Functions for REAL IELTS Scoring
@@ -470,17 +497,24 @@ export default function TestPage() {
   };
 
   const handleSubmit = async () => {
+    // ✅ Collect answers from current skill before submitting
+    const collectedAnswers = collectCurrentSkillAnswers();
+    const finalTestAnswers = {
+      ...testAnswers,
+      [skills[currentSkill].id]: collectedAnswers
+    };
+    
     // AI-powered IELTS band score calculation using GROQ AI
     const skillScores = {};
     let totalScore = 0;
     
     for (const skillItem of skills) {
-      const skillAnswers = testAnswers[skillItem.id] || '';
+      const skillAnswers = finalTestAnswers[skillItem.id] || [];
       
       let skillScore = 0;
       let aiFeedback = '';
       
-      if (skillAnswers.length === 0) {
+      if (!skillAnswers || skillAnswers.length === 0 || (Array.isArray(skillAnswers) && skillAnswers.length === 0)) {
         // No answer = 0 band
         skillScore = 0;
         aiFeedback = 'No answer provided. Please complete all sections to receive a proper assessment.';
@@ -494,7 +528,7 @@ export default function TestPage() {
             },
             body: JSON.stringify({
               skill: skillItem.id,
-              answer: skillAnswers,
+              answers: Array.isArray(skillAnswers) ? skillAnswers : [skillAnswers],
               level: level
             })
           });
@@ -505,13 +539,15 @@ export default function TestPage() {
             aiFeedback = aiData.feedback;
           } else {
             // Fallback to basic analysis if AI fails
-            skillScore = Math.min(6.0, 3.0 + (skillAnswers.length / 100));
+            const answerText = Array.isArray(skillAnswers) ? JSON.stringify(skillAnswers) : skillAnswers;
+            skillScore = Math.min(6.0, 3.0 + (answerText.length / 100));
             aiFeedback = 'AI assessment unavailable. Basic scoring applied.';
           }
         } catch (error) {
           console.error('AI assessment error:', error);
           // Fallback scoring
-          skillScore = Math.min(6.0, 3.0 + (skillAnswers.length / 100));
+          const answerText = Array.isArray(skillAnswers) ? JSON.stringify(skillAnswers) : skillAnswers;
+          skillScore = Math.min(6.0, 3.0 + (answerText.length / 100));
           aiFeedback = 'AI assessment unavailable. Basic scoring applied.';
         }
       }
@@ -528,7 +564,7 @@ export default function TestPage() {
       level: level,
       overallBand: overallBand,
       skillScores: skillScores,
-      testAnswers: testAnswers,
+      testAnswers: finalTestAnswers,
       completedAt: new Date().toISOString(),
       aiFeedback: 'AI assessment completed successfully.'
     };
@@ -544,7 +580,7 @@ export default function TestPage() {
         body: JSON.stringify({
           testType: 'IELTS Academic',
           level: level,
-          answers: testAnswers,
+          answers: finalTestAnswers,
           scores: skillScores,
           duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`
         })
@@ -593,7 +629,7 @@ export default function TestPage() {
           speaking: { score: skillScores.speaking || 0, band: getBandLevel(skillScores.speaking || 0) }
         },
         status: 'completed',
-        answers: testAnswers
+        answers: finalTestAnswers
       };
       
       console.log('🔍 Debug: New test to save:', newTest);
@@ -776,6 +812,8 @@ export default function TestPage() {
                                 type="radio"
                                 name={`question_${index}`}
                                 value={option}
+                                checked={questionAnswers[index] === option}
+                                onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
                                 className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                               />
                               <span className="text-gray-700">
@@ -809,6 +847,8 @@ export default function TestPage() {
                                 type="radio"
                                 name={`question_${index}`}
                                 value={option}
+                                checked={questionAnswers[index] === option}
+                                onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
                                 className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                               />
                               <span className="text-gray-700">
@@ -845,6 +885,8 @@ export default function TestPage() {
                             Your Answer:
                           </label>
                           <textarea
+                            value={questionAnswers[index] || ''}
+                            onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
                             placeholder="Write your answer here..."
                             className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
@@ -857,6 +899,8 @@ export default function TestPage() {
                             Your Response:
                           </label>
                           <textarea
+                            value={questionAnswers[index] || ''}
+                            onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
                             placeholder="Record your speaking response here..."
                             className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />

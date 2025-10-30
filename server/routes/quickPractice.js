@@ -1,5 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/auth');
+const PracticeSession = require('../models/PracticeSession');
 
 const router = express.Router();
 
@@ -173,17 +174,42 @@ router.post('/submit', auth, async (req, res) => {
 
     // Calculate score based on answers
     const score = calculateQuickPracticeScore(skill, answers);
+    const feedback = generateFeedback(skill, score);
     
-    // Save practice session (optional - for tracking)
-    // You can implement this if you want to track practice sessions
+    // ✅ SAVE practice session to database for tracking
+    const practiceSession = await PracticeSession.create({
+      userId: userId,
+      skill: skill,
+      bandScore: score.bandScore,
+      feedback: feedback,
+      timeSpent: timeSpent || 0,
+      answers: answers,
+      type: 'quick-practice',
+      completedAt: new Date()
+    });
+    
+    // Update user statistics (best effort)
+    try {
+      const User = require('../models/User');
+      const user = await User.findById(userId);
+      if (user) {
+        // Increment practice count
+        if (!user.practiceCount) user.practiceCount = {};
+        user.practiceCount[skill] = (user.practiceCount[skill] || 0) + 1;
+        await user.save();
+      }
+    } catch (error) {
+      console.error('Failed to update user practice count:', error);
+    }
     
     res.json({
       success: true,
       data: {
         score,
-        feedback: generateFeedback(skill, score),
+        feedback: feedback,
         timeSpent,
-        submittedAt: new Date().toISOString()
+        submittedAt: practiceSession.completedAt,
+        practiceId: practiceSession._id
       }
     });
   } catch (error) {
@@ -218,5 +244,24 @@ function generateFeedback(skill, score) {
     return "Don't give up! This skill needs more attention. Consider reviewing the basics.";
   }
 }
+
+// Get user's practice history
+router.get('/history', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const practiceSessions = await PracticeSession.find({ userId })
+      .sort({ completedAt: -1 })
+      .limit(50); // Last 50 practice sessions
+    
+    res.json({
+      success: true,
+      data: practiceSessions,
+      total: practiceSessions.length
+    });
+  } catch (error) {
+    console.error('Get practice history error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 module.exports = router;
