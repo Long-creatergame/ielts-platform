@@ -588,6 +588,23 @@ export default function TestPage() {
     
     const overallBand = Math.round((totalScore / skills.length) * 10) / 10;
     
+    // Generate recommendations based on weak skills
+    const recommendations = [];
+    const weakSkills = [];
+    Object.entries(skillScores).forEach(([skill, score]) => {
+      if (score < overallBand) {
+        weakSkills.push(skill);
+        const skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
+        recommendations.push(`Focus on ${skillName} - your score is below average`);
+      }
+    });
+    
+    // If no weak skills, provide general feedback
+    if (recommendations.length === 0) {
+      recommendations.push('Great job! Keep practicing to maintain your skills');
+      recommendations.push('Try more challenging exercises to further improve');
+    }
+    
     // Create test result data
     const testResult = {
       id: Date.now().toString(),
@@ -596,7 +613,12 @@ export default function TestPage() {
       skillScores: skillScores,
       testAnswers: finalTestAnswers,
       completedAt: new Date().toISOString(),
-      aiFeedback: 'AI assessment completed successfully.'
+      aiFeedback: 'AI assessment completed successfully.',
+      recommendations: recommendations,
+      weaknesses: weakSkills.map(skill => `Needs improvement in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`),
+      strengths: Object.entries(skillScores)
+        .filter(([skill, score]) => score >= overallBand)
+        .map(([skill, score]) => `Strong performance in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`)
     };
 
     // Save to Test History
