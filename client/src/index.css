@@ -9,6 +9,13 @@ body {
   padding: 0;
 }
 
+:root {
+  --brand-primary: #2563eb; /* blue-600 */
+  --brand-accent: #7c3aed; /* purple-600 */
+  --brand-success: #10b981; /* emerald-500 */
+  --brand-danger: #ef4444; /* red-500 */
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -88,5 +95,30 @@ body {
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* Shared UI utilities */
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-lg border border-gray-100;
+}
+
+.badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold;
+}
+
+.container-page {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
