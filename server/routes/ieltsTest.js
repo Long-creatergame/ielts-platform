@@ -130,19 +130,20 @@ function formatContentForTest(content, skill) {
     case 'reading':
       return {
         title: `IELTS Academic Reading - ${content.title}`,
-        instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section.",
+        instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section. There are 3 passages with 40 questions total.",
         timeLimit: 60,
         passage: content.content,
-        questions: content.questions
+        questions: content.questions,
+        totalQuestions: 40
       };
     case 'writing':
       return {
         title: `IELTS Academic Writing - ${content.type}`,
         instructions: `You should spend about ${content.timeLimit} minutes on this task. Write at least ${content.wordCount} words.`,
-        timeLimit: content.timeLimit,
+        timeLimit: content.timeLimit || (content.type.includes('Task 1') ? 20 : 40),
         task: content.task,
         taskType: content.type,
-        wordCount: content.wordCount,
+        wordCount: content.wordCount || (content.type.includes('Task 1') ? 150 : 250),
         criteria: [
           "Task Achievement - Address all parts of the task",
           "Coherence and Cohesion - Organize information logically",
@@ -153,15 +154,16 @@ function formatContentForTest(content, skill) {
     case 'listening':
       return {
         title: `IELTS Academic Listening - ${content.title}`,
-        instructions: "Listen to the recording and answer the questions below. You will hear the recording once.",
+        instructions: "Listen to the recording and answer the questions below. You will hear the recording once. There are 4 sections with 40 questions total. You have 30 minutes plus 10 minutes to transfer answers.",
         timeLimit: 30,
         audioUrl: content.audioUrl,
-        questions: content.questions
+        questions: content.questions,
+        totalQuestions: 40
       };
     case 'speaking':
       return {
         title: `IELTS Academic Speaking - Part ${content.part}`,
-        instructions: "Answer the questions below clearly and in detail.",
+        instructions: "Answer the questions below clearly and in detail. The Speaking test takes 11-14 minutes and consists of 3 parts.",
         timeLimit: content.part === 1 ? 5 : content.part === 2 ? 4 : 5,
         questions: content.questions || [content.task],
         preparationTime: content.preparationTime,
@@ -176,7 +178,7 @@ function generateIELTSTestContent(skill, level) {
   const baseContent = {
     reading: {
       title: "IELTS Academic Reading",
-      instructions: "Read the passage and answer questions 1-13. You have 60 minutes to complete this section.",
+      instructions: "Read the passages and answer questions 1-40. You have 60 minutes to complete this section. There are 3 passages with approximately 13-14 questions each.",
       timeLimit: 60,
       passage: `The Future of Renewable Energy
 
@@ -231,11 +233,25 @@ Despite these challenges, the trend toward renewable energy is accelerating. Man
       ]
     },
     writing: {
-      title: "IELTS Academic Writing Task 1",
-      instructions: "You should spend about 20 minutes on this task. Write at least 150 words.",
-      timeLimit: 20,
-      task: "The chart below shows the percentage of households in different income groups who owned cars in a particular country between 1995 and 2015. Summarize the information by selecting and reporting the main features, and make comparisons where relevant.",
-      wordCount: 150,
+      tasks: [
+        {
+          taskNumber: 1,
+          title: "IELTS Academic Writing Task 1",
+          instructions: "You should spend about 20 minutes on this task. Write at least 150 words.",
+          timeLimit: 20,
+          task: "The chart below shows the percentage of households in different income groups who owned cars in a particular country between 1995 and 2015. Summarize the information by selecting and reporting the main features, and make comparisons where relevant.",
+          wordCount: 150
+        },
+        {
+          taskNumber: 2,
+          title: "IELTS Academic Writing Task 2",
+          instructions: "You should spend about 40 minutes on this task. Write at least 250 words.",
+          timeLimit: 40,
+          task: "Some people believe that technology has made our lives easier, while others think it has made life more complicated. Discuss both views and give your own opinion.",
+          wordCount: 250
+        }
+      ],
+      totalTime: 60,
       criteria: [
         "Task Achievement - Address all parts of the task",
         "Coherence and Cohesion - Organize information logically",
@@ -245,86 +261,69 @@ Despite these challenges, the trend toward renewable energy is accelerating. Man
     },
     listening: {
       title: "IELTS Academic Listening",
-      instructions: "Listen to the recording and answer questions 1-10. You will hear the recording once.",
+      instructions: "Listen to the recordings and answer questions 1-40. You will hear the recordings once. There are 4 sections with 10 questions each. You have 30 minutes plus 10 minutes to transfer answers.",
       timeLimit: 30,
-      audioUrl: "/api/audio/ielts-listening-sample-1.mp3",
-      transcript: "Good morning, everyone. Today we're going to discuss the course requirements for this semester. First, let me introduce myself. I'm Professor Johnson, and I'll be teaching this course on Environmental Science...",
-      questions: [
+      sections: [
         {
-          id: 1,
-          question: "What is the professor's name?",
-          type: "multiple_choice",
-          options: [
-            "Professor Smith",
-            "Professor Johnson", 
-            "Professor Brown",
-            "Professor Davis"
-          ],
-          correctAnswer: 1,
-          explanation: "The professor introduces himself as Professor Johnson."
+          section: 1,
+          title: "Section 1",
+          audioUrl: "/api/audio/ielts-listening-sample-1.mp3",
+          questions: Array.from({ length: 10 }, (_, i) => ({
+            id: i + 1,
+            question: `Question ${i + 1}`,
+            type: "multiple_choice",
+            options: ["Option A", "Option B", "Option C", "Option D"],
+            correctAnswer: Math.floor(Math.random() * 4)
+          }))
         },
         {
-          id: 2,
-          question: "What subject does the professor teach?",
-          type: "multiple_choice",
-          options: [
-            "Biology",
-            "Environmental Science",
-            "Chemistry",
-            "Physics"
-          ],
-          correctAnswer: 1,
-          explanation: "The professor mentions teaching Environmental Science."
+          section: 2,
+          title: "Section 2",
+          audioUrl: "/api/audio/ielts-listening-sample-2.mp3",
+          questions: Array.from({ length: 10 }, (_, i) => ({
+            id: i + 11,
+            question: `Question ${i + 11}`,
+            type: "multiple_choice",
+            options: ["Option A", "Option B", "Option C", "Option D"],
+            correctAnswer: Math.floor(Math.random() * 4)
+          }))
         },
         {
-          id: 3,
-          question: "When are the lectures held?",
-          type: "multiple_choice",
-          options: [
-            "Monday and Wednesday",
-            "Tuesday and Thursday",
-            "Monday and Friday",
-            "Wednesday and Friday"
-          ],
-          correctAnswer: 1,
-          explanation: "Lectures are held every Tuesday and Thursday."
+          section: 3,
+          title: "Section 3",
+          audioUrl: "/api/audio/ielts-listening-sample-1.mp3",
+          questions: Array.from({ length: 10 }, (_, i) => ({
+            id: i + 21,
+            question: `Question ${i + 21}`,
+            type: "multiple_choice",
+            options: ["Option A", "Option B", "Option C", "Option D"],
+            correctAnswer: Math.floor(Math.random() * 4)
+          }))
         },
         {
-          id: 4,
-          question: "What time do lectures start?",
-          type: "multiple_choice",
-          options: [
-            "8:00 AM",
-            "9:00 AM",
-            "10:00 AM",
-            "11:00 AM"
-          ],
-          correctAnswer: 1,
-          explanation: "Lectures are from 9 AM to 10:30 AM."
-        },
-        {
-          id: 5,
-          question: "Where are the lectures held?",
-          type: "multiple_choice",
-          options: [
-            "Room 105",
-            "Room 205",
-            "Room 305",
-            "Room 405"
-          ],
-          correctAnswer: 1,
-          explanation: "Lectures are held in Room 205."
+          section: 4,
+          title: "Section 4",
+          audioUrl: "/api/audio/ielts-listening-sample-2.mp3",
+          questions: Array.from({ length: 10 }, (_, i) => ({
+            id: i + 31,
+            question: `Question ${i + 31}`,
+            type: "multiple_choice",
+            options: ["Option A", "Option B", "Option C", "Option D"],
+            correctAnswer: Math.floor(Math.random() * 4)
+          }))
         }
-      ]
+      ],
+      totalQuestions: 40
     },
     speaking: {
       title: "IELTS Academic Speaking",
-      instructions: "This speaking test has three parts. Answer all questions clearly and in detail.",
-      timeLimit: 15,
+      instructions: "This speaking test has three parts and takes 11-14 minutes. Answer all questions clearly and in detail.",
+      totalTime: 11,
       parts: [
         {
           part: 1,
           title: "Introduction and Interview",
+          timeLimit: 4,
           questions: [
             "What is your full name?",
             "Where are you from?",
@@ -335,6 +334,7 @@ Despite these challenges, the trend toward renewable energy is accelerating. Man
         {
           part: 2,
           title: "Individual Long Turn",
+          timeLimit: 4,
           task: "Describe a memorable journey you have taken. You should say: where you went, when you went there, who you went with, what you did there, and explain why this journey was memorable for you.",
           preparationTime: 1,
           speakingTime: 2
@@ -342,6 +342,7 @@ Despite these challenges, the trend toward renewable energy is accelerating. Man
         {
           part: 3,
           title: "Two-way Discussion",
+          timeLimit: 5,
           questions: [
             "What are the benefits of traveling?",
             "How has technology changed the way people travel?",
