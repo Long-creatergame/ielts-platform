@@ -541,10 +541,18 @@ export default function TestPage() {
       let skillScore = 0;
       let aiFeedback = '';
       
-      if (!skillAnswers || skillAnswers.length === 0 || (Array.isArray(skillAnswers) && skillAnswers.length === 0)) {
+      // Check if skill has actual answers
+      const hasAnswers = Array.isArray(skillAnswers) 
+        ? skillAnswers.length > 0 && skillAnswers.some(a => a && (a.answer || a).trim && (a.answer || a).trim().length > 0)
+        : skillAnswers && String(skillAnswers).trim().length > 0;
+      
+      console.log(`📊 ${skillItem.id}: hasAnswers=${hasAnswers}, answers=`, skillAnswers);
+      
+      if (!hasAnswers) {
         // No answer = 0 band
         skillScore = 0;
         aiFeedback = 'No answer provided. Please complete all sections to receive a proper assessment.';
+        console.log(`❌ ${skillItem.id}: No answers provided, score = 0`);
       } else {
         // Use GROQ AI for real IELTS assessment
         try {
@@ -564,23 +572,24 @@ export default function TestPage() {
             const aiData = await aiResponse.json();
             skillScore = aiData.bandScore;
             aiFeedback = aiData.feedback;
+            console.log(`✅ ${skillItem.id}: AI scored ${skillScore}`);
           } else {
-            // Fallback to basic analysis if AI fails
-            const answerText = Array.isArray(skillAnswers) ? JSON.stringify(skillAnswers) : skillAnswers;
-            skillScore = Math.min(6.0, 3.0 + (answerText.length / 100));
-            aiFeedback = 'AI assessment unavailable. Basic scoring applied.';
+            // No fallback scoring - if AI fails, give 0
+            skillScore = 0;
+            aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
+            console.log(`⚠️ ${skillItem.id}: AI failed, score = 0`);
           }
         } catch (error) {
-          console.error('AI assessment error:', error);
-          // Fallback scoring
-          const answerText = Array.isArray(skillAnswers) ? JSON.stringify(skillAnswers) : skillAnswers;
-          skillScore = Math.min(6.0, 3.0 + (answerText.length / 100));
-          aiFeedback = 'AI assessment unavailable. Basic scoring applied.';
+          console.error(`❌ ${skillItem.id}: AI assessment error:`, error);
+          // No fallback scoring - if AI fails, give 0
+          skillScore = 0;
+          aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
         }
       }
       
       skillScores[skillItem.id] = Math.round(skillScore * 10) / 10;
       totalScore += skillScores[skillItem.id];
+      console.log(`📈 ${skillItem.id}: Final score = ${skillScores[skillItem.id]}`);
     }
     
     const overallBand = Math.round((totalScore / skills.length) * 10) / 10;
