@@ -573,13 +573,21 @@ Despite the challenges, travel enriches our lives by broadening our perspectives
         id: 'climate-change',
         title: 'Understanding Climate Change',
         level: 'B1',
-        content: `Climate change is one of the most pressing issues of our time. It refers to long-term changes in weather patterns and temperatures across the globe. Scientists have observed that the Earth's average temperature has increased significantly over the past century.
+        content: `Climate change is one of the most pressing issues of our time. It refers to long-term changes in weather patterns and temperatures across the globe. Scientists have observed that the Earth's average temperature has increased significantly over the past century, with most warming occurring in recent decades.
 
-The main cause of climate change is the increase in greenhouse gases in our atmosphere. These gases, particularly carbon dioxide from burning fossil fuels, trap heat from the sun. As a result, the Earth's temperature rises.
+The main cause of climate change is the increase in greenhouse gases in our atmosphere. These gases, particularly carbon dioxide from burning fossil fuels, trap heat from the sun. As a result, the Earth's temperature rises. Human activities such as deforestation, industrial processes, and transportation have dramatically increased greenhouse gas concentrations since the Industrial Revolution.
 
-Climate change affects many aspects of our planet. Rising sea levels threaten coastal cities, while changing weather patterns cause more frequent and severe storms. Some regions experience longer droughts, while others face increased flooding.
+Climate change affects many aspects of our planet. Rising sea levels threaten coastal cities and small island nations. Changing weather patterns cause more frequent and severe storms, hurricanes, and wildfires. Some regions experience longer droughts and heatwaves, while others face increased flooding and heavy rainfall. These changes disrupt agriculture, water supplies, and ecosystems worldwide.
 
-Individuals can help reduce climate change by using less energy, walking or cycling instead of driving, and eating more plant-based foods. Governments and businesses also need to invest in renewable energy sources like wind and solar power.`,
+The impact on wildlife is severe. Many species struggle to adapt to rapidly changing temperatures and habitats. Polar ice melting threatens Arctic wildlife like polar bears and seals. Coral reefs are bleaching and dying due to warming ocean temperatures. These changes could lead to mass extinctions if action isn't taken soon.
+
+Individuals can help reduce climate change through daily choices. Using less energy at home, walking or cycling instead of driving, eating more plant-based foods, and reducing waste all contribute to lowering emissions. Many people also switch to renewable energy sources for their homes or choose electric vehicles.
+
+Governments and businesses play crucial roles in addressing climate change. National policies that limit carbon emissions, promote renewable energy, and protect forests are essential. International agreements like the Paris Agreement bring countries together to set emission reduction targets and share technologies.
+
+The transition to clean energy is accelerating. Solar and wind power costs have plummeted, making renewable energy competitive with fossil fuels. Electric vehicle sales are increasing rapidly. Companies are committing to carbon-neutral operations. However, the scale of change needed remains enormous.
+
+Despite challenges, many experts remain optimistic. Innovations in technology, changes in consumer behavior, and political will are creating momentum for climate action. The urgency grows each year as extreme weather events increase, but so does the determination to create a sustainable future for generations to come.`,
         questions: [
           {
             id: 1,
@@ -596,6 +604,94 @@ Individuals can help reduce climate change by using less energy, walking or cycl
             options: ["Pollution", "Population growth", "Increase in greenhouse gases", "Natural disasters"],
             correctAnswer: 2,
             explanation: "The passage states 'The main cause of climate change is the increase in greenhouse gases in our atmosphere.'"
+          },
+          {
+            id: 3,
+            question: "What has increased greenhouse gases since the Industrial Revolution?",
+            type: "multiple_choice",
+            options: ["Natural events only", "Human activities", "Animal behavior", "Ocean changes"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Human activities such as deforestation, industrial processes, and transportation have dramatically increased greenhouse gas concentrations since the Industrial Revolution.'"
+          },
+          {
+            id: 4,
+            question: "What threatens Arctic wildlife?",
+            type: "multiple_choice",
+            options: ["Pollution", "Overfishing", "Polar ice melting", "Tourism"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Polar ice melting threatens Arctic wildlife like polar bears and seals.'"
+          },
+          {
+            id: 5,
+            question: "What is one way individuals can help reduce climate change?",
+            type: "multiple_choice",
+            options: ["Drive more often", "Use more energy", "Walk or cycle instead of driving", "Eat more meat"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Using less energy at home, walking or cycling instead of driving... all contribute to lowering emissions.'"
+          },
+          {
+            id: 6,
+            question: "What agreement brings countries together to address climate change?",
+            type: "multiple_choice",
+            options: ["The Kyoto Protocol", "The Paris Agreement", "The UN Convention", "The Geneva Accord"],
+            correctAnswer: 1,
+            explanation: "The passage states 'International agreements like the Paris Agreement bring countries together to set emission reduction targets.'"
+          },
+          {
+            id: 7,
+            question: "Why are renewable energy sources becoming more popular?",
+            type: "multiple_choice",
+            options: ["They're expensive", "Costs have plummeted", "They don't work well", "They're less efficient"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Solar and wind power costs have plummeted, making renewable energy competitive with fossil fuels.'"
+          },
+          {
+            id: 8,
+            question: "What problem affects coral reefs due to climate change?",
+            type: "multiple_choice",
+            options: ["Overfishing", "Bleaching and dying", "Pollution", "Too many tourists"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Coral reefs are bleaching and dying due to warming ocean temperatures.'"
+          },
+          {
+            id: 9,
+            question: "What weather events are becoming more frequent due to climate change?",
+            type: "multiple_choice",
+            options: ["Mild days", "Severe storms and hurricanes", "Sunny skies", "Cool temperatures"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Changing weather patterns cause more frequent and severe storms, hurricanes, and wildfires.'"
+          },
+          {
+            id: 10,
+            question: "What could happen to species if action isn't taken?",
+            type: "multiple_choice",
+            options: ["They will thrive", "Mass extinctions", "They will move", "No change"],
+            correctAnswer: 1,
+            explanation: "The passage states 'These changes could lead to mass extinctions if action isn't taken soon.'"
+          },
+          {
+            id: 11,
+            question: "What is an example of extreme weather increasing due to climate change?",
+            type: "multiple_choice",
+            options: ["Longer droughts and heatwaves", "Mild weather only", "Consistent temperatures", "Less rain"],
+            correctAnswer: 0,
+            explanation: "The passage states 'Some regions experience longer droughts and heatwaves, while others face increased flooding.'"
+          },
+          {
+            id: 12,
+            question: "What creates momentum for climate action according to experts?",
+            type: "multiple_choice",
+            options: ["International conflicts", "Technology innovations and political will", "Economic recession", "Population decline"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Innovations in technology, changes in consumer behavior, and political will are creating momentum for climate action.'"
+          },
+          {
+            id: 13,
+            question: "What is the author's overall tone about climate change?",
+            type: "multiple_choice",
+            options: ["Very pessimistic", "Cautiously optimistic", "Indifferent", "Completely optimistic"],
+            correctAnswer: 1,
+            explanation: "The passage mentions challenges but ends with optimism about future action: 'many experts remain optimistic' and 'so does the determination to create a sustainable future.'"
           }
         ]
       },
