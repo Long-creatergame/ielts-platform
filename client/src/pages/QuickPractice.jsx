@@ -229,11 +229,32 @@ export default function QuickPractice() {
               <div className="mb-6">
                 <h3 className="text-lg font-semibold mb-3">Questions</h3>
                 <div className="space-y-3">
-                  {questions.map((question, index) => (
-                    <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                      <p className="text-gray-700">{index + 1}. {question}</p>
-                    </div>
-                  ))}
+                  {questions.map((questionData, index) => {
+                    // Handle both object format {question: "...", options: [...]} and string format
+                    const questionText = typeof questionData === 'object' ? questionData.question : questionData;
+                    const questionOptions = typeof questionData === 'object' ? questionData.options : null;
+                    
+                    return (
+                      <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p className="text-gray-700 font-medium mb-3">{index + 1}. {questionText}</p>
+                        
+                        {/* Show options if available */}
+                        {questionOptions && questionOptions.length > 0 && (
+                          <div className="space-y-2 mt-3">
+                            {questionOptions.map((optionText, optIndex) => {
+                              const optionLetter = String.fromCharCode(65 + optIndex);
+                              return (
+                                <div key={optIndex} className="flex items-center space-x-3 bg-white p-2 rounded border border-gray-200">
+                                  <span className="font-bold text-blue-600 w-6 text-center">{optionLetter}.</span>
+                                  <span className="text-gray-700 flex-1">{optionText}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
