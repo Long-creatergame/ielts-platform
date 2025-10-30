@@ -643,6 +643,7 @@ export default function TestPage() {
     
     // Save to backend (if available)
     try {
+      console.log('🔄 Attempting to save test to backend...');
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/submit`, {
         method: 'POST',
         headers: {
@@ -650,16 +651,22 @@ export default function TestPage() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(testResult)
-      }).catch(() => null); // If API fails, continue to navigation
+      }).catch((fetchError) => {
+        console.error('❌ Fetch error:', fetchError);
+        return null; // If API fails, continue to navigation
+      });
 
       if (response && response.ok) {
         const result = await response.json();
+        console.log('✅ Test saved to backend successfully:', result);
         navigate(`/test/result/${result.testId}`, { state: { testResult } });
       } else {
+        console.warn('⚠️ Backend save failed (status:', response?.status, '), using localStorage only');
         // Navigate to result page (data already saved to localStorage)
         navigate('/test/result', { state: { testResult } });
       }
     } catch (error) {
+      console.error('❌ Error saving test to backend:', error);
       // Navigate to result page even if backend fails
       navigate('/test/result', { state: { testResult } });
     }
