@@ -39,14 +39,19 @@ export default function ChatLauncher({ zaloUrl }) {
   };
 
   return (
-    <div className="fixed z-50" style={{ right: 16, bottom: bottomOffset }}>
+    <div
+      className="fixed z-50"
+      style={{ right: 16, bottom: bottomOffset }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       {/* Actions panel */}
       <div
-        className={`flex flex-col items-end mb-2 transition-all duration-300 ${open ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-2'}`}
+        className={`flex flex-col items-end mb-3 space-y-2 transition-all duration-200 ${open ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-1'}`}
       >
         <button
           onClick={toggleTawk}
-          className="mb-2 flex items-center gap-2 bg-white text-gray-800 shadow-lg hover:shadow-xl px-3 py-2 rounded-full border border-gray-200"
+          className="flex items-center gap-2 bg-white text-gray-800 shadow-lg hover:shadow-xl px-3 py-2 rounded-full border border-gray-200"
         >
           <span className="text-green-500">●</span>
           <span className="text-sm font-medium hidden sm:inline">Live chat</span>
