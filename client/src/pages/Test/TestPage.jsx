@@ -79,13 +79,11 @@ export default function TestPage() {
         if (generateResponse.ok) {
           try {
             const responseData = await generateResponse.json();
-            console.log('📝 Full API Response:', responseData);
             
             // API returns: { success: true, data: { testId, skill, level, content: {...}, timeLimit } }
             const content = responseData?.data?.content;
             
             if (!content) {
-              console.error('❌ No content in response. Full data:', responseData);
               // Use fallback immediately
               loadFallbackQuestions(skillType, level);
               return;
@@ -97,12 +95,8 @@ export default function TestPage() {
             
             // Ensure questions is an array
             if (!Array.isArray(questions)) {
-              console.warn('⚠️ Questions is not an array, converting to array');
               questions = Array.isArray(questions) ? questions : [questions];
             }
-            
-            console.log('📚 Questions loaded:', questions.length);
-            console.log('📖 Passage:', passage ? 'Present' : 'Missing');
             
             // Set state with safety checks
             setQuestions(questions || []);
@@ -111,7 +105,6 @@ export default function TestPage() {
             setTimeLeft((timeLimit || 60) * 60); // Convert minutes to seconds
             return;
           } catch (parseError) {
-            console.error('❌ JSON parse error:', parseError);
             loadFallbackQuestions(skillType, level);
             return;
           }
@@ -624,26 +617,18 @@ export default function TestPage() {
       });
 
       if (saveResponse.ok) {
-        const saveResult = await saveResponse.json();
-        console.log('Test saved to history:', saveResult);
+        await saveResponse.json();
       }
     } catch (error) {
-      console.error('Error saving to test history:', error);
+      // Silent fail for history save
     }
 
     // Also save to localStorage as backup
     try {
       const existingHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
-      console.log('🔍 Debug: Existing history before save:', existingHistory);
       
       // Debug: Check current date
       const currentDate = new Date();
-      console.log('🔍 Debug: Current date:', currentDate);
-      console.log('🔍 Debug: Date string:', currentDate.toLocaleDateString('en-CA'));
-      console.log('🔍 Debug: ISO string:', currentDate.toISOString());
-      console.log('🔍 Debug: Year:', currentDate.getFullYear());
-      console.log('🔍 Debug: Month:', currentDate.getMonth() + 1);
-      console.log('🔍 Debug: Day:', currentDate.getDate());
       
       const newTest = {
         id: Date.now(),
@@ -654,7 +639,6 @@ export default function TestPage() {
           const month = String(currentDate.getMonth() + 1).padStart(2, '0');
           const day = String(currentDate.getDate()).padStart(2, '0');
           const dateString = `${year}-${month}-${day}`;
-          console.log('🔍 Debug: Final date string:', dateString);
           return dateString;
         })(),
         duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
@@ -669,18 +653,13 @@ export default function TestPage() {
         answers: finalTestAnswers
       };
       
-      console.log('🔍 Debug: New test to save:', newTest);
-      
       existingHistory.unshift(newTest); // Add to beginning
       localStorage.setItem('testHistory', JSON.stringify(existingHistory));
       
       // Also save to sessionStorage as backup
       sessionStorage.setItem('testHistory', JSON.stringify(existingHistory));
-      
-      console.log('🔍 Debug: Updated history after save:', existingHistory);
-      console.log('✅ Test saved to localStorage and sessionStorage successfully!');
     } catch (error) {
-      console.error('❌ Error saving to localStorage:', error);
+      // Silent fail for localStorage save
     }
 
     // Save to backend

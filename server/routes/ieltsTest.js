@@ -7,11 +7,9 @@ const router = express.Router();
 
 // Helper function to format content for test
 function formatContentForTest(content, skill) {
-  console.log(`🔧 Formatting ${skill} content:`, content);
-  
   switch (skill) {
     case 'reading':
-      const readingFormat = {
+      return {
         title: `IELTS Academic Reading - ${content.title}`,
         instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section. There are 3 passages with 40 questions total.",
         timeLimit: 60,
@@ -19,8 +17,6 @@ function formatContentForTest(content, skill) {
         questions: content.questions,
         totalQuestions: 40
       };
-      console.log('✅ Reading format:', readingFormat);
-      return readingFormat;
     case 'writing':
       return {
         title: `IELTS Academic Writing - ${content.type}`,
@@ -73,15 +69,10 @@ router.post('/generate', auth, async (req, res) => {
     let testContent = null;
     const randomContent = getRandomContent(skill, level);
     
-    console.log(`🔍 Looking for ${skill} content at level ${level}`);
-    console.log(`📦 Got random content:`, randomContent ? 'YES' : 'NO');
-    
     if (randomContent) {
       // Use database content
       testContent = formatContentForTest(randomContent, skill);
-      console.log('✅ Using database content');
     } else {
-      console.log('⚠️ No database content, trying AI generation...');
       // Try to generate with AI if database has no content
       try {
         if (process.env.OPENAI_API_KEY) {
@@ -125,9 +116,6 @@ Keep it authentic to IELTS format.`;
           }
           
           if (aiContent) {
-            console.log('✅ AI Generated content for', skill, level);
-            console.log('📝 AI Content:', aiContent);
-            
             // Format AI content properly
             if (skill === 'reading') {
               testContent = {
@@ -167,7 +155,7 @@ Keep it authentic to IELTS format.`;
           }
         }
       } catch (aiError) {
-        console.log('⚠️ AI generation failed, using fallback:', aiError.message);
+        // AI generation failed, continue to fallback
       }
       
       // Fallback to default content if AI fails
@@ -193,9 +181,7 @@ Keep it authentic to IELTS format.`;
 
       await testRecord.save();
       testId = testRecord._id;
-      console.log('✅ Test saved to database:', testId);
     } catch (dbError) {
-      console.log('⚠️ Database save failed, using fallback ID:', dbError.message);
       // Continue with fallback ID
     }
 
