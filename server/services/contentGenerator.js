@@ -518,10 +518,43 @@ const getRandomContent = (skill, level = null) => {
   if (!skillContent) return null;
 
   if (skill === 'reading') {
-    const passages = level 
+    // For IELTS Reading, we need 3 passages with 40 questions total
+    const availablePassages = level 
       ? skillContent.passages.filter(p => p.level === level)
       : skillContent.passages;
-    return passages[Math.floor(Math.random() * passages.length)];
+    
+    if (availablePassages.length < 3) {
+      // If not enough passages for this level, use all available from any level
+      const allPassages = skillContent.passages;
+      return allPassages[Math.floor(Math.random() * allPassages.length)];
+    }
+    
+    // Select 3 random passages for IELTS format
+    const selectedPassages = [];
+    const shuffled = [...availablePassages].sort(() => Math.random() - 0.5);
+    
+    for (let i = 0; i < 3; i++) {
+      selectedPassages.push(shuffled[i]);
+    }
+    
+    // Combine all 3 passages into one
+    const combinedPassage = {
+      id: selectedPassages.map(p => p.id).join('-'),
+      title: `Reading Test - ${selectedPassages.length} Passages`,
+      level: level || 'mixed',
+      content: selectedPassages.map((p, idx) => 
+        `\n**PASSAGE ${idx + 1}: ${p.title}**\n\n${p.content}`
+      ).join('\n\n---\n'),
+      questions: selectedPassages.flatMap((p, passageIdx) => 
+        p.questions.map((q, qIdx) => ({
+          ...q,
+          id: passageIdx * 100 + q.id, // Ensure unique IDs
+          passage: passageIdx + 1
+        }))
+      )
+    };
+    
+    return combinedPassage;
   }
   
   if (skill === 'writing') {
@@ -532,10 +565,28 @@ const getRandomContent = (skill, level = null) => {
   }
   
   if (skill === 'listening') {
-    const audioFiles = level 
+    // For IELTS Listening, we need 4 sections with 40 questions total
+    const availableSections = level 
       ? skillContent.audioFiles.filter(a => a.level === level)
       : skillContent.audioFiles;
-    return audioFiles[Math.floor(Math.random() * audioFiles.length)];
+    
+    if (availableSections.length < 4) {
+      // If not enough, use what we have or generate fallback
+      return availableSections[Math.floor(Math.random() * availableSections.length)];
+    }
+    
+    // Select 4 random sections for IELTS format
+    const selectedSections = [];
+    const shuffled = [...availableSections].sort(() => Math.random() - 0.5);
+    
+    for (let i = 0; i < 4; i++) {
+      selectedSections.push(shuffled[i]);
+    }
+    
+    return {
+      sections: selectedSections,
+      totalQuestions: selectedSections.reduce((sum, s) => sum + (s.questions?.length || 0), 0)
+    };
   }
   
   if (skill === 'speaking') {

@@ -9,13 +9,17 @@ const router = express.Router();
 function formatContentForTest(content, skill) {
   switch (skill) {
     case 'reading':
+      // Check if content has combined 3 passages or single passage
+      const numQuestions = content.questions?.length || 0;
       return {
-        title: `IELTS Academic Reading - ${content.title}`,
-        instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section. There are 3 passages with 40 questions total.",
+        title: `IELTS Academic Reading`,
+        instructions: numQuestions >= 30 
+          ? "Read the passages and answer all questions below. You have 60 minutes to complete this section. There are 3 passages with approximately 13-14 questions each."
+          : "Read the passage and answer the questions below. You have 60 minutes to complete this section.",
         timeLimit: 60,
         passage: content.content,
         questions: content.questions,
-        totalQuestions: 40
+        totalQuestions: numQuestions || 40
       };
     case 'writing':
       return {
@@ -33,13 +37,22 @@ function formatContentForTest(content, skill) {
         ]
       };
     case 'listening':
+      // Check if content has sections (multiple audio files) or single audio
+      const hasSections = content.sections && Array.isArray(content.sections);
+      const listeningQuestions = hasSections 
+        ? content.sections.flatMap(s => s.questions || [])
+        : content.questions || [];
+      
       return {
-        title: `IELTS Academic Listening - ${content.title}`,
-        instructions: "Listen to the recording and answer the questions below. You will hear the recording once. There are 4 sections with 40 questions total. You have 30 minutes plus 10 minutes to transfer answers.",
+        title: `IELTS Academic Listening`,
+        instructions: hasSections
+          ? "Listen to the recordings and answer all questions below. You will hear each recording once. There are 4 sections with 10 questions each. You have 30 minutes plus 10 minutes to transfer answers."
+          : "Listen to the recording and answer the questions below. You will hear the recording once. You have 30 minutes plus 10 minutes to transfer answers.",
         timeLimit: 30,
-        audioUrl: content.audioUrl,
-        questions: content.questions,
-        totalQuestions: 40
+        audioUrl: hasSections ? content.sections[0]?.audioUrl : content.audioUrl,
+        sections: hasSections ? content.sections : null,
+        questions: listeningQuestions,
+        totalQuestions: listeningQuestions.length || 40
       };
     case 'speaking':
       return {
@@ -88,10 +101,13 @@ router.post('/generate', auth, async (req, res) => {
           
           const systemPrompt = `You are an IELTS question generator. Generate authentic IELTS ${skill} content for band ${bandScore} level.
           
-Return JSON format with:
-- For reading/listening: { "passage": "...", "questions": [{ "id": 1, "question": "...", "options": [...], "correctAnswer": 0 }] }
+Return JSON format following OFFICIAL IELTS STRUCTURE:
+- For reading: { "passage": "Long academic passage", "questions": [40 questions with types: multiple_choice, true_false, fill_blank, matching] }
+- For listening: { "sections": [4 sections, 10 questions each = 40 total], each section: { "audioUrl": "...", "questions": [...] } }
 - For writing: { "task": "...", "wordCount": 250, "timeLimit": 40 }
-- For speaking: { "questions": [...] or "task": "..." }
+- For speaking: { "questions": [12-15 questions total covering Part 1, 2, 3] }
+
+CRITICAL: Reading MUST have 40 questions. Listening MUST have 4 sections with 10 questions each = 40 total.
 
 Keep it authentic to IELTS format.`;
 
