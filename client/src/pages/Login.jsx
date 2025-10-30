@@ -42,6 +42,10 @@ export default function Login() {
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
+      // After the first failed attempt, reveal Forgot Password
+      setShowForgotPassword(true);
+      // Optional attempts indicator (client-side only)
+      setAttemptsRemaining((prev) => (prev === null ? 4 : Math.max(prev - 1, 0)));
     } finally {
       setLoading(false);
     }
