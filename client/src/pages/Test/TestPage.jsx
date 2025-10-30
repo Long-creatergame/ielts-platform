@@ -78,14 +78,14 @@ export default function TestPage() {
         
         if (generateResponse.ok) {
           try {
-            const data = await generateResponse.json();
-            console.log('📝 API Response received');
+            const responseData = await generateResponse.json();
+            console.log('📝 Full API Response:', responseData);
             
-            // Handle nested content structure with safety checks
-            const content = data?.data?.content;
+            // API returns: { success: true, data: { testId, skill, level, content: {...}, timeLimit } }
+            const content = responseData?.data?.content;
             
             if (!content) {
-              console.error('❌ No content in response. Full data:', data);
+              console.error('❌ No content in response. Full data:', responseData);
               // Use fallback immediately
               loadFallbackQuestions(skillType, level);
               return;
@@ -106,7 +106,7 @@ export default function TestPage() {
             
             // Set state with safety checks
             setQuestions(questions || []);
-            setTestData(data.data || {});
+            setTestData(responseData.data || {});
             setPassage(passage || '');
             setTimeLeft((timeLimit || 60) * 60); // Convert minutes to seconds
             return;
@@ -831,88 +831,137 @@ export default function TestPage() {
             </div>
             
             <div className="space-y-6">
-              {questions && questions.length > 0 ? questions.map((question, index) => (
-                <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                  <div className="flex items-start space-x-3">
-                    <span className="bg-blue-600 text-white text-sm font-bold px-2 py-1 rounded-full min-w-[24px] text-center">
-                      {index + 1}
-                    </span>
-                    <div className="flex-1">
-                      <p className="text-gray-800 font-medium mb-3">{question}</p>
-                      
-                      {/* Different input types based on skill */}
-                      {currentSkill === 0 && (
-                        <div className="space-y-2">
-                          {['A', 'B', 'C', 'D'].map((option) => (
-                            <label key={option} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                              <input
-                                type="radio"
-                                name={`question_${index}`}
-                                value={option}
-                                checked={questionAnswers[index] === option}
-                                onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
-                                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                              />
-                              <span className="text-gray-700">
-                                <strong>{option}.</strong> {
-                                  index < 13 ? 
-                                    option === 'A' ? 'To provide food for urban residents' :
-                                    option === 'B' ? 'To reduce stress and improve mental health' :
-                                    option === 'C' ? 'To create employment opportunities' :
-                                    'To reduce air pollution in cities' :
-                                  index < 26 ?
-                                    option === 'A' ? 'The main topic is environmental sustainability' :
-                                    option === 'B' ? 'The primary concern is economic development' :
-                                    option === 'C' ? 'The key factor is social interaction' :
-                                    'The main issue is urban planning' :
-                                    option === 'A' ? 'The main focus is technological advancement' :
-                                    option === 'B' ? 'The primary objective is educational reform' :
-                                    option === 'C' ? 'The key factor is social change' :
-                                    'The main issue is economic growth'
-                                }
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
+              {questions && questions.length > 0 ? questions.map((questionData, index) => {
+                // Handle both object format {question: "...", options: [...]} and string format
+                const questionText = typeof questionData === 'object' ? questionData.question : questionData;
+                const questionOptions = typeof questionData === 'object' ? questionData.options : null;
+                
+                return (
+                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div className="flex items-start space-x-3">
+                      <span className="bg-blue-600 text-white text-sm font-bold px-2 py-1 rounded-full min-w-[24px] text-center">
+                        {index + 1}
+                      </span>
+                      <div className="flex-1">
+                        <p className="text-gray-800 font-medium mb-3">{questionText}</p>
+                        
+                        {/* Different input types based on skill */}
+                        {currentSkill === 0 && (
+                          <div className="space-y-2">
+                            {/* Use real options from API if available, otherwise fallback to A-D */}
+                            {questionOptions && questionOptions.length > 0 ? (
+                              questionOptions.map((optionText, optIndex) => {
+                                const optionLetter = String.fromCharCode(65 + optIndex); // A, B, C, D...
+                                return (
+                                  <label key={optIndex} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                    <input
+                                      type="radio"
+                                      name={`question_${index}`}
+                                      value={optionLetter}
+                                      checked={questionAnswers[index] === optionLetter}
+                                      onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
+                                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <span className="text-gray-700">
+                                      <strong>{optionLetter}.</strong> {optionText}
+                                    </span>
+                                  </label>
+                                );
+                              })
+                            ) : (
+                              ['A', 'B', 'C', 'D'].map((option) => (
+                                <label key={option} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                  <input
+                                    type="radio"
+                                    name={`question_${index}`}
+                                    value={option}
+                                    checked={questionAnswers[index] === option}
+                                    onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
+                                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                  />
+                                  <span className="text-gray-700">
+                                    <strong>{option}.</strong> {
+                                      index < 13 ? 
+                                        option === 'A' ? 'To provide food for urban residents' :
+                                        option === 'B' ? 'To reduce stress and improve mental health' :
+                                        option === 'C' ? 'To create employment opportunities' :
+                                        'To reduce air pollution in cities' :
+                                      index < 26 ?
+                                        option === 'A' ? 'The main topic is environmental sustainability' :
+                                        option === 'B' ? 'The primary concern is economic development' :
+                                        option === 'C' ? 'The key factor is social interaction' :
+                                        'The main issue is urban planning' :
+                                        option === 'A' ? 'The main focus is technological advancement' :
+                                        option === 'B' ? 'The primary objective is educational reform' :
+                                        option === 'C' ? 'The key factor is social change' :
+                                        'The main issue is economic growth'
+                                    }
+                                  </span>
+                                </label>
+                              ))
+                            )}
+                          </div>
+                        )}
                       
                       {currentSkill === 1 && (
                         <div className="space-y-2">
-                          {['A', 'B', 'C', 'D'].map((option) => (
-                            <label key={option} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                              <input
-                                type="radio"
-                                name={`question_${index}`}
-                                value={option}
-                                checked={questionAnswers[index] === option}
-                                onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
-                                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                              />
-                              <span className="text-gray-700">
-                                <strong>{option}.</strong> {
-                                  index < 10 ? 
-                                    option === 'A' ? 'John Smith' :
-                                    option === 'B' ? 'Jane Doe' :
-                                    option === 'C' ? 'Mike Johnson' :
-                                    'Sarah Wilson' :
-                                  index < 20 ?
-                                    option === 'A' ? 'At the university' :
-                                    option === 'B' ? 'In the library' :
-                                    option === 'C' ? 'At the conference center' :
-                                    'In the office' :
-                                  index < 30 ?
-                                    option === 'A' ? '9:00 AM' :
-                                    option === 'B' ? '10:30 AM' :
-                                    option === 'C' ? '2:00 PM' :
-                                    '4:15 PM' :
-                                    option === 'A' ? 'The main topic is education' :
-                                    option === 'B' ? 'The primary concern is technology' :
-                                    option === 'C' ? 'The key factor is environment' :
-                                    'The main issue is health'
-                                }
-                              </span>
-                            </label>
-                          ))}
+                          {/* Use real options from API if available */}
+                          {questionOptions && questionOptions.length > 0 ? (
+                            questionOptions.map((optionText, optIndex) => {
+                              const optionLetter = String.fromCharCode(65 + optIndex);
+                              return (
+                                <label key={optIndex} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                  <input
+                                    type="radio"
+                                    name={`question_${index}`}
+                                    value={optionLetter}
+                                    checked={questionAnswers[index] === optionLetter}
+                                    onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
+                                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                  />
+                                  <span className="text-gray-700">
+                                    <strong>{optionLetter}.</strong> {optionText}
+                                  </span>
+                                </label>
+                              );
+                            })
+                          ) : (
+                            ['A', 'B', 'C', 'D'].map((option) => (
+                              <label key={option} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                <input
+                                  type="radio"
+                                  name={`question_${index}`}
+                                  value={option}
+                                  checked={questionAnswers[index] === option}
+                                  onChange={(e) => handleQuestionAnswerChange(index, e.target.value)}
+                                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                />
+                                <span className="text-gray-700">
+                                  <strong>{option}.</strong> {
+                                    index < 10 ? 
+                                      option === 'A' ? 'John Smith' :
+                                      option === 'B' ? 'Jane Doe' :
+                                      option === 'C' ? 'Mike Johnson' :
+                                      'Sarah Wilson' :
+                                    index < 20 ?
+                                      option === 'A' ? 'At the university' :
+                                      option === 'B' ? 'In the library' :
+                                      option === 'C' ? 'At the conference center' :
+                                      'In the office' :
+                                    index < 30 ?
+                                      option === 'A' ? '9:00 AM' :
+                                      option === 'B' ? '10:30 AM' :
+                                      option === 'C' ? '2:00 PM' :
+                                      '4:15 PM' :
+                                      option === 'A' ? 'The main topic is education' :
+                                      option === 'B' ? 'The primary concern is technology' :
+                                      option === 'C' ? 'The key factor is environment' :
+                                      'The main issue is health'
+                                  }
+                                </span>
+                              </label>
+                            ))
+                          )}
                         </div>
                       )}
                       
@@ -945,8 +994,8 @@ export default function TestPage() {
                       )}
                     </div>
                   </div>
-                </div>
-              )) : (
+                );
+              })}) : (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <p className="text-gray-500 text-center">Loading questions...</p>
                 </div>
