@@ -58,7 +58,6 @@ export default function TestPage() {
     // Load REAL IELTS test data from backend
     const loadRealIELTSData = async () => {
       try {
-        let response;
         // Use new IELTS test API endpoints
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
         const token = localStorage.getItem('token');
@@ -75,7 +74,13 @@ export default function TestPage() {
             skill: skillType,
             level: level
           })
+        }).catch(() => {
+          // If fetch fails completely, use fallback
+          loadFallbackQuestions(skillType, level);
+          return null;
         });
+        
+        if (!generateResponse) return; // Fetch failed, fallback already called
         
         if (generateResponse.ok) {
           try {
@@ -110,30 +115,11 @@ export default function TestPage() {
             return;
           }
         } else {
-          // Log error to help debug
-          const errorText = await generateResponse.text();
-          console.error('❌ API Error:', generateResponse.status, errorText);
-        }
-        
-        // Fallback to quick practice if IELTS test fails
-        response = await fetch(`${API_BASE_URL}/api/quick-practice/${skillType}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          const fallbackQuestions = data.questions || data.passages || data.tasks || data.parts || [];
-          setQuestions(Array.isArray(fallbackQuestions) ? fallbackQuestions : [fallbackQuestions]);
-          setTestData(data);
-        } else {
-          // Fallback to basic questions if API fails
+          // API returned error status - use fallback
           loadFallbackQuestions(skillType, level);
         }
       } catch (error) {
-        console.error('Error loading IELTS data:', error);
+        // Any other error - use fallback
         loadFallbackQuestions(skillType, level);
       }
     };
