@@ -74,6 +74,146 @@ Research suggests that while social media enhances our ability to maintain weak 
         ]
       },
       {
+        id: 'daily-routine',
+        title: 'Daily Routines',
+        level: 'A1',
+        content: `A good daily routine is very important for success. Many successful people wake up early in the morning. They eat breakfast, exercise, and plan their day before starting work.
+
+Jane is a teacher. She wakes up at 6:00 AM every day. First, she drinks a glass of water. Then she does yoga for 20 minutes. After that, she takes a shower and eats breakfast. Her breakfast is usually toast and fruit.
+
+At 7:30 AM, Jane leaves home for school. She arrives at school at 8:00 AM. Her classes start at 8:30 AM and finish at 3:00 PM. After school, she plans lessons for the next day and grades student papers.
+
+In the evening, Jane likes to read books or watch TV. She goes to bed at 10:00 PM. She sleeps for 8 hours every night.`,
+        questions: [
+          {
+            id: 1,
+            question: "What time does Jane wake up?",
+            type: "multiple_choice",
+            options: ["5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM"],
+            correctAnswer: 1,
+            explanation: "The passage states 'She wakes up at 6:00 AM every day.'"
+          },
+          {
+            id: 2,
+            question: "What does Jane do first after waking up?",
+            type: "multiple_choice",
+            options: ["Does yoga", "Drinks water", "Takes a shower", "Eats breakfast"],
+            correctAnswer: 1,
+            explanation: "The passage states 'First, she drinks a glass of water.'"
+          },
+          {
+            id: 3,
+            question: "When do Jane's classes start?",
+            type: "multiple_choice",
+            options: ["7:30 AM", "8:00 AM", "8:30 AM", "9:00 AM"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Her classes start at 8:30 AM.'"
+          }
+        ]
+      },
+      {
+        id: 'food-and-health',
+        title: 'Food and Health',
+        level: 'A2',
+        content: `Healthy eating is important for our bodies. We need to eat different kinds of food every day. Fruits and vegetables are very good for us. They have vitamins that help our bodies stay strong.
+
+Breakfast is the most important meal. It gives us energy for the whole day. A good breakfast might include eggs, bread, fruit, and milk or juice. Skipping breakfast can make you feel tired and hungry later.
+
+Drinking water is also very important. Our bodies need about 8 glasses of water every day. Water helps us digest food and keeps our skin healthy. We should drink more water when we exercise.
+
+Too much junk food is not good. Foods like chips, candy, and fast food have a lot of sugar and fat. Eating too much of these foods can make us gain weight and cause health problems. We should only eat them sometimes, not every day.`,
+        questions: [
+          {
+            id: 1,
+            question: "Why are fruits and vegetables good for us?",
+            type: "multiple_choice",
+            options: ["They are cheap", "They have vitamins", "They taste good", "They are easy to cook"],
+            correctAnswer: 1,
+            explanation: "The passage states 'They have vitamins that help our bodies stay strong.'"
+          },
+          {
+            id: 2,
+            question: "Which meal is mentioned as the most important?",
+            type: "multiple_choice",
+            options: ["Lunch", "Dinner", "Breakfast", "Snacks"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Breakfast is the most important meal.'"
+          },
+          {
+            id: 3,
+            question: "How much water should we drink every day?",
+            type: "multiple_choice",
+            options: ["4 glasses", "6 glasses", "8 glasses", "10 glasses"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Our bodies need about 8 glasses of water every day.'"
+          }
+        ]
+      },
+      {
+        id: 'climate-change',
+        title: 'Understanding Climate Change',
+        level: 'B1',
+        content: `Climate change is one of the most pressing issues of our time. It refers to long-term changes in weather patterns and temperatures across the globe. Scientists have observed that the Earth's average temperature has increased significantly over the past century.
+
+The main cause of climate change is the increase in greenhouse gases in our atmosphere. These gases, particularly carbon dioxide from burning fossil fuels, trap heat from the sun. As a result, the Earth's temperature rises.
+
+Climate change affects many aspects of our planet. Rising sea levels threaten coastal cities, while changing weather patterns cause more frequent and severe storms. Some regions experience longer droughts, while others face increased flooding.
+
+Individuals can help reduce climate change by using less energy, walking or cycling instead of driving, and eating more plant-based foods. Governments and businesses also need to invest in renewable energy sources like wind and solar power.`,
+        questions: [
+          {
+            id: 1,
+            question: "What is climate change?",
+            type: "multiple_choice",
+            options: ["Short-term weather changes", "Long-term changes in weather patterns", "Daily temperature changes", "Seasonal variations"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Climate change refers to long-term changes in weather patterns and temperatures.'"
+          },
+          {
+            id: 2,
+            question: "What is the main cause of climate change?",
+            type: "multiple_choice",
+            options: ["Pollution", "Population growth", "Increase in greenhouse gases", "Natural disasters"],
+            correctAnswer: 2,
+            explanation: "The passage states 'The main cause of climate change is the increase in greenhouse gases in our atmosphere.'"
+          }
+        ]
+      },
+      {
+        id: 'global-economy',
+        title: 'The Global Economy in the Digital Age',
+        level: 'C2',
+        content: `The transformation of the global economy in the digital age has been nothing short of revolutionary. Traditional economic models have been fundamentally disrupted by technological innovations, creating unprecedented opportunities while simultaneously presenting novel challenges.
+
+E-commerce has emerged as a dominant force, reshaping retail landscapes and consumer behavior. The ability to purchase goods and services from anywhere in the world with a few clicks has democratized commerce but has also led to the decline of brick-and-mortar establishments. Small businesses now compete on a global scale, while established corporations adapt their strategies to maintain relevance.
+
+The gig economy represents another significant shift. Platforms connecting workers with short-term projects have created new economic opportunities for millions, offering flexibility and autonomy. However, this model also raises questions about job security, benefits, and workers' rights.
+
+Cryptocurrency and blockchain technology challenge traditional financial systems, offering decentralized alternatives that could potentially democratize access to financial services. Yet regulatory frameworks struggle to keep pace with these innovations, creating uncertainty in markets.
+
+Artificial intelligence and automation continue to transform industries, from manufacturing to professional services. While these technologies promise increased efficiency, they also raise concerns about job displacement and the need for workforce reskilling.
+
+The digital economy's environmental impact cannot be overlooked. Data centers consume enormous amounts of energy, and electronic waste is a growing concern. Sustainable technology solutions are becoming increasingly critical.`,
+        questions: [
+          {
+            id: 1,
+            question: "According to the passage, what has been a significant effect of e-commerce?",
+            type: "multiple_choice",
+            options: ["Increased brick-and-mortar stores", "Decline of physical retail", "Reduced global competition", "More expensive goods"],
+            correctAnswer: 1,
+            explanation: "The passage states 'The ability to purchase goods and services from anywhere has led to the decline of brick-and-mortar establishments.'"
+          },
+          {
+            id: 2,
+            question: "What concern is raised about cryptocurrency?",
+            type: "multiple_choice",
+            options: ["It's too expensive", "Regulatory frameworks are struggling to keep pace", "It's not secure", "It's difficult to use"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Regulatory frameworks struggle to keep pace with these innovations, creating uncertainty in markets.'"
+          }
+        ]
+      },
+      {
         id: 'artificial-intelligence',
         title: 'Artificial Intelligence in Healthcare',
         level: 'C1',
@@ -112,12 +252,28 @@ The future of AI in healthcare will likely involve closer collaboration between 
   writing: {
     tasks: [
       {
-        id: 'social-media-essay',
-        level: 'B2',
-        task: "Some people believe that social media has a negative impact on young people's social skills. Others argue that it helps them develop new communication abilities. Discuss both views and give your own opinion.",
-        type: 'Task 2 Essay',
-        wordCount: 250,
-        timeLimit: 40
+        id: 'introduce-yourself',
+        level: 'A1',
+        task: "Write a short paragraph introducing yourself. Include: your name, where you are from, what you do, and your hobbies. Write 50-80 words.",
+        type: 'Task 1 Personal',
+        wordCount: 80,
+        timeLimit: 20
+      },
+      {
+        id: 'family-letter',
+        level: 'A2',
+        task: "Write a letter to a friend telling them about your family. Include: who is in your family, what they do, and what you like to do together. Write 80-120 words.",
+        type: 'Task 1 Letter',
+        wordCount: 120,
+        timeLimit: 25
+      },
+      {
+        id: 'daily-routine-description',
+        level: 'A2',
+        task: "Describe your daily routine. Include: what time you wake up, what you do in the morning, afternoon, and evening. Write 80-120 words.",
+        type: 'Task 1 Description',
+        wordCount: 120,
+        timeLimit: 25
       },
       {
         id: 'environmental-chart',
@@ -128,17 +284,108 @@ The future of AI in healthcare will likely involve closer collaboration between 
         timeLimit: 20
       },
       {
+        id: 'social-media-essay',
+        level: 'B2',
+        task: "Some people believe that social media has a negative impact on young people's social skills. Others argue that it helps them develop new communication abilities. Discuss both views and give your own opinion.",
+        type: 'Task 2 Essay',
+        wordCount: 250,
+        timeLimit: 40
+      },
+      {
+        id: 'education-system-essay',
+        level: 'B2',
+        task: "Some people think that all school subjects should be optional. Others believe that certain subjects like math and languages should be compulsory. Discuss both views and give your own opinion.",
+        type: 'Task 2 Essay',
+        wordCount: 250,
+        timeLimit: 40
+      },
+      {
         id: 'technology-essay',
         level: 'C1',
         task: "Some people think that artificial intelligence will replace many jobs in the future. Others believe that it will create new opportunities. Discuss both views and give your own opinion.",
         type: 'Task 2 Essay',
         wordCount: 250,
         timeLimit: 40
+      },
+      {
+        id: 'globalization-essay',
+        level: 'C1',
+        task: "Globalization has both positive and negative effects on different countries. To what extent do you agree or disagree? Discuss the advantages and disadvantages of globalization.",
+        type: 'Task 2 Essay',
+        wordCount: 250,
+        timeLimit: 40
+      },
+      {
+        id: 'philosophy-essay',
+        level: 'C2',
+        task: "Technology is merely a tool. Discuss the extent to which technological advancement serves humanity versus controlling it. Consider ethical implications and future possibilities.",
+        type: 'Task 2 Essay',
+        wordCount: 350,
+        timeLimit: 45
       }
     ]
   },
   listening: {
     audioFiles: [
+      {
+        id: 'self-introduction',
+        title: 'Self Introduction',
+        audioUrl: '/api/audio/ielts-listening-a1-sample.mp3',
+        level: 'A1',
+        questions: [
+          {
+            id: 1,
+            question: "What is the person's name?",
+            type: "multiple_choice",
+            options: ["Mike", "Tom", "John", "Steve"],
+            correctAnswer: 0
+          },
+          {
+            id: 2,
+            question: "Where is the person from?",
+            type: "multiple_choice",
+            options: ["England", "America", "Australia", "Canada"],
+            correctAnswer: 1
+          }
+        ]
+      },
+      {
+        id: 'shopping-dialogue',
+        title: 'Shopping Dialogue',
+        audioUrl: '/api/audio/ielts-listening-a2-sample.mp3',
+        level: 'A2',
+        questions: [
+          {
+            id: 1,
+            question: "What does the customer want to buy?",
+            type: "multiple_choice",
+            options: ["A shirt", "A jacket", "A dress", "A coat"],
+            correctAnswer: 2
+          },
+          {
+            id: 2,
+            question: "What size does the customer need?",
+            type: "multiple_choice",
+            options: ["Small", "Medium", "Large", "Extra Large"],
+            correctAnswer: 1
+          }
+        ]
+      },
+      {
+        id: 'library-information',
+        title: 'Library Information',
+        audioUrl: '/api/audio/ielts-listening-sample-2.mp3',
+        level: 'B1',
+        questions: [
+          {
+            id: 1,
+            question: "What are the library's weekend hours?",
+            type: "multiple_choice",
+            options: ["8 AM to 6 PM", "9 AM to 6 PM", "8 AM to 10 PM", "9 AM to 10 PM"],
+            correctAnswer: 1
+          }
+        ]
+      },
       {
         id: 'university-lecture',
         title: 'University Course Discussion',
@@ -162,16 +409,16 @@ The future of AI in healthcare will likely involve closer collaboration between 
         ]
       },
       {
-        id: 'library-information',
-        title: 'Library Information',
-        audioUrl: '/api/audio/ielts-listening-sample-2.mp3',
-        level: 'B1',
+        id: 'news-report',
+        title: 'News Report',
+        audioUrl: '/api/audio/ielts-listening-c1-sample.mp3',
+        level: 'C1',
         questions: [
           {
             id: 1,
-            question: "What are the library's weekend hours?",
+            question: "What is the main topic of the news?",
             type: "multiple_choice",
-            options: ["8 AM to 6 PM", "9 AM to 6 PM", "8 AM to 10 PM", "9 AM to 10 PM"],
+            options: ["Weather forecast", "Economic policy", "Technology innovation", "Healthcare reform"],
             correctAnswer: 1
           }
         ]
@@ -180,6 +427,17 @@ The future of AI in healthcare will likely involve closer collaboration between 
   },
   speaking: {
     topics: [
+      {
+        id: 'greetings',
+        level: 'A1',
+        part: 1,
+        questions: [
+          "What is your name?",
+          "How old are you?",
+          "Where are you from?",
+          "What do you do?"
+        ]
+      },
       {
         id: 'hometown',
         level: 'A2',
@@ -192,12 +450,31 @@ The future of AI in healthcare will likely involve closer collaboration between 
         ]
       },
       {
+        id: 'favorite-hobby',
+        level: 'A2',
+        part: 2,
+        task: "Describe your favorite hobby. You should say: what it is, when you do it, how long you've been doing it, and explain why you like it.",
+        preparationTime: 1,
+        speakingTime: 1
+      },
+      {
         id: 'travel',
         level: 'B1',
         part: 2,
         task: "Describe a memorable journey you have taken. You should say: where you went, when you went there, who you went with, what you did there, and explain why this journey was memorable for you.",
         preparationTime: 1,
         speakingTime: 2
+      },
+      {
+        id: 'climate-change',
+        level: 'B1',
+        part: 3,
+        questions: [
+          "What do you think causes climate change?",
+          "How is climate change affecting your country?",
+          "What can individuals do to help reduce climate change?",
+          "Do you think governments are doing enough to address climate change?"
+        ]
       },
       {
         id: 'technology',
@@ -208,6 +485,28 @@ The future of AI in healthcare will likely involve closer collaboration between 
           "Do you think technology has made our lives better or worse?",
           "What are the potential negative effects of technology on society?",
           "How do you think technology will change in the future?"
+        ]
+      },
+      {
+        id: 'artificial-intelligence',
+        level: 'C1',
+        part: 3,
+        questions: [
+          "How is artificial intelligence changing the workplace?",
+          "What ethical concerns do you have about AI?",
+          "In what ways could AI be beneficial to society?",
+          "How should governments regulate the development of AI?"
+        ]
+      },
+      {
+        id: 'global-ethics',
+        level: 'C2',
+        part: 3,
+        questions: [
+          "To what extent should countries prioritize national interests over global cooperation?",
+          "How do cultural differences affect ethical decision-making in international contexts?",
+          "What role should corporations play in addressing global challenges?",
+          "How can we balance technological progress with ethical considerations?"
         ]
       }
     ]
