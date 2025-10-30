@@ -385,11 +385,16 @@ router.post('/forgot-password', async (req, res) => {
           <p style="color:#666; font-size: 12px;">This link expires in 1 hour. If you did not request a password reset, you can ignore this email.</p>
         </div>
       </div>`;
-    await emailService.sendEmail(user.email, subject, html);
+    try {
+      await emailService.sendEmail(user.email, subject, html);
+    } catch (e) {
+      console.warn('sendEmail failed (non-fatal):', e?.message);
+    }
 
+    // Always return generic success to avoid user enumeration and email transport dependency
     res.json({ 
       success: true,
-      message: 'Password reset code sent to your email'
+      message: 'If that email exists, we\'ve sent a reset link'
     });
   } catch (error) {
     console.error('Forgot password error:', error);
