@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
-const DailyChallenge = () => {
+const DailyChallenge = memo(() => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [challenge, setChallenge] = useState(null);
@@ -152,6 +152,8 @@ const DailyChallenge = () => {
       )}
     </div>
   );
-};
+});
+
+DailyChallenge.displayName = 'DailyChallenge';
 
 export default DailyChallenge;

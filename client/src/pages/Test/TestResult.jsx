@@ -346,13 +346,47 @@ export default function TestResult() {
             </div>
           </div>
 
+          {/* Practice Weaknesses Section - NEW! */}
+          {testResult.weaknesses && testResult.weaknesses.length > 0 && (
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                🎯 Practice Your Weaknesses
+              </h2>
+              <p className="text-gray-700 mb-6">
+                Based on your test results, we recommend focusing on these areas to improve your overall score.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {Object.entries(testResult.skillScores || {})
+                  .filter(([skill, score]) => score < testResult.overallBand)
+                  .map(([skill, score]) => (
+                    <button
+                      key={skill}
+                      onClick={() => navigate(`/quick-practice/${skill}?focus=true`)}
+                      className="bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-400 text-red-700 font-semibold py-4 px-6 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:scale-105"
+                    >
+                      <div className="text-2xl mb-2">
+                        {skill === 'reading' && '📖'}
+                        {skill === 'listening' && '🎧'}
+                        {skill === 'writing' && '✍️'}
+                        {skill === 'speaking' && '🎤'}
+                      </div>
+                      <div className="capitalize font-bold mb-1">{skill}</div>
+                      <div className="text-sm opacity-75">Score: {score}</div>
+                      <div className="text-xs mt-2 text-blue-600">→ Practice Now</div>
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
               {t('testResult.nextSteps', 'What\'s Next?')}
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <button
                 onClick={handleRetakeTest}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
@@ -368,34 +402,11 @@ export default function TestResult() {
               </button>
               
               <button
-                onClick={() => navigate('/ai-practice?plan=7day')}
-                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
-              >
-                📅 Tạo kế hoạch 7 ngày
-              </button>
-              
-              <button
                 onClick={handleViewHistory}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
               >
                 📊 {t('testResult.viewHistory', 'View History')}
               </button>
-            </div>
-            
-            {/* 7-day plan CTA highlight */}
-            <div className="mt-6 bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 rounded-xl p-4">
-              <div className="text-center">
-                <h3 className="text-lg font-bold text-orange-900 mb-2">🚀 Tăng tốc với kế hoạch cá nhân hóa</h3>
-                <p className="text-orange-800 text-sm mb-3">
-                  AI sẽ tạo lộ trình học 7 ngày dựa trên kết quả test của bạn
-                </p>
-                <button
-                  onClick={() => navigate('/ai-practice?plan=7day')}
-                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200"
-                >
-                  Tạo ngay miễn phí
-                </button>
-              </div>
             </div>
           </div>
         </div>

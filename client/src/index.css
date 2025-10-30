@@ -85,9 +85,16 @@ body {
   animation: pulse-subtle 2s ease-in-out infinite;
 }
 
-/* Smooth transitions */
+/* Smooth transitions - Optimized for better performance */
 * {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Only apply expensive transitions to interactive elements */
+button, a, .hover\:transition-all {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, transform, opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }

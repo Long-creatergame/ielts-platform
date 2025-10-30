@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -14,17 +14,11 @@ import SmartUpgradePrompt from '../components/SmartUpgradePrompt';
 import FreeTrialProgress from '../components/FreeTrialProgress';
 import PremiumFeatureLock from '../components/PremiumFeatureLock';
 import LimitedAccess from '../components/LimitedAccess';
-import AIPractice from '../components/AIPractice';
-import AIPersonalization from '../components/AIPersonalization';
-import MyWeakness from '../components/MyWeakness';
-import UnifiedRecommendations from '../components/UnifiedRecommendations';
-import UnifiedProgressTracking from '../components/UnifiedProgressTracking';
 import { FEATURE_ACCESS } from '../utils/featureAccess';
 import Onboarding from '../components/Onboarding';
 import QuickStart from '../components/QuickStart';
-import TestSelector from '../components/TestSelector';
+// TestSelector removed - too confusing for users
 import RecentActivityAndTests from '../components/RecentActivityAndTests';
-import FeatureGuide from '../components/FeatureGuide';
 import HelpCenter from '../components/HelpCenter';
 import WelcomeBanner from '../components/WelcomeBanner';
 import ModernStatsCard from '../components/ModernStatsCard';
@@ -34,6 +28,13 @@ import RealtimeClient from '../components/RealtimeClient';
 import StickyPricingCTA from '../components/StickyPricingCTA';
 import WeeklyReport from '../components/WeeklyReport';
 import { useNavigate } from 'react-router-dom';
+
+// Lazy load heavy components for better initial load performance
+const AIPractice = lazy(() => import('../components/AIPractice'));
+const AIPersonalization = lazy(() => import('../components/AIPersonalization'));
+const MyWeakness = lazy(() => import('../components/MyWeakness'));
+const UnifiedRecommendations = lazy(() => import('../components/UnifiedRecommendations'));
+const UnifiedProgressTracking = lazy(() => import('../components/UnifiedProgressTracking'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -45,13 +46,18 @@ export default function Dashboard() {
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
-  const [showTestSelector, setShowTestSelector] = useState(false);
+  // Removed showTestSelector - simplified UX
+
+  // Memoize API base URL to avoid recalculation
+  const API_BASE_URL = React.useMemo(() => 
+    import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000', 
+    []
+  );
 
   // Function to refresh dashboard data
-  const refreshDashboardData = async () => {
+  const refreshDashboardData = React.useCallback(async () => {
     try {
       if (user) {
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
         const token = localStorage.getItem('token');
         
         // Fetch dashboard data from API
@@ -70,13 +76,12 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error refreshing dashboard data:', error);
     }
-  };
+  }, [user, API_BASE_URL]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         if (user) {
-          const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
           const token = localStorage.getItem('token');
           
           // Fetch dashboard data from API
@@ -132,7 +137,7 @@ export default function Dashboard() {
     };
 
     fetchDashboardData();
-  }, [user]);
+  }, [user, API_BASE_URL]);
 
 
   if (loading) {
@@ -158,10 +163,7 @@ export default function Dashboard() {
         <QuickStart onClose={() => setShowQuickStart(false)} />
       )}
       
-      {/* Test Selector Modal */}
-      {showTestSelector && (
-        <TestSelector onClose={() => setShowTestSelector(false)} />
-      )}
+      {/* Test Selector Modal - REMOVED: Too confusing! */}
       
       {/* Help Center */}
       <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
@@ -184,12 +186,12 @@ export default function Dashboard() {
               </div>
             </div>
                      <div className="flex items-center space-x-3">
-                       <button
-                         onClick={() => setShowTestSelector(true)}
+                       <Link
+                         to="/test/start"
                          className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
                        >
                          🎯 {t('nav.tests')}
-                       </button>
+                       </Link>
                       {/* Help button moved to Navbar to avoid duplication */}
                        <div className="hidden md:block">
                          <GoalProgressBar
@@ -376,70 +378,34 @@ export default function Dashboard() {
                   {/* Daily Challenge - First Priority */}
                   <DailyChallenge />
 
-                  {/* Quick Actions */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <button
-                      onClick={() => window.location.href = '/quick-practice/reading'}
-                      className="group bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
-                    >
-                      <div className="flex items-center space-x-4 mb-4">
-                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                          <span className="text-3xl">📝</span>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold">{t('dashboard.quickReading')}</h3>
-                          <p className="text-blue-100 text-sm">{t('dashboard.quickReadingDesc')}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center text-blue-100 text-sm font-medium">
-                        <span>{t('dashboard.beginPractice')}</span>
-                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => window.location.href = '/quick-practice/writing'}
-                      className="group bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
-                    >
-                      <div className="flex items-center space-x-4 mb-4">
-                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                          <span className="text-3xl">✍️</span>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold">{t('dashboard.quickWriting')}</h3>
-                          <p className="text-green-100 text-sm">{t('dashboard.quickWritingDesc')}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center text-green-100 text-sm font-medium">
-                        <span>{t('dashboard.beginPractice')}</span>
-                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => window.location.href = '/quick-practice/listening'}
-                      className="group bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
-                    >
-                      <div className="flex items-center space-x-4 mb-4">
-                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                          <span className="text-3xl">💎</span>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold">{t('dashboard.quickListening')}</h3>
-                          <p className="text-purple-100 text-sm">{t('dashboard.quickListeningDesc')}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center text-purple-100 text-sm font-medium">
-                        <span>{t('dashboard.beginPractice')}</span>
-                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </button>
+                  {/* Quick Practice Group */}
+                  <div className="bg-white rounded-3xl shadow-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-bold text-gray-800">Quick Practice</h3>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <button
+                        onClick={() => window.location.href = '/quick-practice/reading'}
+                        className="btn-secondary px-4 py-3 flex items-center justify-center gap-2"
+                      >
+                        <span>📝</span>
+                        <span>Practice Reading</span>
+                      </button>
+                      <button
+                        onClick={() => window.location.href = '/quick-practice/writing'}
+                        className="btn-secondary px-4 py-3 flex items-center justify-center gap-2"
+                      >
+                        <span>✍️</span>
+                        <span>Practice Writing</span>
+                      </button>
+                      <button
+                        onClick={() => window.location.href = '/quick-practice/listening'}
+                        className="btn-secondary px-4 py-3 flex items-center justify-center gap-2"
+                      >
+                        <span>🎧</span>
+                        <span>Practice Listening</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Combined Activity & Tests Section */}
@@ -448,78 +414,47 @@ export default function Dashboard() {
               )}
               
                        {activeTab === 'ai-practice' && (
-                         <LimitedAccess feature={FEATURE_ACCESS.FREE.LIMITED_AI_PRACTICE}>
-                           <AIPractice />
-                         </LimitedAccess>
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <LimitedAccess feature={FEATURE_ACCESS.FREE.LIMITED_AI_PRACTICE}>
+                             <AIPractice />
+                           </LimitedAccess>
+                         </Suspense>
                        )}
 
                        {activeTab === 'ai-personalization' && (
-                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.AI_PERSONALIZATION}>
-                           <AIPersonalization />
-                         </PremiumFeatureLock>
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.AI_PERSONALIZATION}>
+                             <AIPersonalization />
+                           </PremiumFeatureLock>
+                         </Suspense>
                        )}
 
                        {activeTab === 'my-weakness' && (
-                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.WEAKNESS_ANALYSIS}>
-                           <MyWeakness />
-                         </PremiumFeatureLock>
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.WEAKNESS_ANALYSIS}>
+                             <MyWeakness />
+                           </PremiumFeatureLock>
+                         </Suspense>
                        )}
 
                        {activeTab === 'recommendations' && (
-                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.ADVANCED_RECOMMENDATIONS}>
-                           <UnifiedRecommendations />
-                         </PremiumFeatureLock>
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.ADVANCED_RECOMMENDATIONS}>
+                             <UnifiedRecommendations />
+                           </PremiumFeatureLock>
+                         </Suspense>
                        )}
 
                        {activeTab === 'progress-tracking' && (
-                         <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.DETAILED_PROGRESS}>
-                           <UnifiedProgressTracking />
-                         </PremiumFeatureLock>
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.DETAILED_PROGRESS}>
+                             <UnifiedProgressTracking />
+                           </PremiumFeatureLock>
+                         </Suspense>
                        )}
             </div>
           </div>
         </div>
-
-        {/* Coach Message */}
-        {personalization?.coachMessage && (
-          <div className="mb-8">
-            <CoachMessage message={personalization.coachMessage} />
-          </div>
-        )}
-
-        {/* Statistics Cards - Removed duplicate */}
-
-        {/* Progress Ring */}
-        {statistics?.averageBand > 0 && (
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Progress Overview</h2>
-            <ProgressRing
-              current={statistics.averageBand}
-              target={user.targetBand}
-              size={150}
-            />
-          </div>
-        )}
-
-        {/* Quick Actions - Removed duplicate */}
-
-        {/* Weekly Report */}
-        <WeeklyReport />
-
-        {/* Recommendations */}
-        {personalization?.recommendations && personalization.recommendations.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">💡 Recommendations</h2>
-            <div className="space-y-3">
-              {personalization.recommendations.map((rec, index) => (
-                <div key={index} className="flex items-center p-3 bg-blue-50 rounded-lg">
-                  <span className="text-blue-600 mr-3">•</span>
-                  <span className="text-blue-800">{rec}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
       </div>
       

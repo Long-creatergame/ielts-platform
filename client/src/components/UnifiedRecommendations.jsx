@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo, useMemo, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
-const UnifiedRecommendations = () => {
+const UnifiedRecommendations = memo(() => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [recommendations, setRecommendations] = useState([]);
@@ -94,7 +94,7 @@ const UnifiedRecommendations = () => {
     return colors[priority] || colors.medium;
   };
 
-  const handleRecommendationAction = async (recommendationId, action) => {
+  const handleRecommendationAction = useCallback(async (recommendationId, action) => {
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
@@ -115,7 +115,7 @@ const UnifiedRecommendations = () => {
     } catch (error) {
       console.error('Recommendation action error:', error);
     }
-  };
+  }, []);
 
   if (loading) {
     return (
@@ -227,6 +227,8 @@ const UnifiedRecommendations = () => {
       )}
     </div>
   );
-};
+});
+
+UnifiedRecommendations.displayName = 'UnifiedRecommendations';
 
 export default UnifiedRecommendations;
