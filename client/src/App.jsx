@@ -39,6 +39,7 @@ export default function App() {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/test/start" element={<ProtectedRoute><TestIntro /></ProtectedRoute>} />
             <Route path="/test/:skill" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
+            <Route path="/test/result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
             <Route path="/test/result/:id" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
             <Route path="/test/result/quick" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
             <Route path="/test-history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
