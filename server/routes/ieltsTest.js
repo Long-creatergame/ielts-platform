@@ -65,9 +65,106 @@ router.post('/generate', auth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid skill. Must be reading, writing, listening, or speaking.' });
     }
 
-    // Generate test content based on skill and level
+    // Try to get content from database first
+    let testContent = null;
     const randomContent = getRandomContent(skill, level);
-    const testContent = randomContent ? formatContentForTest(randomContent, skill) : generateIELTSTestContent(skill, level);
+    
+    if (randomContent) {
+      // Use database content
+      testContent = formatContentForTest(randomContent, skill);
+    } else {
+      // Try to generate with AI if database has no content
+      try {
+        if (process.env.OPENAI_API_KEY) {
+          const OpenAI = require('openai');
+          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          
+          // Convert CEFR level to IELTS band score for AI
+          const levelToBand = {
+            'A1': 3.5, 'A2': 4.5, 'B1': 5.5, 
+            'B2': 6.5, 'C1': 7.5, 'C2': 8.5
+          };
+          const bandScore = levelToBand[level] || 6.5;
+          
+          const systemPrompt = `You are an IELTS question generator. Generate authentic IELTS ${skill} content for band ${bandScore} level.
+          
+Return JSON format with:
+- For reading/listening: { "passage": "...", "questions": [{ "id": 1, "question": "...", "options": [...], "correctAnswer": 0 }] }
+- For writing: { "task": "...", "wordCount": 250, "timeLimit": 40 }
+- For speaking: { "questions": [...] or "task": "..." }
+
+Keep it authentic to IELTS format.`;
+
+          const aiResponse = await openai.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: `Generate ${skill} content for level ${level} (band ${bandScore})` }
+            ],
+            temperature: 0.7,
+            max_tokens: 1500
+          });
+
+          let aiContent;
+          try {
+            aiContent = JSON.parse(aiResponse.choices[0].message.content);
+          } catch (parseError) {
+            // If not JSON, try to extract JSON from markdown
+            const content = aiResponse.choices[0].message.content;
+            const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/\{[\s\S]*\}/);
+            aiContent = jsonMatch ? JSON.parse(jsonMatch[1] || jsonMatch[0]) : null;
+          }
+          
+          if (aiContent) {
+            console.log('✅ AI Generated content for', skill, level);
+            
+            // Format AI content properly
+            if (skill === 'reading') {
+              testContent = {
+                title: `IELTS Academic Reading`,
+                instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section.",
+                timeLimit: 60,
+                passage: aiContent.passage || aiContent.content,
+                questions: aiContent.questions || [],
+                totalQuestions: aiContent.questions?.length || 0
+              };
+            } else if (skill === 'writing') {
+              testContent = {
+                title: `IELTS Academic Writing`,
+                instructions: `You should spend about ${aiContent.timeLimit || 40} minutes on this task. Write at least ${aiContent.wordCount || 250} words.`,
+                timeLimit: aiContent.timeLimit || 40,
+                task: aiContent.task,
+                wordCount: aiContent.wordCount || 250
+              };
+            } else if (skill === 'listening') {
+              testContent = {
+                title: `IELTS Academic Listening`,
+                instructions: "Listen to the recording and answer the questions below. You have 30 minutes.",
+                timeLimit: 30,
+                audioUrl: aiContent.audioUrl,
+                questions: aiContent.questions || []
+              };
+            } else if (skill === 'speaking') {
+              testContent = {
+                title: `IELTS Academic Speaking`,
+                instructions: "Answer the questions below clearly and in detail.",
+                timeLimit: 15,
+                questions: aiContent.questions || [],
+                preparationTime: aiContent.preparationTime,
+                speakingTime: aiContent.speakingTime
+              };
+            }
+          }
+        }
+      } catch (aiError) {
+        console.log('⚠️ AI generation failed, using fallback:', aiError.message);
+      }
+      
+      // Fallback to default content if AI fails
+      if (!testContent) {
+        testContent = generateIELTSTestContent(skill, level);
+      }
+    }
     
     // Create test record
     const testRecord = new Test({
