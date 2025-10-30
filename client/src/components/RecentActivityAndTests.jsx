@@ -39,7 +39,8 @@ const RecentActivityAndTests = () => {
           color: getTestColor(test.skill || 'full'),
           date: test.date || test.dateTaken || new Date().toISOString(),
           score: test.overallScore || test.bandScore,
-          skill: test.skill || 'full'
+          skill: test.skill || 'full',
+          testData: test // Save full test data for details view
         });
       });
       
@@ -160,28 +161,47 @@ const RecentActivityAndTests = () => {
       <div className="space-y-4">
         {activities.length > 0 ? (
           activities.map((activity, index) => (
-            <div key={activity.id} className="flex items-center space-x-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-2xl border border-gray-200/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg">
-              <div className={`w-12 h-12 ${getActivityColor(activity.color)} rounded-xl flex items-center justify-center`}>
-                <span className="text-xl">{activity.icon}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-gray-900 text-lg truncate">{activity.title}</h3>
-                  <span className="text-sm text-gray-500">{formatDate(activity.date)}</span>
+            <div key={activity.id} className="flex flex-col p-4 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-2xl border border-gray-200/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg">
+              <div className="flex items-center space-x-4">
+                <div className={`w-12 h-12 ${getActivityColor(activity.color)} rounded-xl flex items-center justify-center`}>
+                  <span className="text-xl">{activity.icon}</span>
                 </div>
-                <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
-                {activity.skill && activity.skill !== 'full' && (
-                  <span className="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">
-                    {activity.skill.toUpperCase()}
-                  </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-gray-900 text-lg truncate">{activity.title}</h3>
+                    <span className="text-sm text-gray-500">{formatDate(activity.date)}</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
+                  {activity.skill && activity.skill !== 'full' && (
+                    <span className="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">
+                      {activity.skill.toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                {activity.score && (
+                  <div className="flex-shrink-0 text-right">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {activity.score}
+                    </div>
+                    <div className="text-xs text-gray-500">Band</div>
+                  </div>
                 )}
               </div>
-              {activity.score && (
-                <div className="flex-shrink-0 text-right">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {activity.score}
-                  </div>
-                  <div className="text-xs text-gray-500">Band</div>
+              {/* View Details Button for tests */}
+              {activity.type === 'test' && activity.testData && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      // Navigate to test result page with test data
+                      window.location.href = '/test/result';
+                      // Save test data to localStorage for TestResult to load
+                      localStorage.setItem('latestTestResult', JSON.stringify(activity.testData));
+                    }}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <span>👁️</span>
+                    <span>Xem chi tiết bài test</span>
+                  </button>
                 </div>
               )}
             </div>
