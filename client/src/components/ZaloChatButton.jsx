@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const ZaloChatButton = ({ buttonText = 'Chat với tôi qua Zalo', zaloUrl }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [bottomOffset, setBottomOffset] = useState(16);
 
   // Show button after 5 seconds on page load
   React.useEffect(() => {
@@ -15,10 +16,37 @@ const ZaloChatButton = ({ buttonText = 'Chat với tôi qua Zalo', zaloUrl }) =>
     }
   };
 
+  // Avoid overlapping with Tawk.to widget by raising this button if Tawk is present
+  React.useEffect(() => {
+    const detectTawk = () => {
+      try {
+        // Tawk adds an iframe in the bottom-right; if present, lift our button above it
+        const tawkIframe = Array.from(document.querySelectorAll('iframe')).find((f) =>
+          (f.src || '').includes('tawk.to')
+        );
+        if (tawkIframe) {
+          setBottomOffset(96); // ~ height of Tawk bubble
+          return;
+        }
+        setBottomOffset(16);
+      } catch (_) {
+        setBottomOffset(16);
+      }
+    };
+
+    detectTawk();
+    const interval = setInterval(detectTawk, 1500);
+    window.addEventListener('resize', detectTawk);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', detectTawk);
+    };
+  }, []);
+
   if (!zaloUrl || !isVisible) return null;
 
   return (
-    <div className="fixed z-50 animate-fade-in" style={{ right: 16, bottom: 16 }}>
+    <div className="fixed z-50 animate-fade-in" style={{ right: 16, bottom: bottomOffset }}>
       <button
         onClick={handleClick}
         className="flex items-center gap-2 bg-[#0068FF] hover:bg-[#0052CC] text-white font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
