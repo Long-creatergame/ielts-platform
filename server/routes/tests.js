@@ -152,14 +152,38 @@ router.post('/submit', authMiddleware, async (req, res) => {
       };
     }
     
+    // Convert skillScores to match Test model schema
+    // Frontend sends: { reading: 7.0, listening: 6.5, ... }
+    // Model expects: { reading: { correct: X, total: Y }, ... }
+    let formattedSkillScores = {};
+    if (typeof skillScores === 'object' && skillScores !== null) {
+      Object.entries(skillScores).forEach(([skill, score]) => {
+        // If already in model format, use as-is
+        if (typeof score === 'object' && 'correct' in score) {
+          formattedSkillScores[skill] = score;
+        } else {
+          // Convert band score to correct/total format
+          // Use score as "correct" and estimate total
+          formattedSkillScores[skill] = {
+            correct: typeof score === 'number' ? score : 0,
+            total: 40 // Assume 40 questions per skill
+          };
+        }
+      });
+    }
+
+    // Convert overallBand to totalBand (required field)
+    const totalBand = overallBand || 6.5;
+
     // Create new test with results
     const test = new Test({
       userId: user._id,
-      level,
-      overallBand,
-      skillScores,
+      level: level || user.currentLevel || 'A2',
+      totalBand: totalBand, // Required field in schema
+      skillScores: formattedSkillScores,
+      skillBands: skillScores, // Store raw band scores for easy access
       answers: testAnswers,
-      completed,
+      completed: completed || true,
       isPaid: user.paid,
       resultLocked: !user.paid,
       price: user.paid ? 0 : 29000,
@@ -227,11 +251,12 @@ router.post('/submit', authMiddleware, async (req, res) => {
 
     res.json({
       success: true,
+      testId: test._id, // Use testId for frontend compatibility
       test: {
         _id: test._id,
         level: test.level,
-        overallBand: test.overallBand,
-        skillScores: test.skillScores,
+        overallBand: totalBand,
+        skillScores: skillScores, // Return raw skillScores
         dateCompleted: test.dateTaken,
         completed: test.completed
       },
