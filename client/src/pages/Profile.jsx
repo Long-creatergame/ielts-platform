@@ -116,13 +116,40 @@ export default function Profile() {
           {/* Action Buttons */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <div className="flex flex-wrap gap-4">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+              <button 
+                onClick={() => alert('Edit Profile feature coming soon! You can update your goal and level from the dashboard.')}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
                 Edit Profile
               </button>
-              <button className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+              <button 
+                onClick={() => window.location.href = '/forgot-password'}
+                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
                 Change Password
               </button>
-              <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+              <button 
+                onClick={async () => {
+                  try {
+                    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${API_BASE_URL}/api/tests/user-tests`, {
+                      headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `ielts-data-${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  } catch (error) {
+                    alert('Failed to export data. Please try again.');
+                  }
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
                 Export Data
               </button>
             </div>
