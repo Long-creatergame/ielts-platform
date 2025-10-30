@@ -35,6 +35,7 @@ export default function TestPage() {
   });
   const [testData, setTestData] = useState(null);
   const [questionAnswers, setQuestionAnswers] = useState({}); // Store answers for each question
+  const [isSubmitting, setIsSubmitting] = useState(false); // Prevent double submission
 
   const skills = [
     { id: 'reading', name: 'Reading', icon: '📖' },
@@ -514,6 +515,15 @@ export default function TestPage() {
   };
 
   const handleSubmit = async () => {
+    // Prevent double submission
+    if (isSubmitting) {
+      console.log('⚠️ Submit already in progress, ignoring duplicate click');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    console.log('🚀 Starting test submission...');
+    
     // ✅ Collect answers from current skill before submitting
     const collectedAnswers = collectCurrentSkillAnswers();
     const finalTestAnswers = {
@@ -673,6 +683,10 @@ export default function TestPage() {
       console.error('❌ Error saving test to backend:', error);
       // Navigate to result page even if backend fails
       navigate('/test/result', { state: { testResult } });
+    } finally {
+      // Reset submitting state after navigation (though user won't see it)
+      // This is in case navigation fails
+      setTimeout(() => setIsSubmitting(false), 1000);
     }
   };
 
@@ -990,10 +1004,21 @@ export default function TestPage() {
             ) : (
               <button
                 onClick={handleSubmit}
-                disabled={timeUp}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                disabled={timeUp || isSubmitting}
+                className={`font-bold py-3 px-6 rounded-lg transition-colors ${
+                  isSubmitting 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-green-600 hover:bg-green-700 disabled:bg-gray-400'
+                } text-white`}
               >
-                Submit Full Test ✓
+                {isSubmitting ? (
+                  <>
+                    <span className="inline-block animate-spin mr-2">⏳</span>
+                    Submitting...
+                  </>
+                ) : (
+                  'Submit Full Test ✓'
+                )}
               </button>
             )}
           </div>
