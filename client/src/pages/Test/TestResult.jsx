@@ -56,11 +56,41 @@ export default function TestResult() {
       }
 
       // Try to get from localStorage
-      const localResult = localStorage.getItem('latestTestResult');
-      if (localResult) {
-        setTestResult(JSON.parse(localResult));
-        setLoading(false);
-        return;
+      try {
+        const localResult = localStorage.getItem('latestTestResult');
+        if (localResult) {
+          const parsedResult = JSON.parse(localResult);
+          // Ensure required fields exist and transform data if needed
+          if (parsedResult && (parsedResult.overallBand !== undefined || parsedResult.overallScore !== undefined)) {
+            // Transform old format to new format if needed
+            const transformedResult = {
+              id: parsedResult.id || Date.now().toString(),
+              testType: parsedResult.testType || 'IELTS Academic',
+              level: parsedResult.level || 'B2',
+              overallBand: parsedResult.overallBand || parsedResult.overallScore || 0,
+              skillScores: parsedResult.skillScores || parsedResult.skills || {
+                reading: { score: 0 },
+                listening: { score: 0 },
+                writing: { score: 0 },
+                speaking: { score: 0 }
+              },
+              completedAt: parsedResult.completedAt || parsedResult.date || new Date().toISOString(),
+              duration: parsedResult.duration || '0m',
+              aiFeedback: parsedResult.aiFeedback || 'Test completed.',
+              recommendations: parsedResult.recommendations || [],
+              strengths: parsedResult.strengths || [],
+              weaknesses: parsedResult.weaknesses || [],
+              testAnswers: parsedResult.testAnswers || parsedResult.answers
+            };
+            
+            setTestResult(transformedResult);
+            loadPreviousScore();
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (e) {
+        // If localStorage data is corrupted, continue to other loading methods
       }
 
       // Try to fetch from backend
@@ -259,27 +289,32 @@ export default function TestResult() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Object.entries(testResult.skillScores).map(([skill, score]) => (
-                <div key={skill} className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl text-white">
-                      {skill === 'reading' && '📖'}
-                      {skill === 'listening' && '🎧'}
-                      {skill === 'writing' && '✍️'}
-                      {skill === 'speaking' && '🎤'}
-                    </span>
+              {Object.entries(testResult.skillScores).map(([skill, scoreData]) => {
+                // Handle both nested object {score: 7.0} and plain number 7.0
+                const score = typeof scoreData === 'object' ? scoreData.score : scoreData;
+                
+                return (
+                  <div key={skill} className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl text-white">
+                        {skill === 'reading' && '📖'}
+                        {skill === 'listening' && '🎧'}
+                        {skill === 'writing' && '✍️'}
+                        {skill === 'speaking' && '🎤'}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 capitalize mb-2">
+                      {skill}
+                    </h3>
+                    <div className={`text-3xl font-bold mb-2 ${getBandColor(score).split(' ')[0]}`}>
+                      {score}
+                    </div>
+                    <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getBandColor(score)}`}>
+                      {getBandLevel(score)}
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 capitalize mb-2">
-                    {skill}
-                  </h3>
-                  <div className={`text-3xl font-bold mb-2 ${getBandColor(score).split(' ')[0]}`}>
-                    {score}
-                  </div>
-                  <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getBandColor(score)}`}>
-                    {getBandLevel(score)}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -358,24 +393,31 @@ export default function TestResult() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {Object.entries(testResult.skillScores || {})
-                  .filter(([skill, score]) => score < testResult.overallBand)
-                  .map(([skill, score]) => (
-                    <button
-                      key={skill}
-                      onClick={() => navigate(`/quick-practice/${skill}?focus=true`)}
-                      className="bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-400 text-red-700 font-semibold py-4 px-6 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:scale-105"
-                    >
-                      <div className="text-2xl mb-2">
-                        {skill === 'reading' && '📖'}
-                        {skill === 'listening' && '🎧'}
-                        {skill === 'writing' && '✍️'}
-                        {skill === 'speaking' && '🎤'}
-                      </div>
-                      <div className="capitalize font-bold mb-1">{skill}</div>
-                      <div className="text-sm opacity-75">Score: {score}</div>
-                      <div className="text-xs mt-2 text-blue-600">→ Practice Now</div>
-                    </button>
-                  ))}
+                  .filter(([skill, scoreData]) => {
+                    const score = typeof scoreData === 'object' ? scoreData.score : scoreData;
+                    return score < testResult.overallBand;
+                  })
+                  .map(([skill, scoreData]) => {
+                    const score = typeof scoreData === 'object' ? scoreData.score : scoreData;
+                    
+                    return (
+                      <button
+                        key={skill}
+                        onClick={() => navigate(`/quick-practice/${skill}?focus=true`)}
+                        className="bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-400 text-red-700 font-semibold py-4 px-6 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:scale-105"
+                      >
+                        <div className="text-2xl mb-2">
+                          {skill === 'reading' && '📖'}
+                          {skill === 'listening' && '🎧'}
+                          {skill === 'writing' && '✍️'}
+                          {skill === 'speaking' && '🎤'}
+                        </div>
+                        <div className="capitalize font-bold mb-1">{skill}</div>
+                        <div className="text-sm opacity-75">Score: {score}</div>
+                        <div className="text-xs mt-2 text-blue-600">→ Practice Now</div>
+                      </button>
+                    );
+                  })}
               </div>
             </div>
           )}
