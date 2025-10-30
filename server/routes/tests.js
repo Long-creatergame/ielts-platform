@@ -258,4 +258,20 @@ router.get('/mine', authMiddleware, async (req, res) => {
   }
 });
 
+// Get a specific test by id (for result page refresh/deep link)
+router.get('/:id', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    const testId = req.params.id;
+    const test = await Test.findOne({ _id: testId, userId: user._id });
+    if (!test) {
+      return res.status(404).json({ success: false, message: 'Test not found' });
+    }
+    return res.json({ success: true, data: test });
+  } catch (error) {
+    console.error('Get test by id error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
