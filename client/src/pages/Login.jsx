@@ -53,7 +53,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+      <div className="max-w-md w-full card p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
           🎯 {t('auth.login')} IELTS
         </h1>
@@ -127,7 +127,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+            className="w-full btn-primary py-3 px-4 disabled:bg-gray-400"
           >
             {loading ? t('common.loading') : t('auth.signIn')}
           </button>

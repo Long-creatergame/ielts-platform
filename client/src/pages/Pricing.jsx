@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SocialProof from '../components/SocialProof';
 import FeatureComparison from '../components/FeatureComparison';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import SectionHeader from '../components/ui/SectionHeader';
 
 const Pricing = () => {
   const { user } = useAuth();
@@ -106,14 +109,10 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-100 py-12">
       <div className="container-page">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            🎯 Chọn gói phù hợp với bạn
-          </h1>
-          <p className="text-lg text-gray-600">
-            Đầu tư cho tương lai IELTS của bạn ngay hôm nay
-          </p>
-        </div>
+        <SectionHeader
+          title={"🎯 Chọn gói phù hợp với bạn"}
+          subtitle={"Đầu tư cho tương lai IELTS của bạn ngay hôm nay"}
+        />
 
         {/* Social Proof */}
         <SocialProof />
@@ -123,9 +122,9 @@ const Pricing = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
-            <div
+            <Card
               key={plan.id}
-              className={`card p-6 transition-all duration-300 hover:shadow-xl ${
+              className={`p-6 transition-all duration-300 hover:shadow-xl ${
                 plan.id === 'premium' || plan.name === 'Premium' ? 'ring-2 ring-green-500 transform scale-105' : 'hover:scale-105'
               }`}
             >
@@ -155,20 +154,15 @@ const Pricing = () => {
                 ))}
               </div>
 
-              <button
+              <Button
                 onClick={() => handlePurchase(plan.id)}
-                className={`w-full py-3 px-4 rounded-lg font-bold transition-colors ${
-                  plan.id === 'free'
-                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                    : plan.id === 'premium'
-                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
-                }`}
+                variant={plan.id === 'premium' ? 'success' : 'primary'}
+                className={`w-full py-3 ${plan.id === 'free' ? 'opacity-60 cursor-not-allowed' : ''}`}
                 disabled={plan.id === 'free'}
               >
                 {plan.id === 'free' ? 'Đã có' : 'Mua ngay'}
-              </button>
-            </div>
+              </Button>
+            </Card>
           ))}
         </div>
 
