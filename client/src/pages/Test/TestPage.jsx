@@ -77,35 +77,44 @@ export default function TestPage() {
         });
         
         if (generateResponse.ok) {
-          const data = await generateResponse.json();
-          console.log('📝 API Response:', data);
-          
-          // Handle nested content structure with safety checks
-          const content = data.data?.content;
-          
-          if (!content) {
-            console.error('❌ No content in response:', data);
-            throw new Error('No content in API response');
+          try {
+            const data = await generateResponse.json();
+            console.log('📝 API Response received');
+            
+            // Handle nested content structure with safety checks
+            const content = data?.data?.content;
+            
+            if (!content) {
+              console.error('❌ No content in response. Full data:', data);
+              // Use fallback immediately
+              loadFallbackQuestions(skillType, level);
+              return;
+            }
+            
+            let questions = content.questions || [];
+            const passage = content.passage || '';
+            const timeLimit = content.timeLimit || 60;
+            
+            // Ensure questions is an array
+            if (!Array.isArray(questions)) {
+              console.warn('⚠️ Questions is not an array, converting to array');
+              questions = Array.isArray(questions) ? questions : [questions];
+            }
+            
+            console.log('📚 Questions loaded:', questions.length);
+            console.log('📖 Passage:', passage ? 'Present' : 'Missing');
+            
+            // Set state with safety checks
+            setQuestions(questions || []);
+            setTestData(data.data || {});
+            setPassage(passage || '');
+            setTimeLeft((timeLimit || 60) * 60); // Convert minutes to seconds
+            return;
+          } catch (parseError) {
+            console.error('❌ JSON parse error:', parseError);
+            loadFallbackQuestions(skillType, level);
+            return;
           }
-          
-          let questions = content.questions || [];
-          const passage = content.passage || '';
-          const timeLimit = content.timeLimit || 60;
-          
-          // Ensure questions is an array
-          if (!Array.isArray(questions)) {
-            console.warn('⚠️ Questions is not an array, converting...');
-            questions = [];
-          }
-          
-          console.log('📚 Questions:', questions.length);
-          console.log('📖 Passage:', passage ? 'Present' : 'Missing');
-          
-          setQuestions(questions);
-          setTestData(data.data);
-          setPassage(passage);
-          setTimeLeft(timeLimit * 60); // Convert minutes to seconds
-          return;
         } else {
           // Log error to help debug
           const errorText = await generateResponse.text();
@@ -122,7 +131,8 @@ export default function TestPage() {
         
         if (response.ok) {
           const data = await response.json();
-          setQuestions(data.questions || data.passages || data.tasks || data.parts);
+          const fallbackQuestions = data.questions || data.passages || data.tasks || data.parts || [];
+          setQuestions(Array.isArray(fallbackQuestions) ? fallbackQuestions : [fallbackQuestions]);
           setTestData(data);
         } else {
           // Fallback to basic questions if API fails
