@@ -78,12 +78,6 @@ const Navbar = memo(() => {
                 
                 {/* Action Buttons */}
                 <div className="hidden md:flex items-center space-x-2">
-                  <Link
-                    to="/test/start"
-                    className="btn-primary px-3 py-2 text-sm"
-                  >
-                    {t('nav.tests') || 'Tests'}
-                  </Link>
                   <button
                     onClick={() => setShowHelpCenter(true)}
                     className="btn-primary px-3 py-2 text-sm"
