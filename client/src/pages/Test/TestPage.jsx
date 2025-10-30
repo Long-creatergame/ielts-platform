@@ -831,13 +831,14 @@ export default function TestPage() {
             </div>
             
             <div className="space-y-6">
-              {questions && questions.length > 0 ? questions.map((questionData, index) => {
-                // Handle both object format {question: "...", options: [...]} and string format
-                const questionText = typeof questionData === 'object' ? questionData.question : questionData;
-                const questionOptions = typeof questionData === 'object' ? questionData.options : null;
-                
-                return (
-                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              {questions && questions.length > 0 ? (
+                questions.map((questionData, index) => {
+                  // Handle both object format {question: "...", options: [...]} and string format
+                  const questionText = typeof questionData === 'object' ? questionData.question : questionData;
+                  const questionOptions = typeof questionData === 'object' ? questionData.options : null;
+                  
+                  return (
+                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
                     <div className="flex items-start space-x-3">
                       <span className="bg-blue-600 text-white text-sm font-bold px-2 py-1 rounded-full min-w-[24px] text-center">
                         {index + 1}
@@ -991,11 +992,13 @@ export default function TestPage() {
                             className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                );
-              })}) : (
+                  );
+                })
+              ) : (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <p className="text-gray-500 text-center">Loading questions...</p>
                 </div>
