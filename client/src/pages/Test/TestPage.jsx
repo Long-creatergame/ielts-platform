@@ -80,11 +80,23 @@ export default function TestPage() {
           const data = await generateResponse.json();
           console.log('📝 API Response:', data);
           
-          // Handle nested content structure
-          const content = data.data.content;
-          const questions = content.questions || [];
+          // Handle nested content structure with safety checks
+          const content = data.data?.content;
+          
+          if (!content) {
+            console.error('❌ No content in response:', data);
+            throw new Error('No content in API response');
+          }
+          
+          let questions = content.questions || [];
           const passage = content.passage || '';
           const timeLimit = content.timeLimit || 60;
+          
+          // Ensure questions is an array
+          if (!Array.isArray(questions)) {
+            console.warn('⚠️ Questions is not an array, converting...');
+            questions = [];
+          }
           
           console.log('📚 Questions:', questions.length);
           console.log('📖 Passage:', passage ? 'Present' : 'Missing');
