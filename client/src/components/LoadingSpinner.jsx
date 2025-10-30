@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const LoadingSpinner = ({ size = 'medium', color = 'blue', text = 'Loading...' }) => {
+const LoadingSpinner = memo(({ size = 'medium', color = 'blue', text = 'Loading...' }) => {
   const sizeClasses = {
     small: 'w-4 h-4',
     medium: 'w-8 h-8',
@@ -24,6 +24,8 @@ const LoadingSpinner = ({ size = 'medium', color = 'blue', text = 'Loading...' }
       )}
     </div>
   );
-};
+});
+
+LoadingSpinner.displayName = 'LoadingSpinner';
 
 export default LoadingSpinner;

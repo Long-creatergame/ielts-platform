@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
-import QuickStart from './QuickStart';
 import HelpCenter from './HelpCenter';
 
 const languages = [
@@ -13,19 +12,36 @@ const languages = [
   { code: 'ko', name: '한국어', flag: '🇰🇷' },
 ];
 
-export default function Navbar() {
+const Navbar = memo(() => {
   const { user, logout } = useAuth();
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
-  const [showQuickStart, setShowQuickStart] = useState(false);
+  // Removed Quick Start per UX cleanup
   const [showHelpCenter, setShowHelpCenter] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     navigate('/login');
-  };
+  }, [logout, navigate]);
+
+  const handleLanguageChange = useCallback((langCode) => {
+    i18n.changeLanguage(langCode);
+  }, [i18n]);
+
+  const toggleMobileMenu = useCallback(() => {
+    setShowMobileMenu(prev => !prev);
+  }, []);
+
+  const toggleUserMenu = useCallback(() => {
+    setShowUserMenu(prev => !prev);
+  }, []);
+
+  const userInitial = useMemo(() => 
+    user?.name?.charAt(0).toUpperCase() || 'U', 
+    [user]
+  );
 
   return (
     <nav className="bg-white/90 backdrop-blur sticky top-0 z-50 border-b border-gray-100">
@@ -42,7 +58,7 @@ export default function Navbar() {
               <>
                 {/* Mobile Menu Button */}
                 <button
-                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  onClick={toggleMobileMenu}
                   className="md:hidden p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,12 +78,12 @@ export default function Navbar() {
                 
                 {/* Action Buttons */}
                 <div className="hidden md:flex items-center space-x-2">
-                  <button
-                    onClick={() => setShowQuickStart(true)}
-                    className="btn-primary bg-green-600 hover:bg-green-700 px-3 py-2 text-sm"
+                  <Link
+                    to="/test/start"
+                    className="btn-primary px-3 py-2 text-sm"
                   >
-                    {t('nav.quickStart')}
-                  </button>
+                    {t('nav.tests') || 'Tests'}
+                  </Link>
                   <button
                     onClick={() => setShowHelpCenter(true)}
                     className="btn-primary px-3 py-2 text-sm"
@@ -79,12 +95,12 @@ export default function Navbar() {
                 {/* User Menu */}
                 <div className="relative">
                   <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    onClick={toggleUserMenu}
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                       <span className="text-blue-600 font-semibold text-sm">
-                        {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                        {userInitial}
                       </span>
                     </div>
                     <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +127,7 @@ export default function Navbar() {
                             {languages.map((lang) => (
                               <button
                                 key={lang.code}
-                                onClick={() => i18n.changeLanguage(lang.code)}
+                                onClick={() => handleLanguageChange(lang.code)}
                                 className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md transition-colors ${
                                   i18n.language === lang.code 
                                     ? 'bg-blue-100 text-blue-600 font-semibold' 
@@ -158,10 +174,7 @@ export default function Navbar() {
         </div>
       </div>
       
-      {/* Quick Start Modal */}
-      {showQuickStart && (
-        <QuickStart onClose={() => setShowQuickStart(false)} />
-      )}
+      {/* Quick Start removed */}
       
       {/* Mobile Menu */}
       {showMobileMenu && (
@@ -199,4 +212,8 @@ export default function Navbar() {
       <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
     </nav>
   );
-}
+});
+
+Navbar.displayName = 'Navbar';
+
+export default Navbar;
