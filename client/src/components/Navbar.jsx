@@ -28,8 +28,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-white/90 backdrop-blur sticky top-0 z-50 border-b border-gray-100">
+      <div className="container-page">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
             <span className="text-3xl">🎯</span>
@@ -64,13 +64,13 @@ export default function Navbar() {
                 <div className="hidden md:flex items-center space-x-2">
                   <button
                     onClick={() => setShowQuickStart(true)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
+                    className="btn-primary bg-green-600 hover:bg-green-700 px-3 py-2 text-sm"
                   >
                     {t('nav.quickStart')}
                   </button>
                   <button
                     onClick={() => setShowHelpCenter(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
+                    className="btn-primary px-3 py-2 text-sm"
                   >
                     {t('common.help')}
                   </button>
@@ -149,7 +149,7 @@ export default function Navbar() {
                 <Link to="/login" className="text-gray-700 hover:text-blue-600">
                   {t('nav.login')}
                 </Link>
-                <Link to="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                <Link to="/register" className="btn-primary px-4 py-2">
                   {t('nav.register')}
                 </Link>
               </>

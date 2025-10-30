@@ -105,7 +105,7 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-100 py-12">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="container-page">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             🎯 Chọn gói phù hợp với bạn
@@ -125,7 +125,7 @@ const Pricing = () => {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl ${
+              className={`card p-6 transition-all duration-300 hover:shadow-xl ${
                 plan.id === 'premium' || plan.name === 'Premium' ? 'ring-2 ring-green-500 transform scale-105' : 'hover:scale-105'
               }`}
             >
