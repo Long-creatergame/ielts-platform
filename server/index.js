@@ -246,32 +246,34 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error' });
 });
 
-// WebSocket (Socket.IO) setup
-try {
-  const { Server } = require('socket.io');
-  io = new Server(server, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST']
-    }
-  });
-
-  io.on('connection', (socket) => {
-    console.log('🔌 Client connected:', socket.id);
-
-    socket.on('join', (room) => {
-      if (room) socket.join(room);
+// WebSocket (Socket.IO) setup - skip in test environment to avoid open handles
+if (process.env.NODE_ENV !== 'test') {
+  try {
+    const { Server } = require('socket.io');
+    io = new Server(server, {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST']
+      }
     });
 
-    socket.on('disconnect', () => {
-      console.log('🔌 Client disconnected:', socket.id);
-    });
-  });
+    io.on('connection', (socket) => {
+      console.log('🔌 Client connected:', socket.id);
 
-  app.set('io', io);
-  console.log('🛰️  WebSocket (Socket.IO) initialized');
-} catch (e) {
-  console.warn('Socket.IO not available, skipping realtime features');
+      socket.on('join', (room) => {
+        if (room) socket.join(room);
+      });
+
+      socket.on('disconnect', () => {
+        console.log('🔌 Client disconnected:', socket.id);
+      });
+    });
+
+    app.set('io', io);
+    console.log('🛰️  WebSocket (Socket.IO) initialized');
+  } catch (e) {
+    console.warn('Socket.IO not available, skipping realtime features');
+  }
 }
 
 // In test mode, export app without starting the listener to avoid EADDRINUSE
