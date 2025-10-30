@@ -4,7 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 export default function StickyPricingCTA() {
   const { user } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
+    // Check if user has dismissed the popup before
+    return localStorage.getItem('pricingPopupDismissed') === 'true';
+  });
 
   useEffect(() => {
     if (!user || user.paid) return;
@@ -16,6 +19,13 @@ export default function StickyPricingCTA() {
 
     return () => clearTimeout(timer);
   }, [user, dismissed]);
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    setIsVisible(false);
+    // Save dismissal to localStorage
+    localStorage.setItem('pricingPopupDismissed', 'true');
+  };
 
   if (!isVisible || user?.paid) return null;
 
@@ -32,7 +42,7 @@ export default function StickyPricingCTA() {
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-bold text-sm">🚀 Nâng cấp ngay!</h3>
           <button
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             className="text-white/80 hover:text-white text-lg"
           >
             ×
@@ -49,7 +59,7 @@ export default function StickyPricingCTA() {
             Xem giá
           </button>
           <button
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             className="text-blue-100 text-xs hover:text-white transition-colors"
           >
             Để sau
