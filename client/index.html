@@ -7,6 +7,14 @@
     <title>IELTS Platform</title>
   </head>
   <body>
+    <!-- Tawk.to chat widget - will be loaded dynamically from main.jsx -->
+    <script type="text/javascript">
+      window.ENV = {
+        TAWK_PROPERTY_ID: '${REACT_APP_TAWK_PROPERTY_ID || ""}',
+        TAWK_WIDGET_ID: '${REACT_APP_TAWK_WIDGET_ID || ""}',
+        ZALO_URL: '${REACT_APP_ZALO_URL || ""}'
+      };
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
