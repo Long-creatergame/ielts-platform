@@ -22,9 +22,9 @@ router.get('/', auth, async (req, res) => {
     
     // Calculate statistics
     const totalTests = tests.length;
-    const completedTests = tests.filter(test => test.status === 'completed').length;
+    const completedTests = tests.filter(test => test.completed).length;
     const averageBand = tests.length > 0 
-      ? tests.reduce((sum, test) => sum + (test.bandScore || 0), 0) / tests.length 
+      ? tests.reduce((sum, test) => sum + (test.totalBand || 0), 0) / tests.length 
       : 0;
 
     // Calculate streak (consecutive days with tests)
@@ -50,11 +50,11 @@ router.get('/', auth, async (req, res) => {
     const recentActivity = tests.slice(0, 5).map(test => ({
       id: test._id,
       type: 'test',
-      skill: test.skill,
-      status: test.status,
-      score: test.bandScore,
+      skill: test.skill || 'full',
+      status: test.completed ? 'completed' : 'in-progress',
+      score: test.totalBand,
       date: test.createdAt,
-      title: `${test.skill.charAt(0).toUpperCase() + test.skill.slice(1)} Test`
+      title: `${(test.skill || 'Full').charAt(0).toUpperCase() + (test.skill || 'Full').slice(1)} Test`
     }));
 
     // Get coach message based on user progress
@@ -143,7 +143,7 @@ function calculateAccuracy(tests) {
 
 // Helper function to generate coach message
 function generateCoachMessage(user, tests, averageBand) {
-  const completedTests = tests.filter(test => test.status === 'completed');
+  const completedTests = tests.filter(test => test.completed);
   
   if (completedTests.length === 0) {
     return {
