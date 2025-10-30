@@ -36,6 +36,18 @@ try {
 } catch (e) {
   console.error('Environment validation failed:', e.message);
 }
+
+// Basic request timing & error logging
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const ms = Date.now() - start;
+    if (res.statusCode >= 500 || ms > 1000) {
+      console.warn(`[req] ${req.method} ${req.originalUrl} -> ${res.statusCode} in ${ms}ms`);
+    }
+  });
+  next();
+});
 const PORT = process.env.PORT || 4000;
 const http = require('http');
 const server = http.createServer(app);
