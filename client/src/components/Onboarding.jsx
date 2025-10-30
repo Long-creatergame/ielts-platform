@@ -94,7 +94,7 @@ const Onboarding = ({ onComplete }) => {
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm">
       {/* Overlay */}
       <div className="absolute inset-0" onClick={handleSkip}></div>
       
