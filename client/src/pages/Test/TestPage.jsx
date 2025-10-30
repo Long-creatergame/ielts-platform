@@ -626,16 +626,20 @@ export default function TestPage() {
         .map(([skill, score]) => `Strong performance in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`)
     };
 
-    // Save to Test History in localStorage
+    // Save to Test History in localStorage (limit to last 50 tests)
     try {
       const existingHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
       existingHistory.unshift(testResult); // Add to beginning
-      localStorage.setItem('testHistory', JSON.stringify(existingHistory));
+      
+      // Keep only last 50 tests to prevent localStorage from getting too large
+      const limitedHistory = existingHistory.slice(0, 50);
+      localStorage.setItem('testHistory', JSON.stringify(limitedHistory));
       
       // Also save to sessionStorage as backup
-      sessionStorage.setItem('testHistory', JSON.stringify(existingHistory));
+      sessionStorage.setItem('testHistory', JSON.stringify(limitedHistory));
     } catch (error) {
-      // Silent fail for localStorage save
+      // Silent fail for localStorage save (possible quota exceeded)
+      console.warn('⚠️ Could not save to localStorage:', error.message);
     }
 
     // Save latest result to localStorage for TestResult page
