@@ -101,35 +101,46 @@ export default function QuickPractice() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai/assess`, {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('token');
+      
+      // ✅ Submit to quick-practice API which saves to database
+      const response = await fetch(`${API_BASE_URL}/api/quick-practice/submit`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           skill,
-          answer: answers,
-          level: 'General'
+          answers: answers || 'Quick practice completed',
+          timeSpent: 0 // Could track this if needed
         })
       });
 
       if (response.ok) {
         const result = await response.json();
+        const { data } = result;
+        
+        // Navigate to result with saved data
         navigate('/test/result/quick', { 
           state: { 
             testResult: {
               skill,
-              bandScore: result.bandScore,
-              feedback: result.feedback,
-              recommendations: result.recommendations,
+              bandScore: data.score.bandScore,
+              feedback: data.feedback,
+              score: data.score,
+              practiceId: data.practiceId,
               type: 'quick-practice'
             }
           }
         });
+      } else {
+        throw new Error('Failed to submit practice');
       }
     } catch (error) {
       console.error('Error submitting quick practice:', error);
-      // Navigate with mock result
+      // Navigate with mock result as fallback
       navigate('/test/result/quick', { 
         state: { 
           testResult: {
