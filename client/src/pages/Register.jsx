@@ -188,6 +188,44 @@ export default function Register() {
             <p className="text-xs text-gray-500 mt-1">
               {t('auth.passwordRequirements')}
             </p>
+            {formData.password && (
+              <div className="mt-2">
+                <div className="flex items-center gap-1 mb-1">
+                  {formData.password.length >= 6 && (
+                    <div className="flex-1 h-1 bg-green-500 rounded"></div>
+                  )}
+                  {formData.password.length > 0 && formData.password.length < 6 && (
+                    <div className="flex-1 h-1 bg-yellow-500 rounded"></div>
+                  )}
+                  {formData.password.length === 0 && (
+                    <div className="flex-1 h-1 bg-gray-200 rounded"></div>
+                  )}
+                  {/(?=.*[a-z])/.test(formData.password) && (
+                    <div className="flex-1 h-1 bg-green-500 rounded"></div>
+                  )}
+                  {formData.password.length > 0 && !/(?=.*[a-z])/.test(formData.password) && (
+                    <div className="flex-1 h-1 bg-gray-200 rounded"></div>
+                  )}
+                  {/(?=.*[A-Z])/.test(formData.password) && (
+                    <div className="flex-1 h-1 bg-green-500 rounded"></div>
+                  )}
+                  {formData.password.length > 0 && !/(?=.*[A-Z])/.test(formData.password) && (
+                    <div className="flex-1 h-1 bg-gray-200 rounded"></div>
+                  )}
+                  {/(?=.*\d)/.test(formData.password) && (
+                    <div className="flex-1 h-1 bg-green-500 rounded"></div>
+                  )}
+                  {formData.password.length > 0 && !/(?=.*\d)/.test(formData.password) && (
+                    <div className="flex-1 h-1 bg-gray-200 rounded"></div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-600">
+                  {formData.password.length >= 6 && /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password) 
+                    ? '✓ Mật khẩu mạnh' 
+                    : 'Độ mạnh: Trung bình'}
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
