@@ -365,17 +365,27 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    // Send reset email
-    const { sendEmail } = require('../services/emailService');
-    await sendEmail(
-      user.email, 
-      'passwordReset', 
-      { 
-        userName: user.name,
-        resetCode: resetToken,
-        resetLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`
-      }
-    );
+    // Send reset email (using centralized email service instance)
+    const emailService = require('../services/emailService');
+    const resetLink = `${process.env.CLIENT_URL || process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+    const subject = 'Reset your IELTS Platform password';
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 22px;">Password Reset</h1>
+        </div>
+        <div style="padding: 24px; background: #f8f9fa;">
+          <p>Hi ${user.name},</p>
+          <p>We received a request to reset your password. Click the button below to continue:</p>
+          <div style="text-align: center; margin: 24px 0;">
+            <a href="${resetLink}" style="background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Reset Password</a>
+          </div>
+          <p>Or use this code:</p>
+          <div style="background: white; border-left: 4px solid #667eea; padding: 12px 16px; border-radius: 6px; font-weight: bold;">${resetToken}</div>
+          <p style="color:#666; font-size: 12px;">This link expires in 1 hour. If you did not request a password reset, you can ignore this email.</p>
+        </div>
+      </div>`;
+    await emailService.sendEmail(user.email, subject, html);
 
     res.json({ 
       success: true,
