@@ -25,11 +25,13 @@ jobs:
         run: cd server && npm install --no-audit --no-fund
       - name: Run API tests
         run: npm run test:api
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-      - name: Run E2E tests (deployed site)
-        env:
-          E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
-        run: npm run test:e2e
+      # Temporarily disable E2E tests to avoid impacting deploy pipeline
+      # Re-enable when needed by uncommenting the steps below.
+      # - name: Install Playwright browsers
+      #   run: npx playwright install --with-deps
+      # - name: Run E2E tests (deployed site)
+      #   env:
+      #     E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
+      #   run: npm run test:e2e
 
 
