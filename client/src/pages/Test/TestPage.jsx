@@ -78,11 +78,26 @@ export default function TestPage() {
         
         if (generateResponse.ok) {
           const data = await generateResponse.json();
-          setQuestions(data.data.content.questions || []);
+          console.log('📝 API Response:', data);
+          
+          // Handle nested content structure
+          const content = data.data.content;
+          const questions = content.questions || [];
+          const passage = content.passage || '';
+          const timeLimit = content.timeLimit || 60;
+          
+          console.log('📚 Questions:', questions.length);
+          console.log('📖 Passage:', passage ? 'Present' : 'Missing');
+          
+          setQuestions(questions);
           setTestData(data.data);
-          setPassage(data.data.content.passage || '');
-          setTimeLeft(data.data.content.timeLimit * 60); // Convert minutes to seconds
+          setPassage(passage);
+          setTimeLeft(timeLimit * 60); // Convert minutes to seconds
           return;
+        } else {
+          // Log error to help debug
+          const errorText = await generateResponse.text();
+          console.error('❌ API Error:', generateResponse.status, errorText);
         }
         
         // Fallback to quick practice if IELTS test fails
