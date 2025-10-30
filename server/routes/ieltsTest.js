@@ -5,6 +5,56 @@ const { getRandomContent } = require('../services/contentGenerator');
 
 const router = express.Router();
 
+// Helper function to format content for test
+function formatContentForTest(content, skill) {
+  switch (skill) {
+    case 'reading':
+      return {
+        title: `IELTS Academic Reading - ${content.title}`,
+        instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section. There are 3 passages with 40 questions total.",
+        timeLimit: 60,
+        passage: content.content,
+        questions: content.questions,
+        totalQuestions: 40
+      };
+    case 'writing':
+      return {
+        title: `IELTS Academic Writing - ${content.type}`,
+        instructions: `You should spend about ${content.timeLimit} minutes on this task. Write at least ${content.wordCount} words.`,
+        timeLimit: content.timeLimit || (content.type.includes('Task 1') ? 20 : 40),
+        task: content.task,
+        taskType: content.type,
+        wordCount: content.wordCount || (content.type.includes('Task 1') ? 150 : 250),
+        criteria: [
+          "Task Achievement - Address all parts of the task",
+          "Coherence and Cohesion - Organize information logically",
+          "Lexical Resource - Use appropriate vocabulary",
+          "Grammar Range and Accuracy - Use varied sentence structures"
+        ]
+      };
+    case 'listening':
+      return {
+        title: `IELTS Academic Listening - ${content.title}`,
+        instructions: "Listen to the recording and answer the questions below. You will hear the recording once. There are 4 sections with 40 questions total. You have 30 minutes plus 10 minutes to transfer answers.",
+        timeLimit: 30,
+        audioUrl: content.audioUrl,
+        questions: content.questions,
+        totalQuestions: 40
+      };
+    case 'speaking':
+      return {
+        title: `IELTS Academic Speaking - Part ${content.part}`,
+        instructions: "Answer the questions below clearly and in detail. The Speaking test takes 11-14 minutes and consists of 3 parts.",
+        timeLimit: content.part === 1 ? 5 : content.part === 2 ? 4 : 5,
+        questions: content.questions || [content.task],
+        preparationTime: content.preparationTime,
+        speakingTime: content.speakingTime
+      };
+    default:
+      return content;
+  }
+}
+
 // Generate IELTS test content
 router.post('/generate', auth, async (req, res) => {
   try {
@@ -124,55 +174,6 @@ router.get('/result/:testId', auth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
-function formatContentForTest(content, skill) {
-  switch (skill) {
-    case 'reading':
-      return {
-        title: `IELTS Academic Reading - ${content.title}`,
-        instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section. There are 3 passages with 40 questions total.",
-        timeLimit: 60,
-        passage: content.content,
-        questions: content.questions,
-        totalQuestions: 40
-      };
-    case 'writing':
-      return {
-        title: `IELTS Academic Writing - ${content.type}`,
-        instructions: `You should spend about ${content.timeLimit} minutes on this task. Write at least ${content.wordCount} words.`,
-        timeLimit: content.timeLimit || (content.type.includes('Task 1') ? 20 : 40),
-        task: content.task,
-        taskType: content.type,
-        wordCount: content.wordCount || (content.type.includes('Task 1') ? 150 : 250),
-        criteria: [
-          "Task Achievement - Address all parts of the task",
-          "Coherence and Cohesion - Organize information logically",
-          "Lexical Resource - Use appropriate vocabulary",
-          "Grammar Range and Accuracy - Use varied sentence structures"
-        ]
-      };
-    case 'listening':
-      return {
-        title: `IELTS Academic Listening - ${content.title}`,
-        instructions: "Listen to the recording and answer the questions below. You will hear the recording once. There are 4 sections with 40 questions total. You have 30 minutes plus 10 minutes to transfer answers.",
-        timeLimit: 30,
-        audioUrl: content.audioUrl,
-        questions: content.questions,
-        totalQuestions: 40
-      };
-    case 'speaking':
-      return {
-        title: `IELTS Academic Speaking - Part ${content.part}`,
-        instructions: "Answer the questions below clearly and in detail. The Speaking test takes 11-14 minutes and consists of 3 parts.",
-        timeLimit: content.part === 1 ? 5 : content.part === 2 ? 4 : 5,
-        questions: content.questions || [content.task],
-        preparationTime: content.preparationTime,
-        speakingTime: content.speakingTime
-      };
-    default:
-      return content;
-  }
-}
 
 function generateIELTSTestContent(skill, level) {
   const baseContent = {
