@@ -18,7 +18,7 @@ const ZaloChatButton = ({ buttonText = 'Chat với tôi qua Zalo', zaloUrl }) =>
   if (!zaloUrl || !isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+    <div className="fixed z-50 animate-fade-in" style={{ right: 16, bottom: 16 }}>
       <button
         onClick={handleClick}
         className="flex items-center gap-2 bg-[#0068FF] hover:bg-[#0052CC] text-white font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"

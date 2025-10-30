@@ -20,7 +20,14 @@ export default function StickyPricingCTA() {
   if (!isVisible || user?.paid) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+    <div
+      className="fixed z-50 max-w-sm"
+      style={{
+        // Avoid overlap with chat widgets at bottom-right
+        right: 16,
+        bottom: 96, // move up 96px to clear Tawk/Zalo buttons
+      }}
+    >
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-2xl p-4 animate-pulse">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-bold text-sm">🚀 Nâng cấp ngay!</h3>
