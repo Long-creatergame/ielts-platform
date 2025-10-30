@@ -592,14 +592,32 @@ export default function TestPage() {
       recommendations.push('Try more challenging exercises to further improve');
     }
     
-    // Create test result data
+    // Create test result data with consistent format
+    const currentDate = new Date();
     const testResult = {
       id: Date.now().toString(),
+      testType: 'IELTS Academic',
       level: level,
+      date: (() => {
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      })(),
       overallBand: overallBand,
-      skillScores: skillScores,
+      overallScore: overallBand, // For backward compatibility
+      skillScores: skillScores, // For TestResult page
+      skills: {
+        reading: { score: skillScores.reading || 0, band: getBandLevel(skillScores.reading || 0) },
+        listening: { score: skillScores.listening || 0, band: getBandLevel(skillScores.listening || 0) },
+        writing: { score: skillScores.writing || 0, band: getBandLevel(skillScores.writing || 0) },
+        speaking: { score: skillScores.speaking || 0, band: getBandLevel(skillScores.speaking || 0) }
+      },
+      duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
       testAnswers: finalTestAnswers,
+      answers: finalTestAnswers, // For backward compatibility
       completedAt: new Date().toISOString(),
+      status: 'completed',
       aiFeedback: 'AI assessment completed successfully.',
       recommendations: recommendations,
       weaknesses: weakSkills.map(skill => `Needs improvement in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`),
@@ -608,61 +626,10 @@ export default function TestPage() {
         .map(([skill, score]) => `Strong performance in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`)
     };
 
-    // Save to Test History
-    try {
-      const saveResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/save`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          testType: 'IELTS Academic',
-          level: level,
-          answers: finalTestAnswers,
-          scores: skillScores,
-          duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`
-        })
-      });
-
-      if (saveResponse.ok) {
-        await saveResponse.json();
-      }
-    } catch (error) {
-      // Silent fail for history save
-    }
-
-    // Also save to localStorage as backup
+    // Save to Test History in localStorage
     try {
       const existingHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
-      
-      // Debug: Check current date
-      const currentDate = new Date();
-      
-      const newTest = {
-        id: Date.now(),
-        testType: 'IELTS Academic',
-        level: level,
-        date: (() => {
-          const year = currentDate.getFullYear();
-          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-          const day = String(currentDate.getDate()).padStart(2, '0');
-          const dateString = `${year}-${month}-${day}`;
-          return dateString;
-        })(),
-        duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
-        overallScore: overallBand,
-        skills: {
-          reading: { score: skillScores.reading || 0, band: getBandLevel(skillScores.reading || 0) },
-          listening: { score: skillScores.listening || 0, band: getBandLevel(skillScores.listening || 0) },
-          writing: { score: skillScores.writing || 0, band: getBandLevel(skillScores.writing || 0) },
-          speaking: { score: skillScores.speaking || 0, band: getBandLevel(skillScores.speaking || 0) }
-        },
-        status: 'completed',
-        answers: finalTestAnswers
-      };
-      
-      existingHistory.unshift(newTest); // Add to beginning
+      existingHistory.unshift(testResult); // Add to beginning
       localStorage.setItem('testHistory', JSON.stringify(existingHistory));
       
       // Also save to sessionStorage as backup
@@ -671,7 +638,10 @@ export default function TestPage() {
       // Silent fail for localStorage save
     }
 
-    // Save to backend
+    // Save latest result to localStorage for TestResult page
+    localStorage.setItem('latestTestResult', JSON.stringify(testResult));
+    
+    // Save to backend (if available)
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/submit`, {
         method: 'POST',
@@ -680,20 +650,17 @@ export default function TestPage() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(testResult)
-      });
+      }).catch(() => null); // If API fails, continue to navigation
 
-      if (response.ok) {
+      if (response && response.ok) {
         const result = await response.json();
         navigate(`/test/result/${result.testId}`, { state: { testResult } });
       } else {
-        // Fallback to local storage if backend fails
-        localStorage.setItem('latestTestResult', JSON.stringify(testResult));
+        // Navigate to result page (data already saved to localStorage)
         navigate('/test/result', { state: { testResult } });
       }
     } catch (error) {
-      console.error('Error saving test result:', error);
-      // Fallback to local storage
-      localStorage.setItem('latestTestResult', JSON.stringify(testResult));
+      // Navigate to result page even if backend fails
       navigate('/test/result', { state: { testResult } });
     }
   };
