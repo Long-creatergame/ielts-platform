@@ -190,12 +190,7 @@ export default function Dashboard() {
                        >
                          🎯 {t('nav.tests')}
                        </button>
-                       <button
-                         onClick={() => setShowHelpCenter(true)}
-                         className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
-                       >
-                         📚 {t('common.help', 'Help')}
-                       </button>
+                      {/* Help button moved to Navbar to avoid duplication */}
                        <div className="hidden md:block">
                          <GoalProgressBar
                            current={statistics?.averageBand > 0 ? statistics.averageBand : 0}
