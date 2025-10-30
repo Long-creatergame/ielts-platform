@@ -7,6 +7,14 @@ import './index.css'
 if (import.meta.env.VITE_TAWK_PROPERTY_ID && import.meta.env.VITE_TAWK_WIDGET_ID) {
   window.Tawk_API = window.Tawk_API || {};
   window.Tawk_LoadStart = new Date();
+  // Hide default Tawk launcher bubble; we'll control via our own ChatLauncher
+  window.Tawk_API.onLoad = function () {
+    try {
+      if (window.Tawk_API.hideWidget) {
+        window.Tawk_API.hideWidget();
+      }
+    } catch (_) {}
+  };
   (function(){
     var s1 = document.createElement("script");
     var s0 = document.getElementsByTagName("script")[0];
