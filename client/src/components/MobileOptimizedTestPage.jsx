@@ -103,7 +103,8 @@ const MobileOptimizedTestPage = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/submit`, {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_BASE_URL}/api/tests/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +119,12 @@ const MobileOptimizedTestPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        navigate('/test/result', { state: { result } });
+        const testId = result?.test?._id || result?.data?.testId || '';
+        if (testId) {
+          navigate(`/test/result/${testId}`, { state: { testResult: result.test } });
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         throw new Error('Failed to submit test');
       }
