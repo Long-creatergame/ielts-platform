@@ -37,11 +37,7 @@ const Pricing = () => {
         }
       } catch (error) {
         console.error('Error fetching plans:', error);
-        // Fallback basic plans to avoid render crash
-        setPlans([
-          { id: 'free', name: 'Free', price: 0, description: 'Dùng thử 3 bài', features: ['3 bài test', 'AI Practice 1/ngày'] },
-          { id: 'premium', name: 'Premium', price: 299000, description: 'Toàn bộ tính năng', features: ['Không giới hạn test', 'AI đầy đủ', 'Báo cáo nâng cao'] }
-        ]);
+        setPlans([]); // No fallback - production-ready
       } finally {
         setLoading(false);
       }
@@ -80,10 +76,28 @@ const Pricing = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-100">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Đang tải...</p>
+          <p className="text-gray-600">Đang tải gói dịch vụ...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (plans.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-100">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Chưa có gói dịch vụ</h2>
+          <p className="text-gray-600 mb-4">Vui lòng liên hệ admin để thiết lập gói dịch vụ.</p>
+          <Link
+            to="/dashboard"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+          >
+            Quay lại Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -111,8 +125,8 @@ const Pricing = () => {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`bg-white rounded-2xl shadow-lg p-6 ${
-                plan.id === 'premium' ? 'ring-2 ring-green-500 transform scale-105' : ''
+              className={`bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl ${
+                plan.id === 'premium' || plan.name === 'Premium' ? 'ring-2 ring-green-500 transform scale-105' : 'hover:scale-105'
               }`}
             >
               {plan.id === 'premium' && (
