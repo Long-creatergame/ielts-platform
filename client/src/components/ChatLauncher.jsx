@@ -28,10 +28,13 @@ export default function ChatLauncher({ zaloUrl }) {
 
   const toggleTawk = () => {
     try {
-      if (window.Tawk_API && window.Tawk_API.toggle) {
-        window.Tawk_API.toggle();
-      } else if (window.Tawk_API && window.Tawk_API.maximize) {
-        window.Tawk_API.maximize();
+      if (window.Tawk_API) {
+        if (window.Tawk_API.showWidget) window.Tawk_API.showWidget();
+        if (window.Tawk_API.maximize) {
+          window.Tawk_API.maximize();
+        } else if (window.Tawk_API.toggle) {
+          window.Tawk_API.toggle();
+        }
       }
     } catch (_) {}
   };
