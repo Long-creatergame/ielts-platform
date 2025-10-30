@@ -83,11 +83,15 @@ Jane is a teacher. She wakes up at 6:00 AM every day. First, she drinks a glass 
 
 At 7:30 AM, Jane leaves home for school. She arrives at school at 8:00 AM. Her classes start at 8:30 AM and finish at 3:00 PM. After school, she plans lessons for the next day and grades student papers.
 
-In the evening, Jane likes to read books or watch TV. She goes to bed at 10:00 PM. She sleeps for 8 hours every night.`,
+In the evening, Jane likes to read books or watch TV. She goes to bed at 10:00 PM. She sleeps for 8 hours every night.
+
+On weekends, Jane has a different routine. She wakes up at 8:00 AM on Saturdays and Sundays. She enjoys cooking breakfast for her family. In the afternoon, she visits the park with her children. They play games and ride bicycles together.
+
+Jane believes that a regular routine helps her stay healthy and happy. She feels more relaxed when she follows her daily schedule.`,
         questions: [
           {
             id: 1,
-            question: "What time does Jane wake up?",
+            question: "What time does Jane wake up during weekdays?",
             type: "multiple_choice",
             options: ["5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM"],
             correctAnswer: 1,
@@ -108,6 +112,210 @@ In the evening, Jane likes to read books or watch TV. She goes to bed at 10:00 P
             options: ["7:30 AM", "8:00 AM", "8:30 AM", "9:00 AM"],
             correctAnswer: 2,
             explanation: "The passage states 'Her classes start at 8:30 AM.'"
+          },
+          {
+            id: 4,
+            question: "What does Jane eat for breakfast?",
+            type: "multiple_choice",
+            options: ["Eggs and bacon", "Toast and fruit", "Cereal and milk", "Bread and cheese"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Her breakfast is usually toast and fruit.'"
+          },
+          {
+            id: 5,
+            question: "When do Jane's classes finish?",
+            type: "multiple_choice",
+            options: ["2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Her classes start at 8:30 AM and finish at 3:00 PM.'"
+          },
+          {
+            id: 6,
+            question: "What does Jane do after school?",
+            type: "multiple_choice",
+            options: ["Watches TV", "Plans lessons", "Exercises", "Cooks dinner"],
+            correctAnswer: 1,
+            explanation: "The passage states 'After school, she plans lessons for the next day and grades student papers.'"
+          },
+          {
+            id: 7,
+            question: "What does Jane like to do in the evening?",
+            type: "multiple_choice",
+            options: ["Read books or watch TV", "Go to the gym", "Cook dinner", "Meet friends"],
+            correctAnswer: 0,
+            explanation: "The passage states 'In the evening, Jane likes to read books or watch TV.'"
+          },
+          {
+            id: 8,
+            question: "What time does Jane go to bed?",
+            type: "multiple_choice",
+            options: ["9:00 PM", "9:30 PM", "10:00 PM", "10:30 PM"],
+            correctAnswer: 2,
+            explanation: "The passage states 'She goes to bed at 10:00 PM.'"
+          },
+          {
+            id: 9,
+            question: "How many hours does Jane sleep every night?",
+            type: "multiple_choice",
+            options: ["6 hours", "7 hours", "8 hours", "9 hours"],
+            correctAnswer: 2,
+            explanation: "The passage states 'She sleeps for 8 hours every night.'"
+          },
+          {
+            id: 10,
+            question: "When does Jane wake up on weekends?",
+            type: "multiple_choice",
+            options: ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM"],
+            correctAnswer: 2,
+            explanation: "The passage states 'She wakes up at 8:00 AM on Saturdays and Sundays.'"
+          },
+          {
+            id: 11,
+            question: "What does Jane do in the afternoon on weekends?",
+            type: "multiple_choice",
+            options: ["Visits the park with children", "Reads books", "Plans lessons", "Watches TV"],
+            correctAnswer: 0,
+            explanation: "The passage states 'In the afternoon, she visits the park with her children.'"
+          },
+          {
+            id: 12,
+            question: "How many glasses of water does Jane drink first thing in the morning?",
+            type: "multiple_choice",
+            options: ["One glass", "Two glasses", "Three glasses", "Four glasses"],
+            correctAnswer: 0,
+            explanation: "The passage states 'First, she drinks a glass of water.'"
+          },
+          {
+            id: 13,
+            question: "What is the main idea of this passage?",
+            type: "multiple_choice",
+            options: ["Exercise is important", "Jane is a teacher", "Having a routine is helpful", "Sleeping well is key"],
+            correctAnswer: 2,
+            explanation: "The passage focuses on Jane's daily routine and explains that routines help people stay healthy and happy."
+          }
+        ]
+      },
+      {
+        id: 'shopping-habits',
+        title: 'Shopping Habits',
+        level: 'A1',
+        content: `Shopping is an activity that most people do regularly. Some people like shopping while others find it stressful. Understanding shopping habits can help us make better choices.
+
+Many people shop for food every week. They visit supermarkets to buy fresh fruits, vegetables, meat, and bread. Some people prefer to shop every few days to keep food fresh. Others shop once a week to save time.
+
+Clothing shopping is different. Some people shop for clothes only when they need something new. Others enjoy shopping for clothes as a hobby. They like trying on different styles and colors.
+
+Online shopping is becoming more popular. People can buy things from home using their computers or phones. It is convenient because you don't need to go to the store. However, you cannot see or touch the products before buying them.
+
+Many people compare prices before making a purchase. They look at different stores to find the best price. Some people wait for sales to buy things at lower prices. Others prefer to buy things immediately if they need them.
+
+Shopping can be fun, but it's important to stay within your budget. Making a shopping list helps people remember what they need and avoid buying unnecessary things. It's also good to shop when you're not hungry because hunger can make you buy more food than you need.
+
+Some people prefer shopping with friends while others like shopping alone. Shopping with friends can be more enjoyable, but it might take longer because everyone has different preferences. Shopping alone is faster but can be less fun.`,
+        questions: [
+          {
+            id: 1,
+            question: "What is one thing most people shop for regularly?",
+            type: "multiple_choice",
+            options: ["Cars", "Food", "Houses", "Pets"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Many people shop for food every week.'"
+          },
+          {
+            id: 2,
+            question: "Why do some people shop for food once a week?",
+            type: "multiple_choice",
+            options: ["Food is cheaper", "They save time", "Food tastes better", "Stores are closer"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Others shop once a week to save time.'"
+          },
+          {
+            id: 3,
+            question: "What is mentioned as a benefit of online shopping?",
+            type: "multiple_choice",
+            options: ["Products are cheaper", "You don't need to go to the store", "Products arrive faster", "You get better quality"],
+            correctAnswer: 1,
+            explanation: "The passage states 'It is convenient because you don't need to go to the store.'"
+          },
+          {
+            id: 4,
+            question: "What is a disadvantage of online shopping mentioned in the passage?",
+            type: "multiple_choice",
+            options: ["Delivery is slow", "Products cost more", "You cannot see or touch products", "You need a credit card"],
+            correctAnswer: 2,
+            explanation: "The passage states 'However, you cannot see or touch the products before buying them.'"
+          },
+          {
+            id: 5,
+            question: "What helps people remember what to buy?",
+            type: "multiple_choice",
+            options: ["A shopping list", "A map", "A calculator", "A clock"],
+            correctAnswer: 0,
+            explanation: "The passage states 'Making a shopping list helps people remember what they need and avoid buying unnecessary things.'"
+          },
+          {
+            id: 6,
+            question: "According to the passage, why shouldn't you shop when you're hungry?",
+            type: "multiple_choice",
+            options: ["You spend more money", "You forget your list", "You buy too much food", "You get tired quickly"],
+            correctAnswer: 2,
+            explanation: "The passage states 'It's also good to shop when you're not hungry because hunger can make you buy more food than you need.'"
+          },
+          {
+            id: 7,
+            question: "What is TRUE about shopping with friends?",
+            type: "multiple_choice",
+            options: ["It is cheaper", "It is more fun but slower", "It is easier", "It saves money"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Shopping with friends can be more enjoyable, but it might take longer because everyone has different preferences.'"
+          },
+          {
+            id: 8,
+            question: "What does the passage say about shopping alone?",
+            type: "multiple_choice",
+            options: ["It is more expensive", "It is faster but less fun", "It is boring", "It takes longer"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Shopping alone is faster but can be less fun.'"
+          },
+          {
+            id: 9,
+            question: "What do many people do before buying something?",
+            type: "multiple_choice",
+            options: ["Compare prices", "Ask friends", "Read reviews", "Watch videos"],
+            correctAnswer: 0,
+            explanation: "The passage states 'Many people compare prices before making a purchase.'"
+          },
+          {
+            id: 10,
+            question: "Some people shop for clothes as a...?",
+            type: "multiple_choice",
+            options: ["Job", "Chore", "Hobby", "Responsibility"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Others enjoy shopping for clothes as a hobby.'"
+          },
+          {
+            id: 11,
+            question: "What should you do to stay within your budget?",
+            type: "multiple_choice",
+            options: ["Shop online only", "Make a shopping list", "Shop with friends", "Wait for sales"],
+            correctAnswer: 1,
+            explanation: "The passage states 'It's important to stay within your budget. Making a shopping list helps people remember what they need and avoid buying unnecessary things.'"
+          },
+          {
+            id: 12,
+            question: "What type of shopping is becoming more popular?",
+            type: "multiple_choice",
+            options: ["Store shopping", "Online shopping", "Market shopping", "Garage sale shopping"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Online shopping is becoming more popular.'"
+          },
+          {
+            id: 13,
+            question: "What is the main idea of this passage?",
+            type: "multiple_choice",
+            options: ["Everyone likes shopping", "Shopping habits vary", "Shopping is expensive", "Online shopping is best"],
+            correctAnswer: 1,
+            explanation: "The passage describes different shopping habits and preferences people have."
           }
         ]
       },
@@ -115,13 +323,19 @@ In the evening, Jane likes to read books or watch TV. She goes to bed at 10:00 P
         id: 'food-and-health',
         title: 'Food and Health',
         level: 'A2',
-        content: `Healthy eating is important for our bodies. We need to eat different kinds of food every day. Fruits and vegetables are very good for us. They have vitamins that help our bodies stay strong.
+        content: `Healthy eating is very important for our bodies. We need to eat different kinds of food every day to stay healthy. Fruits and vegetables are very good for us because they have vitamins that help our bodies stay strong.
 
-Breakfast is the most important meal. It gives us energy for the whole day. A good breakfast might include eggs, bread, fruit, and milk or juice. Skipping breakfast can make you feel tired and hungry later.
+Breakfast is the most important meal of the day. It gives us energy for the whole day. A good breakfast might include eggs, bread, fruit, and milk or juice. Skipping breakfast can make you feel tired and hungry later. Experts say that people who eat breakfast perform better at work or school.
 
-Drinking water is also very important. Our bodies need about 8 glasses of water every day. Water helps us digest food and keeps our skin healthy. We should drink more water when we exercise.
+Drinking water is also very important. Our bodies need about 8 glasses of water every day. Water helps us digest food and keeps our skin healthy. We should drink more water when we exercise or when it's hot outside. Dehydration can cause headaches and make us feel tired.
 
-Too much junk food is not good. Foods like chips, candy, and fast food have a lot of sugar and fat. Eating too much of these foods can make us gain weight and cause health problems. We should only eat them sometimes, not every day.`,
+Too much junk food is not good for us. Foods like chips, candy, and fast food have a lot of sugar and fat. Eating too much of these foods can make us gain weight and cause health problems like diabetes and heart disease. We should only eat them sometimes, not every day.
+
+Cooking at home is usually healthier than eating out. When you cook at home, you can control what ingredients you use. You can choose fresh vegetables and lean meats. You can also avoid unhealthy oils and excessive salt. Home-cooked meals are often less expensive than restaurant meals too.
+
+Eating slowly is another good habit. When we eat too fast, we don't give our bodies time to feel full. This can lead to overeating. Taking time to enjoy our food helps us eat less and feel more satisfied with smaller portions.
+
+Regular meals at the same times each day help our bodies work better. Our bodies get used to when we eat and can digest food more efficiently. Many nutritionists recommend eating three main meals plus healthy snacks between meals if needed.`,
         questions: [
           {
             id: 1,
@@ -137,15 +351,221 @@ Too much junk food is not good. Foods like chips, candy, and fast food have a lo
             type: "multiple_choice",
             options: ["Lunch", "Dinner", "Breakfast", "Snacks"],
             correctAnswer: 2,
-            explanation: "The passage states 'Breakfast is the most important meal.'"
+            explanation: "The passage states 'Breakfast is the most important meal of the day.'"
           },
           {
             id: 3,
-            question: "How much water should we drink every day?",
+            question: "How many glasses of water should we drink every day?",
             type: "multiple_choice",
             options: ["4 glasses", "6 glasses", "8 glasses", "10 glasses"],
             correctAnswer: 2,
             explanation: "The passage states 'Our bodies need about 8 glasses of water every day.'"
+          },
+          {
+            id: 4,
+            question: "What can skipping breakfast cause?",
+            type: "multiple_choice",
+            options: ["Headaches", "Feeling tired and hungry", "Gaining weight", "Dehydration"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Skipping breakfast can make you feel tired and hungry later.'"
+          },
+          {
+            id: 5,
+            question: "When should we drink more water?",
+            type: "multiple_choice",
+            options: ["When sleeping", "When sitting", "When exercising or hot", "When eating"],
+            correctAnswer: 2,
+            explanation: "The passage states 'We should drink more water when we exercise or when it's hot outside.'"
+          },
+          {
+            id: 6,
+            question: "What health problems can result from eating too much junk food?",
+            type: "multiple_choice",
+            options: ["Headaches only", "Diabetes and heart disease", "Tiredness only", "Sleep problems"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Eating too much of these foods can make us gain weight and cause health problems like diabetes and heart disease.'"
+          },
+          {
+            id: 7,
+            question: "What is mentioned as an advantage of cooking at home?",
+            type: "multiple_choice",
+            options: ["It's faster", "You can control ingredients", "It's more fun", "It needs no planning"],
+            correctAnswer: 1,
+            explanation: "The passage states 'When you cook at home, you can control what ingredients you use.'"
+          },
+          {
+            id: 8,
+            question: "What happens if we eat too fast?",
+            type: "multiple_choice",
+            options: ["We digest better", "We might overeat", "We feel fuller", "We have more energy"],
+            correctAnswer: 1,
+            explanation: "The passage states 'When we eat too fast, we don't give our bodies time to feel full. This can lead to overeating.'"
+          },
+          {
+            id: 9,
+            question: "How many main meals do nutritionists recommend?",
+            type: "multiple_choice",
+            options: ["Two", "Three", "Four", "Five"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Many nutritionists recommend eating three main meals plus healthy snacks between meals if needed.'"
+          },
+          {
+            id: 10,
+            question: "What is dehydration mentioned as causing?",
+            type: "multiple_choice",
+            options: ["Weight gain", "Headaches and tiredness", "Better digestion", "More energy"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Dehydration can cause headaches and make us feel tired.'"
+          },
+          {
+            id: 11,
+            question: "Why is cooking at home often less expensive?",
+            type: "multiple_choice",
+            options: ["Food is cheaper", "You buy less", "Restaurant meals cost more", "You share with family"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Home-cooked meals are often less expensive than restaurant meals too.'"
+          },
+          {
+            id: 12,
+            question: "What does the passage say about eating at regular times?",
+            type: "multiple_choice",
+            options: ["It's not important", "It helps our bodies work better", "It causes problems", "It makes us eat more"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Regular meals at the same times each day help our bodies work better.'"
+          },
+          {
+            id: 13,
+            question: "What is the main purpose of this passage?",
+            type: "multiple_choice",
+            options: ["To tell us about exercise", "To explain healthy eating habits", "To advertise restaurants", "To promote a diet plan"],
+            correctAnswer: 1,
+            explanation: "The passage explains various aspects of healthy eating including breakfast, water, junk food, cooking at home, and eating habits."
+          }
+        ]
+      },
+      {
+        id: 'travel-and-tourism',
+        title: 'Travel and Tourism',
+        level: 'A2',
+        content: `Traveling is one of the most popular activities in the world. People travel for many reasons including vacation, business, education, or to visit family and friends. Tourism has become a major industry that creates jobs and helps local economies grow.
+
+Many people like to travel because it allows them to experience different cultures. When you visit another country, you can try local foods, see famous landmarks, and learn about how people live in different places. Some travelers enjoy taking photos of beautiful places to share with friends and family.
+
+Planning a trip takes time and research. Travelers need to find information about their destination, book hotels or flights, and decide what activities they want to do. The internet has made planning much easier because people can compare prices and read reviews from other travelers.
+
+Tourism brings money to local communities. When tourists visit, they spend money on hotels, restaurants, shopping, and attractions. This money helps create jobs for local people in the hospitality and service industries. Many small towns and cities depend on tourism for their economy.
+
+However, tourism can also have negative effects. Popular destinations sometimes become overcrowded, which can damage the environment and make the place less enjoyable for visitors. Some tourists behave disrespectfully toward local customs and traditions, which can cause problems between visitors and residents.
+
+Ecotourism is becoming more popular among environmentally conscious travelers. This type of tourism focuses on traveling to natural areas in a way that protects the environment and helps local communities. Ecotourists often choose destinations that practice sustainable tourism and support conservation efforts.
+
+Advancements in transportation have made travel faster and more accessible. Modern airplanes can carry hundreds of passengers across continents in just hours. High-speed trains connect major cities within countries. However, increased travel also means more carbon emissions, which contribute to climate change.
+
+Despite the challenges, travel enriches our lives by broadening our perspectives and creating lasting memories. Many people save money for years to visit their dream destinations. Travel blogs and social media inspire others to explore new places and cultures around the world.`,
+        questions: [
+          {
+            id: 1,
+            question: "Why do many people like to travel?",
+            type: "multiple_choice",
+            options: ["To save money", "To experience different cultures", "To learn languages", "To buy souvenirs"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Many people like to travel because it allows them to experience different cultures.'"
+          },
+          {
+            id: 2,
+            question: "What has made planning trips easier?",
+            type: "multiple_choice",
+            options: ["Travel agents", "Television shows", "The internet", "Friends' advice"],
+            correctAnswer: 2,
+            explanation: "The passage states 'The internet has made planning much easier because people can compare prices and read reviews from other travelers.'"
+          },
+          {
+            id: 3,
+            question: "How does tourism help local communities?",
+            type: "multiple_choice",
+            options: ["It teaches them languages", "It brings money", "It builds schools", "It creates problems"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Tourism brings money to local communities... This money helps create jobs.'"
+          },
+          {
+            id: 4,
+            question: "What negative effect of tourism is mentioned?",
+            type: "multiple_choice",
+            options: ["Hotels are too expensive", "Destinations become overcrowded", "Food is different", "Locals are unfriendly"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Popular destinations sometimes become overcrowded, which can damage the environment.'"
+          },
+          {
+            id: 5,
+            question: "What is ecotourism?",
+            type: "multiple_choice",
+            options: ["Cheap tourism", "Tourism that protects the environment", "Tourism to cities only", "Tourism without hotels"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Ecotourism... focuses on traveling to natural areas in a way that protects the environment and helps local communities.'"
+          },
+          {
+            id: 6,
+            question: "What problem does increased travel create?",
+            type: "multiple_choice",
+            options: ["Higher prices", "More carbon emissions", "Lost luggage", "Language barriers"],
+            correctAnswer: 1,
+            explanation: "The passage states 'However, increased travel also means more carbon emissions, which contribute to climate change.'"
+          },
+          {
+            id: 7,
+            question: "What do ecotourists often support?",
+            type: "multiple_choice",
+            options: ["Cheap flights", "Conservation efforts", "Big hotels", "Fast travel"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Ecotourists often choose destinations that practice sustainable tourism and support conservation efforts.'"
+          },
+          {
+            id: 8,
+            question: "What problem can some tourists cause?",
+            type: "multiple_choice",
+            options: ["They spend too much", "They behave disrespectfully", "They travel too much", "They take photos"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Some tourists behave disrespectfully toward local customs and traditions.'"
+          },
+          {
+            id: 9,
+            question: "What helps people decide where to travel?",
+            type: "multiple_choice",
+            options: ["Travel blogs and social media", "TV commercials only", "Newspaper ads", "Random choice"],
+            correctAnswer: 0,
+            explanation: "The passage states 'Travel blogs and social media inspire others to explore new places.'"
+          },
+          {
+            id: 10,
+            question: "What do many people do to visit their dream destinations?",
+            type: "multiple_choice",
+            options: ["Buy tickets immediately", "Save money for years", "Work as tour guides", "Stay home instead"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Many people save money for years to visit their dream destinations.'"
+          },
+          {
+            id: 11,
+            question: "What does the passage say travel does?",
+            type: "multiple_choice",
+            options: ["Broadens our perspectives", "Makes us richer", "Takes too long", "Is too expensive"],
+            correctAnswer: 0,
+            explanation: "The passage states 'Despite the challenges, travel enriches our lives by broadening our perspectives.'"
+          },
+          {
+            id: 12,
+            question: "What industry has become major because of tourism?",
+            type: "multiple_choice",
+            options: ["Farming", "Tourism", "Construction", "Technology"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Tourism has become a major industry that creates jobs and helps local economies grow.'"
+          },
+          {
+            id: 13,
+            question: "What main industries benefit from tourism?",
+            type: "multiple_choice",
+            options: ["Hospitality and service", "Agriculture and farming", "Construction and mining", "Finance and banking"],
+            correctAnswer: 0,
+            explanation: "The passage states 'This money helps create jobs for local people in the hospitality and service industries.'"
           }
         ]
       },
