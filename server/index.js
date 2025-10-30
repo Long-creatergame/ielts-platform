@@ -164,6 +164,7 @@ app.get('/api/health', (req, res) => {
   };
   
   res.json({ 
+    ok: true,
     status: 'OK', 
     timestamp: new Date().toISOString(),
     database: {
