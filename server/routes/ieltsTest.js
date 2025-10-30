@@ -166,25 +166,33 @@ Keep it authentic to IELTS format.`;
       }
     }
     
-    // Create test record
-    const testRecord = new Test({
-      userId,
-      skill,
-      level,
-      questions: testContent.questions,
-      passage: testContent.passage,
-      audioUrl: testContent.audioUrl,
-      timeLimit: testContent.timeLimit,
-      status: 'in_progress',
-      createdAt: new Date()
-    });
+    // Create test record (try to save, but don't fail if DB is down)
+    let testId = Date.now().toString();
+    try {
+      const testRecord = new Test({
+        userId,
+        skill,
+        level,
+        questions: testContent.questions,
+        passage: testContent.passage,
+        audioUrl: testContent.audioUrl,
+        timeLimit: testContent.timeLimit,
+        status: 'in_progress',
+        createdAt: new Date()
+      });
 
-    await testRecord.save();
+      await testRecord.save();
+      testId = testRecord._id;
+      console.log('✅ Test saved to database:', testId);
+    } catch (dbError) {
+      console.log('⚠️ Database save failed, using fallback ID:', dbError.message);
+      // Continue with fallback ID
+    }
 
     res.json({
       success: true,
       data: {
-        testId: testRecord._id,
+        testId: testId,
         skill,
         level,
         content: testContent,
