@@ -673,21 +673,23 @@ export default function TestPage() {
       if (response && response.ok) {
         const result = await response.json();
         console.log('✅ Test saved to backend successfully:', result);
+        console.log('📍 Navigating to:', `/test/result/${result.testId}`);
         navigate(`/test/result/${result.testId}`, { state: { testResult } });
       } else {
         console.warn('⚠️ Backend save failed (status:', response?.status, '), using localStorage only');
+        console.log('📍 Navigating to:', '/test/result');
         // Navigate to result page (data already saved to localStorage)
         navigate('/test/result', { state: { testResult } });
       }
     } catch (error) {
       console.error('❌ Error saving test to backend:', error);
+      console.log('📍 Navigating to:', '/test/result');
       // Navigate to result page even if backend fails
       navigate('/test/result', { state: { testResult } });
-    } finally {
-      // Reset submitting state after navigation (though user won't see it)
-      // This is in case navigation fails
-      setTimeout(() => setIsSubmitting(false), 1000);
     }
+    
+    // Don't reset isSubmitting here - let it stay true during navigation
+    // The component will unmount anyway
   };
 
   if (!user) {
