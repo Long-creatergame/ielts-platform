@@ -65,16 +65,25 @@ export default function ChatLauncher({ zaloUrl }) {
         <button
           onClick={toggleTawk}
           title="Live chat"
-          className="w-10 h-10 rounded-full bg-white text-gray-800 shadow-lg hover:shadow-xl grid place-items-center border border-gray-200"
+          className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl grid place-items-center"
+          aria-label="Live chat"
         >
-          <span className="text-green-500 text-lg">•</span>
+          {/* Chat bubble icon */}
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3C6.477 3 2 6.686 2 11c0 1.96.81 3.77 2.17 5.2L3 21l4.02-1.13C8.24 20.6 10.06 21 12 21c5.523 0 10-3.686 10-8s-4.477-8-10-8z"/>
+          </svg>
         </button>
         <button
           onClick={openZalo}
           title="Zalo"
           className="w-10 h-10 rounded-full bg-[#0068FF] hover:bg-[#0052CC] text-white shadow-lg hover:shadow-xl grid place-items-center"
+          aria-label="Zalo"
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.49 1.32 5.02L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm.01 18.33c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a9.42 9.42 0 01-1.26-5.03c0-5.21 4.24-9.45 9.45-9.45 5.21 0 9.45 4.24 9.45 9.45 0 5.21-4.24 9.45-9.45 9.45z"/></svg>
+          {/* Zalo 'Z' in speech bubble */}
+          <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+            <path d="M4 3h16a1 1 0 011 1v10a1 1 0 01-1 1h-6l-3.5 3.5c-.63.63-1.5.18-1.5-.7V15H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+            <path d="M15.5 7h-5.7v1.6h3.5l-3.6 3.8V14H16v-1.6h-3.7l3.2-3.5V7z" fill="#fff"/>
+          </svg>
         </button>
         <button
           onClick={minimizeTawk}
