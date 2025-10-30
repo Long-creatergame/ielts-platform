@@ -40,6 +40,7 @@ export default function App() {
             <Route path="/test/start" element={<ProtectedRoute><TestIntro /></ProtectedRoute>} />
             <Route path="/test/:skill" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
             <Route path="/test/result/:id" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
+            <Route path="/test/result/quick" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
             <Route path="/test-history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
             <Route path="/quick-practice/:skill" element={<ProtectedRoute><QuickPractice /></ProtectedRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
