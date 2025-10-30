@@ -101,25 +101,30 @@ const connectDB = async () => {
   }
 };
 
-connectDB();
+// Skip DB connection entirely in test to avoid timeouts in CI
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
 
-// MongoDB connection monitoring
-mongoose.connection.on('connected', () => {
-  console.log('🟢 MongoDB connection established');
-});
+  // MongoDB connection monitoring
+  mongoose.connection.on('connected', () => {
+    console.log('🟢 MongoDB connection established');
+  });
 
-mongoose.connection.on('error', (err) => {
-  console.error('🔴 MongoDB connection error:', err);
-});
+  mongoose.connection.on('error', (err) => {
+    console.error('🔴 MongoDB connection error:', err);
+  });
 
-mongoose.connection.on('disconnected', () => {
-  console.log('🟡 MongoDB disconnected');
-});
+  mongoose.connection.on('disconnected', () => {
+    console.log('🟡 MongoDB disconnected');
+  });
+}
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
   try {
-    await mongoose.connection.close();
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+    }
     console.log('🔒 MongoDB connection closed through app termination');
     process.exit(0);
   } catch (error) {
