@@ -71,6 +71,7 @@ export default function TestPage() {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
+            testType: 'full',
             skill: skillType,
             level: level
           })
