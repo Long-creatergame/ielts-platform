@@ -23,9 +23,9 @@ export default function StickyPricingCTA() {
     <div
       className="fixed z-50 max-w-sm"
       style={{
-        // Avoid overlap with chat widgets at bottom-right
-        right: 16,
-        bottom: 96, // move up 96px to clear Tawk/Zalo buttons
+        // Move to bottom-left to avoid chat widgets
+        left: 16,
+        bottom: 24,
       }}
     >
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-2xl p-4 animate-pulse">
