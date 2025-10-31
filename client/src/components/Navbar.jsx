@@ -44,7 +44,7 @@ const Navbar = memo(() => {
   );
 
   return (
-    <nav className="bg-white/90 backdrop-blur sticky top-0 z-50 border-b border-gray-100">
+    <nav className="bg-white/90 backdrop-blur sticky top-0 z-40 border-b border-gray-100">
       <div className="container-page">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
@@ -105,10 +105,10 @@ const Navbar = memo(() => {
                   {showUserMenu && (
                     <>
                       <div 
-                        className="fixed inset-0 z-10" 
+                        className="fixed inset-0 z-[500]" 
                         onClick={() => setShowUserMenu(false)}
                       />
-                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-[501] overflow-hidden">
                         <div className="px-4 py-3 border-b border-gray-200">
                           <p className="text-sm font-semibold text-gray-900">{user.name}</p>
                           <p className="text-xs text-gray-500">{user.email}</p>
