@@ -17,7 +17,7 @@ export default function TestHistory() {
 
   useEffect(() => {
     loadTestHistory();
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     applyFilters();
@@ -33,27 +33,35 @@ export default function TestHistory() {
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
         const token = localStorage.getItem('token');
         
-        const response = await fetch(`${API_BASE_URL}/api/tests/mine`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+        // Only fetch from MongoDB if we have a token and user
+        if (token && user) {
+          console.log('🔄 Fetching tests from MongoDB for user:', user.id);
+          const response = await fetch(`${API_BASE_URL}/api/tests/mine`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            // Transform MongoDB test format to match expected format
+            savedTests = (data.tests || []).map(test => ({
+              id: test._id || test.id,
+              testType: 'IELTS Academic',
+              level: test.level || 'A2',
+              date: test.dateTaken || test.createdAt || new Date().toISOString(),
+              overallScore: test.totalBand || test.overallBand || 0,
+              skill: 'full',
+              status: test.completed ? 'completed' : 'in-progress',
+              details: { skillScores: test.skillBands || {} }
+            }));
+            console.log('✅ Loaded tests from MongoDB:', savedTests.length);
+          } else {
+            console.log('⚠️ MongoDB response not ok:', response.status);
           }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          // Transform MongoDB test format to match expected format
-          savedTests = (data.tests || []).map(test => ({
-            id: test._id || test.id,
-            testType: 'IELTS Academic',
-            level: test.level || 'A2',
-            date: test.dateTaken || test.createdAt || new Date().toISOString(),
-            overallScore: test.totalBand || test.overallBand || 0,
-            skill: 'full',
-            status: test.completed ? 'completed' : 'in-progress',
-            details: { skillScores: test.skillBands || {} }
-          }));
-          console.log('✅ Loaded tests from MongoDB:', savedTests.length);
+        } else {
+          console.log('⚠️ No token or user, skipping MongoDB fetch');
         }
       } catch (error) {
         console.log('⚠️ MongoDB load failed, using localStorage:', error.message);
