@@ -27,7 +27,7 @@ import DailyChallenge from '../components/DailyChallenge';
 import RealtimeClient from '../components/RealtimeClient';
 import StickyPricingCTA from '../components/StickyPricingCTA';
 import WeeklyReport from '../components/WeeklyReport';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Lazy load heavy components for better initial load performance
 const AIPractice = lazy(() => import('../components/AIPractice'));
@@ -40,6 +40,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -60,6 +61,8 @@ export default function Dashboard() {
       if (user) {
         const token = localStorage.getItem('token');
         
+        console.log('🔄 Refreshing dashboard data...');
+        
         // Fetch dashboard data from API
         const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
           headers: {
@@ -69,8 +72,12 @@ export default function Dashboard() {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const result = await response.json();
+          const data = result.data || result; // Handle both {success, data} and direct data
+          console.log('✅ Dashboard data refreshed:', data);
           setDashboardData(data);
+        } else {
+          console.error('❌ Dashboard fetch failed:', response.status);
         }
       }
     } catch (error) {
@@ -93,7 +100,9 @@ export default function Dashboard() {
           });
 
           if (response.ok) {
-            const data = await response.json();
+            const result = await response.json();
+            const data = result.data || result; // Handle both {success, data} and direct data
+            console.log('✅ Dashboard loaded:', data);
             setDashboardData(data);
           } else {
             // Fallback to mock data if API fails
@@ -139,6 +148,12 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [user, API_BASE_URL]);
 
+  // Refresh dashboard when navigating to this page
+  useEffect(() => {
+    if (location.pathname === '/dashboard' && !loading && user) {
+      refreshDashboardData();
+    }
+  }, [location.pathname, loading, user, refreshDashboardData]);
 
   if (loading) {
     return <Loader />;
