@@ -705,16 +705,32 @@ export default function TestPage() {
               aiFeedback = aiData.feedback;
               console.log(`✅ ${skillItem.id}: AI scored ${skillScore}`);
             } else {
-              // No fallback scoring - if AI fails, give 0
-              skillScore = 0;
-              aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
-              console.log(`⚠️ ${skillItem.id}: AI failed, score = 0`);
+              // Use fallback scoring if AI fails
+              console.log(`⚠️ ${skillItem.id}: AI failed, using fallback scoring`);
+              const answerText = Array.isArray(skillAnswers) ? skillAnswers.map(a => a.answer || a).join(' ') : skillAnswers;
+              const contentScore = analyzeContentQuality(answerText, skillItem.id);
+              const grammarScore = analyzeGrammar(answerText);
+              const vocabScore = analyzeVocabulary(answerText);
+              const coherenceScore = analyzeCoherence(answerText);
+              const taskScore = analyzeTaskAchievement(answerText, skillItem.id);
+              
+              skillScore = (contentScore + grammarScore + vocabScore + coherenceScore + taskScore) / 5;
+              aiFeedback = 'Automated assessment based on content, grammar, vocabulary, coherence, and task achievement.';
+              console.log(`📊 ${skillItem.id}: Fallback scored ${skillScore}`);
             }
           } catch (error) {
             console.error(`❌ ${skillItem.id}: AI assessment error:`, error);
-            // No fallback scoring - if AI fails, give 0
-            skillScore = 0;
-            aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
+            // Use fallback scoring if AI fails
+            const answerText = Array.isArray(skillAnswers) ? skillAnswers.map(a => a.answer || a).join(' ') : skillAnswers;
+            const contentScore = analyzeContentQuality(answerText, skillItem.id);
+            const grammarScore = analyzeGrammar(answerText);
+            const vocabScore = analyzeVocabulary(answerText);
+            const coherenceScore = analyzeCoherence(answerText);
+            const taskScore = analyzeTaskAchievement(answerText, skillItem.id);
+            
+            skillScore = (contentScore + grammarScore + vocabScore + coherenceScore + taskScore) / 5;
+            aiFeedback = 'Automated assessment based on content, grammar, vocabulary, coherence, and task achievement.';
+            console.log(`📊 ${skillItem.id}: Fallback scored ${skillScore}`);
           }
         }
       }
