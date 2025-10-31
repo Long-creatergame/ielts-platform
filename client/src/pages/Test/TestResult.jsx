@@ -442,14 +442,128 @@ export default function TestResult() {
             </div>
           )}
 
-          {/* Detailed Answers Section */}
+          {/* Full Reading/Listening Section - Show complete test content */}
+          {testResult.allPassages && (
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                📚 Full Test Content
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Review the complete reading passages and questions from your test.
+              </p>
+              
+              {Object.entries(testResult.allPassages || {}).map(([skill, passage]) => {
+                if (!passage || skill === 'listening' || skill === 'writing' || skill === 'speaking') {
+                  return null;
+                }
+                
+                const questions = testResult.allQuestions?.[skill] || [];
+                const userAnswers = testResult.testAnswers?.[skill] || [];
+                
+                return (
+                  <div key={skill} className="mb-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 capitalize flex items-center">
+                      📖 <span className="ml-2">{skill} Passage</span>
+                    </h3>
+                    
+                    {/* Reading Passage */}
+                    {passage && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                        <div className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+                          {passage}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Questions with options and answers */}
+                    {questions.length > 0 && (
+                      <div className="space-y-6">
+                        <h4 className="text-lg font-semibold text-gray-900 mb-4">Questions:</h4>
+                        {questions.map((question, index) => {
+                          const answerItem = userAnswers[index];
+                          const userAnswer = typeof answerItem === 'object' ? answerItem.answer : answerItem;
+                          const isCorrect = typeof answerItem === 'object' ? answerItem.isCorrect : undefined;
+                          const correctAnswer = typeof answerItem === 'object' ? answerItem.correctAnswer : undefined;
+                          
+                          return (
+                            <div key={index} className="border border-gray-200 rounded-lg p-6">
+                              <div className="flex items-start justify-between mb-4">
+                                <h5 className="font-semibold text-gray-900 text-lg">
+                                  Question {index + 1}
+                                </h5>
+                                {isCorrect !== undefined && (
+                                  <span className={`px-3 py-1 rounded text-sm font-medium ${isCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                    {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                                  </span>
+                                )}
+                              </div>
+                              
+                              {/* Question text */}
+                              {typeof question === 'object' && question.question && (
+                                <p className="text-gray-700 mb-4 font-medium">
+                                  {question.question}
+                                </p>
+                              )}
+                              
+                              {/* Options */}
+                              {typeof question === 'object' && question.options && question.options.length > 0 && (
+                                <div className="space-y-2 mb-4">
+                                  {question.options.map((option, optIndex) => {
+                                    const optionLetter = String.fromCharCode(65 + optIndex);
+                                    const isUserChoice = option === userAnswer;
+                                    const isCorrectOption = correctAnswer === optionLetter;
+                                    
+                                    return (
+                                      <div 
+                                        key={optIndex} 
+                                        className={`p-3 rounded-lg border-2 ${
+                                          isCorrectOption 
+                                            ? 'bg-green-100 border-green-400' 
+                                            : isUserChoice && !isCorrect 
+                                            ? 'bg-red-100 border-red-400'
+                                            : 'bg-white border-gray-300'
+                                        }`}
+                                      >
+                                        <span className="font-semibold text-gray-900 mr-2">{optionLetter}.</span>
+                                        <span className="text-gray-800">{option}</span>
+                                        {isUserChoice && (
+                                          <span className="ml-2 text-xs font-medium text-gray-600">
+                                            (Your answer)
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                              
+                              {/* Show correct answer if wrong */}
+                              {isCorrect === false && correctAnswer && (
+                                <div className="mt-4 p-4 bg-green-50 border border-green-300 rounded-lg">
+                                  <p className="text-green-800 font-medium">
+                                    <strong>✓ Correct Answer:</strong> {correctAnswer}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Detailed Answers Section - Quick review */}
           {testResult.testAnswers && (
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                📋 Detailed Answers Review
+                📋 Quick Answer Summary
               </h2>
               <p className="text-gray-600 mb-6">
-                Review your answers below. Compare your responses with the correct answers.
+                Quick review of all your answers and correctness.
               </p>
               
               {Object.entries(testResult.testAnswers).map(([skill, skillAnswers]) => {
@@ -464,31 +578,19 @@ export default function TestResult() {
                       <span className="ml-2">{skill} Answers</span>
                     </h3>
                     
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
                       {Array.isArray(skillAnswers) ? (
                         skillAnswers.map((answerItem, index) => {
                           const answerText = typeof answerItem === 'object' ? answerItem.answer : answerItem;
                           const isCorrect = typeof answerItem === 'object' ? answerItem.isCorrect : undefined;
-                          const correctAnswer = typeof answerItem === 'object' ? answerItem.correctAnswer : undefined;
                           
                           return (
-                            <div key={index} className={`border rounded-lg p-4 ${isCorrect === true ? 'bg-green-50 border-green-300' : isCorrect === false ? 'bg-red-50 border-red-300' : 'bg-gray-50 border-gray-300'}`}>
-                              <div className="flex items-start justify-between mb-2">
-                                <span className="font-semibold text-gray-900">Question {index + 1}</span>
-                                {isCorrect !== undefined && (
-                                  <span className={`px-2 py-1 rounded text-xs font-medium ${isCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-                                    {isCorrect ? '✓ Correct' : '✗ Incorrect'}
-                                  </span>
-                                )}
+                            <div key={index} className={`border-2 rounded-lg p-3 text-center ${isCorrect === true ? 'bg-green-100 border-green-400' : isCorrect === false ? 'bg-red-100 border-red-400' : 'bg-gray-50 border-gray-300'}`}>
+                              <div className="text-xs text-gray-600 mb-1">Q{index + 1}</div>
+                              <div className="text-lg font-bold text-gray-900">{answerText || '-'}</div>
+                              <div className="text-xs mt-1">
+                                {isCorrect === true ? '✓' : isCorrect === false ? '✗' : ''}
                               </div>
-                              <div className="text-gray-800 mb-1">
-                                <strong>Your Answer:</strong> {answerText || '(No answer provided)'}
-                              </div>
-                              {isCorrect !== undefined && correctAnswer && (
-                                <div className="text-gray-800">
-                                  <strong>Correct Answer:</strong> {correctAnswer}
-                                </div>
-                              )}
                             </div>
                           );
                         })
