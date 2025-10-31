@@ -583,14 +583,24 @@ export default function TestResult() {
                         skillAnswers.map((answerItem, index) => {
                           const answerText = typeof answerItem === 'object' ? answerItem.answer : answerItem;
                           const isCorrect = typeof answerItem === 'object' ? answerItem.isCorrect : undefined;
+                          const correctAnswer = typeof answerItem === 'object' ? answerItem.correctAnswer : undefined;
                           
                           return (
-                            <div key={index} className={`border-2 rounded-lg p-3 text-center ${isCorrect === true ? 'bg-green-100 border-green-400' : isCorrect === false ? 'bg-red-100 border-red-400' : 'bg-gray-50 border-gray-300'}`}>
-                              <div className="text-xs text-gray-600 mb-1">Q{index + 1}</div>
-                              <div className="text-lg font-bold text-gray-900">{answerText || '-'}</div>
-                              <div className="text-xs mt-1">
-                                {isCorrect === true ? '✓' : isCorrect === false ? '✗' : ''}
+                            <div key={index} className="flex flex-col items-center gap-1">
+                              <div className={`border-2 rounded-lg p-2 w-full text-center ${isCorrect === true ? 'bg-green-100 border-green-400' : isCorrect === false ? 'bg-red-100 border-red-400' : 'bg-gray-50 border-gray-300'}`}>
+                                <div className="text-xs text-gray-600 mb-1">Q{index + 1}</div>
+                                <div className="text-lg font-bold text-gray-900">{answerText || '-'}</div>
+                                <div className="text-xs mt-1">
+                                  {isCorrect === true ? '✓' : isCorrect === false ? '✗' : ''}
+                                </div>
                               </div>
+                              {/* Show correct answer if wrong */}
+                              {isCorrect === false && correctAnswer && (
+                                <div className="bg-green-100 border-2 border-green-400 rounded-lg p-2 w-full text-center">
+                                  <div className="text-xs text-green-700 mb-0.5">Correct:</div>
+                                  <div className="text-sm font-bold text-green-900">{correctAnswer}</div>
+                                </div>
+                              )}
                             </div>
                           );
                         })
