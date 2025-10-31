@@ -144,10 +144,14 @@ router.post('/generate', auth, async (req, res) => {
 Return JSON format following OFFICIAL IELTS STRUCTURE:
 - For reading: { "passage": "Long academic passage", "questions": [40 questions with types: multiple_choice, true_false, fill_blank, matching] }
 - For listening: { "sections": [4 sections, 10 questions each = 40 total], each section: { "audioUrl": "...", "questions": [...] } }
-- For writing: { "task": "...", "wordCount": 250, "timeLimit": 40 }
-- For speaking: { "questions": [12-15 questions total covering Part 1, 2, 3] }
+- For writing: { "tasks": [{"task": "...", "type": "Task 1 Chart", "wordCount": 150, "timeLimit": 20}, {"task": "...", "type": "Task 2 Essay", "wordCount": 250, "timeLimit": 40}] }
+- For speaking: { "parts": [{"part": 1, "questions": [...]}, {"part": 2, "task": "...", "preparationTime": 1, "speakingTime": 2}, {"part": 3, "questions": [...]}] }
 
-CRITICAL: Reading MUST have 40 questions. Listening MUST have 4 sections with 10 questions each = 40 total.
+CRITICAL: 
+- Reading MUST have 40 questions
+- Listening MUST have 4 sections with 10 questions each = 40 total
+- Writing MUST have 2 tasks (Task 1 + Task 2)
+- Speaking MUST have 3 parts (Part 1, 2, 3)
 
 Keep it authentic to IELTS format.`;
 
@@ -183,30 +187,65 @@ Keep it authentic to IELTS format.`;
                 totalQuestions: aiContent.questions?.length || 0
               };
             } else if (skill === 'writing') {
-              testContent = {
-                title: `IELTS Academic Writing`,
-                instructions: `You should spend about ${aiContent.timeLimit || 40} minutes on this task. Write at least ${aiContent.wordCount || 250} words.`,
-                timeLimit: aiContent.timeLimit || 40,
-                task: aiContent.task,
-                wordCount: aiContent.wordCount || 250
-              };
+              // Check if AI returned full format or single task
+              if (aiContent.tasks && Array.isArray(aiContent.tasks)) {
+                testContent = {
+                  title: `IELTS Academic Writing`,
+                  instructions: "Complete both writing tasks below. Task 1: 20 minutes, 150 words minimum. Task 2: 40 minutes, 250 words minimum.",
+                  timeLimit: 60,
+                  tasks: aiContent.tasks.map((t, idx) => ({ ...t, order: idx + 1 }))
+                };
+              } else {
+                // Single task fallback
+                testContent = {
+                  title: `IELTS Academic Writing`,
+                  instructions: `You should spend about ${aiContent.timeLimit || 40} minutes on this task. Write at least ${aiContent.wordCount || 250} words.`,
+                  timeLimit: aiContent.timeLimit || 40,
+                  task: aiContent.task,
+                  wordCount: aiContent.wordCount || 250
+                };
+              }
             } else if (skill === 'listening') {
-              testContent = {
-                title: `IELTS Academic Listening`,
-                instructions: "Listen to the recording and answer the questions below. You have 30 minutes.",
-                timeLimit: 30,
-                audioUrl: aiContent.audioUrl,
-                questions: aiContent.questions || []
-              };
+              // Check if AI returned sections or single audio
+              if (aiContent.sections && Array.isArray(aiContent.sections)) {
+                testContent = {
+                  title: `IELTS Academic Listening`,
+                  instructions: "Listen to the recordings and answer all questions below. You will hear each recording once. There are 4 sections with 10 questions each. You have 30 minutes plus 10 minutes to transfer answers.",
+                  timeLimit: 30,
+                  sections: aiContent.sections,
+                  questions: aiContent.sections.flatMap(s => s.questions || []),
+                  totalQuestions: aiContent.sections.reduce((sum, s) => sum + (s.questions?.length || 0), 0)
+                };
+              } else {
+                // Single audio fallback
+                testContent = {
+                  title: `IELTS Academic Listening`,
+                  instructions: "Listen to the recording and answer the questions below. You will hear the recording once. You have 30 minutes plus 10 minutes to transfer answers.",
+                  timeLimit: 30,
+                  audioUrl: aiContent.audioUrl,
+                  questions: aiContent.questions || []
+                };
+              }
             } else if (skill === 'speaking') {
-              testContent = {
-                title: `IELTS Academic Speaking`,
-                instructions: "Answer the questions below clearly and in detail.",
-                timeLimit: 15,
-                questions: aiContent.questions || [],
-                preparationTime: aiContent.preparationTime,
-                speakingTime: aiContent.speakingTime
-              };
+              // Check if AI returned parts or single part
+              if (aiContent.parts && Array.isArray(aiContent.parts)) {
+                testContent = {
+                  title: `IELTS Academic Speaking`,
+                  instructions: "Complete all speaking parts below. Part 1: 4-5 minutes. Part 2: 3-4 minutes (with 1 min preparation). Part 3: 4-5 minutes.",
+                  timeLimit: 14,
+                  parts: aiContent.parts.map((p, idx) => ({ ...p, order: idx + 1 }))
+                };
+              } else {
+                // Single part fallback
+                testContent = {
+                  title: `IELTS Academic Speaking`,
+                  instructions: "Answer the questions below clearly and in detail.",
+                  timeLimit: 15,
+                  questions: aiContent.questions || [],
+                  preparationTime: aiContent.preparationTime,
+                  speakingTime: aiContent.speakingTime
+                };
+              }
             }
           }
         }
