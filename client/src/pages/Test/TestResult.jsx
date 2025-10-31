@@ -422,6 +422,64 @@ export default function TestResult() {
             </div>
           )}
 
+          {/* Detailed Answers Section */}
+          {testResult.testAnswers && (
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                📋 Detailed Answers Review
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Review your answers below. Compare your responses with the correct answers.
+              </p>
+              
+              {Object.entries(testResult.testAnswers).map(([skill, skillAnswers]) => {
+                if (!skillAnswers || (Array.isArray(skillAnswers) && skillAnswers.length === 0)) {
+                  return null;
+                }
+                
+                return (
+                  <div key={skill} className="mb-8 border-b border-gray-200 pb-8 last:border-b-0 last:pb-0">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 capitalize flex items-center">
+                      {skill === 'reading' && '📖'} {skill === 'listening' && '🎧'} {skill === 'writing' && '✍️'} {skill === 'speaking' && '🎤'}
+                      <span className="ml-2">{skill} Answers</span>
+                    </h3>
+                    
+                    <div className="space-y-4">
+                      {Array.isArray(skillAnswers) ? (
+                        skillAnswers.map((answerItem, index) => {
+                          const answerText = typeof answerItem === 'object' ? answerItem.answer : answerItem;
+                          const isCorrect = typeof answerItem === 'object' ? answerItem.isCorrect : undefined;
+                          
+                          return (
+                            <div key={index} className={`border rounded-lg p-4 ${isCorrect === true ? 'bg-green-50 border-green-300' : isCorrect === false ? 'bg-red-50 border-red-300' : 'bg-gray-50 border-gray-300'}`}>
+                              <div className="flex items-start justify-between mb-2">
+                                <span className="font-semibold text-gray-900">Question {index + 1}</span>
+                                {isCorrect !== undefined && (
+                                  <span className={`px-2 py-1 rounded text-xs font-medium ${isCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                    {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-gray-800">
+                                <strong>Your Answer:</strong> {answerText || '(No answer provided)'}
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="border rounded-lg p-4 bg-gray-50 border-gray-300">
+                          <div className="text-gray-800 whitespace-pre-wrap">
+                            {typeof skillAnswers === 'string' ? skillAnswers : JSON.stringify(skillAnswers)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
