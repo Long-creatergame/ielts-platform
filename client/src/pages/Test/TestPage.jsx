@@ -98,9 +98,35 @@ export default function TestPage() {
               return;
             }
             
-            let questions = content.questions || [];
             const passage = content.passage || '';
             const timeLimit = content.timeLimit || 60;
+            
+            // Handle different content formats for Writing and Speaking
+            let questions = [];
+            if (skillType === 'writing' && content.tasks && Array.isArray(content.tasks)) {
+              // Full IELTS Writing format: convert tasks array to questions
+              questions = content.tasks.map((task, idx) => ({
+                id: idx + 1,
+                task: task.task,
+                type: task.type,
+                wordCount: task.wordCount,
+                timeLimit: task.timeLimit,
+                order: task.order || idx + 1
+              }));
+            } else if (skillType === 'speaking' && content.parts && Array.isArray(content.parts)) {
+              // Full IELTS Speaking format: convert parts array to questions
+              questions = content.parts.map((part, idx) => ({
+                id: idx + 1,
+                questions: part.questions,
+                task: part.task,
+                preparationTime: part.preparationTime,
+                speakingTime: part.speakingTime,
+                order: part.order || idx + 1
+              }));
+            } else {
+              // Standard format: questions array
+              questions = content.questions || [];
+            }
             
             // Ensure questions is an array
             if (!Array.isArray(questions)) {
@@ -992,9 +1018,41 @@ export default function TestPage() {
             <div className="space-y-6">
               {questions && questions.length > 0 ? (
                 questions.map((questionData, index) => {
-                  // Handle both object format {question: "...", options: [...]} and string format
-                  const questionText = typeof questionData === 'object' ? questionData.question : questionData;
-                  const questionOptions = typeof questionData === 'object' ? questionData.options : null;
+                  // Handle different formats: question+options, task, or string
+                  let questionText = '';
+                  let questionOptions = null;
+                  let taskInfo = null;
+                  
+                  if (typeof questionData === 'object') {
+                    questionText = questionData.question;
+                    questionOptions = questionData.options;
+                    
+                    // For Writing tasks
+                    if (questionData.task && !questionData.question) {
+                      questionText = questionData.task;
+                      taskInfo = {
+                        type: questionData.type,
+                        wordCount: questionData.wordCount,
+                        timeLimit: questionData.timeLimit,
+                        order: questionData.order
+                      };
+                    }
+                    
+                    // For Speaking parts
+                    if (questionData.questions && !questionData.question && !questionData.task) {
+                      questionText = Array.isArray(questionData.questions) 
+                        ? questionData.questions.join('\n') 
+                        : questionData.questions;
+                      taskInfo = {
+                        task: questionData.task,
+                        preparationTime: questionData.preparationTime,
+                        speakingTime: questionData.speakingTime,
+                        order: questionData.order
+                      };
+                    }
+                  } else {
+                    questionText = questionData;
+                  }
                   
                   return (
                     <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
@@ -1003,7 +1061,22 @@ export default function TestPage() {
                         {index + 1}
                       </span>
                       <div className="flex-1">
-                        <p className="text-gray-800 font-medium mb-3">{questionText}</p>
+                        {taskInfo && taskInfo.order && (
+                          <div className="mb-2 text-xs font-semibold text-blue-600 uppercase">
+                            {currentSkill === 2 ? `Task ${taskInfo.order}` : `Part ${taskInfo.order}`}
+                          </div>
+                        )}
+                        {taskInfo && taskInfo.type && (
+                          <div className="mb-2 text-sm text-gray-600">
+                            Type: {taskInfo.type} | Min: {taskInfo.wordCount} words | Time: {taskInfo.timeLimit} min
+                          </div>
+                        )}
+                        {taskInfo && taskInfo.speakingTime && (
+                          <div className="mb-2 text-sm text-gray-600">
+                            Preparation: {taskInfo.preparationTime} min | Speaking: {taskInfo.speakingTime} min
+                          </div>
+                        )}
+                        <p className="text-gray-800 font-medium mb-3 whitespace-pre-line">{questionText}</p>
                         
                         {/* Different input types based on skill */}
                         {currentSkill === 0 && (

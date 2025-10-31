@@ -1420,10 +1420,31 @@ const getRandomContent = (skill, level = null) => {
   }
   
   if (skill === 'writing') {
+    // For IELTS Writing, we need 2 tasks: Task 1 and Task 2
     const tasks = level 
       ? skillContent.tasks.filter(t => t.level === level)
       : skillContent.tasks;
-    return tasks[Math.floor(Math.random() * tasks.length)];
+    
+    if (tasks.length < 2) {
+      // If not enough tasks for this level, return a single task
+      return tasks[Math.floor(Math.random() * tasks.length)];
+    }
+    
+    // Select 2 random tasks: one Task 1 and one Task 2
+    const task1Candidates = tasks.filter(t => t.type.includes('Task 1'));
+    const task2Candidates = tasks.filter(t => t.type.includes('Task 2'));
+    
+    const selectedTask1 = task1Candidates[Math.floor(Math.random() * task1Candidates.length)];
+    const selectedTask2 = task2Candidates[Math.floor(Math.random() * task2Candidates.length)];
+    
+    // Format as array for frontend
+    return {
+      tasks: [
+        { ...selectedTask1, order: 1 },
+        { ...selectedTask2, order: 2 }
+      ],
+      timeLimit: 60 // Total time for both tasks
+    };
   }
   
   if (skill === 'listening') {
@@ -1452,10 +1473,34 @@ const getRandomContent = (skill, level = null) => {
   }
   
   if (skill === 'speaking') {
+    // For IELTS Speaking, we need 3 parts: Part 1, Part 2, Part 3
     const topics = level 
       ? skillContent.topics.filter(t => t.level === level)
       : skillContent.topics;
-    return topics[Math.floor(Math.random() * topics.length)];
+    
+    if (topics.length < 3) {
+      // If not enough topics for this level, return a single topic
+      return topics[Math.floor(Math.random() * topics.length)];
+    }
+    
+    // Select 3 topics: one for each part
+    const part1Candidates = topics.filter(t => t.part === 1);
+    const part2Candidates = topics.filter(t => t.part === 2);
+    const part3Candidates = topics.filter(t => t.part === 3);
+    
+    const selectedPart1 = part1Candidates[Math.floor(Math.random() * part1Candidates.length)];
+    const selectedPart2 = part2Candidates[Math.floor(Math.random() * part2Candidates.length)];
+    const selectedPart3 = part3Candidates[Math.floor(Math.random() * part3Candidates.length)];
+    
+    // Format as array for frontend
+    return {
+      parts: [
+        { ...selectedPart1, order: 1 },
+        { ...selectedPart2, order: 2 },
+        { ...selectedPart3, order: 3 }
+      ],
+      timeLimit: 14 // Total time for speaking test
+    };
   }
 
   return null;
