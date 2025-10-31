@@ -36,6 +36,8 @@ export default function TestPage() {
   const [testData, setTestData] = useState(null);
   const [questionAnswers, setQuestionAnswers] = useState({}); // Store answers for each question
   const [isSubmitting, setIsSubmitting] = useState(false); // Prevent double submission
+  const [allQuestions, setAllQuestions] = useState({}); // Store all questions for all skills {reading: [...], listening: [...], ...}
+  const [allPassages, setAllPassages] = useState({}); // Store all passages for all skills {reading: "...", listening: null, ...}
 
   const skills = [
     { id: 'reading', name: 'Reading', icon: '📖' },
@@ -110,6 +112,10 @@ export default function TestPage() {
             setTestData(responseData.data || {});
             setPassage(passage || '');
             setTimeLeft((timeLimit || 60) * 60); // Convert minutes to seconds
+            
+            // Also save to allQuestions and allPassages for this skill
+            setAllQuestions(prev => ({ ...prev, [skillType]: questions }));
+            setAllPassages(prev => ({ ...prev, [skillType]: passage }));
             return;
           } catch (parseError) {
             loadFallbackQuestions(skillType, level);
@@ -221,8 +227,13 @@ export default function TestPage() {
         if (skillType === 'reading') {
           setPassage(skillData[level].passage);
           setQuestions(skillData[level].questions);
+          // Save to allQuestions and allPassages
+          setAllQuestions(prev => ({ ...prev, [skillType]: skillData[level].questions }));
+          setAllPassages(prev => ({ ...prev, [skillType]: skillData[level].passage }));
         } else {
           setQuestions(skillData[level]);
+          // Save to allQuestions only (no passage for listening/writing/speaking)
+          setAllQuestions(prev => ({ ...prev, [skillType]: skillData[level] }));
         }
       } else {
         // Default questions if level not found - IELTS Standard Format
@@ -329,6 +340,8 @@ export default function TestPage() {
             "**IELTS Speaking Part 3**\n\nLet's discuss education and learning.\n\n- How has education changed in your country in recent years?\n- What are the advantages and disadvantages of online learning?\n- Do you think traditional classroom learning will become obsolete?\n- How important is it for students to learn practical skills alongside academic subjects?"
           ];
         setQuestions(defaultQuestions);
+        // Also save default questions to allQuestions
+        setAllQuestions(prev => ({ ...prev, [skillType]: defaultQuestions }));
       }
     };
 
@@ -514,6 +527,82 @@ export default function TestPage() {
     return 'A1';
   };
 
+  // Helper function to check answers for Reading/Listening
+  const checkAnswersForSkill = (skillId, skillAnswers, questions) => {
+    if (!Array.isArray(questions) || questions.length === 0) {
+      console.log(`⚠️ ${skillId}: No questions available to check answers`);
+      return { correct: 0, total: 0, details: [] };
+    }
+    
+    let correctCount = 0;
+    const answerDetails = [];
+    
+    // Check each answer
+    skillAnswers.forEach((userAnswerObj, index) => {
+      const question = questions[index];
+      if (!question) return;
+      
+      let isCorrect = false;
+      let correctAnswer = '';
+      const userAnswer = typeof userAnswerObj === 'object' ? userAnswerObj.answer : userAnswerObj;
+      
+      // Check if question has correctAnswer field (structured questions)
+      if (typeof question === 'object' && question.correctAnswer !== undefined) {
+        correctAnswer = question.options[question.correctAnswer];
+        isCorrect = userAnswer === correctAnswer;
+      } 
+      // For string questions, we can't check automatically
+      else if (typeof question === 'object' && question.type === 'multiple_choice' && question.options) {
+        correctAnswer = question.options[question.correctAnswer];
+        isCorrect = userAnswer === correctAnswer;
+      } else {
+        // No correct answer available, mark as unchecked
+        isCorrect = null;
+        correctAnswer = 'N/A';
+      }
+      
+      if (isCorrect === true) correctCount++;
+      
+      answerDetails.push({
+        questionId: index + 1,
+        userAnswer: userAnswer,
+        correctAnswer: correctAnswer,
+        isCorrect: isCorrect
+      });
+    });
+    
+    return {
+      correct: correctCount,
+      total: questions.length,
+      details: answerDetails
+    };
+  };
+  
+  // Helper function to convert correct answers count to IELTS band score
+  const correctToBandScore = (correct, total) => {
+    if (total === 0) return 0;
+    const percentage = (correct / total) * 100;
+    
+    // IELTS band score conversion table
+    if (percentage >= 90) return 8.5;
+    if (percentage >= 80) return 8.0;
+    if (percentage >= 75) return 7.5;
+    if (percentage >= 70) return 7.0;
+    if (percentage >= 65) return 6.5;
+    if (percentage >= 60) return 6.0;
+    if (percentage >= 55) return 5.5;
+    if (percentage >= 50) return 5.0;
+    if (percentage >= 45) return 4.5;
+    if (percentage >= 40) return 4.0;
+    if (percentage >= 35) return 3.5;
+    if (percentage >= 30) return 3.0;
+    if (percentage >= 25) return 2.5;
+    if (percentage >= 20) return 2.0;
+    if (percentage >= 15) return 1.5;
+    if (percentage >= 10) return 1.0;
+    return 0.5;
+  };
+
   const handleSubmit = async () => {
     // Prevent double submission
     if (isSubmitting) {
@@ -533,6 +622,7 @@ export default function TestPage() {
     
     // AI-powered IELTS band score calculation using GROQ AI
     const skillScores = {};
+    const skillAnswerDetails = {}; // Store detailed answer checking results
     let totalScore = 0;
     
     for (const skillItem of skills) {
@@ -540,6 +630,7 @@ export default function TestPage() {
       
       let skillScore = 0;
       let aiFeedback = '';
+      let answerDetails = [];
       
       // Check if skill has actual answers
       const hasAnswers = Array.isArray(skillAnswers) 
@@ -554,36 +645,51 @@ export default function TestPage() {
         aiFeedback = 'No answer provided. Please complete all sections to receive a proper assessment.';
         console.log(`❌ ${skillItem.id}: No answers provided, score = 0`);
       } else {
-        // Use GROQ AI for real IELTS assessment
-        try {
-          const aiResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai/assess`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              skill: skillItem.id,
-              answers: Array.isArray(skillAnswers) ? skillAnswers : [skillAnswers],
-              level: level
-            })
-          });
+        // For Reading and Listening, check answers against correct answers first
+        const skillQuestions = allQuestions[skillItem.id] || [];
+        
+        if ((skillItem.id === 'reading' || skillItem.id === 'listening') && Array.isArray(skillQuestions) && skillQuestions.length > 0) {
+          // Check answers against correct answers
+          const checkResult = checkAnswersForSkill(skillItem.id, skillAnswers, skillQuestions);
+          skillScore = correctToBandScore(checkResult.correct, checkResult.total);
+          answerDetails = checkResult.details;
           
-          if (aiResponse.ok) {
-            const aiData = await aiResponse.json();
-            skillScore = aiData.bandScore;
-            aiFeedback = aiData.feedback;
-            console.log(`✅ ${skillItem.id}: AI scored ${skillScore}`);
-          } else {
+          skillAnswerDetails[skillItem.id] = checkResult.details;
+          
+          aiFeedback = `You scored ${checkResult.correct} out of ${checkResult.total} questions correctly. ${skillScore >= 7.0 ? 'Excellent work!' : skillScore >= 6.0 ? 'Good job!' : 'Keep practicing!'}`;
+          console.log(`✅ ${skillItem.id}: Scored ${checkResult.correct}/${checkResult.total} = ${skillScore} band`);
+        } else {
+          // For Writing and Speaking (or if no questions available), use AI assessment
+          try {
+            const aiResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai/assess`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                skill: skillItem.id,
+                answers: Array.isArray(skillAnswers) ? skillAnswers : [skillAnswers],
+                level: level
+              })
+            });
+            
+            if (aiResponse.ok) {
+              const aiData = await aiResponse.json();
+              skillScore = aiData.bandScore;
+              aiFeedback = aiData.feedback;
+              console.log(`✅ ${skillItem.id}: AI scored ${skillScore}`);
+            } else {
+              // No fallback scoring - if AI fails, give 0
+              skillScore = 0;
+              aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
+              console.log(`⚠️ ${skillItem.id}: AI failed, score = 0`);
+            }
+          } catch (error) {
+            console.error(`❌ ${skillItem.id}: AI assessment error:`, error);
             // No fallback scoring - if AI fails, give 0
             skillScore = 0;
             aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
-            console.log(`⚠️ ${skillItem.id}: AI failed, score = 0`);
           }
-        } catch (error) {
-          console.error(`❌ ${skillItem.id}: AI assessment error:`, error);
-          // No fallback scoring - if AI fails, give 0
-          skillScore = 0;
-          aiFeedback = 'AI assessment unavailable. Please try again or complete the test.';
         }
       }
       
@@ -611,6 +717,24 @@ export default function TestPage() {
       recommendations.push('Try more challenging exercises to further improve');
     }
     
+    // Update finalTestAnswers with isCorrect information for Reading/Listening
+    const updatedTestAnswers = { ...finalTestAnswers };
+    Object.keys(skillAnswerDetails).forEach(skill => {
+      if (updatedTestAnswers[skill] && Array.isArray(updatedTestAnswers[skill])) {
+        updatedTestAnswers[skill] = updatedTestAnswers[skill].map((answerObj, index) => {
+          const detail = skillAnswerDetails[skill][index];
+          if (detail) {
+            return {
+              ...answerObj,
+              isCorrect: detail.isCorrect,
+              correctAnswer: detail.correctAnswer
+            };
+          }
+          return answerObj;
+        });
+      }
+    });
+    
     // Create test result data with consistent format
     const currentDate = new Date();
     const testResult = {
@@ -633,8 +757,8 @@ export default function TestPage() {
         speaking: { score: skillScores.speaking || 0, band: getBandLevel(skillScores.speaking || 0) }
       },
       duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
-      testAnswers: finalTestAnswers,
-      answers: finalTestAnswers, // For backward compatibility
+      testAnswers: updatedTestAnswers,
+      answers: updatedTestAnswers, // For backward compatibility
       completedAt: new Date().toISOString(),
       status: 'completed',
       aiFeedback: 'AI assessment completed successfully.',
