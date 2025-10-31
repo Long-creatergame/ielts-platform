@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const RecentActivityAndTests = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -230,10 +232,12 @@ const RecentActivityAndTests = () => {
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <button
                     onClick={() => {
-                      // Navigate to test result page with test data
-                      window.location.href = '/test/result';
                       // Save test data to localStorage for TestResult to load
+                      console.log('📊 Test data:', activity.testData);
                       localStorage.setItem('latestTestResult', JSON.stringify(activity.testData));
+                      console.log('💾 Saved to localStorage');
+                      // Navigate using React Router
+                      navigate('/test/result');
                     }}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
                   >

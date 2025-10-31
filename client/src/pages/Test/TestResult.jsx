@@ -58,31 +58,32 @@ export default function TestResult() {
       // Try to get from localStorage
       try {
         const localResult = localStorage.getItem('latestTestResult');
+        console.log('🔍 Loading from localStorage:', localResult ? 'Found' : 'Not found');
         if (localResult) {
           const parsedResult = JSON.parse(localResult);
-          // Ensure required fields exist and transform data if needed
-          if (parsedResult && (parsedResult.overallBand !== undefined || parsedResult.overallScore !== undefined)) {
+          console.log('📦 Parsed result:', parsedResult);
+          // Handle MongoDB format or old format
+          const overallBand = parsedResult.totalBand || parsedResult.overallBand || parsedResult.overallScore;
+          const skillScores = parsedResult.skillBands || parsedResult.skillScores || parsedResult.skills;
+          
+          if (parsedResult && (overallBand !== undefined || overallBand === 0)) {
             // Transform old format to new format if needed
             const transformedResult = {
-              id: parsedResult.id || Date.now().toString(),
+              id: parsedResult._id || parsedResult.id || Date.now().toString(),
               testType: parsedResult.testType || 'IELTS Academic',
               level: parsedResult.level || 'B2',
-              overallBand: parsedResult.overallBand || parsedResult.overallScore || 0,
-              skillScores: parsedResult.skillScores || parsedResult.skills || {
-                reading: { score: 0 },
-                listening: { score: 0 },
-                writing: { score: 0 },
-                speaking: { score: 0 }
-              },
-              completedAt: parsedResult.completedAt || parsedResult.date || new Date().toISOString(),
-              duration: parsedResult.duration || '0m',
-              aiFeedback: parsedResult.aiFeedback || 'Test completed.',
+              overallBand: overallBand,
+              skillScores: skillScores,
+              completedAt: parsedResult.dateTaken || parsedResult.completedAt || parsedResult.createdAt || parsedResult.date || new Date().toISOString(),
+              duration: parsedResult.duration || '2h 30m',
+              aiFeedback: parsedResult.feedback || parsedResult.coachMessage || parsedResult.aiFeedback || 'Test completed.',
               recommendations: parsedResult.recommendations || [],
               strengths: parsedResult.strengths || [],
               weaknesses: parsedResult.weaknesses || [],
               testAnswers: parsedResult.testAnswers || parsedResult.answers
             };
             
+            console.log('✅ Transformed result:', transformedResult);
             setTestResult(transformedResult);
             loadPreviousScore();
             setLoading(false);
@@ -90,6 +91,7 @@ export default function TestResult() {
           }
         }
       } catch (e) {
+        console.error('❌ localStorage parse error:', e);
         // If localStorage data is corrupted, continue to other loading methods
       }
 
@@ -107,7 +109,25 @@ export default function TestResult() {
 
         if (response.ok) {
           const data = await response.json();
-          setTestResult(data.data);
+          const backendTest = data.data || data;
+          
+          // Transform MongoDB format to TestResult format
+          const transformedResult = {
+            id: backendTest._id || backendTest.id || Date.now().toString(),
+            testType: 'IELTS Academic',
+            level: backendTest.level || 'A2',
+            overallBand: backendTest.totalBand || 0,
+            skillScores: backendTest.skillBands || backendTest.skillScores || {},
+            testAnswers: backendTest.answers || {},
+            completedAt: backendTest.dateTaken || backendTest.createdAt || new Date().toISOString(),
+            duration: '2h 30m',
+            aiFeedback: backendTest.feedback || backendTest.coachMessage || 'Test completed.',
+            recommendations: [],
+            strengths: [],
+            weaknesses: []
+          };
+          
+          setTestResult(transformedResult);
           // Load previous score for comparison
           loadPreviousScore();
         } else {
