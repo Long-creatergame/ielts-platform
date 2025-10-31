@@ -517,20 +517,30 @@ export default function TestResult() {
                                       <div 
                                         key={optIndex} 
                                         className={`p-3 rounded-lg border-2 ${
-                                          isCorrectOption 
+                                          isCorrectOption && isUserChoice
                                             ? 'bg-green-100 border-green-400' 
+                                            : isCorrectOption
+                                            ? 'bg-green-100 border-green-400'
                                             : isUserChoice && !isCorrect 
                                             ? 'bg-red-100 border-red-400'
                                             : 'bg-white border-gray-300'
                                         }`}
                                       >
-                                        <span className="font-semibold text-gray-900 mr-2">{optionLetter}.</span>
-                                        <span className="text-gray-800">{option}</span>
-                                        {isUserChoice && (
-                                          <span className="ml-2 text-xs font-medium text-gray-600">
-                                            (Your answer)
-                                          </span>
-                                        )}
+                                        <div className="flex items-center justify-between">
+                                          <div className="flex items-center">
+                                            <span className="font-semibold text-gray-900 mr-2">{optionLetter}.</span>
+                                            <span className="text-gray-800">{option}</span>
+                                          </div>
+                                          {isUserChoice && (
+                                            <span className={`ml-2 px-2 py-1 rounded text-xs font-bold ${
+                                              isCorrect 
+                                                ? 'bg-green-500 text-white' 
+                                                : 'bg-red-500 text-white'
+                                            }`}>
+                                              ✓ Your answer
+                                            </span>
+                                          )}
+                                        </div>
                                       </div>
                                     );
                                   })}
