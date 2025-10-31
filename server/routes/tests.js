@@ -1,35 +1,11 @@
 const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
-
+const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Auth middleware
-const authMiddleware = async (req, res, next) => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
-    const user = await User.findById(decoded.userId).select('-password');
-    
-    if (!user) {
-      return res.status(401).json({ message: 'Token is not valid' });
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
-
 // Check if user can start a test (paywall logic)
-router.get('/can-start', authMiddleware, async (req, res) => {
+router.get('/can-start', auth, async (req, res) => {
   try {
     const user = req.user;
     
@@ -65,7 +41,7 @@ router.get('/can-start', authMiddleware, async (req, res) => {
 });
 
 // Start a test (increment free trial if applicable)
-router.post('/start', authMiddleware, async (req, res) => {
+router.post('/start', auth, async (req, res) => {
   try {
     const user = req.user;
     const { level, skill } = req.body;
@@ -122,7 +98,7 @@ router.post('/start', authMiddleware, async (req, res) => {
 });
 
 // Submit test results
-router.post('/submit', authMiddleware, async (req, res) => {
+router.post('/submit', auth, async (req, res) => {
   try {
     const user = req.user;
     // Support both new and legacy payloads
@@ -270,7 +246,7 @@ router.post('/submit', authMiddleware, async (req, res) => {
 });
 
 // Get user's tests
-router.get('/mine', authMiddleware, async (req, res) => {
+router.get('/mine', auth, async (req, res) => {
   try {
     const user = req.user;
     console.log('🔍 Fetching tests for user:', user._id);
@@ -288,7 +264,7 @@ router.get('/mine', authMiddleware, async (req, res) => {
 });
 
 // Get a specific test by id (for result page refresh/deep link)
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
     const user = req.user;
     const testId = req.params.id;
