@@ -192,6 +192,7 @@ router.post('/submit', authMiddleware, async (req, res) => {
     });
 
     await test.save();
+    console.log(`✅ Test saved to MongoDB: ${test._id} for user ${user._id}`);
 
     // Emit realtime update for test result + analytics + leaderboard
     try {
@@ -272,10 +273,13 @@ router.post('/submit', authMiddleware, async (req, res) => {
 router.get('/mine', authMiddleware, async (req, res) => {
   try {
     const user = req.user;
+    console.log('🔍 Fetching tests for user:', user._id);
+    
     const tests = await Test.find({ userId: user._id })
       .sort({ dateTaken: -1 })
       .select('-answers');
-
+    
+    console.log(`✅ Found ${tests.length} tests for user ${user._id}`);
     res.json({ tests });
   } catch (error) {
     console.error('Get user tests error:', error);
