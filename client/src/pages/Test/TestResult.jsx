@@ -469,6 +469,7 @@ export default function TestResult() {
                         skillAnswers.map((answerItem, index) => {
                           const answerText = typeof answerItem === 'object' ? answerItem.answer : answerItem;
                           const isCorrect = typeof answerItem === 'object' ? answerItem.isCorrect : undefined;
+                          const correctAnswer = typeof answerItem === 'object' ? answerItem.correctAnswer : undefined;
                           
                           return (
                             <div key={index} className={`border rounded-lg p-4 ${isCorrect === true ? 'bg-green-50 border-green-300' : isCorrect === false ? 'bg-red-50 border-red-300' : 'bg-gray-50 border-gray-300'}`}>
@@ -480,9 +481,14 @@ export default function TestResult() {
                                   </span>
                                 )}
                               </div>
-                              <div className="text-gray-800">
+                              <div className="text-gray-800 mb-1">
                                 <strong>Your Answer:</strong> {answerText || '(No answer provided)'}
                               </div>
+                              {isCorrect !== undefined && correctAnswer && (
+                                <div className="text-gray-800">
+                                  <strong>Correct Answer:</strong> {correctAnswer}
+                                </div>
+                              )}
                             </div>
                           );
                         })
