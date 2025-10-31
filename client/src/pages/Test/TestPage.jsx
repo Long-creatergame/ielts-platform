@@ -673,8 +673,9 @@ export default function TestPage() {
     };
     
     // AI-powered IELTS band score calculation using GROQ AI
-    const skillScores = {};
-    const skillAnswerDetails = {}; // Store detailed answer checking results
+    const skillScores = {}; // Display scores (band scores)
+    const skillAnswerDetails = {}; // Detailed per-question results
+    const skillAnswerStats = {}; // Stats for backend: { correct, total }
     let totalScore = 0;
     
     for (const skillItem of skills) {
@@ -694,6 +695,7 @@ export default function TestPage() {
       if (!hasAnswers) {
         // No answer = 0 band
         skillScore = 0;
+        skillAnswerStats[skillItem.id] = { correct: 0, total: 0 };
         aiFeedback = 'No answer provided. Please complete all sections to receive a proper assessment.';
         console.log(`❌ ${skillItem.id}: No answers provided, score = 0`);
       } else {
@@ -707,6 +709,7 @@ export default function TestPage() {
           answerDetails = checkResult.details;
           
           skillAnswerDetails[skillItem.id] = checkResult.details;
+          skillAnswerStats[skillItem.id] = { correct: checkResult.correct, total: checkResult.total };
           
           aiFeedback = `You scored ${checkResult.correct} out of ${checkResult.total} questions correctly. ${skillScore >= 7.0 ? 'Excellent work!' : skillScore >= 6.0 ? 'Good job!' : 'Keep practicing!'}`;
           console.log(`✅ ${skillItem.id}: Scored ${checkResult.correct}/${checkResult.total} = ${skillScore} band`);
@@ -729,6 +732,8 @@ export default function TestPage() {
               const aiData = await aiResponse.json();
               skillScore = aiData.bandScore;
               aiFeedback = aiData.feedback;
+              // For Writing/Speaking, we don't have correct/total, so use 0
+              skillAnswerStats[skillItem.id] = { correct: 0, total: 0 };
               console.log(`✅ ${skillItem.id}: AI scored ${skillScore}`);
             } else {
               // Use fallback scoring if AI fails
@@ -741,6 +746,7 @@ export default function TestPage() {
               const taskScore = analyzeTaskAchievement(answerText, skillItem.id);
               
               skillScore = (contentScore + grammarScore + vocabScore + coherenceScore + taskScore) / 5;
+              skillAnswerStats[skillItem.id] = { correct: 0, total: 0 };
               aiFeedback = 'Automated assessment based on content, grammar, vocabulary, coherence, and task achievement.';
               console.log(`📊 ${skillItem.id}: Fallback scored ${skillScore}`);
             }
@@ -755,6 +761,7 @@ export default function TestPage() {
             const taskScore = analyzeTaskAchievement(answerText, skillItem.id);
             
             skillScore = (contentScore + grammarScore + vocabScore + coherenceScore + taskScore) / 5;
+            skillAnswerStats[skillItem.id] = { correct: 0, total: 0 };
             aiFeedback = 'Automated assessment based on content, grammar, vocabulary, coherence, and task achievement.';
             console.log(`📊 ${skillItem.id}: Fallback scored ${skillScore}`);
           }
@@ -767,6 +774,9 @@ export default function TestPage() {
     }
     
     const overallBand = Math.round((totalScore / skills.length) * 10) / 10;
+    
+    // Create display version of scores (for UI)
+    const skillBands = skillScores;
     
     // Generate recommendations based on weak skills
     const recommendations = [];
@@ -817,12 +827,13 @@ export default function TestPage() {
       })(),
       overallBand: overallBand,
       overallScore: overallBand, // For backward compatibility
-      skillScores: skillScores, // For TestResult page
+      skillScores: skillAnswerStats, // Send { correct, total } format for backend
+      skillBands: skillScores, // Send band scores separately for display
       skills: {
-        reading: { score: skillScores.reading || 0, band: getBandLevel(skillScores.reading || 0) },
-        listening: { score: skillScores.listening || 0, band: getBandLevel(skillScores.listening || 0) },
-        writing: { score: skillScores.writing || 0, band: getBandLevel(skillScores.writing || 0) },
-        speaking: { score: skillScores.speaking || 0, band: getBandLevel(skillScores.speaking || 0) }
+        reading: { score: skillBands.reading || 0, band: getBandLevel(skillBands.reading || 0) },
+        listening: { score: skillBands.listening || 0, band: getBandLevel(skillBands.listening || 0) },
+        writing: { score: skillBands.writing || 0, band: getBandLevel(skillBands.writing || 0) },
+        speaking: { score: skillBands.speaking || 0, band: getBandLevel(skillBands.speaking || 0) }
       },
       duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
       testAnswers: updatedTestAnswers,
@@ -834,7 +845,7 @@ export default function TestPage() {
       aiFeedback: 'AI assessment completed successfully.',
       recommendations: recommendations,
       weaknesses: weakSkills.map(skill => `Needs improvement in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`),
-      strengths: Object.entries(skillScores)
+      strengths: Object.entries(skillBands)
         .filter(([skill, score]) => score >= overallBand)
         .map(([skill, score]) => `Strong performance in ${skill.charAt(0).toUpperCase() + skill.slice(1)}`)
     };

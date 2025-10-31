@@ -127,16 +127,22 @@ function calculateStreak(tests) {
 function calculateAccuracy(tests) {
   if (tests.length === 0) return 0;
   
-  const completedTests = tests.filter(test => test.status === 'completed');
+  const completedTests = tests.filter(test => test.completed);
   if (completedTests.length === 0) return 0;
   
-  const totalQuestions = completedTests.reduce((sum, test) => {
-    return sum + (test.questions?.length || 0);
-  }, 0);
+  let totalQuestions = 0;
+  let correctAnswers = 0;
   
-  const correctAnswers = completedTests.reduce((sum, test) => {
-    return sum + (test.correctAnswers || 0);
-  }, 0);
+  completedTests.forEach(test => {
+    if (test.skillScores) {
+      Object.values(test.skillScores).forEach(skillScore => {
+        if (typeof skillScore === 'object' && skillScore !== null) {
+          totalQuestions += skillScore.total || 0;
+          correctAnswers += skillScore.correct || 0;
+        }
+      });
+    }
+  });
   
   return totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
 }
