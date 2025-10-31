@@ -781,6 +781,8 @@ export default function TestPage() {
       duration: `${Math.floor((60 * 60 * 2.5 - timeLeft) / 60)}m ${Math.floor((60 * 60 * 2.5 - timeLeft) % 60)}s`,
       testAnswers: updatedTestAnswers,
       answers: updatedTestAnswers, // For backward compatibility
+      allQuestions: allQuestions, // Store all questions for review
+      allPassages: allPassages, // Store all passages for review
       completedAt: new Date().toISOString(),
       status: 'completed',
       aiFeedback: 'AI assessment completed successfully.',
