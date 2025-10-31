@@ -556,9 +556,11 @@ export default function TestPage() {
         if (correctAnswerIndex !== undefined && correctAnswerIndex !== -1) {
           correctAnswerLetter = String.fromCharCode(65 + correctAnswerIndex); // A, B, C, D
           correctAnswer = question.options[correctAnswerIndex];
-          isCorrect = userAnswer === correctAnswer;
+          // Compare user answer with letter (since userAnswer is stored as letter A/B/C/D)
+          isCorrect = userAnswer === correctAnswerLetter;
         } else {
           correctAnswer = question.options[question.correctAnswer];
+          // Fallback comparison
           isCorrect = userAnswer === correctAnswer;
         }
       } 
@@ -571,9 +573,11 @@ export default function TestPage() {
         if (correctAnswerIndex !== undefined && correctAnswerIndex !== -1) {
           correctAnswerLetter = String.fromCharCode(65 + correctAnswerIndex); // A, B, C, D
           correctAnswer = question.options[correctAnswerIndex];
-          isCorrect = userAnswer === correctAnswer;
+          // Compare user answer with letter (since userAnswer is stored as letter A/B/C/D)
+          isCorrect = userAnswer === correctAnswerLetter;
         } else {
           correctAnswer = question.options[question.correctAnswer];
+          // Fallback comparison
           isCorrect = userAnswer === correctAnswer;
         }
       } else {
