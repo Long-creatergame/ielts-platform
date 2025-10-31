@@ -320,6 +320,128 @@ Some people prefer shopping with friends while others like shopping alone. Shopp
         ]
       },
       {
+        id: 'weather-seasons',
+        title: 'Weather and Seasons',
+        level: 'A1',
+        content: `Weather changes throughout the year in most places. We have four seasons: spring, summer, autumn, and winter. Each season has different weather.
+        
+Spring is usually warm and rainy. Flowers grow in spring. The weather gets warmer and days get longer. Many people like spring because it is not too hot or too cold.
+
+Summer is the hottest season. Days are long and nights are short. People enjoy swimming, going to the beach, and having picnics. Some places have very hot summers, while others are mild and pleasant.
+
+Autumn brings cooler weather. Leaves change color and fall from trees. It becomes windy and rainy. People start wearing warmer clothes. Days get shorter as winter approaches.
+
+Winter is the coldest season. It often snows in winter in many places. Days are short and nights are long. People wear coats, hats, and gloves to stay warm. Some animals sleep all winter.
+
+The weather affects what we wear, what we do, and how we feel. It's important to check the weather forecast before going outside. Weather can change quickly, so it's good to be prepared.`,
+        questions: [
+          {
+            id: 1,
+            question: "How many seasons are there?",
+            type: "multiple_choice",
+            options: ["Two", "Three", "Four", "Five"],
+            correctAnswer: 2,
+            explanation: "The passage states 'We have four seasons: spring, summer, autumn, and winter.'"
+          },
+          {
+            id: 2,
+            question: "What happens in spring?",
+            type: "multiple_choice",
+            options: ["It snows", "Flowers grow", "Days get shorter", "It gets very cold"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Flowers grow in spring.'"
+          },
+          {
+            id: 3,
+            question: "Which season is the hottest?",
+            type: "multiple_choice",
+            options: ["Spring", "Summer", "Autumn", "Winter"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Summer is the hottest season.'"
+          },
+          {
+            id: 4,
+            question: "What do people enjoy doing in summer?",
+            type: "multiple_choice",
+            options: ["Building snowmen", "Swimming and going to the beach", "Making snow angels", "Wearing warm clothes"],
+            correctAnswer: 1,
+            explanation: "The passage states 'People enjoy swimming, going to the beach, and having picnics.'"
+          },
+          {
+            id: 5,
+            question: "What happens to leaves in autumn?",
+            type: "multiple_choice",
+            options: ["They turn green", "They change color and fall", "They grow bigger", "They stay on trees"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Leaves change color and fall from trees.'"
+          },
+          {
+            id: 6,
+            question: "What season has the coldest weather?",
+            type: "multiple_choice",
+            options: ["Spring", "Summer", "Autumn", "Winter"],
+            correctAnswer: 3,
+            explanation: "The passage states 'Winter is the coldest season.'"
+          },
+          {
+            id: 7,
+            question: "What often happens in winter?",
+            type: "multiple_choice",
+            options: ["It's very hot", "It often snows", "Flowers bloom", "Days are long"],
+            correctAnswer: 1,
+            explanation: "The passage states 'It often snows in winter in many places.'"
+          },
+          {
+            id: 8,
+            question: "Why is spring pleasant for many people?",
+            type: "multiple_choice",
+            options: ["It's very hot", "It's not too hot or too cold", "It snows a lot", "It's very cold"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Many people like spring because it is not too hot or too cold.'"
+          },
+          {
+            id: 9,
+            question: "What should you do before going outside?",
+            type: "multiple_choice",
+            options: ["Have breakfast", "Check the weather forecast", "Call a friend", "Watch TV"],
+            correctAnswer: 1,
+            explanation: "The passage states 'It's important to check the weather forecast before going outside.'"
+          },
+          {
+            id: 10,
+            question: "What changes in autumn?",
+            type: "multiple_choice",
+            options: ["Weather gets warmer", "Days get longer", "Days get shorter", "It gets very hot"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Days get shorter as winter approaches.'"
+          },
+          {
+            id: 11,
+            question: "What do people wear in winter?",
+            type: "multiple_choice",
+            options: ["Shorts", "Coats, hats, and gloves", "Swimsuits", "Light clothes"],
+            correctAnswer: 1,
+            explanation: "The passage states 'People wear coats, hats, and gloves to stay warm.'"
+          },
+          {
+            id: 12,
+            question: "What happens to some animals in winter?",
+            type: "multiple_choice",
+            options: ["They swim", "They play", "They sleep all winter", "They grow bigger"],
+            correctAnswer: 2,
+            explanation: "The passage states 'Some animals sleep all winter.'"
+          },
+          {
+            id: 13,
+            question: "What makes autumn different from summer?",
+            type: "multiple_choice",
+            options: ["It gets warmer", "It brings cooler weather", "Days get longer", "It gets very hot"],
+            correctAnswer: 1,
+            explanation: "The passage states 'Autumn brings cooler weather.'"
+          }
+        ]
+      },
+      {
         id: 'food-and-health',
         title: 'Food and Health',
         level: 'A2',
@@ -1386,9 +1508,9 @@ const getRandomContent = (skill, level = null) => {
       : skillContent.passages;
     
     if (availablePassages.length < 3) {
-      // If not enough passages for this level, use all available from any level
-      const allPassages = skillContent.passages;
-      return allPassages[Math.floor(Math.random() * allPassages.length)];
+      // If not enough passages for this level, return null to trigger AI fallback
+      // This ensures each level gets content appropriate to its difficulty
+      return null;
     }
     
     // Select 3 random passages for IELTS format
@@ -1425,15 +1547,16 @@ const getRandomContent = (skill, level = null) => {
       ? skillContent.tasks.filter(t => t.level === level)
       : skillContent.tasks;
     
-    if (tasks.length < 2) {
-      // If not enough tasks for this level, return a single task
-      return tasks[Math.floor(Math.random() * tasks.length)];
-    }
-    
-    // Select 2 random tasks: one Task 1 and one Task 2
+    // Check if we have at least one Task 1 and one Task 2 for this level
     const task1Candidates = tasks.filter(t => t.type.includes('Task 1'));
     const task2Candidates = tasks.filter(t => t.type.includes('Task 2'));
     
+    if (task1Candidates.length === 0 || task2Candidates.length === 0) {
+      // Not enough tasks for this level, return null to trigger AI fallback
+      return null;
+    }
+    
+    // Select 2 random tasks: one Task 1 and one Task 2
     const selectedTask1 = task1Candidates[Math.floor(Math.random() * task1Candidates.length)];
     const selectedTask2 = task2Candidates[Math.floor(Math.random() * task2Candidates.length)];
     
@@ -1454,8 +1577,8 @@ const getRandomContent = (skill, level = null) => {
       : skillContent.audioFiles;
     
     if (availableSections.length < 4) {
-      // If not enough, use what we have or generate fallback
-      return availableSections[Math.floor(Math.random() * availableSections.length)];
+      // If not enough, return null to trigger AI fallback
+      return null;
     }
     
     // Select 4 random sections for IELTS format
@@ -1478,16 +1601,17 @@ const getRandomContent = (skill, level = null) => {
       ? skillContent.topics.filter(t => t.level === level)
       : skillContent.topics;
     
-    if (topics.length < 3) {
-      // If not enough topics for this level, return a single topic
-      return topics[Math.floor(Math.random() * topics.length)];
-    }
-    
-    // Select 3 topics: one for each part
+    // Check if we have at least one topic for each part
     const part1Candidates = topics.filter(t => t.part === 1);
     const part2Candidates = topics.filter(t => t.part === 2);
     const part3Candidates = topics.filter(t => t.part === 3);
     
+    if (part1Candidates.length === 0 || part2Candidates.length === 0 || part3Candidates.length === 0) {
+      // Not enough topics for this level, return null to trigger AI fallback
+      return null;
+    }
+    
+    // Select 3 topics: one for each part
     const selectedPart1 = part1Candidates[Math.floor(Math.random() * part1Candidates.length)];
     const selectedPart2 = part2Candidates[Math.floor(Math.random() * part2Candidates.length)];
     const selectedPart3 = part3Candidates[Math.floor(Math.random() * part3Candidates.length)];
