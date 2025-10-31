@@ -556,67 +556,6 @@ export default function TestResult() {
             </div>
           )}
 
-          {/* Detailed Answers Section - Quick review */}
-          {testResult.testAnswers && (
-            <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                📋 Quick Answer Summary
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Quick review of all your answers and correctness.
-              </p>
-              
-              {Object.entries(testResult.testAnswers).map(([skill, skillAnswers]) => {
-                if (!skillAnswers || (Array.isArray(skillAnswers) && skillAnswers.length === 0)) {
-                  return null;
-                }
-                
-                return (
-                  <div key={skill} className="mb-8 border-b border-gray-200 pb-8 last:border-b-0 last:pb-0">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 capitalize flex items-center">
-                      {skill === 'reading' && '📖'} {skill === 'listening' && '🎧'} {skill === 'writing' && '✍️'} {skill === 'speaking' && '🎤'}
-                      <span className="ml-2">{skill} Answers</span>
-                    </h3>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                      {Array.isArray(skillAnswers) ? (
-                        skillAnswers.map((answerItem, index) => {
-                          const answerText = typeof answerItem === 'object' ? answerItem.answer : answerItem;
-                          const isCorrect = typeof answerItem === 'object' ? answerItem.isCorrect : undefined;
-                          const correctAnswer = typeof answerItem === 'object' ? answerItem.correctAnswer : undefined;
-                          
-                          return (
-                            <div key={index} className="flex flex-col items-center gap-1">
-                              <div className={`border-2 rounded-lg p-2 w-full text-center ${isCorrect === true ? 'bg-green-100 border-green-400' : isCorrect === false ? 'bg-red-100 border-red-400' : 'bg-gray-50 border-gray-300'}`}>
-                                <div className="text-xs text-gray-600 mb-1">Q{index + 1}</div>
-                                <div className="text-lg font-bold text-gray-900">{answerText || '-'}</div>
-                                <div className="text-xs mt-1">
-                                  {isCorrect === true ? '✓' : isCorrect === false ? '✗' : ''}
-                                </div>
-                              </div>
-                              {/* Show correct answer if wrong */}
-                              {isCorrect === false && correctAnswer && (
-                                <div className="bg-green-100 border-2 border-green-400 rounded-lg p-2 w-full text-center">
-                                  <div className="text-xs text-green-700 mb-0.5">Correct:</div>
-                                  <div className="text-sm font-bold text-green-900">{correctAnswer}</div>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="border rounded-lg p-4 bg-gray-50 border-gray-300">
-                          <div className="text-gray-800 whitespace-pre-wrap">
-                            {typeof skillAnswers === 'string' ? skillAnswers : JSON.stringify(skillAnswers)}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
           {/* Action Buttons */}
           <div className="bg-white rounded-xl shadow-lg p-8">
