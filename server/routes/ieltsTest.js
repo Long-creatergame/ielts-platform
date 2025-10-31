@@ -22,20 +22,40 @@ function formatContentForTest(content, skill) {
         totalQuestions: numQuestions || 40
       };
     case 'writing':
-      return {
-        title: `IELTS Academic Writing - ${content.type}`,
-        instructions: `You should spend about ${content.timeLimit} minutes on this task. Write at least ${content.wordCount} words.`,
-        timeLimit: content.timeLimit || (content.type.includes('Task 1') ? 20 : 40),
-        task: content.task,
-        taskType: content.type,
-        wordCount: content.wordCount || (content.type.includes('Task 1') ? 150 : 250),
-        criteria: [
-          "Task Achievement - Address all parts of the task",
-          "Coherence and Cohesion - Organize information logically",
-          "Lexical Resource - Use appropriate vocabulary",
-          "Grammar Range and Accuracy - Use varied sentence structures"
-        ]
-      };
+      // Check if content has tasks array (full IELTS format) or single task
+      const hasTasks = content.tasks && Array.isArray(content.tasks);
+      
+      if (hasTasks) {
+        // Full IELTS Writing: 2 tasks
+        return {
+          title: `IELTS Academic Writing`,
+          instructions: "Complete both writing tasks below. Task 1: 20 minutes, 150 words minimum. Task 2: 40 minutes, 250 words minimum.",
+          timeLimit: content.timeLimit || 60,
+          tasks: content.tasks,
+          criteria: [
+            "Task Achievement - Address all parts of the task",
+            "Coherence and Cohesion - Organize information logically",
+            "Lexical Resource - Use appropriate vocabulary",
+            "Grammar Range and Accuracy - Use varied sentence structures"
+          ]
+        };
+      } else {
+        // Single task format (fallback)
+        return {
+          title: `IELTS Academic Writing - ${content.type}`,
+          instructions: `You should spend about ${content.timeLimit} minutes on this task. Write at least ${content.wordCount} words.`,
+          timeLimit: content.timeLimit || (content.type.includes('Task 1') ? 20 : 40),
+          task: content.task,
+          taskType: content.type,
+          wordCount: content.wordCount || (content.type.includes('Task 1') ? 150 : 250),
+          criteria: [
+            "Task Achievement - Address all parts of the task",
+            "Coherence and Cohesion - Organize information logically",
+            "Lexical Resource - Use appropriate vocabulary",
+            "Grammar Range and Accuracy - Use varied sentence structures"
+          ]
+        };
+      }
     case 'listening':
       // Check if content has sections (multiple audio files) or single audio
       const hasSections = content.sections && Array.isArray(content.sections);
@@ -55,14 +75,34 @@ function formatContentForTest(content, skill) {
         totalQuestions: listeningQuestions.length || 40
       };
     case 'speaking':
-      return {
-        title: `IELTS Academic Speaking - Part ${content.part}`,
-        instructions: "Answer the questions below clearly and in detail. The Speaking test takes 11-14 minutes and consists of 3 parts.",
-        timeLimit: content.part === 1 ? 5 : content.part === 2 ? 4 : 5,
-        questions: content.questions || [content.task],
-        preparationTime: content.preparationTime,
-        speakingTime: content.speakingTime
-      };
+      // Check if content has parts array (full IELTS format) or single part
+      const hasParts = content.parts && Array.isArray(content.parts);
+      
+      if (hasParts) {
+        // Full IELTS Speaking: 3 parts
+        return {
+          title: `IELTS Academic Speaking`,
+          instructions: "Complete all speaking parts below. Part 1: 4-5 minutes. Part 2: 3-4 minutes (with 1 min preparation). Part 3: 4-5 minutes.",
+          timeLimit: content.timeLimit || 14,
+          parts: content.parts,
+          criteria: [
+            "Fluency and Coherence - Speak smoothly and clearly",
+            "Lexical Resource - Use varied vocabulary",
+            "Grammatical Range and Accuracy - Use correct grammar",
+            "Pronunciation - Clear pronunciation"
+          ]
+        };
+      } else {
+        // Single part format (fallback)
+        return {
+          title: `IELTS Academic Speaking - Part ${content.part}`,
+          instructions: "Answer the questions below clearly and in detail. The Speaking test takes 11-14 minutes and consists of 3 parts.",
+          timeLimit: content.part === 1 ? 5 : content.part === 2 ? 4 : 5,
+          questions: content.questions || [content.task],
+          preparationTime: content.preparationTime,
+          speakingTime: content.speakingTime
+        };
+      }
     default:
       return content;
   }
