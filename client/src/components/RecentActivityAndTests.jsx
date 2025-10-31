@@ -1,23 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
 
 const RecentActivityAndTests = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadActivities();
-  }, []);
+  }, [user]);
 
   const loadActivities = async () => {
     try {
       setLoading(true);
       
-      // Load tests from localStorage
-      const localStorageTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
-      const sessionStorageTests = JSON.parse(sessionStorage.getItem('testHistory') || '[]');
-      const savedTests = localStorageTests.length > 0 ? localStorageTests : sessionStorageTests;
+      // Try to load tests from MongoDB first
+      let savedTests = [];
+      try {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`${API_BASE_URL}/api/tests/mine`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Transform MongoDB test format to match expected format
+          savedTests = (data.tests || []).map(test => ({
+            id: test._id || test.id,
+            testType: 'IELTS Academic',
+            level: test.level || 'A2',
+            date: test.dateTaken || test.createdAt || new Date().toISOString(),
+            overallScore: test.totalBand || test.overallBand || 0,
+            overallBand: test.totalBand || test.overallBand || 0,
+            skillScores: test.skillBands || {},
+            status: test.completed ? 'completed' : 'in-progress',
+            testData: test
+          }));
+          console.log('✅ Loaded tests from MongoDB:', savedTests.length);
+        }
+      } catch (error) {
+        console.log('⚠️ MongoDB load failed, using localStorage:', error.message);
+      }
+      
+      // Fallback to localStorage if MongoDB fails or empty
+      if (savedTests.length === 0) {
+        const localStorageTests = JSON.parse(localStorage.getItem('testHistory') || '[]');
+        const sessionStorageTests = JSON.parse(sessionStorage.getItem('testHistory') || '[]');
+        savedTests = localStorageTests.length > 0 ? localStorageTests : sessionStorageTests;
+        console.log('📦 Using localStorage tests:', savedTests.length);
+      }
       
       // Load milestones from localStorage
       const milestones = JSON.parse(localStorage.getItem('milestones') || '[]');
