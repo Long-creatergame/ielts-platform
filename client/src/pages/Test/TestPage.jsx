@@ -544,17 +544,38 @@ export default function TestPage() {
       
       let isCorrect = false;
       let correctAnswer = '';
+      let correctAnswerLetter = '';
       const userAnswer = typeof userAnswerObj === 'object' ? userAnswerObj.answer : userAnswerObj;
       
       // Check if question has correctAnswer field (structured questions)
       if (typeof question === 'object' && question.correctAnswer !== undefined) {
-        correctAnswer = question.options[question.correctAnswer];
-        isCorrect = userAnswer === correctAnswer;
+        const correctAnswerIndex = typeof question.correctAnswer === 'number' 
+          ? question.correctAnswer 
+          : question.options?.indexOf(question.correctAnswer);
+        
+        if (correctAnswerIndex !== undefined && correctAnswerIndex !== -1) {
+          correctAnswerLetter = String.fromCharCode(65 + correctAnswerIndex); // A, B, C, D
+          correctAnswer = question.options[correctAnswerIndex];
+          isCorrect = userAnswer === correctAnswer;
+        } else {
+          correctAnswer = question.options[question.correctAnswer];
+          isCorrect = userAnswer === correctAnswer;
+        }
       } 
       // For string questions, we can't check automatically
       else if (typeof question === 'object' && question.type === 'multiple_choice' && question.options) {
-        correctAnswer = question.options[question.correctAnswer];
-        isCorrect = userAnswer === correctAnswer;
+        const correctAnswerIndex = typeof question.correctAnswer === 'number' 
+          ? question.correctAnswer 
+          : question.options.indexOf(question.correctAnswer);
+        
+        if (correctAnswerIndex !== undefined && correctAnswerIndex !== -1) {
+          correctAnswerLetter = String.fromCharCode(65 + correctAnswerIndex); // A, B, C, D
+          correctAnswer = question.options[correctAnswerIndex];
+          isCorrect = userAnswer === correctAnswer;
+        } else {
+          correctAnswer = question.options[question.correctAnswer];
+          isCorrect = userAnswer === correctAnswer;
+        }
       } else {
         // No correct answer available, mark as unchecked
         isCorrect = null;
@@ -566,7 +587,8 @@ export default function TestPage() {
       answerDetails.push({
         questionId: index + 1,
         userAnswer: userAnswer,
-        correctAnswer: correctAnswer,
+        correctAnswer: correctAnswerLetter || correctAnswer, // Show letter if available, otherwise text
+        correctAnswerFull: correctAnswer, // Keep full text for reference
         isCorrect: isCorrect
       });
     });
