@@ -862,6 +862,62 @@ The future of AI in healthcare will likely involve closer collaboration between 
             type: "multiple_choice",
             options: ["England", "America", "Australia", "Canada"],
             correctAnswer: 1
+          },
+          {
+            id: 3,
+            question: "How old is the person?",
+            type: "multiple_choice",
+            options: ["20", "25", "30", "35"],
+            correctAnswer: 2
+          },
+          {
+            id: 4,
+            question: "What is the person's job?",
+            type: "multiple_choice",
+            options: ["Teacher", "Student", "Engineer", "Doctor"],
+            correctAnswer: 1
+          },
+          {
+            id: 5,
+            question: "What does the person like to do?",
+            type: "multiple_choice",
+            options: ["Read books", "Play sports", "Watch movies", "Cook"],
+            correctAnswer: 0
+          },
+          {
+            id: 6,
+            question: "Where does the person live?",
+            type: "multiple_choice",
+            options: ["In a house", "In an apartment", "In a dormitory", "With family"],
+            correctAnswer: 1
+          },
+          {
+            id: 7,
+            question: "What is the person's favorite subject?",
+            type: "multiple_choice",
+            options: ["Math", "English", "Science", "History"],
+            correctAnswer: 2
+          },
+          {
+            id: 8,
+            question: "How many siblings does the person have?",
+            type: "multiple_choice",
+            options: ["None", "One", "Two", "Three"],
+            correctAnswer: 2
+          },
+          {
+            id: 9,
+            question: "What is the person's hobby?",
+            type: "multiple_choice",
+            options: ["Swimming", "Reading", "Music", "Traveling"],
+            correctAnswer: 1
+          },
+          {
+            id: 10,
+            question: "What is the person studying?",
+            type: "multiple_choice",
+            options: ["Business", "Medicine", "Engineering", "Arts"],
+            correctAnswer: 0
           }
         ]
       },
@@ -884,6 +940,296 @@ The future of AI in healthcare will likely involve closer collaboration between 
             type: "multiple_choice",
             options: ["Small", "Medium", "Large", "Extra Large"],
             correctAnswer: 1
+          },
+          {
+            id: 3,
+            question: "What color does the customer prefer?",
+            type: "multiple_choice",
+            options: ["Red", "Blue", "Green", "Black"],
+            correctAnswer: 2
+          },
+          {
+            id: 4,
+            question: "How much does it cost?",
+            type: "multiple_choice",
+            options: ["$30", "$40", "$50", "$60"],
+            correctAnswer: 2
+          },
+          {
+            id: 5,
+            question: "What payment method does the customer use?",
+            type: "multiple_choice",
+            options: ["Cash", "Credit card", "Debit card", "Mobile payment"],
+            correctAnswer: 1
+          },
+          {
+            id: 6,
+            question: "Does the store offer gift wrapping?",
+            type: "multiple_choice",
+            options: ["Yes, it's free", "Yes, for $5", "No", "Only on weekends"],
+            correctAnswer: 1
+          },
+          {
+            id: 7,
+            question: "What is the store's return policy?",
+            type: "multiple_choice",
+            options: ["No returns", "7 days", "14 days", "30 days"],
+            correctAnswer: 2
+          },
+          {
+            id: 8,
+            question: "Can the customer try it on?",
+            type: "multiple_choice",
+            options: ["Yes, in the fitting room", "No", "Only small sizes", "After payment"],
+            correctAnswer: 0
+          },
+          {
+            id: 9,
+            question: "Is there a discount available?",
+            type: "multiple_choice",
+            options: ["10% off today", "20% off today", "No discount", "Student discount only"],
+            correctAnswer: 0
+          },
+          {
+            id: 10,
+            question: "Where can the customer pick up their purchase?",
+            type: "multiple_choice",
+            options: ["At the counter", "By the window", "In the back room", "On the second floor"],
+            correctAnswer: 0
+          }
+        ]
+      },
+      {
+        id: 'restaurant-conversation',
+        title: 'Restaurant Conversation',
+        audioUrl: '/api/audio/ielts-listening-a2-sample-2.mp3',
+        level: 'A2',
+        questions: [
+          {
+            id: 1,
+            question: "What time is the reservation for?",
+            type: "multiple_choice",
+            options: ["6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM"],
+            correctAnswer: 1
+          },
+          {
+            id: 2,
+            question: "How many people are in the reservation?",
+            type: "multiple_choice",
+            options: ["Two", "Three", "Four", "Five"],
+            correctAnswer: 2
+          },
+          {
+            id: 3,
+            question: "What type of table does the customer prefer?",
+            type: "multiple_choice",
+            options: ["By the window", "In a quiet corner", "Near the entrance", "In the smoking section"],
+            correctAnswer: 1
+          },
+          {
+            id: 4,
+            question: "What is the customer's dietary preference?",
+            type: "multiple_choice",
+            options: ["Vegetarian", "Vegan", "Gluten-free", "No restrictions"],
+            correctAnswer: 3
+          },
+          {
+            id: 5,
+            question: "What is the name for the reservation?",
+            type: "multiple_choice",
+            options: ["Smith", "Johnson", "Williams", "Brown"],
+            correctAnswer: 1
+          },
+          {
+            id: 6,
+            question: "Do they need a high chair?",
+            type: "multiple_choice",
+            options: ["Yes", "No", "Not sure", "Maybe"],
+            correctAnswer: 0
+          },
+          {
+            id: 7,
+            question: "What is the special of the day?",
+            type: "multiple_choice",
+            options: ["Fish and chips", "Pasta", "Burger", "Salad"],
+            correctAnswer: 0
+          },
+          {
+            id: 8,
+            question: "What drink does the waiter recommend?",
+            type: "multiple_choice",
+            options: ["Wine", "Beer", "Juice", "Water"],
+            correctAnswer: 0
+          },
+          {
+            id: 9,
+            question: "How long is the estimated wait time?",
+            type: "multiple_choice",
+            options: ["10 minutes", "15 minutes", "20 minutes", "30 minutes"],
+            correctAnswer: 1
+          },
+          {
+            id: 10,
+            question: "What is the cancellation policy?",
+            type: "multiple_choice",
+            options: ["Free until 1 hour before", "No cancellation", "$10 fee", "Full refund always"],
+            correctAnswer: 0
+          }
+        ]
+      },
+      {
+        id: 'airport-announcement',
+        title: 'Airport Announcement',
+        audioUrl: '/api/audio/ielts-listening-a2-sample-3.mp3',
+        level: 'A2',
+        questions: [
+          {
+            id: 1,
+            question: "Which flight is delayed?",
+            type: "multiple_choice",
+            options: ["Flight 234", "Flight 345", "Flight 456", "Flight 567"],
+            correctAnswer: 2
+          },
+          {
+            id: 2,
+            question: "What is the new departure time?",
+            type: "multiple_choice",
+            options: ["12:30", "13:00", "13:30", "14:00"],
+            correctAnswer: 2
+          },
+          {
+            id: 3,
+            question: "Which gate is the flight leaving from?",
+            type: "multiple_choice",
+            options: ["Gate 5", "Gate 10", "Gate 15", "Gate 20"],
+            correctAnswer: 2
+          },
+          {
+            id: 4,
+            question: "What is the reason for the delay?",
+            type: "multiple_choice",
+            options: ["Weather", "Mechanical issue", "Late crew", "Security check"],
+            correctAnswer: 1
+          },
+          {
+            id: 5,
+            question: "Where should passengers go for more information?",
+            type: "multiple_choice",
+            options: ["Gate 5", "Information desk", "Security", "Check-in counter"],
+            correctAnswer: 1
+          },
+          {
+            id: 6,
+            question: "What compensation is offered?",
+            type: "multiple_choice",
+            options: ["Food voucher", "Flight credit", "Refund", "Nothing"],
+            correctAnswer: 0
+          },
+          {
+            id: 7,
+            question: "How long is the estimated delay?",
+            type: "multiple_choice",
+            options: ["30 minutes", "1 hour", "2 hours", "3 hours"],
+            correctAnswer: 1
+          },
+          {
+            id: 8,
+            question: "Which airline is making the announcement?",
+            type: "multiple_choice",
+            options: ["Airline A", "Airline B", "Airline C", "Airline D"],
+            correctAnswer: 2
+          },
+          {
+            id: 9,
+            question: "What should passengers do immediately?",
+            type: "multiple_choice",
+            options: ["Go to gate", "Stay in waiting area", "Contact airline", "Leave airport"],
+            correctAnswer: 1
+          },
+          {
+            id: 10,
+            question: "Are meals being served during the wait?",
+            type: "multiple_choice",
+            options: ["Yes, free", "Yes, for $10", "No", "At gate only"],
+            correctAnswer: 0
+          }
+        ]
+      },
+      {
+        id: 'hotel-booking',
+        title: 'Hotel Booking',
+        audioUrl: '/api/audio/ielts-listening-a2-sample-4.mp3',
+        level: 'A2',
+        questions: [
+          {
+            id: 1,
+            question: "How many nights is the booking for?",
+            type: "multiple_choice",
+            options: ["2 nights", "3 nights", "4 nights", "5 nights"],
+            correctAnswer: 2
+          },
+          {
+            id: 2,
+            question: "What type of room does the guest want?",
+            type: "multiple_choice",
+            options: ["Single", "Double", "Twin", "Suite"],
+            correctAnswer: 2
+          },
+          {
+            id: 3,
+            question: "What view does the guest prefer?",
+            type: "multiple_choice",
+            options: ["Ocean view", "City view", "Garden view", "Mountain view"],
+            correctAnswer: 1
+          },
+          {
+            id: 4,
+            question: "What is the check-in time?",
+            type: "multiple_choice",
+            options: ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
+            correctAnswer: 2
+          },
+          {
+            id: 5,
+            question: "Does the guest need parking?",
+            type: "multiple_choice",
+            options: ["Yes, included", "Yes, $10/day", "No", "Not sure"],
+            correctAnswer: 0
+          },
+          {
+            id: 6,
+            question: "What is the total price?",
+            type: "multiple_choice",
+            options: ["$200", "$250", "$300", "$350"],
+            correctAnswer: 2
+          },
+          {
+            id: 7,
+            question: "What breakfast option is chosen?",
+            type: "multiple_choice",
+            options: ["Full breakfast", "Continental only", "No breakfast", "Room service"],
+            correctAnswer: 1
+          },
+          {
+            id: 8,
+            question: "What is the cancellation policy?",
+            type: "multiple_choice",
+            options: ["Free until 24h before", "Free until 48h before", "$50 fee", "No refund"],
+            correctAnswer: 1
+          },
+          {
+            id: 9,
+            question: "What amenities does the guest request?",
+            type: "multiple_choice",
+            options: ["Wi-Fi", "Gym access", "Pool access", "Spa access"],
+            correctAnswer: 0
+          },
+          {
+            id: 10,
+            question: "What is the guest's special request?",
+            type: "multiple_choice",
+            options: ["Late checkout", "Early check-in", "Extra towels", "Quiet floor"],
+            correctAnswer: 0
           }
         ]
       },
