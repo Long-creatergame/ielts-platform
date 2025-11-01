@@ -3,19 +3,19 @@
  * Simplified version using Cambridge IELTS templates
  */
 
-import OpenAI from "openai";
-import { writingTemplates } from "../prompts/ieltsTemplates/writingTemplate.js";
-import { speakingTemplates } from "../prompts/ieltsTemplates/speakingTemplate.js";
-import { readingTemplates } from "../prompts/ieltsTemplates/readingTemplate.js";
-import { listeningTemplates } from "../prompts/ieltsTemplates/listeningTemplate.js";
-import { bandToCEFR } from "../utils/levelMapper.js";
+const OpenAI = require('openai');
+const { writingTemplates } = require('../prompts/ieltsTemplates/writingTemplate.js');
+const { speakingTemplates } = require('../prompts/ieltsTemplates/speakingTemplate.js');
+const { readingTemplates } = require('../prompts/ieltsTemplates/readingTemplate.js');
+const { listeningTemplates } = require('../prompts/ieltsTemplates/listeningTemplate.js');
+const { bandToCEFR } = require('../utils/levelMapper.js');
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 /**
  * Generate IELTS test content using AI templates
  */
-export const generateIELTSTest = async (req, res) => {
+const generateIELTSTest = async (req, res) => {
   try {
     const { skill, level, topic, language } = req.body;
 
@@ -97,3 +97,5 @@ Return ONLY JSON:
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+module.exports = { generateIELTSTest };

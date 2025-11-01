@@ -3,7 +3,7 @@
  * Cambridge IELTS official format
  */
 
-export const listeningTemplates = {
+const listeningTemplates = {
   A1: { parts: 2, totalQuestions: 10 },
   
   A2: { parts: 3, totalQuestions: 20 },
@@ -16,3 +16,5 @@ export const listeningTemplates = {
   
   C2: { parts: 4, totalQuestions: 40 }
 };
+
+module.exports = { listeningTemplates };

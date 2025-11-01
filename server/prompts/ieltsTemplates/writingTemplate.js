@@ -3,7 +3,7 @@
  * Cambridge IELTS official format
  */
 
-export const writingTemplates = {
+const writingTemplates = {
   A1: {
     task1: "Write about your family. (40–60 words)",
     task2: "Describe your favorite food. (60–80 words)"
@@ -34,3 +34,5 @@ export const writingTemplates = {
     task2: "Critically evaluate the ethical implications of artificial intelligence in modern society. (250 words)"
   }
 };
+
+module.exports = { writingTemplates };
