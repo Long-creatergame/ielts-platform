@@ -3,7 +3,7 @@
  * Cambridge IELTS official format
  */
 
-export const speakingTemplates = {
+const speakingTemplates = {
   A1: {
     part1: ["What is your name?", "Where do you live?", "Do you like music?"],
     part2: "Describe your favorite food.",
@@ -40,3 +40,5 @@ export const speakingTemplates = {
     part3: ["Does AI challenge our understanding of intelligence?", "How might machine consciousness reshape ethics?"]
   }
 };
+
+module.exports = { speakingTemplates };
