@@ -11,8 +11,7 @@ const AIPractice = () => {
   const [generatedQuestion, setGeneratedQuestion] = useState(null);
   const [formData, setFormData] = useState({
     skill: 'writing',
-    topic: '',
-    band: 6.5
+    level: 'B1'  // Changed from band to CEFR level
   });
 
   const handleGenerate = async () => {
@@ -107,21 +106,20 @@ const AIPractice = () => {
           
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
-              {t('aiPractice.bandLevel')}
+              Level (CEFR)
             </label>
             <select
-              name="band"
-              value={formData.band}
+              name="level"
+              value={formData.level}
               onChange={handleInputChange}
               className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50"
             >
-              <option value={5.0}>5.0 - Intermediate</option>
-              <option value={5.5}>5.5 - Upper Intermediate</option>
-              <option value={6.0}>6.0 - Advanced</option>
-              <option value={6.5}>6.5 - Advanced+</option>
-              <option value={7.0}>7.0 - Expert</option>
-              <option value={7.5}>7.5 - Expert+</option>
-              <option value={8.0}>8.0 - Master</option>
+              <option value="A1">A1 - Beginner (Band 3.5)</option>
+              <option value="A2">A2 - Elementary (Band 4.5)</option>
+              <option value="B1">B1 - Intermediate (Band 5.5)</option>
+              <option value="B2">B2 - Upper Intermediate (Band 6.5)</option>
+              <option value="C1">C1 - Advanced (Band 7.5)</option>
+              <option value="C2">C2 - Proficient (Band 8.5)</option>
             </select>
           </div>
         </div>
