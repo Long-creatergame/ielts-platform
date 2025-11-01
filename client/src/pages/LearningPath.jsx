@@ -1,12 +1,14 @@
 /**
  * Learning Path Page
- * Displays personalized AI-generated learning roadmap based on test results
+ * Displays personalized AI-generated learning roadmap with visualizations
  */
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import Loader from '../components/Loader';
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { motion } from 'framer-motion';
 
 export default function LearningPath() {
   const { user } = useAuth();
@@ -37,7 +39,6 @@ export default function LearningPath() {
         const data = await response.json();
         setLearningPath(data.learningPath);
       } else if (response.status === 404) {
-        // No learning path yet
         setLearningPath(null);
       } else {
         const errorData = await response.json().catch(() => ({ message: 'Failed to load learning path' }));
@@ -81,29 +82,67 @@ export default function LearningPath() {
     }
   };
 
+  // Prepare radar chart data
+  const getRadarData = () => {
+    if (!learningPath?.skillBands) return null;
+    
+    return [
+      { skill: 'Reading', score: learningPath.skillBands.reading || 0, fullMark: 9 },
+      { skill: 'Listening', score: learningPath.skillBands.listening || 0, fullMark: 9 },
+      { skill: 'Writing', score: learningPath.skillBands.writing || 0, fullMark: 9 },
+      { skill: 'Speaking', score: learningPath.skillBands.speaking || 0, fullMark: 9 }
+    ];
+  };
+
+  const getSkillColor = (skill, bands) => {
+    if (!bands || !bands[skill]) return '#94a3b8'; // gray
+    
+    const score = bands[skill];
+    if (score < 5) return '#EF476F'; // red for weak
+    if (score < 7) return '#FFD166'; // yellow for medium
+    return '#35b86d'; // green for strong
+  };
+
   if (loading) {
     return <Loader />;
   }
 
   return (
     <div className="space-y-8">
-      <div className="text-center">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center"
+      >
         <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-4">
           <span className="text-4xl">🗺️</span>
         </div>
         <h2 className="text-3xl font-bold text-gray-900 mb-2">My Learning Path</h2>
         <p className="text-gray-600 text-lg">Your personalized roadmap to IELTS success</p>
-      </div>
+      </motion.div>
 
+      {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800"
+        >
           <p className="font-semibold">⚠️ Error</p>
           <p>{error}</p>
-        </div>
+        </motion.div>
       )}
 
+      {/* Empty State */}
       {!learningPath ? (
-        <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8"
+        >
           <div className="text-center space-y-6">
             <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto">
               <span className="text-6xl">🎯</span>
@@ -132,11 +171,16 @@ export default function LearningPath() {
               )}
             </button>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <div className="space-y-8">
           {/* Current vs Target */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-blue-100 font-medium">Current Level</span>
@@ -154,10 +198,101 @@ export default function LearningPath() {
               <div className="text-4xl font-bold mb-2">{learningPath.targetLevel}</div>
               <div className="text-green-100">Band {learningPath.targetBand?.toFixed(1) || 'N/A'}</div>
             </div>
-          </div>
+          </motion.div>
+
+          {/* Radar Chart */}
+          {getRadarData() && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6"
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="text-2xl mr-2">📈</span>
+                Skills Overview
+              </h3>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={getRadarData()}>
+                    <PolarGrid stroke="#e2e8f0" />
+                    <PolarAngleAxis 
+                      dataKey="skill" 
+                      tick={{ fill: '#4b5563', fontSize: 14, fontWeight: 600 }}
+                      style={{ textTransform: 'capitalize' }}
+                    />
+                    <PolarRadiusAxis 
+                      angle={90} 
+                      domain={[0, 9]}
+                      tick={{ fill: '#94a3b8', fontSize: 12 }}
+                    />
+                    <Radar
+                      name="Band Score"
+                      dataKey="score"
+                      stroke="#35b86d"
+                      fill="#35b86d"
+                      fillOpacity={0.3}
+                      strokeWidth={2}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Skill Progress Bars */}
+          {learningPath.skillBands && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6"
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="text-2xl mr-2">📊</span>
+                Skill Performance Breakdown
+              </h3>
+              <div className="space-y-4">
+                {Object.entries(learningPath.skillBands).map(([skill, band]) => {
+                  const skillCapitalized = skill.charAt(0).toUpperCase() + skill.slice(1);
+                  const percentage = (band / 9) * 100;
+                  const color = getSkillColor(skill, learningPath.skillBands);
+                  const isWeak = learningPath.weaknesses?.includes(skill);
+                  
+                  return (
+                    <div key={skill} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-gray-700">{skillCapitalized}</span>
+                        <div className="flex items-center space-x-2">
+                          {isWeak && (
+                            <span className="text-xs text-red-600 font-bold">🔴 Needs Focus</span>
+                          )}
+                          <span className="text-lg font-bold" style={{ color }}>{band?.toFixed(1)} / 9.0</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ duration: 1.5, delay: 0.5 + (Object.keys(learningPath.skillBands).indexOf(skill) * 0.1) }}
+                          className="h-3 rounded-full"
+                          style={{ backgroundColor: color }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
 
           {/* Strengths & Weaknesses */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <span className="text-2xl mr-2">💪</span>
@@ -166,12 +301,15 @@ export default function LearningPath() {
               <div className="flex flex-wrap gap-2">
                 {learningPath.strengths?.length > 0 ? (
                   learningPath.strengths.map((skill, i) => (
-                    <span
+                    <motion.span
                       key={i}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + i * 0.1 }}
                       className="bg-green-100 text-green-800 font-semibold px-4 py-2 rounded-xl"
                     >
                       {skill.charAt(0).toUpperCase() + skill.slice(1)}
-                    </span>
+                    </motion.span>
                   ))
                 ) : (
                   <p className="text-gray-600">No strengths identified yet</p>
@@ -187,55 +325,83 @@ export default function LearningPath() {
               <div className="flex flex-wrap gap-2">
                 {learningPath.weaknesses?.length > 0 ? (
                   learningPath.weaknesses.map((skill, i) => (
-                    <span
+                    <motion.span
                       key={i}
-                      className="bg-orange-100 text-orange-800 font-semibold px-4 py-2 rounded-xl"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + i * 0.1 }}
+                      className="bg-red-100 text-red-800 font-semibold px-4 py-2 rounded-xl"
                     >
                       {skill.charAt(0).toUpperCase() + skill.slice(1)}
-                    </span>
+                    </motion.span>
                   ))
                 ) : (
                   <p className="text-gray-600">No weaknesses identified yet</p>
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Study Plan */}
           {learningPath.studyPlan && (
-            <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6"
+            >
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <span className="text-2xl mr-2">📅</span>
                 Recommended Study Plan
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 text-center">
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 text-center"
+                >
                   <div className="text-3xl mb-2">⏱️</div>
                   <div className="text-sm text-gray-600 mb-1">Daily</div>
                   <div className="text-2xl font-bold text-purple-600">
                     {learningPath.studyPlan.dailyMinutes} min
                   </div>
-                </div>
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center">
+                </motion.div>
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center"
+                >
                   <div className="text-3xl mb-2">📚</div>
                   <div className="text-sm text-gray-600 mb-1">Weekly</div>
                   <div className="text-2xl font-bold text-blue-600">
                     {learningPath.studyPlan.weeklySessions} sessions
                   </div>
-                </div>
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 text-center">
+                </motion.div>
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 text-center"
+                >
                   <div className="text-3xl mb-2">🎯</div>
                   <div className="text-sm text-gray-600 mb-1">Focus Areas</div>
                   <div className="text-lg font-semibold text-green-600">
                     {learningPath.studyPlan.focusAreas?.length || 0}
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Recommendations */}
-          <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-6"
+          >
             <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
               <span className="text-2xl mr-2">💡</span>
               Recommended Next Steps
@@ -243,8 +409,11 @@ export default function LearningPath() {
             <div className="space-y-4">
               {learningPath.recommendations?.length > 0 ? (
                 learningPath.recommendations.map((rec, i) => (
-                  <div
+                  <motion.div
                     key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 + i * 0.1 }}
                     className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 hover:border-blue-300 transition-all duration-200"
                   >
                     <div className="flex items-start justify-between">
@@ -274,7 +443,7 @@ export default function LearningPath() {
                         <p className="text-gray-700">{rec.description}</p>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))
               ) : (
                 <p className="text-gray-600 text-center py-8">
@@ -282,10 +451,15 @@ export default function LearningPath() {
                 </p>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Actions */}
-          <div className="flex justify-center space-x-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="flex justify-center space-x-4"
+          >
             <button
               onClick={generateLearningPath}
               disabled={generating}
@@ -293,7 +467,7 @@ export default function LearningPath() {
             >
               {generating ? 'Generating...' : '🔄 Regenerate Path'}
             </button>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>
