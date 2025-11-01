@@ -25,25 +25,35 @@ const AIPractice = () => {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`${API_BASE_URL}/api/ai-engine/generate`, {
+      // Use new test generation API
+      const response = await fetch(`${API_BASE_URL}/api/tests/generate-test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          skill: formData.skill,
+          level: formData.level,
+          topic: 'General English' // Optional, can be customized later
+        })
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
+        throw new Error(errorData.message || 'Failed to generate test');
       }
 
       const data = await response.json();
       
       if (data.success) {
-        setGeneratedQuestion(data.data);
+        setGeneratedQuestion({
+          ...data.content,
+          skill: formData.skill,
+          level: formData.level
+        });
       } else {
-        throw new Error(data.error || 'Failed to generate question');
+        throw new Error(data.message || 'Failed to generate test content');
       }
     } catch (error) {
       console.error('Generate question error:', error);
