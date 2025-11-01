@@ -2,7 +2,11 @@ const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
 const auth = require('../middleware/auth');
+const { generateIELTSTest } = require('../controllers/testGeneratorController');
 const router = express.Router();
+
+// New AI-powered test generation endpoint
+router.post('/generate-test', auth, generateIELTSTest);
 
 // Check if user can start a test (paywall logic)
 router.get('/can-start', auth, async (req, res) => {
