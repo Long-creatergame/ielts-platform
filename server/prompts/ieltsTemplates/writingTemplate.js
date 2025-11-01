@@ -1,120 +1,36 @@
 /**
  * IELTS Writing Test Templates
- * Simplified structure for easy management and AI generation
+ * Cambridge IELTS official format
  */
 
 export const writingTemplates = {
   A1: {
-    structure: {
-      task1: {
-        type: "Personal Description",
-        wordCount: "40-60",
-        timeLimit: 10
-      },
-      task2: {
-        type: "Simple Description",
-        wordCount: "60-80",
-        timeLimit: 15
-      }
-    },
-    sampleTopics: {
-      task1: "Write about your family. Describe 3-4 members.",
-      task2: "Describe your favorite food. Why do you like it?"
-    }
+    task1: "Write about your family. (40–60 words)",
+    task2: "Describe your favorite food. (60–80 words)"
   },
   
   A2: {
-    structure: {
-      task1: {
-        type: "Personal Letter",
-        wordCount: "100-120",
-        timeLimit: 15
-      },
-      task2: {
-        type: "Simple Opinion",
-        wordCount: "120-150",
-        timeLimit: 25
-      }
-    },
-    sampleTopics: {
-      task1: "Write a letter to your friend about a recent holiday.",
-      task2: "Some people think learning online is better. Do you agree?"
-    }
+    task1: "Write about a place you like. (50–70 words)",
+    task2: "Describe your daily routine. (80–100 words)"
   },
   
   B1: {
-    structure: {
-      task1: {
-        type: "Formal Letter / Chart Description",
-        wordCount: "150",
-        timeLimit: 20
-      },
-      task2: {
-        type: "Discussion Essay",
-        wordCount: "250",
-        timeLimit: 40
-      }
-    },
-    sampleTopics: {
-      task1: "Summarize the chart showing internet usage by age group.",
-      task2: "Discuss both views: Is technology making life easier or more complicated?"
-    }
+    task1: "Write a letter to your friend about a recent holiday. (100–120 words)",
+    task2: "Some people think learning online is better. Discuss both views. (150–180 words)"
   },
   
   B2: {
-    structure: {
-      task1: {
-        type: "Academic Chart/Graph/Map",
-        wordCount: "150",
-        timeLimit: 20
-      },
-      task2: {
-        type: "Academic Essay",
-        wordCount: "250",
-        timeLimit: 40
-      }
-    },
-    sampleTopics: {
-      task1: "Describe the line graph showing climate change trends over 50 years.",
-      task2: "In many countries, the gap between rich and poor is increasing. What are the causes and solutions?"
-    }
+    task1: "The chart below shows internet usage by age group. Summarize the information. (150 words)",
+    task2: "Some people believe technology makes life easier. Discuss both sides and give your opinion. (250 words)"
   },
   
   C1: {
-    structure: {
-      task1: {
-        type: "Complex Academic Data",
-        wordCount: "150",
-        timeLimit: 20
-      },
-      task2: {
-        type: "Advanced Academic Essay",
-        wordCount: "250",
-        timeLimit: 40
-      }
-    },
-    sampleTopics: {
-      task1: "Compare multiple charts showing economic indicators across countries.",
-      task2: "To what extent should governments regulate artificial intelligence development?"
-    }
+    task1: "Summarize the chart about internet usage by age group. (150 words)",
+    task2: "In many countries, the gap between rich and poor is increasing. Discuss causes and solutions. (250 words)"
   },
   
   C2: {
-    structure: {
-      task1: {
-        type: "Highly Complex Academic Data",
-        wordCount: "150",
-        timeLimit: 20
-      },
-      task2: {
-        type: "Sophisticated Academic Essay",
-        wordCount: "250",
-        timeLimit: 40
-      }
-    },
-    sampleTopics: {
-      task1: "Analyze interconnected data from multiple sources on global energy consumption.",
-      task2: "Critically evaluate the ethical implications of genetic engineering for human enhancement."
-    }
+    task1: "Analyze the complex data chart showing global economic trends. (150 words)",
+    task2: "Critically evaluate the ethical implications of artificial intelligence in modern society. (250 words)"
   }
 };

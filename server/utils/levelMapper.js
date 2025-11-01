@@ -281,11 +281,29 @@ const getTestDuration = (level, skill) => {
   return adjustedTimings[normalized.cefr]?.[skill] || officialTimings[skill];
 };
 
+/**
+ * Simple band to CEFR converter
+ * @param {string|number} band - Band score
+ * @returns {string} CEFR level
+ */
+const bandToCEFR = (band) => {
+  const num = parseFloat(band);
+  if (isNaN(num)) return "A1";
+  
+  if (num < 3.0) return "A1";
+  if (num < 4.0) return "A2";
+  if (num < 5.0) return "B1";
+  if (num < 6.0) return "B2";
+  if (num < 7.0) return "C1";
+  return "C2";
+};
+
 module.exports = {
   numericToCEFR,
   cefrToNumeric,
   normalizeBand,
   getDifficultyParams,
   isPassingLevel,
-  getTestDuration
+  getTestDuration,
+  bandToCEFR
 };

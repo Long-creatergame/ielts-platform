@@ -1,66 +1,18 @@
 /**
  * IELTS Listening Test Templates
- * Simplified structure for easy management
+ * Cambridge IELTS official format
  */
 
 export const listeningTemplates = {
-  A1: {
-    structure: {
-      sections: 2,
-      questionsPerSection: 10,
-      totalQuestions: 20,
-      timeLimit: 15
-    },
-    sampleTopics: ["Booking appointment", "Ordering food", "Asking directions", "Daily conversation"]
-  },
+  A1: { parts: 2, totalQuestions: 10 },
   
-  A2: {
-    structure: {
-      sections: 3,
-      questionsPerSection: [10, 10, 10],
-      totalQuestions: 30,
-      timeLimit: 20
-    },
-    sampleTopics: ["Travel booking", "Tour guide", "Event information", "Simple instructions"]
-  },
+  A2: { parts: 3, totalQuestions: 20 },
   
-  B1: {
-    structure: {
-      sections: 4,
-      questionsPerSection: [10, 10, 10, 10],
-      totalQuestions: 40,
-      timeLimit: 30
-    },
-    sampleTopics: ["Course enrollment", "Student discussion", "Campus facilities", "General lecture"]
-  },
+  B1: { parts: 4, totalQuestions: 20 },
   
-  B2: {
-    structure: {
-      sections: 4,
-      questionsPerSection: [10, 10, 10, 10],
-      totalQuestions: 40,
-      timeLimit: 30
-    },
-    sampleTopics: ["Academic presentation", "Research discussion", "Educational seminar", "Subject lecture"]
-  },
+  B2: { parts: 4, totalQuestions: 40 },
   
-  C1: {
-    structure: {
-      sections: 4,
-      questionsPerSection: [10, 10, 10, 10],
-      totalQuestions: 40,
-      timeLimit: 30
-    },
-    sampleTopics: ["Advanced academic lecture", "Research methodologies", "Complex discussions", "Theoretical concepts"]
-  },
+  C1: { parts: 4, totalQuestions: 40 },
   
-  C2: {
-    structure: {
-      sections: 4,
-      questionsPerSection: [10, 10, 10, 10],
-      totalQuestions: 40,
-      timeLimit: 30
-    },
-    sampleTopics: ["Specialized academic content", "Complex research findings", "Philosophical debates", "Advanced theories"]
-  }
+  C2: { parts: 4, totalQuestions: 40 }
 };
