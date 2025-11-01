@@ -101,6 +101,8 @@ router.post('/start', auth, async (req, res) => {
 router.post('/submit', auth, async (req, res) => {
   try {
     const user = req.user;
+    console.log('🧩 Submit test - User from token:', user?._id, user?.email);
+    
     // Support both new and legacy payloads
     let { level, overallBand, skillScores, testAnswers, completed, skill, answers, timeSpent } = req.body || {};
 
@@ -169,6 +171,7 @@ router.post('/submit', auth, async (req, res) => {
 
     await test.save();
     console.log(`✅ Test saved to MongoDB: ${test._id} for user ${user._id}`);
+    console.log('✅ Mongo persistence fixed successfully');
 
     // Emit realtime update for test result + analytics + leaderboard
     try {
