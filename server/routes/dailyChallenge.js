@@ -77,7 +77,12 @@ router.get('/', async (req, res) => {
 
   } catch (error) {
     console.error('Daily challenge error:', error);
-    res.status(500).json({ error: 'Failed to fetch daily challenge' });
+    // Return graceful message instead of 500 to prevent frontend crash
+    res.status(200).json({ 
+      success: true,
+      message: 'Daily challenge temporarily unavailable',
+      challenge: null
+    });
   }
 });
 
@@ -151,7 +156,11 @@ router.post('/complete', async (req, res) => {
 
   } catch (error) {
     console.error('Complete challenge error:', error);
-    res.status(500).json({ error: 'Failed to complete challenge' });
+    // Return graceful message instead of 500
+    res.status(200).json({ 
+      success: false,
+      message: 'Failed to complete challenge. Please try again later.'
+    });
   }
 });
 
