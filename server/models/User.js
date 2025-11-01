@@ -130,6 +130,17 @@ const userSchema = new mongoose.Schema({
     recommendations: Array,
     generatedAt: Date,
     expiresAt: Date
+  }],
+  completedPrompts: [{
+    promptId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CachedPrompt'
+    },
+    skill: String,
+    completedAt: {
+      type: Date,
+      default: Date.now
+    }
   }]
 }, {
   timestamps: true
