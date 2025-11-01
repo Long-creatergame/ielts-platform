@@ -30,7 +30,10 @@ export default function QuickPractice() {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`${API_BASE_URL}/api/quick-practice/${skillType}`, {
+      // Get user's current level for personalized practice
+      const userLevel = user?.currentLevel || 'A2';
+      
+      const response = await fetch(`${API_BASE_URL}/api/quick-practice/${skillType}?level=${userLevel}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 const PracticeSession = require('../models/PracticeSession');
+const { getRandomContent } = require('../services/contentGenerator');
 
 const router = express.Router();
 
@@ -8,13 +9,26 @@ const router = express.Router();
 router.get('/:skill', auth, async (req, res) => {
   try {
     const { skill } = req.params;
+    const { level } = req.query; // Get level from query params
     
     if (!['reading', 'writing', 'listening', 'speaking'].includes(skill)) {
       return res.status(400).json({ error: 'Invalid skill. Must be reading, writing, listening, or speaking.' });
     }
 
-    // Generate quick practice content based on skill
-    const practiceContent = generateQuickPracticeContent(skill);
+    // Try to get content from contentGenerator first, then fallback
+    let practiceContent = null;
+    const userLevel = level || req.user?.currentLevel || 'A2';
+    
+    try {
+      practiceContent = getRandomContent(skill, userLevel);
+    } catch (error) {
+      console.log('ContentGenerator failed, using fallback:', error.message);
+    }
+    
+    // If no content from generator, use fallback
+    if (!practiceContent) {
+      practiceContent = generateQuickPracticeContent(skill);
+    }
     
     res.json({
       success: true,
