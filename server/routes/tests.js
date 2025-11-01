@@ -288,10 +288,29 @@ router.get('/:id', auth, async (req, res) => {
       });
     }
     
+    // Sanitize missing fields to prevent client-side errors
+    const safeTest = {
+      _id: test._id,
+      userId: test.userId,
+      level: test.level,
+      skillBands: test.skillBands || {
+        reading: null,
+        listening: null,
+        writing: null,
+        speaking: null,
+      },
+      totalBand: test.totalBand || 0,
+      feedback: test.feedback || '',
+      coachMessage: test.coachMessage || '',
+      completed: test.completed,
+      dateTaken: test.dateTaken,
+      createdAt: test.createdAt
+    };
+    
     console.log('✅ Test result fetched successfully:', testId);
     return res.status(200).json({ 
       success: true, 
-      test: test 
+      test: safeTest 
     });
   } catch (error) {
     console.error('❌ Error fetching test result:', error.message);
