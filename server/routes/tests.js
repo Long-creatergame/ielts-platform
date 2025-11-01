@@ -86,14 +86,14 @@ router.post('/start', auth, async (req, res) => {
       await user.save();
     }
 
-    res.json({
+    return res.json({
       success: true,
       testId: test._id,
       message: 'Test started successfully'
     });
   } catch (error) {
     console.error('Test start error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -233,7 +233,7 @@ router.post('/submit', auth, async (req, res) => {
     }
     await user.save();
 
-    res.json({
+    return res.json({
       success: true,
       testId: test._id, // Use testId for frontend compatibility
       test: {
@@ -249,7 +249,7 @@ router.post('/submit', auth, async (req, res) => {
   } catch (error) {
     console.error('❌ Test submit error:', error);
     console.error('❌ Error stack:', error.stack);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
