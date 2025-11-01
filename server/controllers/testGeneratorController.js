@@ -1,6 +1,6 @@
 /**
  * IELTS Test Generator Controller
- * Now with AI cache system to reduce OpenAI costs
+ * Now with AI cache system + user preferences integration
  */
 
 const OpenAI = require('openai');
@@ -11,22 +11,55 @@ const { listeningTemplates } = require('../prompts/ieltsTemplates/listeningTempl
 const { bandToCEFR } = require('../utils/levelMapper.js');
 const CachedPrompt = require('../models/CachedPrompt');
 const User = require('../models/User');
+const UserPreferences = require('../models/UserPreferences');
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 const USE_AI_CACHE = process.env.USE_AI_CACHE !== 'false'; // Default true
 
 /**
- * Generate IELTS test content using AI templates with cache system
+ * Generate IELTS test content using AI templates with cache system + user preferences
  */
 const generateIELTSTest = async (req, res) => {
   try {
     const { skill, level, topic, language } = req.body;
     const userId = req.user?._id;
 
+    // Log generation request
+    console.info('[GenerateTest]', userId, skill, level, topic);
+
+    // Validate required fields
+    if (!skill) {
+      return res.status(400).json({
+        success: false,
+        message: 'Skill is required'
+      });
+    }
+
+    if (!level) {
+      return res.status(400).json({
+        success: false,
+        message: 'Level is required'
+      });
+    }
+
     // Normalize level
     const levelMap = ["A1", "A2", "B1", "B2", "C1", "C2"];
     const normalizedLevel = levelMap.includes(level) ? level : bandToCEFR(level);
     const normalizedTopic = topic || 'General English';
+
+    // Fetch user preferences for personalization
+    let userPreferences = null;
+    if (userId) {
+      try {
+        const prefs = await UserPreferences.findOne({ userId });
+        if (prefs) {
+          userPreferences = prefs;
+          console.info('[GenerateTest] User preferences loaded:', prefs.tone, prefs.difficulty);
+        }
+      } catch (prefsError) {
+        console.warn('⚠️ Could not load user preferences:', prefsError.message);
+      }
+    }
 
     // 1. Check cache if enabled
     if (USE_AI_CACHE && userId) {
@@ -41,13 +74,13 @@ const generateIELTSTest = async (req, res) => {
 
         if (cachedPrompt) {
           // CACHE HIT - return cached prompt
-          console.log(`✅ [CACHE HIT] ${skill} ${normalizedLevel} ${normalizedTopic} - Served from DB`);
+          console.info('✅ [CACHE HIT]', skill, normalizedLevel, normalizedTopic, '- Served from DB');
 
           // Update cache document
           await CachedPrompt.findByIdAndUpdate(cachedPrompt._id, {
             $addToSet: { usedBy: userId },
             $inc: { usageCount: 1 }
-          });
+          }).catch(() => {});
 
           // Update user's completed prompts
           await User.findByIdAndUpdate(userId, {
@@ -58,16 +91,22 @@ const generateIELTSTest = async (req, res) => {
                 completedAt: new Date()
               }
             }
-          });
+          }).catch(() => {});
 
           return res.json({
             success: true,
-            content: cachedPrompt.questionSet,
-            cached: true,
+            data: {
+              skill,
+              topic: normalizedTopic,
+              level: normalizedLevel,
+              questions: cachedPrompt.questionSet,
+              timeLimit: 30,
+              cached: true
+            },
             badge: '✨ Loaded from IELTS Library'
           });
         } else {
-          console.log(`⚠️ [CACHE MISS] ${skill} ${normalizedLevel} ${normalizedTopic} - Generating new prompt from OpenAI`);
+          console.info('⚠️ [CACHE MISS]', skill, normalizedLevel, normalizedTopic, '- Generating new prompt from OpenAI');
         }
       } catch (cacheError) {
         console.error('❌ Cache lookup error:', cacheError.message);
@@ -99,11 +138,17 @@ const generateIELTSTest = async (req, res) => {
       });
     }
 
-    // Build system prompt
+    // Build enhanced system prompt with user preferences
+    const preferenceContext = userPreferences 
+      ? `User preferences: Tone=${userPreferences.tone || 'academic'}, Difficulty=${userPreferences.difficulty || 'adaptive'}, AI Style=${userPreferences.aiStyle || 'encouraging'}. Adapt the questions accordingly.`
+      : 'Use standard academic IELTS format.';
+
     const systemPrompt = `
 You are an IELTS examiner.
 Generate an authentic ${skill} test for IELTS ${normalizedLevel} based on Cambridge IELTS official format.
 Topic: ${normalizedTopic}.
+
+${preferenceContext}
 
 Use this base structure:
 ${JSON.stringify(baseTemplate, null, 2)}
@@ -129,21 +174,21 @@ Return ONLY JSON:
     try {
       // First try: Direct JSON parse
       content = JSON.parse(rawResponse);
-      console.log("✅ Successfully parsed JSON response");
+      console.info('✅ Successfully parsed JSON response');
     } catch (err) {
       // Second try: Extract JSON from markdown code blocks
       try {
         const jsonMatch = rawResponse.match(/```json\s*([\s\S]*?)\s*```/) || rawResponse.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           content = JSON.parse(jsonMatch[1] || jsonMatch[0]);
-          console.log("✅ Successfully parsed JSON from markdown");
+          console.info('✅ Successfully parsed JSON from markdown');
         } else {
           throw new Error("No JSON found");
         }
       } catch (extractError) {
         // Fallback: Return raw text in a structured format
-        console.warn("⚠️ OpenAI response not in JSON format. Returning raw text.");
-        console.warn("Raw response preview:", rawResponse.substring(0, 200));
+        console.warn('⚠️ OpenAI response not in JSON format. Returning raw text.');
+        console.warn('Raw response preview:', rawResponse.substring(0, 200));
         
         content = {
           instructions: `Generated IELTS ${skill} test for level ${normalizedLevel}.`,
@@ -157,25 +202,23 @@ Return ONLY JSON:
       }
     }
 
-    console.log(`✅ Generated IELTS test for: ${skill} ${normalizedLevel}`);
+    console.info('✅ Generated IELTS test:', skill, normalizedLevel, normalizedTopic);
+
+    // Transform content for consistent response format
+    const questions = Array.isArray(content.questions) 
+      ? content.questions 
+      : [content.questions || content.instructions];
 
     // 3. Save to cache if enabled
     if (USE_AI_CACHE && userId) {
       try {
         // Transform content to questionSet format
-        const questionSet = Array.isArray(content.questions) 
-          ? content.questions.map((q, idx) => ({
-              taskType: `${skill} ${idx + 1}`,
-              question: typeof q === 'string' ? q : q.question || q,
-              options: q.options || [],
-              correctAnswer: q.correctAnswer || null
-            }))
-          : [{
-              taskType: skill,
-              question: content.questions || content.instructions,
-              options: [],
-              correctAnswer: null
-            }];
+        const questionSet = questions.map((q, idx) => ({
+          taskType: `${skill} ${idx + 1}`,
+          question: typeof q === 'string' ? q : q.question || q,
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || null
+        }));
 
         // Create new cached prompt
         const newCachedPrompt = new CachedPrompt({
@@ -203,9 +246,9 @@ Return ONLY JSON:
               completedAt: new Date()
             }
           }
-        });
+        }).catch(() => {});
 
-        console.log(`💾 [CACHE SAVED] ${skill} ${normalizedLevel} ${normalizedTopic} - Saved to DB`);
+        console.info('💾 [CACHE SAVED]', skill, normalizedLevel, normalizedTopic, '- Saved to DB');
       } catch (saveError) {
         console.error('❌ Cache save error:', saveError.message);
         // Continue even if cache save fails
@@ -214,16 +257,23 @@ Return ONLY JSON:
 
     return res.json({
       success: true,
-      content: content,
-      cached: false,
+      data: {
+        skill,
+        topic: normalizedTopic,
+        level: normalizedLevel,
+        questions: questions,
+        instructions: content.instructions,
+        timeLimit: 30,
+        cached: false
+      },
       badge: '🤖 New AI-Generated Question'
     });
 
   } catch (error) {
-    console.error("❌ Error generating IELTS test:", error.message);
-    return res.status(500).json({ 
+    console.error('❌ Error generating IELTS test:', error.message);
+    return res.status(200).json({ 
       success: false, 
-      message: error.message || 'Failed to generate test content'
+      message: 'Failed to generate test content. Please try again later.'
     });
   }
 };
