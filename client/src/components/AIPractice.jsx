@@ -11,7 +11,8 @@ const AIPractice = () => {
   const [generatedQuestion, setGeneratedQuestion] = useState(null);
   const [formData, setFormData] = useState({
     skill: 'writing',
-    level: 'B1'  // Changed from band to CEFR level
+    level: 'B1',  // Changed from band to CEFR level
+    topic: ''     // Add topic field for user input
   });
 
   const handleGenerate = async () => {
@@ -35,7 +36,7 @@ const AIPractice = () => {
         body: JSON.stringify({
           skill: formData.skill,
           level: formData.level,
-          topic: 'General English' // Optional, can be customized later
+          topic: formData.topic || 'General English'
         })
       });
 
@@ -206,8 +207,34 @@ const AIPractice = () => {
               <span className="text-xl mr-2">❓</span>
               Question
             </h4>
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-lg">{generatedQuestion.question}</p>
+            <div className="bg-white rounded-xl p-6 shadow-sm space-y-3">
+              {/* Handle multiple questions from array */}
+              {generatedQuestion?.questions?.length > 0 ? (
+                generatedQuestion.questions.map((q, i) => (
+                  <div key={i} className="mb-4 pb-4 border-b border-gray-200 last:border-0 last:pb-0">
+                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-lg font-semibold text-blue-600 mb-2">
+                      {generatedQuestion.skill === 'writing' || generatedQuestion.skill === 'reading' 
+                        ? `Task ${i + 1}:` 
+                        : generatedQuestion.skill === 'speaking'
+                        ? `Part ${i + 1}:`
+                        : `Question ${i + 1}:`}
+                    </p>
+                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-lg">
+                      {q}
+                    </p>
+                  </div>
+                ))
+              ) : generatedQuestion?.question ? (
+                // Fallback for single question field
+                <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-lg">
+                  {generatedQuestion.question}
+                </p>
+              ) : (
+                // Fallback for raw text response
+                <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-lg">
+                  {generatedQuestion?.instructions || 'No questions generated'}
+                </p>
+              )}
             </div>
           </div>
           
