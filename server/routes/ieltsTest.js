@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 const Test = require('../models/Test');
-const { getRandomContent } = require('../services/contentGenerator');
+const { getRandomContent, generateWithAITemplate } = require('../services/contentGenerator');
 
 const router = express.Router();
 
@@ -126,136 +126,24 @@ router.post('/generate', auth, async (req, res) => {
       // Use database content
       testContent = formatContentForTest(randomContent, skill);
     } else {
-      // Try to generate with AI if database has no content
+      // Try to generate with AI using new template-based system
       try {
-        if (process.env.OPENAI_API_KEY) {
-          const OpenAI = require('openai');
-          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-          
-          // Convert CEFR level to IELTS band score for AI
-          const levelToBand = {
-            'A1': 3.5, 'A2': 4.5, 'B1': 5.5, 
-            'B2': 6.5, 'C1': 7.5, 'C2': 8.5
-          };
-          const bandScore = levelToBand[level] || 6.5;
-          
-          const systemPrompt = `You are an IELTS question generator. Generate authentic IELTS ${skill} content for band ${bandScore} level.
-          
-Return JSON format following OFFICIAL IELTS STRUCTURE:
-- For reading: { "passage": "Long academic passage", "questions": [40 questions with types: multiple_choice, true_false, fill_blank, matching] }
-- For listening: { "sections": [4 sections, 10 questions each = 40 total], each section: { "audioUrl": "...", "questions": [...] } }
-- For writing: { "tasks": [{"task": "...", "type": "Task 1 Chart", "wordCount": 150, "timeLimit": 20}, {"task": "...", "type": "Task 2 Essay", "wordCount": 250, "timeLimit": 40}] }
-- For speaking: { "parts": [{"part": 1, "questions": [...]}, {"part": 2, "task": "...", "preparationTime": 1, "speakingTime": 2}, {"part": 3, "questions": [...]}] }
-
-CRITICAL: 
-- Reading MUST have 40 questions
-- Listening MUST have 4 sections with 10 questions each = 40 total
-- Writing MUST have 2 tasks (Task 1 + Task 2)
-- Speaking MUST have 3 parts (Part 1, 2, 3)
-
-Keep it authentic to IELTS format.`;
-
-          const aiResponse = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: `Generate ${skill} content for level ${level} (band ${bandScore})` }
-            ],
-            temperature: 0.7,
-            max_tokens: 1500
-          });
-
-          let aiContent;
-          try {
-            aiContent = JSON.parse(aiResponse.choices[0].message.content);
-          } catch (parseError) {
-            // If not JSON, try to extract JSON from markdown
-            const content = aiResponse.choices[0].message.content;
-            const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/\{[\s\S]*\}/);
-            aiContent = jsonMatch ? JSON.parse(jsonMatch[1] || jsonMatch[0]) : null;
-          }
-          
-          if (aiContent) {
-            // Format AI content properly
-            if (skill === 'reading') {
-              testContent = {
-                title: `IELTS Academic Reading`,
-                instructions: "Read the passage and answer the questions below. You have 60 minutes to complete this section.",
-                timeLimit: 60,
-                passage: aiContent.passage || aiContent.content,
-                questions: aiContent.questions || [],
-                totalQuestions: aiContent.questions?.length || 0
-              };
-            } else if (skill === 'writing') {
-              // Check if AI returned full format or single task
-              if (aiContent.tasks && Array.isArray(aiContent.tasks)) {
-                testContent = {
-                  title: `IELTS Academic Writing`,
-                  instructions: "Complete both writing tasks below. Task 1: 20 minutes, 150 words minimum. Task 2: 40 minutes, 250 words minimum.",
-                  timeLimit: 60,
-                  tasks: aiContent.tasks.map((t, idx) => ({ ...t, order: idx + 1 }))
-                };
-              } else {
-                // Single task fallback
-                testContent = {
-                  title: `IELTS Academic Writing`,
-                  instructions: `You should spend about ${aiContent.timeLimit || 40} minutes on this task. Write at least ${aiContent.wordCount || 250} words.`,
-                  timeLimit: aiContent.timeLimit || 40,
-                  task: aiContent.task,
-                  wordCount: aiContent.wordCount || 250
-                };
-              }
-            } else if (skill === 'listening') {
-              // Check if AI returned sections or single audio
-              if (aiContent.sections && Array.isArray(aiContent.sections)) {
-                testContent = {
-                  title: `IELTS Academic Listening`,
-                  instructions: "Listen to the recordings and answer all questions below. You will hear each recording once. There are 4 sections with 10 questions each. You have 30 minutes plus 10 minutes to transfer answers.",
-                  timeLimit: 30,
-                  sections: aiContent.sections,
-                  questions: aiContent.sections.flatMap(s => s.questions || []),
-                  totalQuestions: aiContent.sections.reduce((sum, s) => sum + (s.questions?.length || 0), 0)
-                };
-              } else {
-                // Single audio fallback
-                testContent = {
-                  title: `IELTS Academic Listening`,
-                  instructions: "Listen to the recording and answer the questions below. You will hear the recording once. You have 30 minutes plus 10 minutes to transfer answers.",
-                  timeLimit: 30,
-                  audioUrl: aiContent.audioUrl,
-                  questions: aiContent.questions || []
-                };
-              }
-            } else if (skill === 'speaking') {
-              // Check if AI returned parts or single part
-              if (aiContent.parts && Array.isArray(aiContent.parts)) {
-                testContent = {
-                  title: `IELTS Academic Speaking`,
-                  instructions: "Complete all speaking parts below. Part 1: 4-5 minutes. Part 2: 3-4 minutes (with 1 min preparation). Part 3: 4-5 minutes.",
-                  timeLimit: 14,
-                  parts: aiContent.parts.map((p, idx) => ({ ...p, order: idx + 1 }))
-                };
-              } else {
-                // Single part fallback
-                testContent = {
-                  title: `IELTS Academic Speaking`,
-                  instructions: "Answer the questions below clearly and in detail.",
-                  timeLimit: 15,
-                  questions: aiContent.questions || [],
-                  preparationTime: aiContent.preparationTime,
-                  speakingTime: aiContent.speakingTime
-                };
-              }
-            }
-          }
+        const aiContent = await generateWithAITemplate(skill, level);
+        
+        if (aiContent) {
+          // Format AI content using existing formatter
+          testContent = formatContentForTest(aiContent, skill);
+          console.log(`✅ AI Template generated content for ${skill} ${level}`);
         }
       } catch (aiError) {
-        // AI generation failed, continue to fallback
+        console.error('AI Template generation failed:', aiError.message);
+        // Continue to fallback
       }
       
       // Fallback to default content if AI fails
       if (!testContent) {
         testContent = generateIELTSTestContent(skill, level);
+        console.log(`⚠️ Using fallback content for ${skill} ${level}`);
       }
     }
     

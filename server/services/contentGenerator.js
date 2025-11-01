@@ -1634,8 +1634,85 @@ const getAllContent = (skill) => {
   return contentDatabase[skill] || null;
 };
 
+// New AI-powered content generation using templates
+const generateWithAITemplate = async (skill, level) => {
+  try {
+    // Import templates and mapper
+    const readingTemplate = require('../prompts/ieltsTemplates/readingTemplate');
+    const listeningTemplate = require('../prompts/ieltsTemplates/listeningTemplate');
+    const writingTemplate = require('../prompts/ieltsTemplates/writingTemplate');
+    const speakingTemplate = require('../prompts/ieltsTemplates/speakingTemplate');
+    const { normalizeBand, getDifficultyParams } = require('../utils/levelMapper');
+    
+    // Normalize level
+    const normalized = normalizeBand(level);
+    const difficultyParams = getDifficultyParams(normalized.cefr);
+    
+    // Get appropriate template
+    let template;
+    let systemPrompt;
+    
+    switch(skill) {
+      case 'reading':
+        template = readingTemplate[normalized.cefr];
+        systemPrompt = `${template.promptTemplate}\n\nDifficulty Parameters: ${JSON.stringify(difficultyParams)}`;
+        break;
+      case 'listening':
+        template = listeningTemplate[normalized.cefr];
+        systemPrompt = `${template.promptTemplate}\n\nDifficulty Parameters: ${JSON.stringify(difficultyParams)}`;
+        break;
+      case 'writing':
+        template = writingTemplate[normalized.cefr];
+        systemPrompt = `${template.promptTemplate}\n\nDifficulty Parameters: ${JSON.stringify(difficultyParams)}`;
+        break;
+      case 'speaking':
+        template = speakingTemplate[normalized.cefr];
+        systemPrompt = `${template.promptTemplate}\n\nDifficulty Parameters: ${JSON.stringify(difficultyParams)}`;
+        break;
+      default:
+        return null;
+    }
+    
+    // If no OpenAI API key, return null to use fallback
+    if (!process.env.OPENAI_API_KEY) {
+      return null;
+    }
+    
+    // Call OpenAI
+    const OpenAI = require('openai');
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    
+    const aiResponse = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `Generate a complete ${skill} test for level ${normalized.cefr} (band ${normalized.numeric}).` }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    });
+    
+    // Parse response
+    let aiContent;
+    try {
+      const content = aiResponse.choices[0].message.content;
+      const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/\{[\s\S]*\}/);
+      aiContent = jsonMatch ? JSON.parse(jsonMatch[1] || jsonMatch[0]) : JSON.parse(content);
+    } catch (parseError) {
+      console.error('AI response parse error:', parseError.message);
+      return null;
+    }
+    
+    return aiContent;
+  } catch (error) {
+    console.error('AI generation error:', error.message);
+    return null;
+  }
+};
+
 module.exports = {
   getRandomContent,
   getAllContent,
-  contentDatabase
+  contentDatabase,
+  generateWithAITemplate // Export new function
 };
