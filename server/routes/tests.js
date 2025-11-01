@@ -221,12 +221,15 @@ router.post('/submit', auth, async (req, res) => {
       }).catch(() => {});
     } catch (_) {}
 
-    // Update user statistics
+    // Update user statistics (only if totalBand is a number for calculation)
     user.totalTests += 1;
-    if (user.totalTests === 1) {
-      user.averageBand = overallBand;
-    } else {
-      user.averageBand = ((user.averageBand * (user.totalTests - 1)) + overallBand) / user.totalTests;
+    const numericBand = typeof totalBand === 'number' ? totalBand : parseFloat(totalBand);
+    if (!isNaN(numericBand)) {
+      if (user.totalTests === 1) {
+        user.averageBand = numericBand;
+      } else {
+        user.averageBand = ((user.averageBand * (user.totalTests - 1)) + numericBand) / user.totalTests;
+      }
     }
     await user.save();
 
