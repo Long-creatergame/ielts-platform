@@ -264,10 +264,10 @@ router.get('/mine', auth, async (req, res) => {
       .select('-answers');
     
     console.log(`✅ Found ${tests.length} tests for user ${user._id}`);
-    res.json({ tests });
+    return res.json({ tests });
   } catch (error) {
     console.error('Get user tests error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -276,14 +276,30 @@ router.get('/:id', auth, async (req, res) => {
   try {
     const user = req.user;
     const testId = req.params.id;
+    console.log('🔍 Fetching test result for:', testId, 'user:', user._id);
+    
     const test = await Test.findOne({ _id: testId, userId: user._id });
+    
     if (!test) {
-      return res.status(404).json({ success: false, message: 'Test not found' });
+      console.warn('⚠️ Test not found:', testId, 'for user:', user._id);
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Test not found' 
+      });
     }
-    return res.json({ success: true, data: test });
+    
+    console.log('✅ Test result fetched successfully:', testId);
+    return res.status(200).json({ 
+      success: true, 
+      test: test 
+    });
   } catch (error) {
-    console.error('Get test by id error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ Error fetching test result:', error.message);
+    console.error('❌ Error stack:', error.stack);
+    return res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Server error' 
+    });
   }
 });
 
