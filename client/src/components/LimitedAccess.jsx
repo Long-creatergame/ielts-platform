@@ -14,6 +14,9 @@ const LimitedAccess = ({
   
   const limitations = getFeatureLimitations(user, feature);
   
+  // TEMPORARY: NO LIMITATIONS FOR TESTING
+  return <>{children}</>;
+  
   // If no limitations or user is paid, show full content
   if (!limitations || user.paid || user.plan === 'paid') {
     return <>{children}</>;

@@ -13,6 +13,13 @@ router.get('/can-start', auth, async (req, res) => {
   try {
     const user = req.user;
     
+    // TEMPORARY: ALL TESTS UNLOCKED FOR TESTING
+    return res.json({ 
+      allowed: true, 
+      isFree: false,
+      message: 'All features unlocked'
+    });
+    
     // Check free trial usage
     if (user.freeTestsUsed < user.freeTestsLimit) {
       return res.json({ 
@@ -50,14 +57,15 @@ router.post('/start', auth, async (req, res) => {
     const user = req.user;
     const { level, skill } = req.body;
     
+    // TEMPORARY: ALL TESTS UNLOCKED FOR TESTING
     // Check if user can start test
-    if (user.freeTestsUsed >= user.freeTestsLimit && !user.paid) {
-      return res.status(403).json({ 
-        paywall: true,
-        message: `Free trial completed (${user.freeTestsUsed}/${user.freeTestsLimit} used). Payment required to continue.`,
-        upgradeUrl: '/pricing'
-      });
-    }
+    // if (user.freeTestsUsed >= user.freeTestsLimit && !user.paid) {
+    //   return res.status(403).json({ 
+    //     paywall: true,
+    //     message: `Free trial completed (${user.freeTestsUsed}/${user.freeTestsLimit} used). Payment required to continue.`,
+    //     upgradeUrl: '/pricing'
+    //   });
+    // }
 
     // Create new test
     const test = new Test({

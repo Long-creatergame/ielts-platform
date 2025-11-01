@@ -12,6 +12,9 @@ const PremiumFeatureLock = ({
 }) => {
   const { user } = useAuth();
   
+  // TEMPORARY: ALL FEATURES UNLOCKED FOR TESTING
+  return <>{children}</>;
+  
   // If user has access, show the feature
   if (user && (user.paid || user.plan === 'paid')) {
     return <>{children}</>;
