@@ -107,13 +107,41 @@ router.post('/submit', auth, async (req, res) => {
     const user = req.user;
     console.log('🧩 Submit test - User from token:', user?._id, user?.email);
     
+    // Check userId safety
+    if (!user || !user._id) {
+      console.warn('❗ Missing userId in submission');
+      return res.status(200).json({
+        success: false,
+        message: 'Missing user ID — please re-login'
+      });
+    }
+    
     // Support both new and legacy payloads
     let { level, overallBand, skillScores, testAnswers, completed, skill, answers, timeSpent } = req.body || {};
+    
+    // Validate answers exist
+    if (!testAnswers && !answers) {
+      console.warn('❗ No answers provided for user:', user._id);
+      return res.status(200).json({
+        success: false,
+        message: 'No answers submitted. Please complete the test before submitting.'
+      });
+    }
 
     // If client sent minimal payload (skill + answers), adapt it
     if (!testAnswers && answers) {
       testAnswers = answers;
     }
+    
+    // Additional safety checks
+    if (!testAnswers && !answers) {
+      console.warn('❗ All answer fields are missing for user:', user._id);
+      return res.status(200).json({
+        success: false,
+        message: 'No answers provided. Please complete the test before submitting.'
+      });
+    }
+    
     if (!level) {
       level = user?.currentLevel || 'A2';
     }
@@ -253,7 +281,10 @@ router.post('/submit', auth, async (req, res) => {
   } catch (error) {
     console.error('❌ Test submit error:', error);
     console.error('❌ Error stack:', error.stack);
-    return res.status(500).json({ message: 'Server error', error: error.message });
+    return res.status(200).json({ 
+      success: false,
+      message: 'Internal error while submitting test. Please try again later.'
+    });
   }
 });
 

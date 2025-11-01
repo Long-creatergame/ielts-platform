@@ -182,8 +182,21 @@ router.post('/submit', auth, async (req, res) => {
     const { skill, answers, timeSpent } = req.body;
     const userId = req.user._id;
 
-    if (!skill || !answers) {
-      return res.status(400).json({ error: 'Skill and answers are required' });
+    // Safety checks
+    if (!skill) {
+      console.warn('❗ Missing skill in quick practice submission');
+      return res.status(200).json({ 
+        success: false,
+        message: 'Skill is required' 
+      });
+    }
+
+    if (!answers) {
+      console.warn('❗ No answers provided in quick practice submission');
+      return res.status(200).json({ 
+        success: false,
+        message: 'Please provide your answers before submitting' 
+      });
     }
 
     // Calculate score based on answers
@@ -228,7 +241,10 @@ router.post('/submit', auth, async (req, res) => {
     });
   } catch (error) {
     console.error('Submit quick practice error:', error);
-    res.status(500).json({ error: 'Server error' });
+    return res.status(200).json({ 
+      success: false,
+      message: 'Failed to submit practice. Please try again later.' 
+    });
   }
 });
 
