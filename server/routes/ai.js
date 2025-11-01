@@ -1,9 +1,14 @@
 const express = require('express');
 const aiScoringService = require('../services/aiScoringService.js');
 const recommendationService = require('../services/recommendationService.js');
+const { generateLearningPath, getLearningPath } = require('../controllers/learningPathController.js');
 const auth = require('../middleware/auth.js');
 
 const router = express.Router();
+
+// Learning Path endpoints
+router.post('/learning-path', auth, generateLearningPath);
+router.get('/learning-path', auth, getLearningPath);
 
 // AI Scoring endpoints
 router.post('/score', auth, async (req, res) => {

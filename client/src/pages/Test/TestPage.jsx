@@ -892,6 +892,21 @@ export default function TestPage() {
       if (response && response.ok) {
         const result = await response.json();
         console.log('✅ Test saved to backend successfully:', result);
+        
+        // Trigger learning path update (fire and forget)
+        try {
+          const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+          fetch(`${API_BASE_URL}/api/ai/learning-path`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          }).catch(err => console.log('Learning path update failed (non-critical):', err));
+        } catch (err) {
+          // Silent fail for learning path update
+        }
+        
         console.log('📍 Navigating to:', `/test/result/${result.testId}`);
         navigate(`/test/result/${result.testId}`, { state: { testResult } });
       } else {
