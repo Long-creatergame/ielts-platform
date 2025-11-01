@@ -25,6 +25,7 @@ const analyticsRoutes = require('./routes/analytics.js');
 const leaderboardRoutes = require('./routes/leaderboard.js');
 const weeklyReportRoutes = require('./routes/weeklyReport.js');
 const healthRoutes = require('./routes/health.js');
+const userPreferencesRoutes = require('./routes/userPreferences.js');
 
 dotenv.config();
 
@@ -240,6 +241,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/weekly-report', weeklyReportRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/user-preferences', userPreferencesRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

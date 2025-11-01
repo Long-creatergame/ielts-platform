@@ -36,6 +36,7 @@ const MyWeakness = lazy(() => import('../components/MyWeakness'));
 const UnifiedRecommendations = lazy(() => import('../components/UnifiedRecommendations'));
 const UnifiedProgressTracking = lazy(() => import('../components/UnifiedProgressTracking'));
 const LearningPath = lazy(() => import('../pages/LearningPath'));
+const PracticePlan = lazy(() => import('../components/PracticePlan'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -283,26 +284,15 @@ export default function Dashboard() {
                   <span>{t('dashboard.myWeakness')}</span>
                 </button>
                 <button
-                  onClick={() => setActiveTab('recommendations')}
+                  onClick={() => setActiveTab('practice-plan')}
                   className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
-                    activeTab === 'recommendations'
-                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
-                  }`}
-                >
-                  <span className="text-lg">💡</span>
-                  <span>{t('dashboard.recommendations', 'Recommendations')}</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab('ai-personalization')}
-                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
-                    activeTab === 'ai-personalization'
+                    activeTab === 'practice-plan'
                       ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
                       : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
                   }`}
                 >
                   <span className="text-lg">🎯</span>
-                  <span>{t('aiPersonalization.title', 'AI Personalization')}</span>
+                  <span>Practice Plan</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('progress-tracking')}
@@ -464,11 +454,9 @@ export default function Dashboard() {
                          </Suspense>
                        )}
 
-                       {activeTab === 'recommendations' && (
+                       {activeTab === 'practice-plan' && (
                          <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
-                           <PremiumFeatureLock feature={FEATURE_ACCESS.PREMIUM.ADVANCED_RECOMMENDATIONS}>
-                             <UnifiedRecommendations />
-                           </PremiumFeatureLock>
+                           <PracticePlan />
                          </Suspense>
                        )}
 
