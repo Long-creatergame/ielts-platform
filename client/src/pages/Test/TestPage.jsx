@@ -871,12 +871,17 @@ export default function TestPage() {
     
     // Save to backend (if available)
     try {
+      const token = localStorage.getItem('token');
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
       console.log('🔄 Attempting to save test to backend...');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/tests/submit`, {
+      console.log('🔑 Token exists:', !!token);
+      console.log('🌐 API URL:', API_BASE_URL);
+      
+      const response = await fetch(`${API_BASE_URL}/api/tests/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(testResult)
       }).catch((fetchError) => {
@@ -890,7 +895,13 @@ export default function TestPage() {
         console.log('📍 Navigating to:', `/test/result/${result.testId}`);
         navigate(`/test/result/${result.testId}`, { state: { testResult } });
       } else {
-        console.warn('⚠️ Backend save failed (status:', response?.status, '), using localStorage only');
+        const status = response?.status;
+        const statusText = response?.statusText;
+        console.warn(`⚠️ Backend save failed (status: ${status}, statusText: ${statusText}), using localStorage only`);
+        if (response) {
+          const errorData = await response.text();
+          console.warn('⚠️ Error response:', errorData);
+        }
         console.log('📍 Navigating to:', '/test/result');
         // Navigate to result page (data already saved to localStorage)
         navigate('/test/result', { state: { testResult } });
