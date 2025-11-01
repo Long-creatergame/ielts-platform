@@ -27,28 +27,28 @@ export default function RealtimeClient({ onTestStarted, onTestCompleted }) {
         timeout: 5000
       });
 
-      socket.on('connect', () => {
-        // Join user-specific room using user id
-        socket.emit('join', String(user.id || user._id));
-      });
+    socket.on('connect', () => {
+      // Join user-specific room using user id
+      socket.emit('join', String(user.id || user._id));
+    });
 
       socket.on('connect_error', (error) => {
         console.log('🔌 WebSocket connection failed (expected in development)');
       });
 
-      socket.on('test:started', (payload) => {
-        if (onTestStarted) onTestStarted(payload);
-      });
+    socket.on('test:started', (payload) => {
+      if (onTestStarted) onTestStarted(payload);
+    });
 
-      socket.on('test:completed', (payload) => {
-        if (onTestCompleted) onTestCompleted(payload);
-      });
+    socket.on('test:completed', (payload) => {
+      if (onTestCompleted) onTestCompleted(payload);
+    });
 
-      return () => {
-        try {
-          socket.disconnect();
-        } catch (_) {}
-      };
+    return () => {
+      try {
+        socket.disconnect();
+      } catch (_) {}
+    };
     } catch (error) {
       console.log('⚠️ WebSocket initialization skipped');
     }

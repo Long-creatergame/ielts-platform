@@ -14,9 +14,9 @@ const VoiceRecorder = ({ onRecordingComplete, onRecordingStart, onRecordingStop,
   useEffect(() => {
     // Check for microphone permission
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(() => setHasPermission(true))
-        .catch(() => setHasPermission(false));
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(() => setHasPermission(true))
+      .catch(() => setHasPermission(false));
     } else {
       setHasPermission(false);
     }
