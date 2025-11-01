@@ -70,22 +70,39 @@ Return ONLY JSON:
       temperature: 0.8
     });
 
-    // Parse response
+    // Parse response with robust fallback handling
     let content;
+    const rawResponse = completion.choices[0].message.content;
+    
     try {
-      content = JSON.parse(completion.choices[0].message.content);
-    } catch (parseError) {
-      // Try extracting JSON from markdown
-      const text = completion.choices[0].message.content;
-      const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
-      content = jsonMatch ? JSON.parse(jsonMatch[1] || jsonMatch[0]) : null;
-    }
-
-    if (!content) {
-      return res.status(500).json({ 
-        success: false, 
-        message: "Failed to parse AI response" 
-      });
+      // First try: Direct JSON parse
+      content = JSON.parse(rawResponse);
+      console.log("✅ Successfully parsed JSON response");
+    } catch (err) {
+      // Second try: Extract JSON from markdown code blocks
+      try {
+        const jsonMatch = rawResponse.match(/```json\s*([\s\S]*?)\s*```/) || rawResponse.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          content = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+          console.log("✅ Successfully parsed JSON from markdown");
+        } else {
+          throw new Error("No JSON found");
+        }
+      } catch (extractError) {
+        // Fallback: Return raw text in a structured format
+        console.warn("⚠️ OpenAI response not in JSON format. Returning raw text.");
+        console.warn("Raw response preview:", rawResponse.substring(0, 200));
+        
+        content = {
+          instructions: `Generated IELTS ${skill} test for level ${normalizedLevel}.`,
+          questions: [rawResponse],
+          expectedResponseFormat: "Descriptive text",
+          metadata: {
+            parsedSuccessfully: false,
+            rawResponseUsed: true
+          }
+        };
+      }
     }
 
     console.log("✅ Generated IELTS test for:", skill, normalizedLevel);
