@@ -26,8 +26,8 @@ export default class ErrorBoundary extends React.Component {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 text-center">
             <div className="text-5xl mb-3">🛟</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Đã xảy ra lỗi không mong muốn</h2>
-            <p className="text-gray-600 mb-4">Hãy thử tải lại trang hoặc quay về Dashboard.</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Đang cập nhật hệ thống. Vui lòng thử lại sau vài phút.</h2>
+            <p className="text-gray-600 mb-4">Chúng tôi đang nỗ lực sửa chữa. Nếu vấn đề vẫn tiếp diễn, hãy liên hệ hỗ trợ.</p>
             <div className="space-y-2">
               <button 
                 onClick={() => window.location.reload()} 
