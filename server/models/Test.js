@@ -36,13 +36,13 @@ const testSchema = new mongoose.Schema({
     speaking: { correct: Number, total: Number }
   },
   skillBands: {
-    reading: Number,
-    listening: Number,
-    writing: Number,
-    speaking: Number
+    reading: mongoose.Schema.Types.Mixed,
+    listening: mongoose.Schema.Types.Mixed,
+    writing: mongoose.Schema.Types.Mixed,
+    speaking: mongoose.Schema.Types.Mixed
   },
   totalBand: {
-    type: Number,
+    type: mongoose.Schema.Types.Mixed, // Allow both Number (band score) and String (level like A1, B1, C1)
     required: true
   },
   answers: {

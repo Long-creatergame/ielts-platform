@@ -171,6 +171,7 @@ router.post('/submit', auth, async (req, res) => {
 
     await test.save();
     console.log(`✅ Test saved to MongoDB: ${test._id} for user ${user._id}`);
+    console.log('✅ Test saved successfully with skillBands:', skillScores);
     console.log('✅ Mongo persistence fixed successfully');
 
     // Emit realtime update for test result + analytics + leaderboard
