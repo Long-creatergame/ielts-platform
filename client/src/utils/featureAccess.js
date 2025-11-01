@@ -43,6 +43,9 @@ export const FEATURE_ACCESS = {
 export const hasFeatureAccess = (user, feature) => {
   if (!user) return false;
   
+  // TEMPORARY: ALL FEATURES UNLOCKED FOR TESTING
+  return true;
+  
   // Paid users have access to everything
   if (user.paid || user.plan === 'paid') {
     return true;
@@ -55,6 +58,10 @@ export const hasFeatureAccess = (user, feature) => {
 
 // Get feature limitations for free users
 export const getFeatureLimitations = (user, feature) => {
+  // TEMPORARY: NO LIMITATIONS FOR TESTING
+  if (!user) return null;
+  return null;
+  
   if (!user || user.paid || user.plan === 'paid') {
     return null; // No limitations for paid users
   }
@@ -76,6 +83,9 @@ export const getFeatureLimitations = (user, feature) => {
 
 // Check if user can perform an action
 export const canPerformAction = (user, action) => {
+  // TEMPORARY: ALL ACTIONS ALLOWED FOR TESTING
+  return true;
+  
   switch (action) {
     case 'start_test':
       return user.paid || user.plan === 'paid' || user.freeTestsUsed < user.freeTestsLimit;
