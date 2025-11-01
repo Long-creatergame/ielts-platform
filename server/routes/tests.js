@@ -243,8 +243,9 @@ router.post('/submit', auth, async (req, res) => {
       message: 'Test results saved successfully'
     });
   } catch (error) {
-    console.error('Test submit error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ Test submit error:', error);
+    console.error('❌ Error stack:', error.stack);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
