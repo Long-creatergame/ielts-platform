@@ -282,6 +282,23 @@ if (process.env.NODE_ENV !== 'test') {
   }
 }
 
+// Cache cleanup job (weekly)
+if (process.env.NODE_ENV !== 'test') {
+  const { cleanupExpiredPrompts } = require('./utils/cacheCleanup');
+  
+  // Run cleanup on startup
+  setTimeout(async () => {
+    await cleanupExpiredPrompts();
+  }, 30000); // 30 seconds after startup
+  
+  // Schedule weekly cleanup (7 days = 604800000 ms)
+  setInterval(async () => {
+    await cleanupExpiredPrompts();
+  }, 7 * 24 * 60 * 60 * 1000);
+  
+  console.log('🧹 Cache cleanup job scheduled (weekly)');
+}
+
 // In test mode, export app without starting the listener to avoid EADDRINUSE
 if (process.env.NODE_ENV !== 'test') {
   server.listen(PORT, () => {
