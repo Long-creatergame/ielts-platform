@@ -36,13 +36,19 @@ export default function CountdownTimer({ duration, onComplete, onTick, className
 
   const getColor = () => {
     const percent = timeLeft / duration;
-    if (percent > 0.5) return '#35b86d'; // Green
+    if (percent > 0.5) return '#35b86d'; // Green - Antoree
     if (percent > 0.2) return '#f7c948'; // Yellow
-    return '#f05252'; // Red
+    return '#f05252'; // Red with pulse
+  };
+
+  const shouldPulse = () => {
+    const percent = timeLeft / duration;
+    return percent <= 0.2;
   };
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
+  const pulseClass = shouldPulse() ? 'animate-pulse' : '';
 
   return (
     <div className={`relative w-24 h-24 ${className}`}>
@@ -68,13 +74,13 @@ export default function CountdownTimer({ duration, onComplete, onTick, className
           strokeDashoffset={circumference - progress}
           strokeLinecap="round"
           transform="rotate(-90 50 50)"
-          className="transition-all duration-300 ease-linear"
+          className={`transition-all duration-300 ease-linear ${pulseClass}`}
         />
       </svg>
       {/* Time display */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-lg font-bold text-gray-800 leading-none">
+          <div className={`text-lg font-bold leading-none ${shouldPulse() ? 'text-red-600' : 'text-gray-800'}`}>
             {minutes}:{seconds.toString().padStart(2, '0')}
           </div>
           <div className="text-xs text-gray-600 mt-1">

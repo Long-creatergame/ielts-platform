@@ -123,7 +123,13 @@ const ReadingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
       </div>
 
       {/* Cambridge 2-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <motion.div 
+        key={currentPassage}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+      >
         {/* Left Column: Reading Passage */}
         <div className="lg:sticky lg:top-4 h-fit max-h-[calc(100vh-200px)] overflow-y-auto bg-white rounded-xl shadow-md p-6 border border-indigo-100">
           <ReadingPassageCard 
@@ -160,7 +166,7 @@ const ReadingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Submit Button */}
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">

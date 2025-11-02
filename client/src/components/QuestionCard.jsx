@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const QuestionCard = ({ question, index, onAnswerChange, value, disabled = false }) => {
   const handleAnswerChange = (answer) => {
@@ -13,7 +14,12 @@ const QuestionCard = ({ question, index, onAnswerChange, value, disabled = false
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200 hover:border-blue-300 transition-all duration-200">
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
+      className="bg-white rounded-lg p-4 mb-4 border border-gray-200 hover:border-blue-300 transition-all duration-200"
+    >
       {/* Question Number & Type */}
       <div className="flex items-center justify-between mb-3">
         <span className="bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1 rounded-full">
@@ -100,7 +106,7 @@ const QuestionCard = ({ question, index, onAnswerChange, value, disabled = false
           💡 {question.hint}
         </p>
       )}
-    </div>
+    </motion.div>
   );
 };
 

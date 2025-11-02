@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import CountdownTimer from './CountdownTimer';
+import LoadingBar from './LoadingBar';
 
 const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const [task1Answer, setTask1Answer] = useState('');
