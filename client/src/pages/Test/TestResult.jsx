@@ -49,7 +49,47 @@ export default function TestResult() {
       
       // Try to get from location state first
       if (location.state?.testResult) {
-        setTestResult(location.state.testResult);
+        const stateResult = location.state.testResult;
+        
+        // Handle different result formats (full test vs quick practice)
+        if (stateResult.type === 'quick-practice') {
+          // Transform quick practice result to TestResult format
+          // Try to parse AI feedback if it exists
+          let parsedFeedback = null;
+          if (stateResult.feedback && typeof stateResult.feedback === 'string') {
+            try {
+              const parsed = JSON.parse(stateResult.feedback);
+              if (parsed && typeof parsed === 'object') {
+                parsedFeedback = parsed;
+              }
+            } catch (e) {
+              // Not JSON, use as-is
+            }
+          } else if (stateResult.feedback && typeof stateResult.feedback === 'object') {
+            parsedFeedback = stateResult.feedback;
+          }
+          
+          const transformedQuickResult = {
+            id: stateResult.practiceId || Date.now().toString(),
+            testType: 'Quick Practice',
+            level: user?.currentLevel || 'A2',
+            overallBand: parsedFeedback ? parsedFeedback.overall : (stateResult.bandScore || stateResult.score?.bandScore || 6.5),
+            skillScores: {
+              [stateResult.skill]: parsedFeedback ? parsedFeedback.overall : (stateResult.bandScore || stateResult.score?.bandScore || 6.5)
+            },
+            completedAt: new Date().toISOString(),
+            duration: '30m',
+            aiFeedback: parsedFeedback ? parsedFeedback.feedback : (stateResult.feedback || 'Practice completed.'),
+            parsedFeedback: parsedFeedback,
+            feedback: stateResult.feedback,
+            type: 'quick-practice',
+            skill: stateResult.skill
+          };
+          setTestResult(transformedQuickResult);
+        } else {
+          setTestResult(stateResult);
+        }
+        
         loadPreviousScore();
         setLoading(false);
         return;

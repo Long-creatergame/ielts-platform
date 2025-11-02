@@ -199,16 +199,38 @@ router.post('/submit', auth, async (req, res) => {
       });
     }
 
+    // Generate AI feedback for Writing/Speaking
+    let aiFeedback = null;
+    if (skill === 'writing' && typeof answers === 'string' && answers.length > 50) {
+      try {
+        const aiScoringService = require('../services/aiScoringService');
+        console.info('[AIFeedback] Generating feedback for quick Writing practice');
+        const feedbackResult = await aiScoringService.scoreWriting(answers, 'Task 2');
+        
+        if (feedbackResult.success && feedbackResult.data) {
+          aiFeedback = feedbackResult.data;
+          console.info('[AIFeedback] Quick Writing practice scored, Overall:', aiFeedback.overall);
+        } else {
+          console.warn('[AIFeedback] Failed to generate feedback for quick practice');
+        }
+      } catch (feedbackError) {
+        console.error('[AIFeedback] Error generating feedback:', feedbackError.message);
+      }
+    }
+
     // Calculate score based on answers
     const score = calculateQuickPracticeScore(skill, answers);
-    const feedback = generateFeedback(skill, score);
+    const feedback = aiFeedback ? aiFeedback : generateFeedback(skill, score);
     
     // ✅ SAVE practice session to database for tracking
+    // Store AI feedback as JSON if it exists, otherwise store as simple string
+    const feedbackToStore = aiFeedback ? JSON.stringify(aiFeedback) : feedback;
+    
     const practiceSession = await PracticeSession.create({
       userId: userId,
       skill: skill,
-      bandScore: score.bandScore,
-      feedback: feedback,
+      bandScore: aiFeedback ? aiFeedback.overall : score.bandScore,
+      feedback: feedbackToStore,
       timeSpent: timeSpent || 0,
       answers: answers,
       type: 'quick-practice',
@@ -232,8 +254,11 @@ router.post('/submit', auth, async (req, res) => {
     res.json({
       success: true,
       data: {
-        score,
-        feedback: feedback,
+        score: {
+          ...score,
+          bandScore: aiFeedback ? aiFeedback.overall : score.bandScore
+        },
+        feedback: aiFeedback ? aiFeedback : feedback,
         timeSpent,
         submittedAt: practiceSession.completedAt,
         practiceId: practiceSession._id
@@ -249,15 +274,34 @@ router.post('/submit', auth, async (req, res) => {
 });
 
 function calculateQuickPracticeScore(skill, answers) {
-  // Simple scoring logic - in real implementation, this would be more sophisticated
-  const totalQuestions = answers.length;
-  const correctAnswers = answers.filter(answer => answer.isCorrect).length;
+  // Handle different answer formats
+  let totalQuestions, correctAnswers;
+  
+  if (Array.isArray(answers)) {
+    // Array format: answers = [{...}, {...}] or simple array
+    totalQuestions = answers.length;
+    correctAnswers = answers.filter(answer => {
+      if (typeof answer === 'object') {
+        return answer.isCorrect;
+      }
+      return false;
+    }).length;
+  } else if (typeof answers === 'string' && skill === 'writing') {
+    // For writing, answers is a string essay
+    // Use AI or heuristic scoring
+    totalQuestions = 1;
+    correctAnswers = 0;
+  } else {
+    // Fallback: treat as no questions answered
+    totalQuestions = 1;
+    correctAnswers = 0;
+  }
   
   return {
     total: totalQuestions,
     correct: correctAnswers,
-    percentage: Math.round((correctAnswers / totalQuestions) * 100),
-    bandScore: Math.max(4, Math.min(9, 4 + (correctAnswers / totalQuestions) * 5))
+    percentage: totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0,
+    bandScore: totalQuestions > 0 ? Math.max(4, Math.min(9, 4 + (correctAnswers / totalQuestions) * 5)) : 4
   };
 }
 
