@@ -37,6 +37,7 @@ const UnifiedRecommendations = lazy(() => import('../components/UnifiedRecommend
 const UnifiedProgressTracking = lazy(() => import('../components/UnifiedProgressTracking'));
 const LearningPath = lazy(() => import('../pages/LearningPath'));
 const PracticePlan = lazy(() => import('../components/PracticePlan'));
+const BandProgressChart = lazy(() => import('../components/BandProgressChart'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -316,6 +317,17 @@ export default function Dashboard() {
                   <span className="text-lg">🗺️</span>
                   <span>{t('dashboard.learningPath', 'Learning Path')}</span>
                 </button>
+                <button
+                  onClick={() => setActiveTab('band-progress')}
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
+                    activeTab === 'band-progress'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
+                  }`}
+                >
+                  <span className="text-lg">📈</span>
+                  <span>Band Progress</span>
+                </button>
               </nav>
             </div>
             
@@ -471,6 +483,12 @@ export default function Dashboard() {
                        {activeTab === 'learning-path' && (
                          <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
                            <LearningPath />
+                         </Suspense>
+                       )}
+
+                       {activeTab === 'band-progress' && (
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <BandProgressChart />
                          </Suspense>
                        )}
             </div>

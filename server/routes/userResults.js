@@ -132,4 +132,75 @@ router.get('/:skill', auth, async (req, res) => {
   }
 });
 
+// Get full band history timeline for all skills
+router.get('/history/timeline', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    console.info('[BandHistory] Fetching band timeline for user:', userId);
+    
+    // Get all completed tests
+    const tests = await Test.find({
+      userId,
+      completed: true
+    })
+    .sort({ dateTaken: 1 }) // Chronological order
+    .limit(100) // Last 100 tests
+    .select('skillBands dateTaken createdAt');
+    
+    // Aggregate by skill
+    const skillHistory = {
+      reading: [],
+      listening: [],
+      writing: [],
+      speaking: []
+    };
+    
+    tests.forEach(test => {
+      const testDate = test.dateTaken || test.createdAt;
+      
+      if (test.skillBands) {
+        Object.entries(test.skillBands).forEach(([skill, band]) => {
+          const bandScore = typeof band === 'number' ? band : parseFloat(band);
+          if (!isNaN(bandScore) && bandScore > 0) {
+            skillHistory[skill].push({
+              band: bandScore,
+              date: testDate.toISOString().split('T')[0], // YYYY-MM-DD format
+              timestamp: testDate
+            });
+          }
+        });
+      }
+    });
+    
+    // Sort each skill's history by date
+    Object.keys(skillHistory).forEach(skill => {
+      skillHistory[skill].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    });
+    
+    console.info('[BandHistory] Loaded timeline:', {
+      reading: skillHistory.reading.length,
+      listening: skillHistory.listening.length,
+      writing: skillHistory.writing.length,
+      speaking: skillHistory.speaking.length
+    });
+    
+    return res.json({
+      success: true,
+      data: skillHistory
+    });
+  } catch (error) {
+    console.error('[BandHistory] Error:', error.message);
+    return res.status(200).json({
+      success: false,
+      message: 'Failed to fetch band history',
+      data: {
+        reading: [],
+        listening: [],
+        writing: [],
+        speaking: []
+      }
+    });
+  }
+});
+
 module.exports = router;
