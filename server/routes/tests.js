@@ -1,10 +1,15 @@
 const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
+const CachedFeedback = require('../models/CachedFeedback');
 const auth = require('../middleware/auth');
 const { generateIELTSTest } = require('../controllers/testGeneratorController');
 const aiScoringService = require('../services/aiScoringService');
+const crypto = require('crypto');
+const OpenAI = require('openai');
 const router = express.Router();
+
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 // New AI-powered test generation endpoint
 router.post('/generate-test', auth, generateIELTSTest);
@@ -215,7 +220,7 @@ router.post('/submit', auth, async (req, res) => {
     console.log('✅ Test saved successfully with skillBands:', skillScores);
     console.log('✅ Mongo persistence fixed successfully');
 
-    // Generate AI feedback for Writing or Speaking tests
+    // Generate AI feedback for Writing or Speaking tests with caching
     let aiFeedback = null;
     if (skill === 'writing' || skill === 'speaking') {
       try {
@@ -225,15 +230,75 @@ router.post('/submit', auth, async (req, res) => {
         
         if (writingAnswers && writingAnswers.length > 50) {
           console.info('[AIFeedback] Generating feedback for', skill, 'test');
-          const feedbackResult = await aiScoringService.scoreWriting(writingAnswers, skill === 'writing' ? 'Task 2' : 'Part 2');
           
-          if (feedbackResult.success && feedbackResult.data) {
-            aiFeedback = feedbackResult.data;
+          // Create hash for caching
+          const essayHash = crypto.createHash('md5').update(writingAnswers.trim()).digest('hex');
+          
+          // Try to get from cache first
+          let cachedFeedback = null;
+          try {
+            const cached = await CachedFeedback.findOne({ hash: essayHash });
+            if (cached) {
+              cached.usageCount += 1;
+              cached.lastUsed = new Date();
+              await cached.save();
+              cachedFeedback = cached.feedback;
+              console.info('[CacheHit] Loaded cached feedback for hash:', essayHash.substring(0, 8));
+            }
+          } catch (cacheError) {
+            console.warn('[AIFeedback] Cache lookup failed:', cacheError.message);
+          }
+          
+          // If cached, use it; otherwise generate new
+          if (cachedFeedback) {
+            aiFeedback = cachedFeedback;
+          } else {
+            // Generate new feedback with retry logic
+            let attempt = 0;
+            let success = false;
+            
+            while (!success && attempt < 3) {
+              attempt++;
+              try {
+                const feedbackResult = await aiScoringService.scoreWriting(writingAnswers, skill === 'writing' ? 'Task 2' : 'Part 2');
+                
+                if (feedbackResult.success && feedbackResult.data && feedbackResult.data.overall) {
+                  aiFeedback = feedbackResult.data;
+                  success = true;
+                  
+                  // Cache the feedback
+                  try {
+                    await CachedFeedback.create({
+                      hash: essayHash,
+                      feedback: aiFeedback,
+                      usageCount: 1
+                    });
+                    console.info('[AIFeedback] Cached new feedback for hash:', essayHash.substring(0, 8));
+                  } catch (saveError) {
+                    // Non-critical if cache save fails
+                    console.warn('[AIFeedback] Failed to cache feedback:', saveError.message);
+                  }
+                }
+              } catch (aiError) {
+                console.error(`[AIFeedback-Attempt ${attempt}] Error:`, aiError.message);
+                if (attempt < 3) {
+                  // Wait before retry (exponential backoff)
+                  await new Promise(resolve => setTimeout(resolve, attempt * 1500));
+                }
+              }
+            }
+            
+            if (!success) {
+              console.error('[AIFeedback] All 3 attempts failed');
+              aiFeedback = { error: true, message: 'AI feedback unavailable. Please try again later.' };
+            }
+          }
+          
+          // Save feedback to test
+          if (aiFeedback) {
             test.feedback = JSON.stringify(aiFeedback);
             await test.save();
-            console.info('[AIFeedback] Essay scored', test._id, 'Overall:', aiFeedback.overall);
-          } else {
-            console.warn('[AIFeedback] Failed to generate feedback for test', test._id);
+            console.info('[AIFeedback] Essay scored', test._id, 'Overall:', aiFeedback.overall || 'N/A');
           }
         }
       } catch (feedbackError) {
