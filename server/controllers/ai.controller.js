@@ -93,8 +93,7 @@ Make sure the feedback is constructive and specific, around 50-100 words.
         throw new Error('No JSON found in response');
       }
     } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
-      console.error('Raw AI response:', aiResponse);
+      console.warn('[AI:ParseError] JSON parsing failed, using fallback');
       
       // Fallback scoring if JSON parsing fails
       scoreData = {
@@ -155,13 +154,19 @@ Make sure the feedback is constructive and specific, around 50-100 words.
     });
 
   } catch (error) {
-    console.error('AI scoring error:', error);
+    console.error('[AI:ScoringError]', error.message);
     
     if (error.code === 'insufficient_quota') {
-      return res.status(402).json({ error: 'OpenAI API quota exceeded. Please check your API key and billing.' });
+      return res.status(402).json({ 
+        success: false,
+        error: 'OpenAI API quota exceeded. Please check your API key and billing.' 
+      });
     }
     
-    res.status(500).json({ error: 'AI scoring failed. Please try again.' });
+    return res.status(500).json({ 
+      success: false,
+      error: 'AI scoring failed. Please try again.' 
+    });
   }
 };
 
@@ -243,10 +248,10 @@ const scoreEssay = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('AI Scoring Error:', error.message || error);
+    console.error('[AI:ScoreError]', error.message);
     return res.status(500).json({
+      success: false,
       error: "AI scoring failed",
-      details: error.message,
     });
   }
 };

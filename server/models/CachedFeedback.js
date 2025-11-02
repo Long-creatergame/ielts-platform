@@ -42,4 +42,9 @@ cachedFeedbackSchema.index({ hash: 1 });
 // TTL index: Auto-delete after 6 months (15552000 seconds)
 cachedFeedbackSchema.index({ lastUsed: 1 }, { expireAfterSeconds: 15552000 });
 
-module.exports = mongoose.model('CachedFeedback', cachedFeedbackSchema);
+const CachedFeedback = mongoose.model('CachedFeedback', cachedFeedbackSchema);
+
+// Log when schema loads
+console.log('[MongoDB] CachedFeedback schema loaded with 6-month TTL');
+
+module.exports = CachedFeedback;

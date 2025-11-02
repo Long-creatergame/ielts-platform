@@ -46,7 +46,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     const ms = Date.now() - start;
     if (res.statusCode >= 500 || ms > 1000) {
-      console.warn(`[req] ${req.method} ${req.originalUrl} -> ${res.statusCode} in ${ms}ms`);
+      console.warn('[Request:Slow]', req.method, req.originalUrl, res.statusCode, `${ms}ms`);
     }
   });
   next();
@@ -67,8 +67,7 @@ const connectDB = async () => {
       'mongodb://localhost:27017/ielts-platform'
     );
     
-    console.log('🔄 Attempting to connect to MongoDB...');
-    console.log('📍 URI:', mongoURI.includes('mongodb.net') ? 'MongoDB Atlas (Production)' : 'Local MongoDB');
+    console.log('[MongoDB:Connecting] Starting connection...');
     
     await mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 10000, // 10 second timeout for production
@@ -79,28 +78,12 @@ const connectDB = async () => {
         strict: false,
         deprecationErrors: true,
       },
-      // Remove deprecated options
     });
     
-    console.log('✅ MongoDB connected successfully!');
-    console.log('📊 Database:', mongoose.connection.db.databaseName);
-    console.log('🌐 Host:', mongoose.connection.host);
+    console.log('[MongoDB:Connected]', mongoose.connection.db.databaseName);
     
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
-    
-    // More specific error handling
-    if (error.message.includes('ECONNREFUSED')) {
-      console.log('💡 Suggestion: MongoDB server is not running locally');
-      console.log('💡 For production, ensure MONGO_URI is set correctly');
-    } else if (error.message.includes('authentication failed')) {
-      console.log('💡 Suggestion: Check MongoDB credentials');
-    } else if (error.message.includes('network')) {
-      console.log('💡 Suggestion: Check network connection to MongoDB');
-    }
-    
-    console.log('⚠️ Server will continue without database connection');
-    console.log('⚠️ Some features may not work properly');
+    console.error('[MongoDB:Error]', error.message);
   }
 };
 
@@ -110,17 +93,19 @@ if (process.env.NODE_ENV !== 'test') {
 
   // MongoDB connection monitoring
   mongoose.connection.on('connected', () => {
-    console.log('🟢 MongoDB connection established');
+    console.log('[MongoDB:Status] Connected');
   });
 
   mongoose.connection.on('error', (err) => {
-    console.error('🔴 MongoDB connection error:', err);
+    console.error('[MongoDB:Error]', err.message);
   });
 
   mongoose.connection.on('disconnected', () => {
-    console.log('🟡 MongoDB disconnected');
+    console.log('[MongoDB:Status] Disconnected');
   });
 }
+
+console.log('[Init] MongoDB schemas loaded');
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
@@ -270,19 +255,19 @@ if (process.env.NODE_ENV !== 'test') {
     });
 
     io.on('connection', (socket) => {
-      console.log('🔌 Client connected:', socket.id);
+      console.log('[WebSocket:Connect]', socket.id);
 
       socket.on('join', (room) => {
         if (room) socket.join(room);
       });
 
       socket.on('disconnect', () => {
-        console.log('🔌 Client disconnected:', socket.id);
+        console.log('[WebSocket:Disconnect]', socket.id);
       });
     });
 
     app.set('io', io);
-    console.log('🛰️  WebSocket (Socket.IO) initialized');
+    console.log('[Init] WebSocket enabled');
   } catch (e) {
     console.warn('Socket.IO not available, skipping realtime features');
   }
@@ -302,13 +287,13 @@ if (process.env.NODE_ENV !== 'test') {
     await cleanupExpiredPrompts();
   }, 7 * 24 * 60 * 60 * 1000);
   
-  console.log('🧹 Cache cleanup job scheduled (weekly)');
+  console.log('[Init] Cache cleanup scheduled (weekly)');
 }
 
 // In test mode, export app without starting the listener to avoid EADDRINUSE
 if (process.env.NODE_ENV !== 'test') {
   server.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log('[Init] Server running on port', PORT);
   });
 }
 

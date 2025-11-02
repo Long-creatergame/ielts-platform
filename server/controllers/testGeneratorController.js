@@ -25,7 +25,7 @@ const generateIELTSTest = async (req, res) => {
     const userId = req.user?._id;
 
     // Log generation request
-    console.info('[GenerateTest]', userId, skill, level, topic);
+    console.info('[AI:Generate]', userId, skill, level, topic);
 
     // Validate required fields
     if (!skill) {
@@ -74,7 +74,7 @@ const generateIELTSTest = async (req, res) => {
 
         if (cachedPrompt) {
           // CACHE HIT - return cached prompt
-          console.info('✅ [CACHE HIT]', skill, normalizedLevel, normalizedTopic, '- Served from DB');
+          console.info('[AI:Cached]', skill, normalizedLevel, normalizedTopic);
 
           // Update cache document
           await CachedPrompt.findByIdAndUpdate(cachedPrompt._id, {
@@ -106,10 +106,10 @@ const generateIELTSTest = async (req, res) => {
             badge: '✨ Loaded from IELTS Library'
           });
         } else {
-          console.info('⚠️ [CACHE MISS]', skill, normalizedLevel, normalizedTopic, '- Generating new prompt from OpenAI');
+          console.info('[AI:CacheMiss]', skill, normalizedLevel, normalizedTopic);
         }
       } catch (cacheError) {
-        console.error('❌ Cache lookup error:', cacheError.message);
+        console.error('[MongoDB:CacheError]', cacheError.message);
         // Continue to OpenAI generation if cache fails
       }
     }
@@ -124,9 +124,11 @@ const generateIELTSTest = async (req, res) => {
     const baseTemplate = templates[skill]?.[normalizedLevel];
 
     if (!baseTemplate) {
-      return res.status(400).json({ 
+      console.warn('[AI:Fallback] Missing template for skill:', skill, 'level:', normalizedLevel);
+      return res.status(200).json({ 
         success: false, 
-        message: "Template not found for given skill/level" 
+        message: "Template not found for given skill/level. Please try a different level.",
+        data: null
       });
     }
 
@@ -173,22 +175,21 @@ Return ONLY JSON:
     
     try {
       // First try: Direct JSON parse
-      content = JSON.parse(rawResponse);
-      console.info('✅ Successfully parsed JSON response');
+        content = JSON.parse(rawResponse);
+        console.info('[AI:Generated]', skill, normalizedLevel, '- JSON parsed successfully');
     } catch (err) {
       // Second try: Extract JSON from markdown code blocks
       try {
         const jsonMatch = rawResponse.match(/```json\s*([\s\S]*?)\s*```/) || rawResponse.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           content = JSON.parse(jsonMatch[1] || jsonMatch[0]);
-          console.info('✅ Successfully parsed JSON from markdown');
+          console.info('[AI:Generated]', skill, normalizedLevel, '- JSON extracted from markdown');
         } else {
           throw new Error("No JSON found");
         }
       } catch (extractError) {
         // Fallback: Return raw text in a structured format
-        console.warn('⚠️ OpenAI response not in JSON format. Returning raw text.');
-        console.warn('Raw response preview:', rawResponse.substring(0, 200));
+        console.warn('[AI:Fallback] OpenAI response not in JSON format, using raw text');
         
         content = {
           instructions: `Generated IELTS ${skill} test for level ${normalizedLevel}.`,
@@ -202,7 +203,7 @@ Return ONLY JSON:
       }
     }
 
-    console.info('✅ Generated IELTS test:', skill, normalizedLevel, normalizedTopic);
+    console.info('[AI:Generated] Test created:', skill, normalizedLevel, normalizedTopic);
 
     // Transform content for consistent response format
     const questions = Array.isArray(content.questions) 
@@ -248,9 +249,9 @@ Return ONLY JSON:
           }
         }).catch(() => {});
 
-        console.info('💾 [CACHE SAVED]', skill, normalizedLevel, normalizedTopic, '- Saved to DB');
+        console.info('[MongoDB:Cached] Prompt saved:', skill, normalizedLevel);
       } catch (saveError) {
-        console.error('❌ Cache save error:', saveError.message);
+        console.error('[MongoDB:SaveError]', saveError.message);
         // Continue even if cache save fails
       }
     }
@@ -270,10 +271,11 @@ Return ONLY JSON:
     });
 
   } catch (error) {
-    console.error('❌ Error generating IELTS test:', error.message);
+    console.error('[AI:Error]', error.message);
     return res.status(200).json({ 
       success: false, 
-      message: 'Failed to generate test content. Please try again later.'
+      message: 'Failed to generate test content. Please try again later.',
+      data: null
     });
   }
 };

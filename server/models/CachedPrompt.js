@@ -57,4 +57,9 @@ cachedPromptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 15552000 });
 cachedPromptSchema.index({ 'usedBy': 1 });
 cachedPromptSchema.index({ usageCount: -1 });
 
-module.exports = mongoose.model('CachedPrompt', cachedPromptSchema);
+const CachedPrompt = mongoose.model('CachedPrompt', cachedPromptSchema);
+
+// Log when schema loads
+console.log('[MongoDB] CachedPrompt schema loaded with 6-month TTL');
+
+module.exports = CachedPrompt;

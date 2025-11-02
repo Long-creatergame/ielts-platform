@@ -7,27 +7,32 @@ const auth = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      console.log('❌ Auth: No token provided');
-      return res.status(401).json({ error: 'No token, authorization denied' });
+      console.log('[Auth:NoToken] Request rejected');
+      return res.status(401).json({ 
+        success: false,
+        error: 'No token, authorization denied' 
+      });
     }
 
-    console.log('🔑 Auth: Token received, verifying...');
     const decoded = jwt.verify(token, config.JWT_SECRET);
-    console.log('✅ Auth: Token decoded, userId:', decoded.userId);
-    
     const user = await User.findById(decoded.userId);
     
     if (!user) {
-      console.log('❌ Auth: User not found in database for userId:', decoded.userId);
-      return res.status(401).json({ error: 'Token is not valid' });
+      console.log('[Auth:UserNotFound] Invalid userId:', decoded.userId);
+      return res.status(401).json({ 
+        success: false,
+        error: 'Token is not valid' 
+      });
     }
 
-    console.log('✅ Auth: User authenticated successfully:', user._id, user.email);
     req.user = user;
     next();
   } catch (error) {
-    console.error('❌ Auth error:', error.message);
-    res.status(401).json({ error: 'Token is not valid' });
+    console.error('[Auth:Error]', error.message);
+    return res.status(401).json({ 
+      success: false,
+      error: 'Token is not valid' 
+    });
   }
 };
 
