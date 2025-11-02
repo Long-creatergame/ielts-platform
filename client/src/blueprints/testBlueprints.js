@@ -452,4 +452,52 @@ export const validateBlueprint = (skill, mode) => {
   return !!IELTS_TEST_BLUEPRINTS[skill]?.[mode];
 };
 
+/**
+ * Level-based Blueprints for test generation
+ * Scales complexity, duration, and questions by CEFR level (A1-C2)
+ */
+export const LEVEL_BLUEPRINTS = {
+  reading: {
+    A1: { passages: 1, questions: 15, duration: 15 },
+    A2: { passages: 2, questions: 25, duration: 25 },
+    B1: { passages: 3, questions: 40, duration: 60 },
+    B2: { passages: 3, questions: 40, duration: 60 },
+    C1: { passages: 4, questions: 40, duration: 60 },
+    C2: { passages: 4, questions: 40, duration: 60 }
+  },
+  listening: {
+    A1: { sections: 2, questions: 20, duration: 15 },
+    A2: { sections: 3, questions: 30, duration: 25 },
+    B1: { sections: 4, questions: 40, duration: 30 },
+    B2: { sections: 4, questions: 40, duration: 30 },
+    C1: { sections: 4, questions: 40, duration: 30 },
+    C2: { sections: 4, questions: 40, duration: 30 }
+  },
+  writing: {
+    A1: { tasks: 1, minWords: 80, duration: 20 },
+    A2: { tasks: 2, minWords: 150, duration: 40 },
+    B1: { tasks: 2, minWords: 250, duration: 60 },
+    B2: { tasks: 2, minWords: 250, duration: 60 },
+    C1: { tasks: 2, minWords: 300, duration: 60 },
+    C2: { tasks: 2, minWords: 350, duration: 60 }
+  },
+  speaking: {
+    A1: { parts: 3, duration: 8 },
+    A2: { parts: 3, duration: 10 },
+    B1: { parts: 3, duration: 11 },
+    B2: { parts: 3, duration: 12 },
+    C1: { parts: 3, duration: 13 },
+    C2: { parts: 3, duration: 14 }
+  }
+};
+
+/**
+ * Get blueprint configuration by level for a skill
+ */
+export const getBlueprintByLevel = (skill, level = "B1") => {
+  const bp = LEVEL_BLUEPRINTS[skill];
+  if (!bp) return null;
+  return bp[level] || bp["B1"]; // Fallback to B1 if level not found
+};
+
 export default IELTS_TEST_BLUEPRINTS;
