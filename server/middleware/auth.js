@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const config = require('../config');
 
+// Test user whitelist for safe rollout
+const TEST_WHITELIST = ["testuser1@gmail.com", "testuser2@gmail.com"];
+
 const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -23,6 +26,11 @@ const auth = async (req, res, next) => {
         success: false,
         error: 'Token is not valid' 
       });
+    }
+
+    // Log test account activity
+    if (TEST_WHITELIST.includes(user.email)) {
+      console.log('[Analytics] Test account active:', user.email);
     }
 
     req.user = user;

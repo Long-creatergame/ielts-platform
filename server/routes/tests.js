@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
 const CachedFeedback = require('../models/CachedFeedback');
+const AnalyticsEvent = require('../models/AnalyticsEvent');
 const auth = require('../middleware/auth');
 const { generateIELTSTest } = require('../controllers/testGeneratorController');
 const aiScoringService = require('../services/aiScoringService');
@@ -106,6 +107,9 @@ router.post('/start', auth, async (req, res) => {
       user.freeTestsUsed += 1;
       await user.save();
     }
+
+    // Analytics logging
+    console.log(`[Analytics] [TestStart] user=${user.email}, skill=${skill}, level=${level}`);
 
     return res.json({
       success: true,
@@ -269,6 +273,7 @@ router.post('/submit', auth, async (req, res) => {
           // If cached, use it; otherwise generate new
           if (cachedFeedback) {
             aiFeedback = cachedFeedback;
+            console.log(`[Analytics] [AIFeedback] user=${user.email}, hash=${essayHash.substring(0, 8)}, source=cached`);
           } else {
             // Generate new feedback with retry logic
             let attempt = 0;
@@ -316,6 +321,7 @@ router.post('/submit', auth, async (req, res) => {
             test.feedback = JSON.stringify(aiFeedback);
             await test.save();
             console.info('[AI:Generated] Essay scored', test._id, 'Overall:', aiFeedback.overall || 'N/A');
+            console.log(`[Analytics] [AIFeedback] user=${user.email}, hash=${essayHash.substring(0, 8)}, source=generated`);
           }
         }
       } catch (feedbackError) {
@@ -382,6 +388,9 @@ router.post('/submit', auth, async (req, res) => {
       }
     }
     await user.save();
+
+    // Analytics logging
+    console.log(`[Analytics] [TestSubmit] user=${user.email}, skill=${skill || 'mixed'}, band=${totalBand}`);
 
     return res.json({
       success: true,

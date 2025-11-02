@@ -1,5 +1,6 @@
 const express = require('express');
 const Analytics = require('../models/Analytics');
+const AnalyticsEvent = require('../models/AnalyticsEvent');
 
 const router = express.Router();
 
@@ -177,6 +178,30 @@ router.get('/engagement/:userId', async (req, res) => {
   } catch (error) {
     console.error('Engagement analytics error:', error);
     res.status(500).json({ error: 'Failed to retrieve engagement analytics' });
+  }
+});
+
+// Get analytics stats (for validation)
+router.get('/stats', async (req, res) => {
+  try {
+    const count = await AnalyticsEvent.countDocuments({});
+    const latest = await AnalyticsEvent.find().sort({ timestamp: -1 }).limit(5);
+    
+    console.log('[Analytics] Stats requested, count:', count);
+    
+    res.status(200).json({ 
+      success: true, 
+      data: { 
+        count, 
+        latest 
+      } 
+    });
+  } catch (error) {
+    console.error('[Analytics:StatsError]', error.message);
+    res.status(200).json({ 
+      success: false, 
+      message: error.message 
+    });
   }
 });
 
