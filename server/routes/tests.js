@@ -52,8 +52,11 @@ router.get('/can-start', auth, async (req, res) => {
       upgradeUrl: '/pricing'
     });
   } catch (error) {
-    console.error('Test start check error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('[TestCanStart] Error:', error.message);
+    return res.status(200).json({ 
+      success: false,
+      message: 'Server error' 
+    });
   }
 });
 
@@ -104,7 +107,6 @@ router.post('/start', auth, async (req, res) => {
       await user.save();
     }
 
-    console.info('[TestStart] Test created:', test._id, 'for user', user._id);
     return res.json({
       success: true,
       data: {
@@ -130,7 +132,7 @@ router.post('/submit', auth, async (req, res) => {
     
     // Safety checks
     if (!user || !user._id) {
-      console.warn('❗ Missing userId in submission');
+      console.warn('[TestSubmit] Missing userId');
       return res.status(200).json({
         success: false,
         message: 'Missing user ID — please re-login'
@@ -142,7 +144,7 @@ router.post('/submit', auth, async (req, res) => {
     
     // Validate answers exist
     if (!testAnswers && !answers) {
-      console.warn('❗ No answers provided for user:', user._id);
+      console.warn('[TestSubmit] No answers provided');
       return res.status(200).json({
         success: false,
         message: 'No answers submitted. Please complete the test before submitting.'
@@ -156,7 +158,7 @@ router.post('/submit', auth, async (req, res) => {
     
     // Additional safety checks
     if (!testAnswers && !answers) {
-      console.warn('❗ All answer fields are missing for user:', user._id);
+      console.warn('[TestSubmit] All answer fields missing');
       return res.status(200).json({
         success: false,
         message: 'No answers provided. Please complete the test before submitting.'
@@ -235,9 +237,7 @@ router.post('/submit', auth, async (req, res) => {
     });
 
     await test.save();
-    console.log(`✅ Test saved to MongoDB: ${test._id} for user ${user._id}`);
-    console.log('✅ Test saved successfully with skillBands:', skillBands);
-    console.log('✅ Mongo persistence fixed successfully');
+    console.info('[MongoDB:Saved] Test', test._id, 'for user', user._id);
 
     // Generate AI feedback for Writing or Speaking tests with caching
     let aiFeedback = null;
@@ -248,8 +248,6 @@ router.post('/submit', auth, async (req, res) => {
           : (typeof testAnswers === 'string' ? testAnswers : '');
         
         if (writingAnswers && writingAnswers.length > 50) {
-          console.info('[AIFeedback] Generating feedback for', skill, 'test');
-          
           // Create hash for caching
           const essayHash = crypto.createHash('md5').update(writingAnswers.trim()).digest('hex');
           
@@ -261,12 +259,12 @@ router.post('/submit', auth, async (req, res) => {
               cached.usageCount += 1;
               cached.lastUsed = new Date();
               await cached.save();
-              cachedFeedback = cached.feedback;
-              console.info('[CacheHit] Loaded cached feedback for hash:', essayHash.substring(0, 8));
-            }
-          } catch (cacheError) {
-            console.warn('[AIFeedback] Cache lookup failed:', cacheError.message);
+            cachedFeedback = cached.feedback;
+            console.info('[MongoDB:Cached] Loaded feedback for hash:', essayHash.substring(0, 8));
           }
+        } catch (cacheError) {
+          console.warn('[MongoDB:CacheError] Lookup failed:', cacheError.message);
+        }
           
           // If cached, use it; otherwise generate new
           if (cachedFeedback) {
@@ -292,14 +290,14 @@ router.post('/submit', auth, async (req, res) => {
                       feedback: aiFeedback,
                       usageCount: 1
                     });
-                    console.info('[AIFeedback] Cached new feedback for hash:', essayHash.substring(0, 8));
+                    console.info('[MongoDB:Cached] Saved feedback for hash:', essayHash.substring(0, 8));
                   } catch (saveError) {
                     // Non-critical if cache save fails
-                    console.warn('[AIFeedback] Failed to cache feedback:', saveError.message);
+                    console.warn('[MongoDB:SaveError] Cache save failed:', saveError.message);
                   }
                 }
               } catch (aiError) {
-                console.error(`[AIFeedback-Attempt ${attempt}] Error:`, aiError.message);
+                console.error('[AI:Attempt', attempt, ']', aiError.message);
                 if (attempt < 3) {
                   // Wait before retry (exponential backoff)
                   await new Promise(resolve => setTimeout(resolve, attempt * 1500));
@@ -308,7 +306,7 @@ router.post('/submit', auth, async (req, res) => {
             }
             
             if (!success) {
-              console.error('[AIFeedback] All 3 attempts failed');
+              console.error('[AI:Failed] All 3 attempts failed');
               aiFeedback = { error: true, message: 'AI feedback unavailable. Please try again later.' };
             }
           }
@@ -317,11 +315,11 @@ router.post('/submit', auth, async (req, res) => {
           if (aiFeedback) {
             test.feedback = JSON.stringify(aiFeedback);
             await test.save();
-            console.info('[AIFeedback] Essay scored', test._id, 'Overall:', aiFeedback.overall || 'N/A');
+            console.info('[AI:Generated] Essay scored', test._id, 'Overall:', aiFeedback.overall || 'N/A');
           }
         }
       } catch (feedbackError) {
-        console.error('[AIFeedback] Error generating feedback:', feedbackError.message);
+        console.error('[AI:Error]', feedbackError.message);
         // Continue even if feedback fails
       }
     }
@@ -400,8 +398,7 @@ router.post('/submit', auth, async (req, res) => {
       message: 'Test results saved successfully'
     });
   } catch (error) {
-    console.error('❌ Test submit error:', error);
-    console.error('❌ Error stack:', error.stack);
+    console.error('[TestSubmit] Error:', error.message);
     return res.status(200).json({ 
       success: false,
       message: 'Internal error while submitting test. Please try again later.'
@@ -413,13 +410,10 @@ router.post('/submit', auth, async (req, res) => {
 router.get('/mine', auth, async (req, res) => {
   try {
     const user = req.user;
-    console.log('[TestsMine] Fetching tests for user:', user._id);
-    
     const tests = await Test.find({ userId: user._id })
       .sort({ dateTaken: -1 })
       .select('-answers');
     
-    console.info('[TestsMine] Found', tests.length, 'tests for user', user._id);
     return res.json({ 
       success: true,
       data: tests,
@@ -441,12 +435,10 @@ router.get('/:id', auth, async (req, res) => {
   try {
     const user = req.user;
     const testId = req.params.id;
-    console.log('🔍 Fetching test result for:', testId, 'user:', user._id);
-    
     const test = await Test.findOne({ _id: testId, userId: user._id });
     
     if (!test) {
-      console.warn('⚠️ Test not found:', testId, 'for user:', user._id);
+      console.warn('[TestResult] Test not found:', testId);
       return res.status(404).json({ 
         success: false, 
         message: 'Test not found' 
@@ -484,15 +476,12 @@ router.get('/:id', auth, async (req, res) => {
       skill: test.skill,
       answers: test.answers
     };
-    
-    console.info('[TestResult] Returning test', testId, 'for user', user._id);
     return res.status(200).json({
       success: true,
       data: safeTest
     });
   } catch (error) {
     console.error('[TestResult] Error:', error.message);
-    console.error('[TestResult] Stack:', error.stack);
     return res.status(200).json({
       success: false,
       message: 'Failed to fetch test result'
