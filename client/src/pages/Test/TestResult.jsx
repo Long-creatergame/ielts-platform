@@ -26,7 +26,7 @@ export default function TestResult() {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`${API_BASE_URL}/api/tests/user-tests?limit=2`, {
+      const response = await fetch(`${API_BASE_URL}/api/tests/mine`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -35,8 +35,10 @@ export default function TestResult() {
       
       if (response.ok) {
         const data = await response.json();
-        if (data.data && data.data.length > 1) {
-          setPreviousScore(data.data[1].score?.overall || 0);
+        // Handle both {success, data} and direct data formats
+        const tests = data.data || data.tests || [];
+        if (tests.length > 1) {
+          setPreviousScore(tests[1].totalBand || 0);
         }
       }
     } catch (error) {

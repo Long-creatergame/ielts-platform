@@ -104,14 +104,22 @@ router.post('/start', auth, async (req, res) => {
       await user.save();
     }
 
+    console.info('[TestStart] Test created:', test._id, 'for user', user._id);
     return res.json({
       success: true,
-      testId: test._id,
+      data: {
+        testId: test._id,
+        level,
+        skill
+      },
       message: 'Test started successfully'
     });
   } catch (error) {
-    console.error('Test start error:', error);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('[TestStart] Error:', error.message);
+    return res.status(200).json({ 
+      success: false,
+      message: 'Failed to start test. Please try again.'
+    });
   }
 });
 
@@ -405,17 +413,26 @@ router.post('/submit', auth, async (req, res) => {
 router.get('/mine', auth, async (req, res) => {
   try {
     const user = req.user;
-    console.log('🔍 Fetching tests for user:', user._id);
+    console.log('[TestsMine] Fetching tests for user:', user._id);
     
     const tests = await Test.find({ userId: user._id })
       .sort({ dateTaken: -1 })
       .select('-answers');
     
-    console.log(`✅ Found ${tests.length} tests for user ${user._id}`);
-    return res.json({ tests });
+    console.info('[TestsMine] Found', tests.length, 'tests for user', user._id);
+    return res.json({ 
+      success: true,
+      data: tests,
+      count: tests.length 
+    });
   } catch (error) {
-    console.error('Get user tests error:', error);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('[TestsMine] Error:', error.message);
+    return res.status(200).json({ 
+      success: false,
+      message: 'Failed to fetch tests',
+      data: [],
+      count: 0
+    });
   }
 });
 
@@ -468,14 +485,15 @@ router.get('/:id', auth, async (req, res) => {
       answers: test.answers
     };
     
+    console.info('[TestResult] Returning test', testId, 'for user', user._id);
     return res.status(200).json({
       success: true,
-      test: safeTest
+      data: safeTest
     });
   } catch (error) {
-    console.error('❌ Get test result error:', error.message);
-    console.error('❌ Error stack:', error.stack);
-    return res.status(500).json({
+    console.error('[TestResult] Error:', error.message);
+    console.error('[TestResult] Stack:', error.stack);
+    return res.status(200).json({
       success: false,
       message: 'Failed to fetch test result'
     });

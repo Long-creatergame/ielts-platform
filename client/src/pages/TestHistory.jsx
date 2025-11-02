@@ -45,8 +45,10 @@ export default function TestHistory() {
           
           if (response.ok) {
             const data = await response.json();
+            // Handle both {success, data} and direct data formats
+            const tests = data.data || data.tests || [];
             // Transform MongoDB test format to match expected format
-            savedTests = (data.tests || []).map(test => ({
+            savedTests = tests.map(test => ({
               id: test._id || test.id,
               testType: 'IELTS Academic',
               level: test.level || 'A2',

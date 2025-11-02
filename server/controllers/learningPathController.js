@@ -54,10 +54,11 @@ const generateLearningPath = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error generating learning path:', error);
-    return res.status(500).json({
+    console.error('[LearningPath-Generate] Error:', error.message);
+    return res.status(200).json({
       success: false,
-      message: error.message || 'Failed to generate learning path'
+      message: error.message || 'Failed to generate learning path',
+      learningPath: null
     });
   }
 };
@@ -85,10 +86,11 @@ const getLearningPath = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching learning path:', error);
-    return res.status(500).json({
+    console.error('[LearningPath-Get] Error:', error.message);
+    return res.status(200).json({
       success: false,
-      message: error.message || 'Failed to fetch learning path'
+      message: error.message || 'Failed to fetch learning path',
+      learningPath: null
     });
   }
 };
