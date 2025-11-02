@@ -112,6 +112,17 @@ export default function TestResult() {
           const backendTest = data.data || data;
           
           // Transform MongoDB format to TestResult format
+          let parsedFeedback = null;
+          if (backendTest.feedback) {
+            try {
+              parsedFeedback = typeof backendTest.feedback === 'string' 
+                ? JSON.parse(backendTest.feedback) 
+                : backendTest.feedback;
+            } catch (e) {
+              console.warn('Could not parse feedback:', e.message);
+            }
+          }
+          
           const transformedResult = {
             id: backendTest._id || backendTest.id || Date.now().toString(),
             testType: 'IELTS Academic',
@@ -122,9 +133,10 @@ export default function TestResult() {
             completedAt: backendTest.dateTaken || backendTest.createdAt || new Date().toISOString(),
             duration: '2h 30m',
             aiFeedback: backendTest.feedback || backendTest.coachMessage || 'Test completed.',
+            parsedFeedback: parsedFeedback, // Store parsed AI feedback separately
             recommendations: [],
-            strengths: [],
-            weaknesses: []
+            strengths: parsedFeedback?.improvements || [],
+            weaknesses: parsedFeedback?.strengths || [] // Note: swapping as AI feedback structure
           };
           
           setTestResult(transformedResult);
@@ -339,22 +351,120 @@ export default function TestResult() {
           </div>
 
           {/* AI Feedback */}
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {t('testResult.aiFeedback', 'AI Analysis & Feedback')}
-            </h2>
-            
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">
-                🤖 AI Assessment
-              </h3>
-              <p className="text-blue-800">
-                {testResult.aiFeedback}
-              </p>
-            </div>
+          {testResult.parsedFeedback && (
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                🤖 AI Writing Feedback
+              </h2>
+              
+              {/* Overall Score */}
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-lg p-6 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-indigo-900">
+                    Overall Band Score
+                  </h3>
+                  <span className="text-4xl font-bold text-indigo-600">
+                    {testResult.parsedFeedback.overall || testResult.parsedFeedback.overallBand}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${((testResult.parsedFeedback.overall || 0) / 9) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
 
-            {/* Strengths and Weaknesses */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Criterion Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {testResult.parsedFeedback.taskResponse && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-blue-900">Task Response</span>
+                      <span className="text-2xl font-bold text-blue-600">{testResult.parsedFeedback.taskResponse}</span>
+                    </div>
+                    <div className="w-full bg-blue-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full"
+                        style={{ width: `${((testResult.parsedFeedback.taskResponse || 0) / 9) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+                {testResult.parsedFeedback.coherence && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-green-900">Coherence & Cohesion</span>
+                      <span className="text-2xl font-bold text-green-600">{testResult.parsedFeedback.coherence}</span>
+                    </div>
+                    <div className="w-full bg-green-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-600 h-2 rounded-full"
+                        style={{ width: `${((testResult.parsedFeedback.coherence || 0) / 9) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+                {testResult.parsedFeedback.lexical && (
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-purple-900">Lexical Resource</span>
+                      <span className="text-2xl font-bold text-purple-600">{testResult.parsedFeedback.lexical}</span>
+                    </div>
+                    <div className="w-full bg-purple-200 rounded-full h-2">
+                      <div 
+                        className="bg-purple-600 h-2 rounded-full"
+                        style={{ width: `${((testResult.parsedFeedback.lexical || 0) / 9) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+                {testResult.parsedFeedback.grammar && (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-orange-900">Grammar Range & Accuracy</span>
+                      <span className="text-2xl font-bold text-orange-600">{testResult.parsedFeedback.grammar}</span>
+                    </div>
+                    <div className="w-full bg-orange-200 rounded-full h-2">
+                      <div 
+                        className="bg-orange-600 h-2 rounded-full"
+                        style={{ width: `${((testResult.parsedFeedback.grammar || 0) / 9) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Detailed Feedback */}
+              {testResult.parsedFeedback.feedback && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">📝 Detailed Feedback</h4>
+                  <p className="text-gray-800">{testResult.parsedFeedback.feedback}</p>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {!testResult.parsedFeedback && (
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                {t('testResult.aiFeedback', 'AI Analysis & Feedback')}
+              </h2>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold text-blue-900 mb-3">
+                  🤖 AI Assessment
+                </h3>
+                <p className="text-blue-800">
+                  {testResult.aiFeedback}
+                </p>
+              </div>
+            </div>
+          )}
+          
+          {/* Strengths and Weaknesses (if parsed feedback exists) */}
+          {testResult.parsedFeedback && testResult.strengths && testResult.strengths.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-green-900 mb-3">
                   ✅ {t('testResult.strengths', 'Strengths')}
@@ -383,7 +493,7 @@ export default function TestResult() {
                 </ul>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Recommendations */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-8">

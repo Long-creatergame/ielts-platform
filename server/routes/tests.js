@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Test = require('../models/Test');
 const auth = require('../middleware/auth');
 const { generateIELTSTest } = require('../controllers/testGeneratorController');
+const aiScoringService = require('../services/aiScoringService');
 const router = express.Router();
 
 // New AI-powered test generation endpoint
@@ -109,13 +110,12 @@ router.post('/start', auth, async (req, res) => {
   }
 });
 
-// Submit test results
+// Submit a test with AI feedback for Writing/Speaking
 router.post('/submit', auth, async (req, res) => {
   try {
     const user = req.user;
-    console.log('🧩 Submit test - User from token:', user?._id, user?.email);
     
-    // Check userId safety
+    // Safety checks
     if (!user || !user._id) {
       console.warn('❗ Missing userId in submission');
       return res.status(200).json({
@@ -197,6 +197,7 @@ router.post('/submit', auth, async (req, res) => {
     const test = new Test({
       userId: user._id,
       level: level || user.currentLevel || 'A2',
+      skill: skill || 'mixed',
       totalBand: totalBand, // Required field in schema
       skillScores: formattedSkillScores,
       skillBands: skillScores, // Store raw band scores for easy access
@@ -213,6 +214,33 @@ router.post('/submit', auth, async (req, res) => {
     console.log(`✅ Test saved to MongoDB: ${test._id} for user ${user._id}`);
     console.log('✅ Test saved successfully with skillBands:', skillScores);
     console.log('✅ Mongo persistence fixed successfully');
+
+    // Generate AI feedback for Writing or Speaking tests
+    let aiFeedback = null;
+    if (skill === 'writing' || skill === 'speaking') {
+      try {
+        const writingAnswers = typeof testAnswers === 'object' && testAnswers.writing 
+          ? (Array.isArray(testAnswers.writing) ? testAnswers.writing.join(' ') : testAnswers.writing)
+          : (typeof testAnswers === 'string' ? testAnswers : '');
+        
+        if (writingAnswers && writingAnswers.length > 50) {
+          console.info('[AIFeedback] Generating feedback for', skill, 'test');
+          const feedbackResult = await aiScoringService.scoreWriting(writingAnswers, skill === 'writing' ? 'Task 2' : 'Part 2');
+          
+          if (feedbackResult.success && feedbackResult.data) {
+            aiFeedback = feedbackResult.data;
+            test.feedback = JSON.stringify(aiFeedback);
+            await test.save();
+            console.info('[AIFeedback] Essay scored', test._id, 'Overall:', aiFeedback.overall);
+          } else {
+            console.warn('[AIFeedback] Failed to generate feedback for test', test._id);
+          }
+        }
+      } catch (feedbackError) {
+        console.error('[AIFeedback] Error generating feedback:', feedbackError.message);
+        // Continue even if feedback fails
+      }
+    }
 
     // Emit realtime update for test result + analytics + leaderboard
     try {
@@ -282,7 +310,8 @@ router.post('/submit', auth, async (req, res) => {
         overallBand: totalBand,
         skillScores: skillScores, // Return raw skillScores
         dateCompleted: test.dateTaken,
-        completed: test.completed
+        completed: test.completed,
+        feedback: aiFeedback // Include AI feedback if available
       },
       message: 'Test results saved successfully'
     });
@@ -331,6 +360,18 @@ router.get('/:id', auth, async (req, res) => {
       });
     }
     
+    // Parse feedback if it exists
+    let parsedFeedback = null;
+    if (test.feedback) {
+      try {
+        parsedFeedback = typeof test.feedback === 'string' 
+          ? JSON.parse(test.feedback) 
+          : test.feedback;
+      } catch (e) {
+        console.warn('Could not parse feedback:', e.message);
+      }
+    }
+    
     // Sanitize missing fields to prevent client-side errors
     const safeTest = {
       _id: test._id,
@@ -343,24 +384,24 @@ router.get('/:id', auth, async (req, res) => {
         speaking: null,
       },
       totalBand: test.totalBand || 0,
-      feedback: test.feedback || '',
+      feedback: parsedFeedback,
       coachMessage: test.coachMessage || '',
       completed: test.completed,
       dateTaken: test.dateTaken,
-      createdAt: test.createdAt
+      skill: test.skill,
+      answers: test.answers
     };
     
-    console.log('✅ Test result fetched successfully:', testId);
-    return res.status(200).json({ 
-      success: true, 
-      test: safeTest 
+    return res.status(200).json({
+      success: true,
+      test: safeTest
     });
   } catch (error) {
-    console.error('❌ Error fetching test result:', error.message);
+    console.error('❌ Get test result error:', error.message);
     console.error('❌ Error stack:', error.stack);
-    return res.status(500).json({ 
-      success: false, 
-      message: error.message || 'Server error' 
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch test result'
     });
   }
 });
