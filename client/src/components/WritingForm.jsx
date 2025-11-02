@@ -6,7 +6,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import CountdownTimer from './CountdownTimer';
-import LoadingBar from './LoadingBar';
 
 const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const [task1Answer, setTask1Answer] = useState('');
@@ -67,31 +66,32 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const minWords = currentTaskData?.minWords || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Timer & Progress */}
-      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg p-6 border border-indigo-200">
-        <div className="flex justify-between items-center mb-4">
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg p-4 md:p-6 border border-indigo-200">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">
               ✍️ IELTS Writing Test
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-xs md:text-sm text-gray-600 mt-1">
               {mode === 'academic' ? 'Academic' : 'General Training'}
             </p>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-center sm:justify-end">
             <CountdownTimer 
               duration={blueprint?.timeLimit ? blueprint.timeLimit * 60 : 60 * 60}
               onTick={handleTimeTick}
               onComplete={handleTimeComplete}
+              className="w-20 h-20 md:w-24 md:h-24"
             />
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+        <div className="w-full bg-gray-200 rounded-full h-2 md:h-2.5 mb-3 md:mb-4">
           <div 
-            className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
+            className="bg-indigo-600 h-2 md:h-2.5 rounded-full transition-all duration-500"
             style={{ width: `${(currentTask / (tasks.length - 1)) * 100}%` }}
           ></div>
         </div>
@@ -102,7 +102,7 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
             <button
               key={index}
               onClick={() => setCurrentTask(index)}
-              className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-all duration-200 ${
+              className={`flex-1 py-2 px-3 md:px-4 rounded-lg font-semibold transition-all duration-200 text-xs md:text-sm ${
                 currentTask === index
                   ? 'bg-blue-600 text-white shadow-md'
                   : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200'
@@ -119,29 +119,29 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
         key={currentTask}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl shadow-lg p-8 border border-gray-200"
+        className="bg-white rounded-xl shadow-lg p-4 md:p-8 border border-gray-200"
       >
         {/* Task Header */}
-        <div className="mb-6">
-          <h3 className="text-xl font-bold text-blue-900 mb-2">
+        <div className="mb-4 md:mb-6">
+          <h3 className="text-lg md:text-xl font-bold text-blue-900 mb-2">
             {currentTaskData.title || `Task ${currentTaskData.taskNumber || currentTask + 1}`}
           </h3>
           {currentTaskData.description && (
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3">
               {currentTaskData.description}
             </p>
           )}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-gray-800 whitespace-pre-line leading-relaxed">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4">
+            <p className="text-sm md:text-base text-gray-800 whitespace-pre-line leading-relaxed">
               {currentTaskData.instruction}
             </p>
           </div>
         </div>
 
         {/* Word Count & Warnings */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-4">
-            <div className={`px-4 py-2 rounded-lg font-semibold ${
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-4 gap-2">
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <div className={`px-3 md:px-4 py-2 rounded-lg font-semibold text-xs md:text-sm ${
               wordCount >= minWords
                 ? 'bg-green-100 text-green-800'
                 : wordCount >= minWords * 0.9
@@ -151,13 +151,13 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
               Words: {wordCount} / {minWords}
             </div>
             {currentTask === 0 && (
-              <div className="text-sm text-gray-600 bg-gray-50 px-3 py-1 rounded-full">
-                ⏱️ Recommended: {currentTaskData.timeLimit || 20} minutes
+              <div className="text-xs md:text-sm text-gray-600 bg-gray-50 px-2 md:px-3 py-1 rounded-full">
+                ⏱️ {currentTaskData.timeLimit || 20} min
               </div>
             )}
             {currentTask === 1 && (
-              <div className="text-sm text-gray-600 bg-gray-50 px-3 py-1 rounded-full">
-                ⏱️ Recommended: {currentTaskData.timeLimit || 40} minutes
+              <div className="text-xs md:text-sm text-gray-600 bg-gray-50 px-2 md:px-3 py-1 rounded-full">
+                ⏱️ {currentTaskData.timeLimit || 40} min
               </div>
             )}
           </div>
@@ -188,11 +188,11 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
         )}
 
         {/* Task Navigation */}
-        <div className="mt-6 flex justify-between">
+        <div className="mt-4 md:mt-6 flex flex-col sm:flex-row justify-between gap-3">
           <button
             onClick={() => setCurrentTask(Math.max(0, currentTask - 1))}
             disabled={currentTask === 0}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 min-h-[44px] w-full sm:w-auto ${
               currentTask === 0
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -204,7 +204,7 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
           {currentTask < tasks.length - 1 ? (
             <button
               onClick={() => setCurrentTask(Math.min(tasks.length - 1, currentTask + 1))}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 min-h-[44px] w-full sm:w-auto"
             >
               Next Task →
             </button>
@@ -212,7 +212,7 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
             <button
               onClick={handleSubmit}
               disabled={countWords(task1Answer) < tasks[0].minWords || countWords(task2Answer) < tasks[1].minWords}
-              className={`px-8 py-3 rounded-lg font-bold transition-all duration-200 ${
+              className={`px-8 py-3 rounded-lg font-bold transition-all duration-200 min-h-[44px] w-full sm:w-auto ${
                 countWords(task1Answer) >= tasks[0].minWords && countWords(task2Answer) >= tasks[1].minWords
                   ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
