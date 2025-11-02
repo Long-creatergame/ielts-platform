@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import CountdownTimer from './CountdownTimer';
 
 const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const [task1Answer, setTask1Answer] = useState('');
@@ -14,18 +15,13 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
 
   const tasks = blueprint?.tasks || [];
 
-  useEffect(() => {
-    if (timeLeft === 0 && onTimeUp) {
-      onTimeUp();
-      return;
-    }
+  const handleTimeTick = (newTime) => {
+    setTimeLeft(newTime);
+  };
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp]);
+  const handleTimeComplete = () => {
+    if (onTimeUp) onTimeUp();
+  };
 
   const countWords = (text) => {
     return text.trim().split(/\s+/).filter(Boolean).length;
@@ -35,14 +31,6 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
     if (taskNumber === 0) return countWords(task1Answer);
     if (taskNumber === 1) return countWords(task2Answer);
     return 0;
-  };
-
-  const getTimerColor = () => {
-    const minutesLeft = Math.floor(timeLeft / 60);
-    if (minutesLeft > 40) return 'bg-green-500';
-    if (minutesLeft > 20) return 'bg-yellow-500';
-    if (minutesLeft > 10) return 'bg-orange-500';
-    return 'bg-red-500';
   };
 
   const handleSubmit = () => {
@@ -80,22 +68,29 @@ const WritingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   return (
     <div className="space-y-6">
       {/* Timer & Progress */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg p-6 border border-indigo-200">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">
-            ✍️ IELTS Writing Test - {mode === 'academic' ? 'Academic' : 'General Training'}
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              ✍️ IELTS Writing Test
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              {mode === 'academic' ? 'Academic' : 'General Training'}
+            </p>
+          </div>
           <div className="flex items-center space-x-4">
-            <div className={`${getTimerColor()} text-white px-4 py-2 rounded-lg font-bold text-lg`}>
-              ⏰ {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-            </div>
+            <CountdownTimer 
+              duration={blueprint?.timeLimit ? blueprint.timeLimit * 60 : 60 * 60}
+              onTick={handleTimeTick}
+              onComplete={handleTimeComplete}
+            />
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
           <div 
-            className={`${getTimerColor()} h-3 rounded-full transition-all duration-500`}
+            className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
             style={{ width: `${(currentTask / (tasks.length - 1)) * 100}%` }}
           ></div>
         </div>

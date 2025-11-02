@@ -6,6 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import AudioPlayer from './AudioPlayer';
+import CountdownTimer from './CountdownTimer';
+import QuestionCard from './QuestionCard';
 
 const ListeningForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const [answers, setAnswers] = useState({});
@@ -17,25 +19,12 @@ const ListeningForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const sections = blueprint?.sections || [];
   const totalQuestions = blueprint?.totalQuestions || 40;
 
-  useEffect(() => {
-    if (timeLeft === 0 && onTimeUp) {
-      onTimeUp();
-      return;
-    }
+  const handleTimeTick = (newTime) => {
+    setTimeLeft(newTime);
+  };
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp]);
-
-  const getTimerColor = () => {
-    const minutesLeft = Math.floor(timeLeft / 60);
-    if (minutesLeft > 25) return 'bg-green-500';
-    if (minutesLeft > 15) return 'bg-yellow-500';
-    if (minutesLeft > 5) return 'bg-orange-500';
-    return 'bg-red-500';
+  const handleTimeComplete = () => {
+    if (onTimeUp) onTimeUp();
   };
 
   const handlePlayAudio = (sectionIndex) => {
@@ -85,15 +74,22 @@ const ListeningForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   return (
     <div className="space-y-6">
       {/* Header with Timer */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg p-6 border border-indigo-200">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">
-            🎧 IELTS Listening Test - {mode === 'academic' ? 'Academic' : 'General Training'}
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              🎧 IELTS Listening Test
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              {mode === 'academic' ? 'Academic' : 'General Training'}
+            </p>
+          </div>
           <div className="flex items-center space-x-4">
-            <div className={`${getTimerColor()} text-white px-4 py-2 rounded-lg font-bold text-lg`}>
-              ⏰ {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-            </div>
+            <CountdownTimer 
+              duration={blueprint?.timeLimit ? blueprint.timeLimit * 60 : 30 * 60}
+              onTick={handleTimeTick}
+              onComplete={handleTimeComplete}
+            />
           </div>
         </div>
 
@@ -111,9 +107,9 @@ const ListeningForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-3 mt-4">
+        <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
           <div 
-            className={`${getTimerColor()} h-3 rounded-full transition-all duration-500`}
+            className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
             style={{ width: `${(answeredCount / totalQuestions) * 100}%` }}
           ></div>
         </div>
@@ -208,23 +204,14 @@ const ListeningForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
             </p>
             <div className="space-y-3">
               {Array.from({ length: currentSectionData.questionCount || 10 }, (_, qIndex) => (
-                <div key={qIndex} className="bg-white rounded-lg p-3 border border-gray-200">
-                  <label className="block text-sm font-medium text-gray-900 mb-1">
-                    Question {qIndex + 1}:
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Type your answer here"
-                    value={answers[`section_${currentSection}_q${qIndex}`] || ''}
-                    onChange={(e) => handleAnswerChange(`section_${currentSection}_q${qIndex}`, e.target.value)}
-                    disabled={!audioPlayed.includes(currentSection)}
-                    className={`w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                      !audioPlayed.includes(currentSection)
-                        ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
-                        : 'border-gray-300 focus:border-blue-500'
-                    }`}
-                  />
-                </div>
+                <QuestionCard
+                  key={qIndex}
+                  question={{ question: `Listening Question ${qIndex + 1}` }}
+                  index={qIndex + 1}
+                  onAnswerChange={(value) => handleAnswerChange(`section_${currentSection}_q${qIndex}`, value)}
+                  value={answers[`section_${currentSection}_q${qIndex}`]}
+                  disabled={!audioPlayed.includes(currentSection)}
+                />
               ))}
             </div>
             

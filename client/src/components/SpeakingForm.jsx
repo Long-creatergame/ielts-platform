@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import VoiceRecorder from './VoiceRecorder';
+import CountdownTimer from './CountdownTimer';
 
 const SpeakingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   const [currentPart, setCurrentPart] = useState(0);
@@ -18,18 +19,13 @@ const SpeakingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
 
   const parts = blueprint?.parts || [];
 
-  useEffect(() => {
-    if (timeLeft === 0 && onTimeUp) {
-      onTimeUp();
-      return;
-    }
+  const handleTimeTick = (newTime) => {
+    setTimeLeft(newTime);
+  };
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => Math.max(prev - 1, 0));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp]);
+  const handleTimeComplete = () => {
+    if (onTimeUp) onTimeUp();
+  };
 
   useEffect(() => {
     if (!isPreparing) return;
@@ -64,14 +60,6 @@ const SpeakingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
 
     return () => clearInterval(timer);
   }, [isSpeaking]);
-
-  const getTimerColor = () => {
-    const minutesLeft = Math.floor(timeLeft / 60);
-    if (minutesLeft > 7) return 'bg-green-500';
-    if (minutesLeft > 4) return 'bg-yellow-500';
-    if (minutesLeft > 2) return 'bg-orange-500';
-    return 'bg-red-500';
-  };
 
   const handleStartPreparation = () => {
     setIsPreparing(true);
@@ -119,15 +107,22 @@ const SpeakingForm = ({ blueprint, mode, onSubmit, onTimeUp }) => {
   return (
     <div className="space-y-6">
       {/* Header with Timer */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg p-6 border border-indigo-200">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">
-            🎤 IELTS Speaking Test - {mode === 'academic' ? 'Academic' : 'General Training'}
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              🎤 IELTS Speaking Test
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              {mode === 'academic' ? 'Academic' : 'General Training'}
+            </p>
+          </div>
           <div className="flex items-center space-x-4">
-            <div className={`${getTimerColor()} text-white px-4 py-2 rounded-lg font-bold text-lg`}>
-              ⏰ {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-            </div>
+            <CountdownTimer 
+              duration={blueprint?.timeLimit ? blueprint.timeLimit * 60 : 11 * 60}
+              onTick={handleTimeTick}
+              onComplete={handleTimeComplete}
+            />
           </div>
         </div>
 
