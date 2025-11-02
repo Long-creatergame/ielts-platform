@@ -282,7 +282,12 @@ router.post('/submit', auth, async (req, res) => {
             while (!success && attempt < 3) {
               attempt++;
               try {
-                const feedbackResult = await aiScoringService.scoreWriting(writingAnswers, skill === 'writing' ? 'Task 2' : 'Part 2');
+                // Pass level to AI scoring for calibrated feedback
+                const feedbackResult = await aiScoringService.scoreWriting(
+                  writingAnswers, 
+                  skill === 'writing' ? 'Task 2' : 'Part 2',
+                  { level: test.level || 'B1' }
+                );
                 
                 if (feedbackResult.success && feedbackResult.data && feedbackResult.data.overall) {
                   aiFeedback = feedbackResult.data;

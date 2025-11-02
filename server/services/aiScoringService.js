@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
+const { getFeedbackInstructions } = require('../config/aiLevelCalibration');
 
 dotenv.config();
 
@@ -19,9 +20,11 @@ class AIScoringService {
     }
 
     try {
-      const prompt = this.createWritingPrompt(answer, taskType);
+      const level = options.level || 'B1';
+      const prompt = this.createWritingPrompt(answer, taskType, level);
       const response = await this.callOpenAI(prompt);
       const parsed = this.parseResponse(response, 'writing');
+      console.log(`[AI Feedback] Writing | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'writing').includes('simple') ? 'Simple' : 'Advanced'}`);
       return this.applyWeights(parsed, {
         coherence: options.weights?.coherence ?? 0.25,
         lexical: options.weights?.lexical ?? 0.25,
@@ -40,9 +43,11 @@ class AIScoringService {
     }
 
     try {
-      const prompt = this.createSpeakingPrompt(answer, taskType);
+      const level = options.level || 'B1';
+      const prompt = this.createSpeakingPrompt(answer, taskType, level);
       const response = await this.callOpenAI(prompt);
       const parsed = this.parseResponse(response, 'speaking');
+      console.log(`[AI Feedback] Speaking | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'speaking').includes('simple') ? 'Simple' : 'Advanced'}`);
       return this.applyWeights(parsed, {
         fluency: options.weights?.fluency ?? 0.25,
         lexical: options.weights?.lexical ?? 0.25,
@@ -55,15 +60,13 @@ class AIScoringService {
     }
   }
 
-  createWritingPrompt(answer, taskType) {
+  createWritingPrompt(answer, taskType, level = 'B1') {
+    const feedbackInstructions = getFeedbackInstructions(level, 'writing');
+    
     return `
-You are an expert IELTS examiner. Score this ${taskType} writing response on a 0-9 scale.
+You are an expert IELTS examiner. Score this ${taskType} writing response on a 0-9 scale for a ${level} level student.
 
-IELTS Writing Assessment Criteria:
-1. Task Response (25%) - How well the task is addressed
-2. Coherence and Cohesion (25%) - Organization and linking
-3. Lexical Resource (25%) - Vocabulary range and accuracy
-4. Grammar Range and Accuracy (25%) - Grammar variety and correctness
+${feedbackInstructions}
 
 Student's ${taskType} response:
 """${answer}"""
@@ -81,19 +84,17 @@ Provide your assessment in this EXACT JSON format:
   "bandLevel": "7.0"
 }
 
-Make sure the feedback is constructive and specific, around 50-100 words.
+Make sure the feedback language and examples match the ${level} proficiency level. Keep it constructive and specific.
 `;
   }
 
-  createSpeakingPrompt(answer, taskType) {
+  createSpeakingPrompt(answer, taskType, level = 'B1') {
+    const feedbackInstructions = getFeedbackInstructions(level, 'speaking');
+    
     return `
-You are an expert IELTS examiner. Score this ${taskType} speaking response on a 0-9 scale.
+You are an expert IELTS examiner. Score this ${taskType} speaking response on a 0-9 scale for a ${level} level student.
 
-IELTS Speaking Assessment Criteria:
-1. Fluency and Coherence (25%) - Flow and organization
-2. Lexical Resource (25%) - Vocabulary range and accuracy
-3. Grammar Range and Accuracy (25%) - Grammar variety and correctness
-4. Pronunciation (25%) - Clarity and intelligibility
+${feedbackInstructions}
 
 Student's ${taskType} response:
 """${answer}"""
@@ -111,7 +112,7 @@ Provide your assessment in this EXACT JSON format:
   "bandLevel": "7.0"
 }
 
-Make sure the feedback is constructive and specific, around 50-100 words.
+Make sure the feedback language and examples match the ${level} proficiency level. Keep it constructive and specific.
 `;
   }
 
