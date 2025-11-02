@@ -28,21 +28,44 @@ export default function LearningPath() {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`${API_BASE_URL}/api/ai/learning-path`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      // Fetch both learning path and user results in parallel
+      const [pathResponse, resultsResponse] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/ai/learning-path`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }).catch(() => null),
+        fetch(`${API_BASE_URL}/api/user-results`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }).catch(() => null)
+      ]);
 
-      if (response.ok) {
-        const data = await response.json();
+      // Handle learning path response
+      if (pathResponse && pathResponse.ok) {
+        const data = await pathResponse.json();
         setLearningPath(data.learningPath);
-      } else if (response.status === 404) {
+      } else if (pathResponse && pathResponse.status === 404) {
         setLearningPath(null);
-      } else {
-        const errorData = await response.json().catch(() => ({ message: 'Failed to load learning path' }));
+      } else if (pathResponse) {
+        const errorData = await pathResponse.json().catch(() => ({ message: 'Failed to load learning path' }));
         setError(errorData.message);
+      }
+
+      // Handle user results response (fallback if no learning path)
+      if (resultsResponse && resultsResponse.ok) {
+        const resultsData = await resultsResponse.json();
+        if (resultsData.success && resultsData.data && !learningPath) {
+          // Create a basic learning path from results
+          setLearningPath({
+            skillBands: resultsData.data,
+            recommendations: [],
+            generatedAt: new Date().toISOString()
+          });
+        }
       }
     } catch (err) {
       console.error('Error loading learning path:', err);
