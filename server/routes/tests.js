@@ -6,6 +6,7 @@ const AnalyticsEvent = require('../models/AnalyticsEvent');
 const auth = require('../middleware/auth');
 const { generateIELTSTest } = require('../controllers/testGeneratorController');
 const aiScoringService = require('../services/aiScoringService');
+const { generateAdaptiveTest, updatePerformanceHistory } = require('../utils/generateAdaptiveTest');
 const crypto = require('crypto');
 const OpenAI = require('openai');
 const router = express.Router();
@@ -77,10 +78,14 @@ router.post('/start', auth, async (req, res) => {
     //   });
     // }
 
+    // Get adaptive level based on user performance
+    const adaptiveConfig = await generateAdaptiveTest(user._id);
+    const adjustedLevel = adaptiveConfig.adjustedLevel;
+
     // Create new test
     const test = new Test({
       userId: user._id,
-      level,
+      level: adjustedLevel, // Use adjusted level instead of requested level
       skill,
       isPaid: user.paid,
       resultLocked: !user.paid,
@@ -393,6 +398,14 @@ router.post('/submit', auth, async (req, res) => {
       }
     }
     await user.save();
+
+    // Update performance history for adaptive scaling
+    try {
+      await updatePerformanceHistory(user._id, test._id, numericBand, skill || 'mixed');
+    } catch (perfError) {
+      console.warn('[UpdatePerformanceHistory] Failed:', perfError.message);
+      // Non-critical, continue
+    }
 
     // Analytics logging
     console.log(`[Analytics] [TestSubmit] user=${user.email}, skill=${skill || 'mixed'}, band=${totalBand}`);

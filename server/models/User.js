@@ -39,6 +39,18 @@ const userSchema = new mongoose.Schema({
     enum: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
     default: 'A2'
   },
+  performanceHistory: [{
+    testId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Test'
+    },
+    band: Number,
+    skill: String,
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   testsTaken: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Test'
