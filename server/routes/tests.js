@@ -130,7 +130,7 @@ router.post('/submit', auth, async (req, res) => {
     }
     
     // Support both new and legacy payloads
-    let { level, overallBand, skillScores, testAnswers, completed, skill, answers, timeSpent } = req.body || {};
+    let { level, overallBand, skillScores, skillBands, testAnswers, completed, skill, answers, timeSpent } = req.body || {};
     
     // Validate answers exist
     if (!testAnswers && !answers) {
@@ -165,14 +165,25 @@ router.post('/submit', auth, async (req, res) => {
       // Simple heuristic default; real scoring handled elsewhere
       overallBand = 6.5;
     }
-    if (!skillScores) {
+    
+    // Fix: Use skillBands from frontend if available, otherwise use skillScores as band scores
+    if (!skillBands && !skillScores) {
       const base = 6.5;
+      skillBands = {
+        reading: skill === 'reading' ? base : base,
+        listening: skill === 'listening' ? base : base,
+        writing: skill === 'writing' ? base : base,
+        speaking: skill === 'speaking' ? base : base,
+      };
       skillScores = {
         reading: skill === 'reading' ? base : base,
         listening: skill === 'listening' ? base : base,
         writing: skill === 'writing' ? base : base,
         speaking: skill === 'speaking' ? base : base,
       };
+    } else if (!skillBands && skillScores) {
+      // If only skillScores is provided, use it for both skillBands and skillScores
+      skillBands = skillScores;
     }
     
     // Convert skillScores to match Test model schema
@@ -205,7 +216,7 @@ router.post('/submit', auth, async (req, res) => {
       skill: skill || 'mixed',
       totalBand: totalBand, // Required field in schema
       skillScores: formattedSkillScores,
-      skillBands: skillScores, // Store raw band scores for easy access
+      skillBands: skillBands, // Use skillBands from frontend
       answers: testAnswers,
       completed: completed || true,
       isPaid: user.paid,
@@ -217,7 +228,7 @@ router.post('/submit', auth, async (req, res) => {
 
     await test.save();
     console.log(`✅ Test saved to MongoDB: ${test._id} for user ${user._id}`);
-    console.log('✅ Test saved successfully with skillBands:', skillScores);
+    console.log('✅ Test saved successfully with skillBands:', skillBands);
     console.log('✅ Mongo persistence fixed successfully');
 
     // Generate AI feedback for Writing or Speaking tests with caching
