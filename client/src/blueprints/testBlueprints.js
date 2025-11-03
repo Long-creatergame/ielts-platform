@@ -500,4 +500,29 @@ export const getBlueprintByLevel = (skill, level = "B1") => {
   return bp[level] || bp["B1"]; // Fallback to B1 if level not found
 };
 
+/**
+ * Get Cambridge-enhanced blueprint with official form structures
+ */
+export const getCambridgeBlueprint = async (skill, level = "B1") => {
+  // Dynamic import to avoid circular dependencies
+  const { getCambridgeForm } = await import('./cambridgeForms');
+  
+  const baseBlueprint = getBlueprintByLevel(skill, level);
+  if (!baseBlueprint) {
+    console.warn(`[Cambridge Blueprint] No blueprint for ${skill} at level ${level}`);
+    return null;
+  }
+
+  const formStructure = getCambridgeForm(skill, level);
+
+  return {
+    ...baseBlueprint,
+    formStructure,
+    formType: "Cambridge",
+    version: "v2.13.F",
+    skill,
+    level
+  };
+};
+
 export default IELTS_TEST_BLUEPRINTS;
