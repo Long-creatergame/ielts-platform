@@ -5,6 +5,7 @@
 
 const { writingPrompt, speakingPrompt } = require('./aiPromptTemplates');
 const AIFeedback = require('../models/AIFeedback');
+const coachPersonality = require('../config/aiCoachPersonality');
 const OpenAI = require('openai');
 
 const openai = process.env.OPENAI_API_KEY 
@@ -69,8 +70,8 @@ async function generateFeedback({ userId, testId, skill, text, level = 'B1' }) {
       return getFallbackFeedback(userId, testId, skill);
     }
 
-    // Generate AI summary message
-    const aiMessage = generateAISummary(parsed.bandBreakdown, skill);
+    // Generate AI summary message with level-aware coach personality
+    const aiMessage = generateAISummary(parsed.bandBreakdown, skill, level);
 
     // Prepare feedback document
     const feedbackData = {
@@ -105,8 +106,9 @@ async function generateFeedback({ userId, testId, skill, text, level = 'B1' }) {
 
 /**
  * Generate AI summary message based on band breakdown
+ * Uses coach personality for consistent tone
  */
-function generateAISummary(bandBreakdown, skill) {
+function generateAISummary(bandBreakdown, skill, userLevel = 'B1') {
   try {
     const averages = Object.values(bandBreakdown).filter(v => v > 0);
     const overallAvg = averages.reduce((sum, val) => sum + val, 0) / averages.length;
@@ -128,15 +130,18 @@ function generateAISummary(bandBreakdown, skill) {
     const strongest = entries[0];
     const weakest = entries[entries.length - 1];
     
-    // Generate supportive message
+    // Use coach personality for level-appropriate message
+    const style = coachPersonality.levelStyles[userLevel] || coachPersonality.levelStyles['B1'];
+    
+    // Generate supportive message based on level
     if (overallAvg >= 7.5) {
-      return `Excellent work! Your ${strongest[0]} is particularly strong. Keep refining ${weakest[0]} for even higher scores.`;
+      return `Excellent work! Your ${strongest[0]} is particularly strong. Keep refining ${weakest[0]} for even higher scores. ${style.focus}`;
     } else if (overallAvg >= 6.5) {
-      return `Good progress! Focus on ${weakest[0]} to push your overall band higher.`;
+      return `Good progress! Focus on ${weakest[0]} to push your overall band higher. ${style.focus}`;
     } else if (overallAvg >= 5.5) {
-      return `Keep practicing! Pay special attention to ${weakest[0]} to improve your scores.`;
+      return `Keep practicing! Pay special attention to ${weakest[0]} to improve your scores. ${style.focus}`;
     } else {
-      return `Continue working hard! Practice ${weakest[0]} regularly for steady improvement.`;
+      return `Continue working hard! Practice ${weakest[0]} regularly for steady improvement. ${style.focus}`;
     }
   } catch (error) {
     return 'Keep practicing for better results.';

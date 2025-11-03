@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import FeatureGuide from '../../components/FeatureGuide';
 import AIEncouragement from '../../components/AIEncouragement';
 import AIFeedbackCard from '../../components/AIFeedbackCard';
+import ProgressCelebrationCard from '../../components/ProgressCelebrationCard';
 
 export default function TestResult() {
   const { id } = useParams();
@@ -301,6 +302,18 @@ export default function TestResult() {
   return (
     <FeatureGuide feature="test-result">
       <div className="min-h-screen bg-gray-50">
+        {/* Progress Celebration */}
+        {testResult && previousScore && testResult.overallBand > previousScore && (
+          <div className="max-w-4xl mx-auto px-4 pt-8">
+            <ProgressCelebrationCard
+              improvement={testResult.overallBand - previousScore}
+              skill={testResult.skill || 'IELTS'}
+              currentBand={testResult.overallBand}
+              previousBand={previousScore}
+            />
+          </div>
+        )}
+
         {/* AI Encouragement */}
         {testResult && (
           <AIEncouragement 

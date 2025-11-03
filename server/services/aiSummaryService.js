@@ -4,6 +4,7 @@
  */
 
 const AIFeedback = require('../models/AIFeedback');
+const coachPersonality = require('../config/aiCoachPersonality');
 
 /**
  * Generate AI summary based on user's feedback history
@@ -85,131 +86,45 @@ async function generateAISummary(userId, userLevel = 'B1') {
  * Generate AI summary message with Cambridge tone
  */
 function generateAISummaryMessage(strongest, weakest, avgBand, level) {
-  const overallAvg = Object.values(avgBand).reduce((sum, val) => sum + val, 0) / Object.values(avgBand).length;
-
-  // Level-based tone
-  const tones = {
-    'A1': {
-      supportive: [
-        "You're making great progress!",
-        "Keep up the excellent work!",
-        "You're building strong foundations!"
-      ],
-      advice: "Focus on the basics first."
-    },
-    'A2': {
-      supportive: [
-        "Good effort! You're improving steadily.",
-        "Nice consistency. Keep working step by step.",
-        "You're showing strong commitment to learning."
-      ],
-      advice: "Continue practicing regularly."
-    },
-    'B1': {
-      supportive: [
-        "You're progressing well!",
-        "Good consistency. Keep improving step by step.",
-        "You're showing strong effort and steady growth."
-      ],
-      advice: "Focus on refining your skills."
-    },
-    'B2': {
-      supportive: [
-        "Excellent progress! You're building strong skills.",
-        "Good consistency. You're approaching advanced levels.",
-        "You're demonstrating strong understanding and application."
-      ],
-      advice: "Refine your techniques for higher precision."
-    },
-    'C1': {
-      supportive: [
-        "Outstanding performance! You're mastering advanced concepts.",
-        "Professional-level consistency. Excellent work.",
-        "You're showing exceptional competence across skills."
-      ],
-      advice: "Polish your advanced techniques for excellence."
-    },
-    'C2': {
-      supportive: [
-        "Exceptional mastery! You've achieved expert-level skills.",
-        "Outstanding precision and consistency.",
-        "You're demonstrating professional expertise."
-      ],
-      advice: "Perfect your nuanced understanding."
-    }
-  };
-
-  const tone = tones[level] || tones['B1'];
-  const supportiveMsg = tone.supportive[Math.floor(Math.random() * tone.supportive.length)];
-
-  return `${supportiveMsg} Your average performance shows strength in ${strongest[0]} (${strongest[1]}), but ${weakest[0]} (${weakest[1]}) needs more attention. ${tone.advice}`;
+  // Use coach personality for consistent tone
+  return coachPersonality.generateAISummaryMessage(strongest, weakest, avgBand, level);
 }
 
 /**
  * Generate personalized recommendation
  */
 function generateRecommendation(weakestSkill, level) {
-  const recommendations = {
-    'Grammar': {
-      'A1': "Review basic grammar rules and practice sentence construction.",
-      'A2': "Focus on tense accuracy and sentence complexity.",
-      'B1': "Practice advanced grammar structures and accuracy.",
-      'B2': "Refine complex sentence patterns and grammatical precision.",
-      'C1': "Master nuanced grammatical structures for academic writing.",
-      'C2': "Perfect subtle grammatical nuances and stylistic variation."
-    },
-    'Vocabulary': {
-      'A1': "Learn essential words and phrases for daily communication.",
-      'A2': "Expand your basic vocabulary with common expressions.",
-      'B1': "Build vocabulary range with varied and precise words.",
-      'B2': "Enhance lexical resource with collocations and idioms.",
-      'C1': "Develop sophisticated vocabulary for academic contexts.",
-      'C2': "Master precise lexical choices and academic register."
-    },
-    'Coherence': {
-      'A1': "Practice organizing ideas in clear, simple paragraphs.",
-      'A2': "Focus on logical paragraph structure and connections.",
-      'B1': "Improve paragraph flow using linking words.",
-      'B2': "Refine logical progression and cohesive devices.",
-      'C1': "Perfect sophisticated transitions and discourse markers.",
-      'C2': "Master nuanced organization and rhetorical structure."
-    },
-    'Task': {
-      'A1': "Focus on addressing the question completely.",
-      'A2': "Ensure all parts of the task are covered.",
-      'B1': "Develop clear, relevant responses to all task points.",
-      'B2': "Enhance task completion with thorough coverage.",
-      'C1': "Perfect task response with comprehensive analysis.",
-      'C2': "Master sophisticated task response with nuanced insights."
-    },
-    'Fluency': {
-      'A1': "Practice speaking smoothly without long pauses.",
-      'A2': "Focus on natural speech flow and rhythm.",
-      'B1': "Improve speaking pace and natural connections.",
-      'B2': "Enhance fluency with smooth transitions.",
-      'C1': "Perfect natural, effortless speech delivery.",
-      'C2': "Master sophisticated speaking rhythm and pace."
-    },
-    'Pronunciation': {
-      'A1': "Practice clear pronunciation of basic sounds.",
-      'A2': "Focus on accurate word stress and intonation.",
-      'B1': "Improve pronunciation clarity and naturalness.",
-      'B2': "Refine pronunciation for advanced communication.",
-      'C1': "Perfect nuanced pronunciation and accent.",
-      'C2': "Master sophisticated pronunciation patterns."
-    }
-  };
+  // Use coach personality for consistent recommendations
+  return coachPersonality.generateRecommendation(weakestSkill, level);
+}
 
-  const skillRecs = recommendations[weakestSkill[0]] || recommendations['Grammar'];
-  const recommendedPractice = skillRecs[level] || skillRecs['B1'];
+// Expose coach personality methods
+function generateCelebration(score, improvement, skill) {
+  return coachPersonality.generateCelebration(score, improvement, skill);
+}
 
-  return {
-    focusSkill: weakestSkill[0],
-    suggestedPractice: recommendedPractice
-  };
+function generateWeeklySummary(testsCompleted, avgImprovement, strongestSkill, weakestSkill) {
+  return coachPersonality.generateWeeklySummary(testsCompleted, avgImprovement, strongestSkill, weakestSkill);
+}
+
+function generateGreeting(userName, userLevel, lastSession) {
+  return coachPersonality.generateGreeting(userName, userLevel, lastSession);
+}
+
+function generateFeedback(errorType, userLevel) {
+  return coachPersonality.generateFeedback(errorType, userLevel);
+}
+
+function generateClosing(userLevel, testCount) {
+  return coachPersonality.generateClosing(userLevel, testCount);
 }
 
 module.exports = {
-  generateAISummary
+  generateAISummary,
+  generateCelebration,
+  generateWeeklySummary,
+  generateGreeting,
+  generateFeedback,
+  generateClosing
 };
 
