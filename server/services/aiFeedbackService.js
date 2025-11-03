@@ -69,6 +69,9 @@ async function generateFeedback({ userId, testId, skill, text, level = 'B1' }) {
       return getFallbackFeedback(userId, testId, skill);
     }
 
+    // Generate AI summary message
+    const aiMessage = generateAISummary(parsed.bandBreakdown, skill);
+
     // Prepare feedback document
     const feedbackData = {
       userId,
@@ -78,6 +81,8 @@ async function generateFeedback({ userId, testId, skill, text, level = 'B1' }) {
       feedback: parsed.feedback,
       text: skill === 'writing' ? text : undefined,
       transcript: skill === 'speaking' ? text : undefined,
+      level,
+      aiMessage,
       createdAt: new Date()
     };
 
@@ -95,6 +100,46 @@ async function generateFeedback({ userId, testId, skill, text, level = 'B1' }) {
   } catch (error) {
     console.error('[AI Feedback] Error:', error.message);
     return getFallbackFeedback(userId, testId, skill);
+  }
+}
+
+/**
+ * Generate AI summary message based on band breakdown
+ */
+function generateAISummary(bandBreakdown, skill) {
+  try {
+    const averages = Object.values(bandBreakdown).filter(v => v > 0);
+    const overallAvg = averages.reduce((sum, val) => sum + val, 0) / averages.length;
+    
+    const isWriting = skill === 'writing';
+    const criteriaNames = isWriting 
+      ? ['Grammar', 'Vocabulary', 'Coherence', 'Task']
+      : ['Fluency', 'Pronunciation', 'Grammar', 'Vocabulary'];
+    
+    // Find strongest and weakest areas
+    const criteriaScores = {};
+    criteriaNames.forEach(name => {
+      if (bandBreakdown[name]) criteriaScores[name] = bandBreakdown[name];
+    });
+    
+    const entries = Object.entries(criteriaScores);
+    entries.sort((a, b) => b[1] - a[1]);
+    
+    const strongest = entries[0];
+    const weakest = entries[entries.length - 1];
+    
+    // Generate supportive message
+    if (overallAvg >= 7.5) {
+      return `Excellent work! Your ${strongest[0]} is particularly strong. Keep refining ${weakest[0]} for even higher scores.`;
+    } else if (overallAvg >= 6.5) {
+      return `Good progress! Focus on ${weakest[0]} to push your overall band higher.`;
+    } else if (overallAvg >= 5.5) {
+      return `Keep practicing! Pay special attention to ${weakest[0]} to improve your scores.`;
+    } else {
+      return `Continue working hard! Practice ${weakest[0]} regularly for steady improvement.`;
+    }
+  } catch (error) {
+    return 'Keep practicing for better results.';
   }
 }
 
@@ -119,6 +164,7 @@ function getFallbackFeedback(userId, testId, skill) {
         type: isWriting ? 'grammar' : 'fluency'
       }
     ],
+    aiMessage: 'Keep practicing for better results.',
     createdAt: new Date()
   };
 

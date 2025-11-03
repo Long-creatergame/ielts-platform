@@ -39,6 +39,7 @@ const LearningPath = lazy(() => import('../pages/LearningPath'));
 const PracticePlan = lazy(() => import('../components/PracticePlan'));
 const BandProgressChart = lazy(() => import('../components/BandProgressChart'));
 const DashboardAI = lazy(() => import('../components/dashboard/DashboardAI'));
+const FeedbackHistory = lazy(() => import('../components/feedback/FeedbackHistory'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -340,6 +341,17 @@ export default function Dashboard() {
                   <span className="text-lg">🤖</span>
                   <span>AI Analytics</span>
                 </button>
+                <button
+                  onClick={() => setActiveTab('feedback-history')}
+                  className={`flex items-center space-x-2 px-6 py-4 font-medium text-sm transition-all duration-200 whitespace-nowrap ${
+                    activeTab === 'feedback-history'
+                      ? 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
+                  }`}
+                >
+                  <span className="text-lg">📊</span>
+                  <span>Feedback History</span>
+                </button>
               </nav>
             </div>
             
@@ -507,6 +519,12 @@ export default function Dashboard() {
                        {activeTab === 'ai-analytics' && (
                          <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
                            <DashboardAI user={user} isLoading={loading} />
+                         </Suspense>
+                       )}
+
+                       {activeTab === 'feedback-history' && (
+                         <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                           <FeedbackHistory userId={user._id} />
                          </Suspense>
                        )}
             </div>

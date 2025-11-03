@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { generateFeedback, getFeedback } = require('../services/aiFeedbackService');
+const AIFeedback = require('../models/AIFeedback');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -100,6 +101,75 @@ router.get('/:testId/:skill', auth, async (req, res) => {
       success: false,
       message: 'Internal error while retrieving feedback',
       data: null
+    });
+  }
+});
+
+/**
+ * Get feedback history for a user
+ */
+router.get('/history/:userId', auth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { skill, sortBy = 'newest' } = req.query;
+
+    console.log(`[Feedback:History] Fetching for user ${userId}, skill: ${skill || 'all'}`);
+
+    // Build query
+    const query = { userId };
+    if (skill && ['writing', 'speaking'].includes(skill)) {
+      query.skill = skill;
+    }
+
+    // Build sort
+    let sort = { createdAt: -1 }; // Default: newest first
+    if (sortBy === 'oldest') {
+      sort = { createdAt: 1 };
+    } else if (sortBy === 'highest-band') {
+      // This requires aggregation, simplified here
+      sort = { createdAt: -1 };
+    }
+
+    // Fetch feedbacks
+    const feedbacks = await AIFeedback.find(query)
+      .sort(sort)
+      .limit(20);
+
+    // Format history
+    const history = feedbacks.map((fb) => {
+      const bandValues = Object.values(fb.bandBreakdown).filter(v => v > 0);
+      const averageBand = bandValues.length > 0
+        ? (bandValues.reduce((sum, val) => sum + val, 0) / bandValues.length).toFixed(1)
+        : 0;
+
+      return {
+        _id: fb._id,
+        testId: fb.testId,
+        skill: fb.skill,
+        bandBreakdown: fb.bandBreakdown,
+        averageBand: parseFloat(averageBand),
+        date: fb.createdAt,
+        level: fb.level || 'B1',
+        aiMessage: fb.aiMessage || 'Keep practicing for better results.'
+      };
+    });
+
+    console.log(`[Feedback:History] ✅ Loaded ${history.length} feedback records`);
+
+    return res.json({
+      success: true,
+      data: {
+        userId,
+        history
+      },
+      message: 'Feedback history retrieved successfully'
+    });
+  } catch (error) {
+    console.error('[Feedback:History] Error:', error.message);
+    return res.status(200).json({
+      success: false,
+      message: 'Failed to fetch feedback history',
+      data: { history: [] }
     });
   }
 });

@@ -41,6 +41,8 @@ const feedbackSchema = new mongoose.Schema({
   // Store full text/transcript for reference
   text: String,
   transcript: String,
+  level: { type: String, default: 'B1' },
+  aiMessage: String,
   createdAt: {
     type: Date,
     default: Date.now
