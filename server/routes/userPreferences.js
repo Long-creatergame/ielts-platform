@@ -5,6 +5,7 @@
 
 const express = require('express');
 const UserPreferences = require('../models/UserPreferences');
+const User = require('../models/User');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -86,6 +87,48 @@ router.post('/', auth, async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to save preferences'
+    });
+  }
+});
+
+// Update preferred mode (quick endpoint for mode switching)
+router.patch('/', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { preferredMode } = req.body;
+    
+    if (!preferredMode || !['academic', 'general'].includes(preferredMode)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid mode. Must be "academic" or "general"'
+      });
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { preferredMode },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    console.log('✅ Preferred mode updated:', userId, preferredMode);
+    
+    return res.json({
+      success: true,
+      message: 'Preferred mode updated successfully',
+      data: { preferredMode }
+    });
+  } catch (error) {
+    console.error('❌ Error updating preferred mode:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update preferred mode'
     });
   }
 });

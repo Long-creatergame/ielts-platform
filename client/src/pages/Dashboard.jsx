@@ -43,6 +43,7 @@ const FeedbackHistory = lazy(() => import('../components/feedback/FeedbackHistor
 const AICoachCard = lazy(() => import('../components/dashboard/AICoachCard'));
 const AISupervisorPanel = lazy(() => import('../components/dashboard/AISupervisorPanel'));
 const MotivationPanel = lazy(() => import('../components/MotivationPanel'));
+const ModeAnalyticsCard = lazy(() => import('../components/ModeAnalyticsCard'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -364,6 +365,11 @@ export default function Dashboard() {
                   {/* Motivation Panel */}
                   <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
                     <MotivationPanel userId={user._id} />
+                  </Suspense>
+
+                  {/* Mode Analytics Card */}
+                  <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                    <ModeAnalyticsCard userId={user._id} />
                   </Suspense>
 
                   {/* AI Coach Card */}

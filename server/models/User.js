@@ -79,6 +79,24 @@ const userSchema = new mongoose.Schema({
     aiReason: String,
     lastUpdated: { type: Date, default: Date.now }
   },
+  preferredMode: {
+    type: String,
+    enum: ['academic', 'general'],
+    default: 'academic'
+  },
+  modeHistory: [{
+    mode: String,
+    skill: String,
+    testId: { type: mongoose.Schema.Types.ObjectId, ref: 'Test' },
+    band: Number,
+    date: { type: Date, default: Date.now }
+  }],
+  modeAnalytics: {
+    academicTests: { type: Number, default: 0 },
+    generalTests: { type: Number, default: 0 },
+    avgBandAcademic: { type: Number, default: 0 },
+    avgBandGeneral: { type: Number, default: 0 }
+  },
   paid: {
     type: Boolean,
     default: false

@@ -153,7 +153,7 @@ router.post('/submit', auth, async (req, res) => {
     }
     
     // Support both new and legacy payloads
-    let { level, overallBand, skillScores, skillBands, testAnswers, completed, skill, answers, timeSpent } = req.body || {};
+    let { level, overallBand, skillScores, skillBands, testAnswers, completed, skill, answers, timeSpent, mode } = req.body || {};
     
     // Validate answers exist
     if (!testAnswers && !answers) {
@@ -483,6 +483,17 @@ router.post('/submit', auth, async (req, res) => {
       }
     } catch (motivationError) {
       console.warn('[Motivation] Failed to record activity:', motivationError.message);
+    }
+
+    // Record mode analytics if mode is provided (for Reading/Writing)
+    if (mode && (skill === 'reading' || skill === 'writing')) {
+      try {
+        const { updateModeUsage } = require('../services/modeAnalyticsService');
+        await updateModeUsage(user._id, mode, skill, totalBand, test._id);
+        console.log('[Mode Analytics] Recorded:', mode, skill, totalBand);
+      } catch (modeError) {
+        console.warn('[Mode Analytics] Failed to record:', modeError.message);
+      }
     }
 
     // Analytics logging

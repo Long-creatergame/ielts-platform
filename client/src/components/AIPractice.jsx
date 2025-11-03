@@ -16,6 +16,37 @@ const AIPractice = () => {
     topic: ''     // Add topic field for user input
   });
 
+  // Auto-load preferred mode
+  useEffect(() => {
+    if (user?.preferredMode && (formData.skill === 'writing' || formData.skill === 'reading')) {
+      setFormData(prev => ({ ...prev, mode: user.preferredMode }));
+    }
+  }, [user?.preferredMode, formData.skill]);
+
+  // Auto-save mode preference
+  useEffect(() => {
+    if (user && (formData.skill === 'writing' || formData.skill === 'reading')) {
+      savePreferredMode(formData.mode);
+    }
+  }, [formData.mode, formData.skill, user]);
+
+  const savePreferredMode = async (mode) => {
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const token = localStorage.getItem('token');
+      await fetch(`${API_BASE_URL}/api/user/preferences`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ preferredMode: mode })
+      });
+    } catch (error) {
+      console.error('Failed to save preferred mode:', error);
+    }
+  };
+
   const handleGenerate = async () => {
     if (!user) {
       alert(t('auth.pleaseLogin'));
