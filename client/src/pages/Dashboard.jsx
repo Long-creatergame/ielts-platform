@@ -40,6 +40,7 @@ const PracticePlan = lazy(() => import('../components/PracticePlan'));
 const BandProgressChart = lazy(() => import('../components/BandProgressChart'));
 const DashboardAI = lazy(() => import('../components/dashboard/DashboardAI'));
 const FeedbackHistory = lazy(() => import('../components/feedback/FeedbackHistory'));
+const AICoachCard = lazy(() => import('../components/dashboard/AICoachCard'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -358,6 +359,11 @@ export default function Dashboard() {
             <div className="p-8">
               {activeTab === 'overview' && (
                 <div className="space-y-8">
+                  {/* AI Coach Card */}
+                  <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                    <AICoachCard userId={user._id} />
+                  </Suspense>
+
                   {/* Coach Message */}
                   {personalization?.coachMessage && (
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200/50">

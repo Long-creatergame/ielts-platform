@@ -2,6 +2,7 @@ const express = require('express');
 const aiScoringService = require('../services/aiScoringService.js');
 const recommendationService = require('../services/recommendationService.js');
 const { generateLearningPath, getLearningPath } = require('../controllers/learningPathController.js');
+const { generateAISummary } = require('../services/aiSummaryService.js');
 const auth = require('../middleware/auth.js');
 
 const router = express.Router();
@@ -105,6 +106,48 @@ router.get('/recommendations', auth, async (req, res) => {
     res.status(500).json({ 
       success: false, 
       error: 'Recommendations service unavailable' 
+    });
+  }
+});
+
+// Get AI Summary for user
+router.get('/summary/:userId', auth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Verify user can only access their own summary
+    if (req.user._id.toString() !== userId) {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'Unauthorized access' 
+      });
+    }
+
+    // Get user level for appropriate tone
+    const userLevel = req.user.currentLevel || 'B1';
+
+    const summary = await generateAISummary(userId, userLevel);
+
+    if (!summary) {
+      return res.json({
+        success: false,
+        message: 'No feedback history found. Complete Writing or Speaking tests to receive AI insights.',
+        data: null
+      });
+    }
+
+    res.json({
+      success: true,
+      data: summary,
+      message: 'AI summary generated successfully'
+    });
+
+  } catch (error) {
+    console.error('[AI Summary] Error:', error.message);
+    res.json({
+      success: false,
+      message: 'Failed to generate AI summary',
+      data: null
     });
   }
 });
