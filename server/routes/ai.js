@@ -3,6 +3,7 @@ const aiScoringService = require('../services/aiScoringService.js');
 const recommendationService = require('../services/recommendationService.js');
 const { generateLearningPath, getLearningPath } = require('../controllers/learningPathController.js');
 const { generateAISummary } = require('../services/aiSummaryService.js');
+const { runAISupervision } = require('../services/aiSupervisorService.js');
 const auth = require('../middleware/auth.js');
 
 const router = express.Router();
@@ -106,6 +107,45 @@ router.get('/recommendations', auth, async (req, res) => {
     res.status(500).json({ 
       success: false, 
       error: 'Recommendations service unavailable' 
+    });
+  }
+});
+
+// Get AI Supervisor Report for user
+router.get('/supervisor/:userId', auth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Verify user can only access their own report
+    if (req.user._id.toString() !== userId) {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'Unauthorized access' 
+      });
+    }
+
+    const report = await runAISupervision(userId);
+
+    if (!report) {
+      return res.json({
+        success: false,
+        message: 'Unable to generate AI supervisor report',
+        data: null
+      });
+    }
+
+    res.json({
+      success: true,
+      data: report,
+      message: 'AI supervisor report generated successfully'
+    });
+
+  } catch (error) {
+    console.error('[AI Supervisor] Error:', error.message);
+    res.json({
+      success: false,
+      message: 'Failed to generate AI supervisor report',
+      data: null
     });
   }
 });

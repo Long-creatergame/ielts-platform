@@ -41,6 +41,7 @@ const BandProgressChart = lazy(() => import('../components/BandProgressChart'));
 const DashboardAI = lazy(() => import('../components/dashboard/DashboardAI'));
 const FeedbackHistory = lazy(() => import('../components/feedback/FeedbackHistory'));
 const AICoachCard = lazy(() => import('../components/dashboard/AICoachCard'));
+const AISupervisorPanel = lazy(() => import('../components/dashboard/AISupervisorPanel'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -436,6 +437,15 @@ export default function Dashboard() {
 
                   {/* Daily Challenge - First Priority */}
                   <DailyChallenge />
+
+                  {/* AI Supervisor Panel */}
+                  <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="lg:col-span-2">
+                        <AISupervisorPanel userId={user._id} />
+                      </div>
+                    </div>
+                  </Suspense>
 
                   {/* Quick Practice Group */}
                   <div className="bg-white rounded-3xl shadow-lg p-6">
