@@ -42,6 +42,7 @@ const DashboardAI = lazy(() => import('../components/dashboard/DashboardAI'));
 const FeedbackHistory = lazy(() => import('../components/feedback/FeedbackHistory'));
 const AICoachCard = lazy(() => import('../components/dashboard/AICoachCard'));
 const AISupervisorPanel = lazy(() => import('../components/dashboard/AISupervisorPanel'));
+const MotivationPanel = lazy(() => import('../components/MotivationPanel'));
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -360,6 +361,11 @@ export default function Dashboard() {
             <div className="p-8">
               {activeTab === 'overview' && (
                 <div className="space-y-8">
+                  {/* Motivation Panel */}
+                  <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
+                    <MotivationPanel userId={user._id} />
+                  </Suspense>
+
                   {/* AI Coach Card */}
                   <Suspense fallback={<div className="flex justify-center p-8"><Loader /></div>}>
                     <AICoachCard userId={user._id} />

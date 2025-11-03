@@ -12,6 +12,9 @@ const crypto = require('crypto');
 const OpenAI = require('openai');
 const router = express.Router();
 
+// Import Motivation service for activity tracking
+const Motivation = require('../models/Motivation');
+
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 // New AI-powered test generation endpoint
@@ -449,6 +452,37 @@ router.post('/submit', auth, async (req, res) => {
     } catch (progressError) {
       console.warn('[BandProgress] Failed:', progressError.message);
       // Non-critical, continue
+    }
+
+    // Record activity for motivation tracking
+    try {
+      const motivation = await Motivation.findOne({ userId: user._id });
+      if (motivation) {
+        const now = new Date();
+        const lastActive = motivation.lastActive || now;
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastActiveDate = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
+        
+        const diffDays = Math.floor((today - lastActiveDate) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) {
+          motivation.streakDays = Math.max(motivation.streakDays || 0, 1);
+        } else if (diffDays === 1) {
+          motivation.streakDays = (motivation.streakDays || 0) + 1;
+        } else {
+          motivation.streakDays = 1;
+        }
+        
+        if (motivation.streakDays > (motivation.longestStreak || 0)) {
+          motivation.longestStreak = motivation.streakDays;
+        }
+        
+        motivation.lastActive = now;
+        await motivation.save();
+        console.log('[Motivation] Activity recorded, streak:', motivation.streakDays);
+      }
+    } catch (motivationError) {
+      console.warn('[Motivation] Failed to record activity:', motivationError.message);
     }
 
     // Analytics logging
