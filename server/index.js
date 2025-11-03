@@ -28,6 +28,7 @@ const healthRoutes = require('./routes/health.js');
 const userPreferencesRoutes = require('./routes/userPreferences.js');
 const debugRoutes = require('./routes/debug.js');
 const userResultsRoutes = require('./routes/userResults.js');
+const feedbackRoutes = require('./routes/feedback.js');
 
 dotenv.config();
 
@@ -231,6 +232,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/user-preferences', userPreferencesRoutes);
 app.use('/api/debug', debugRoutes);
 app.use('/api/user-results', userResultsRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
