@@ -3,7 +3,12 @@
  * Structured prompts for IELTS Writing and Speaking feedback generation
  */
 
-exports.writingPrompt = (text, level = 'B1') => `
+exports.writingPrompt = (text, level = 'B1', mode = 'academic') => {
+  const modeContext = mode === 'academic' 
+    ? 'This is IELTS Academic Writing. Expect formal register, academic vocabulary, and structured arguments.'
+    : 'This is IELTS General Training Writing. Expect natural, communicative tone suitable for daily contexts.';
+
+  return `
 Analyze the following IELTS Writing text and provide detailed feedback in JSON format.
 
 Analyze for:
@@ -20,6 +25,8 @@ Text to analyze:
 "${text}"
 
 Level: ${level}
+Mode: ${mode}
+${modeContext}
 
 Return ONLY valid JSON in this exact format:
 {
@@ -41,8 +48,10 @@ Return ONLY valid JSON in this exact format:
   ]
 }
 
+Feedback tone: ${mode === 'academic' ? 'Emphasize academic precision, formal coherence, and lexical sophistication.' : 'Emphasize clear communication, natural expression, and practical clarity.'}
 Use a supportive Cambridge IELTS tutor tone. Focus on actionable improvements.
 `;
+};
 
 exports.speakingPrompt = (transcript, level = 'B1') => `
 Analyze the following IELTS Speaking transcript and provide detailed feedback in JSON format.

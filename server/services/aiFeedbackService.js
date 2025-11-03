@@ -15,18 +15,18 @@ const openai = process.env.OPENAI_API_KEY
 /**
  * Generate AI feedback for Writing or Speaking
  */
-async function generateFeedback({ userId, testId, skill, text, level = 'B1' }) {
+async function generateFeedback({ userId, testId, skill, text, level = 'B1', mode = 'academic' }) {
   try {
     if (!openai) {
       console.warn('[AI Feedback] OpenAI not configured, returning fallback');
       return getFallbackFeedback(userId, testId, skill);
     }
 
-    console.log(`[AI Feedback] Generating ${skill} feedback for user ${userId}`);
+    console.log(`[AI Feedback] Generating ${skill} feedback for user ${userId} (${mode})`);
     
-    // Select appropriate prompt
+    // Select appropriate prompt with mode context
     const prompt = skill === 'writing' 
-      ? writingPrompt(text, level)
+      ? writingPrompt(text, level, mode)
       : speakingPrompt(text, level);
 
     // Call OpenAI API

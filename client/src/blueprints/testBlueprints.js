@@ -525,4 +525,49 @@ export const getCambridgeBlueprint = async (skill, level = "B1") => {
   };
 };
 
+/**
+ * Get Cambridge mode-specific blueprint (Academic vs General Training)
+ */
+export const getCambridgeModeBlueprint = async (skill, level = "B1", mode = "academic") => {
+  // Dynamic imports
+  const { getCambridgeForm } = await import('./cambridgeForms');
+  const { getModeForm, getWritingTasks, getCambridgeMode } = await import('./cambridgeModes');
+  
+  const baseBlueprint = getBlueprintByLevel(skill, level);
+  if (!baseBlueprint) {
+    console.warn(`[Cambridge Mode Blueprint] No blueprint for ${skill} at level ${level}`);
+    return null;
+  }
+
+  // Get Cambridge form structure
+  const formStructure = getCambridgeForm(skill, level);
+  
+  // Get mode-specific configuration
+  const modeConfig = getCambridgeMode(mode);
+  const modeForm = getModeForm(skill, mode);
+  
+  // Override form structure for mode-specific skills
+  let finalFormStructure = formStructure;
+  if (skill === 'reading' || skill === 'writing') {
+    finalFormStructure = modeForm?.questionTypes || modeForm?.tasks || formStructure;
+  }
+
+  return {
+    ...baseBlueprint,
+    formStructure: finalFormStructure,
+    writingTasks: skill === 'writing' ? getWritingTasks(mode) : undefined,
+    formType: `Cambridge-${mode}`,
+    mode,
+    version: "v2.13.F.1",
+    skill,
+    level,
+    modeConfig: {
+      label: modeConfig.label,
+      shortLabel: modeConfig.shortLabel,
+      icon: modeConfig.icon,
+      color: modeConfig.color
+    }
+  };
+};
+
 export default IELTS_TEST_BLUEPRINTS;

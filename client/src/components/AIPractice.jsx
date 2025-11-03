@@ -12,6 +12,7 @@ const AIPractice = () => {
   const [formData, setFormData] = useState({
     skill: 'writing',
     level: 'B1',  // Changed from band to CEFR level
+    mode: 'academic',  // Add Cambridge mode
     topic: ''     // Add topic field for user input
   });
 
@@ -36,6 +37,7 @@ const AIPractice = () => {
         body: JSON.stringify({
           skill: formData.skill,
           level: formData.level,
+          mode: formData.mode || 'academic',
           topic: formData.topic || 'General English'
         })
       });
@@ -85,7 +87,7 @@ const AIPractice = () => {
       
       {/* Form */}
       <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className={`grid ${(formData.skill === 'writing' || formData.skill === 'reading') ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-3'} gap-6`}>
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
               {t('aiPractice.skill')}
@@ -101,20 +103,6 @@ const AIPractice = () => {
               <option value="reading">📖 Reading</option>
               <option value="listening">🎧 Listening</option>
             </select>
-          </div>
-          
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700">
-              {t('aiPractice.topic')}
-            </label>
-            <input
-              type="text"
-              name="topic"
-              value={formData.topic}
-              onChange={handleInputChange}
-              placeholder="e.g., Technology, Environment"
-              className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50"
-            />
           </div>
           
           <div className="space-y-2">
@@ -135,6 +123,39 @@ const AIPractice = () => {
               <option value="C2">C2 - Proficient (Band 8.5)</option>
             </select>
           </div>
+
+          {(formData.skill === 'writing' || formData.skill === 'reading') && (
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                IELTS Mode
+              </label>
+              <select
+                name="mode"
+                value={formData.mode}
+                onChange={handleInputChange}
+                className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50"
+              >
+                <option value="academic">🎓 Academic</option>
+                <option value="general">🌍 General Training</option>
+              </select>
+            </div>
+          )}
+
+          {(formData.skill !== 'writing' && formData.skill !== 'reading') && (
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                {t('aiPractice.topic')}
+              </label>
+              <input
+                type="text"
+                name="topic"
+                value={formData.topic}
+                onChange={handleInputChange}
+                placeholder="e.g., Technology, Environment"
+                className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/50"
+              />
+            </div>
+          )}
         </div>
       </div>
       
@@ -174,7 +195,14 @@ const AIPractice = () => {
               {generatedQuestion.skill.charAt(0).toUpperCase() + generatedQuestion.skill.slice(1)} Question Generated!
             </h3>
             <div className="flex items-center justify-center gap-2 flex-wrap">
-              {generatedQuestion.formType === 'Cambridge' && (
+              {generatedQuestion.mode && (
+                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${
+                  generatedQuestion.mode === 'academic' ? 'bg-blue-100 text-blue-700' : 'bg-teal-100 text-teal-700'
+                }`}>
+                  {generatedQuestion.mode === 'academic' ? '🎓 Cambridge Academic' : '🌍 Cambridge General'}
+                </div>
+              )}
+              {generatedQuestion.formType && generatedQuestion.formType !== `Cambridge-${generatedQuestion.mode}` && (
                 <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-700">
                   🎓 Cambridge Official
                 </div>
