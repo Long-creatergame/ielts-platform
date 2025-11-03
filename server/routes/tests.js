@@ -7,6 +7,7 @@ const auth = require('../middleware/auth');
 const { generateIELTSTest } = require('../controllers/testGeneratorController');
 const aiScoringService = require('../services/aiScoringService');
 const { generateAdaptiveTest, updatePerformanceHistory } = require('../utils/generateAdaptiveTest');
+const { generateLearningPath, updateBandProgress } = require('../utils/aiLearningPath');
 const crypto = require('crypto');
 const OpenAI = require('openai');
 const router = express.Router();
@@ -404,6 +405,49 @@ router.post('/submit', auth, async (req, res) => {
       await updatePerformanceHistory(user._id, test._id, numericBand, skill || 'mixed');
     } catch (perfError) {
       console.warn('[UpdatePerformanceHistory] Failed:', perfError.message);
+      // Non-critical, continue
+    }
+
+    // Update band progress and generate learning path
+    try {
+      // Reload user to get latest data
+      const updatedUser = await User.findById(user._id);
+      
+      // Update band progress per skill
+      if (skillBands && typeof skillBands === 'object') {
+        if (!updatedUser.bandProgress) {
+          updatedUser.bandProgress = { reading: [], listening: [], writing: [], speaking: [] };
+        }
+        
+        Object.entries(skillBands).forEach(([skillName, bandScore]) => {
+          if (skillName && typeof bandScore === 'number' && !isNaN(bandScore)) {
+            updatedUser.bandProgress[skillName] = updateBandProgress(
+              updatedUser.bandProgress[skillName], 
+              bandScore
+            );
+          }
+        });
+        
+        await updatedUser.save();
+        console.log('[BandProgress] Updated band progress for user:', user.email);
+      }
+      
+      // Generate or update AI learning path
+      try {
+        const learningPath = await generateLearningPath(
+          updatedUser.bandProgress, 
+          updatedUser.targetBand || 6.5
+        );
+        
+        updatedUser.learningPath = learningPath;
+        await updatedUser.save();
+        console.log('[AI LearningPath] Generated learning path:', learningPath.targetSkill);
+      } catch (learningError) {
+        console.warn('[AI LearningPath] Failed:', learningError.message);
+        // Non-critical, continue
+      }
+    } catch (progressError) {
+      console.warn('[BandProgress] Failed:', progressError.message);
       // Non-critical, continue
     }
 

@@ -67,6 +67,18 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  bandProgress: {
+    reading: { type: [Number], default: [] },
+    listening: { type: [Number], default: [] },
+    writing: { type: [Number], default: [] },
+    speaking: { type: [Number], default: [] }
+  },
+  learningPath: {
+    targetSkill: String,
+    nextFocus: String,
+    aiReason: String,
+    lastUpdated: { type: Date, default: Date.now }
+  },
   paid: {
     type: Boolean,
     default: false
