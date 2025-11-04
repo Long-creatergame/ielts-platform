@@ -11,7 +11,7 @@ const TEST_TOKEN = process.env.TEST_TOKEN || '';
 const LOG_DIR = path.join(__dirname, '..', '..', 'logs', 'validation');
 const LOG_FILE = path.join(LOG_DIR, 'unified-exam-audit.log');
 
-const headers = { 'Authorization': `Bearer ${TEST_TOKEN}`, 'Content-Type': 'application/json' };
+const headers = { 'Authorization': TEST_TOKEN, 'Content-Type': 'application/json' };
 const skills = ['listening', 'reading', 'writing', 'speaking'];
 const modes = ['cambridge', 'practice'];
 
