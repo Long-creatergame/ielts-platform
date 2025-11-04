@@ -12,12 +12,19 @@ function formatContentForTest(content, skill) {
     case 'reading':
       // Check if content has combined 3 passages or single passage
       const numQuestions = content.questions?.length || 0;
+      const mode = content.mode || 'academic';
+      const isGeneral = mode === 'general';
       return {
-        title: `IELTS Academic Reading`,
+        title: `IELTS ${isGeneral ? 'General' : 'Academic'} Reading`,
         instructions: numQuestions >= 30 
           ? "Read the passages and answer all questions below. You have 60 minutes to complete this section. There are 3 passages with approximately 13-14 questions each."
           : "Read the passage and answer the questions below. You have 60 minutes to complete this section.",
         timeLimit: 60,
+        mode,
+        blueprint: {
+          sections: 3,
+          questions: 40
+        },
         passage: content.content,
         questions: content.questions,
         totalQuestions: numQuestions || 40
@@ -25,14 +32,23 @@ function formatContentForTest(content, skill) {
     case 'writing':
       // Check if content has tasks array (full IELTS format) or single task
       const hasTasks = content.tasks && Array.isArray(content.tasks);
+      const mode = content.mode || 'academic';
+      const isGeneral = mode === 'general';
       
       if (hasTasks) {
         // Full IELTS Writing: 2 tasks
+        const task1Type = isGeneral ? 'letter' : 'chart/diagram description';
         return {
-          title: `IELTS Academic Writing`,
-          instructions: "Complete both writing tasks below. Task 1: 20 minutes, 150 words minimum. Task 2: 40 minutes, 250 words minimum.",
+          title: `IELTS ${isGeneral ? 'General' : 'Academic'} Writing`,
+          instructions: `Complete both writing tasks below. Task 1: 20 minutes, 150 words minimum (${task1Type}). Task 2: 40 minutes, 250 words minimum (essay).`,
           timeLimit: content.timeLimit || 60,
+          mode,
           tasks: content.tasks,
+          blueprint: {
+            tasks: isGeneral 
+              ? ['letter', 'essay (opinion/discussion)']
+              : ['chart/diagram description', 'essay (argument/discussion)']
+          },
           criteria: [
             "Task Achievement - Address all parts of the task",
             "Coherence and Cohesion - Organize information logically",
@@ -64,12 +80,19 @@ function formatContentForTest(content, skill) {
         ? content.sections.flatMap(s => s.questions || [])
         : content.questions || [];
       
+      const mode = content.mode || 'academic';
+      const isGeneral = mode === 'general';
       return {
-        title: `IELTS Academic Listening`,
+        title: `IELTS ${isGeneral ? 'General' : 'Academic'} Listening`,
         instructions: hasSections
           ? "Listen to the recordings and answer all questions below. You will hear each recording once. There are 4 sections with 10 questions each. You have 30 minutes plus 10 minutes to transfer answers."
           : "Listen to the recording and answer the questions below. You will hear the recording once. You have 30 minutes plus 10 minutes to transfer answers.",
         timeLimit: 30,
+        mode,
+        blueprint: {
+          sections: 4,
+          questions: 40
+        },
         audioUrl: hasSections ? content.sections[0]?.audioUrl : content.audioUrl,
         sections: hasSections ? content.sections : null,
         questions: listeningQuestions,
@@ -81,10 +104,17 @@ function formatContentForTest(content, skill) {
       
       if (hasParts) {
         // Full IELTS Speaking: 3 parts
+        const mode = content.mode || 'academic';
+        const isGeneral = mode === 'general';
         return {
-          title: `IELTS Academic Speaking`,
+          title: `IELTS ${isGeneral ? 'General' : 'Academic'} Speaking`,
           instructions: "Complete all speaking parts below. Part 1: 4-5 minutes. Part 2: 3-4 minutes (with 1 min preparation). Part 3: 4-5 minutes.",
           timeLimit: content.timeLimit || 14,
+          mode,
+          blueprint: {
+            parts: 3,
+            duration: '11–14 min'
+          },
           parts: content.parts,
           criteria: [
             "Fluency and Coherence - Speak smoothly and clearly",

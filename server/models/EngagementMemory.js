@@ -48,8 +48,12 @@ const EngagementMemorySchema = new mongoose.Schema({
   emotionHistory: [{
     timestamp: { type: Date, default: Date.now },
     emotion: String,
-    tone: String,
-    context: String
+    tone: {
+      type: String,
+      enum: ['supportive', 'uplifting', 'motivating', 'encouraging', 'neutral'],
+      default: 'neutral'
+    },
+    context: { type: String, default: 'learning' }
   }],
   engagementMetrics: {
     averageSessionDuration: { type: Number, default: 0 },

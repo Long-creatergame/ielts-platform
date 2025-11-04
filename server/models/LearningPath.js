@@ -22,6 +22,11 @@ const learningPathSchema = new mongoose.Schema({
     type: String,
     enum: ['reading', 'listening', 'writing', 'speaking']
   }],
+  weakSkills: {
+    type: [String],
+    default: [],
+    enum: ['reading', 'listening', 'writing', 'speaking']
+  },
   
   // AI-generated recommendations
   recommendations: [{

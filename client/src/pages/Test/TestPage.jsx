@@ -981,8 +981,16 @@ export default function TestPage() {
       <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-50 to-blue-50 rounded-lg shadow-md p-6 mb-6 border border-red-200">
-          <div className="flex justify-between items-center mb-4">
+        <div className="bg-gradient-to-r from-red-50 to-blue-50 rounded-lg shadow-md p-6 mb-6 border border-red-200 relative">
+          {/* Cambridge Official Badge */}
+          <div className="absolute top-4 right-4 z-10">
+            <div className="cambridge-badge bg-gradient-to-r from-blue-600 to-blue-400 text-white text-sm px-4 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2">
+              <span>🎓</span>
+              <span>Cambridge Official Test</span>
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-center mb-4 pr-48">
             <h1 className="text-2xl font-bold text-gray-900">
               📚 Official IELTS {skills[currentSkill].name} Test - {level} Level
             </h1>

@@ -256,12 +256,39 @@ Return ONLY JSON:
       }
     }
 
+    // Cambridge form structure based on mode
+    const mode = req.body.mode || 'academic';
+    let blueprint = {};
+    
+    if (mode === 'academic') {
+      blueprint = {
+        reading: { sections: 3, questions: 40 },
+        listening: { sections: 4, questions: 40 },
+        writing: {
+          tasks: ['chart/diagram description', 'essay (argument/discussion)']
+        },
+        speaking: { parts: 3, duration: '11–14 min' }
+      };
+    } else {
+      // General mode
+      blueprint = {
+        reading: { sections: 3, questions: 40 },
+        listening: { sections: 4, questions: 40 },
+        writing: {
+          tasks: ['letter', 'essay (opinion/discussion)']
+        },
+        speaking: { parts: 3, duration: '11–14 min' }
+      };
+    }
+
     return res.json({
       success: true,
       data: {
         skill,
         topic: normalizedTopic,
         level: normalizedLevel,
+        mode,
+        blueprint,
         questions: questions,
         instructions: content.instructions,
         timeLimit: 30,
