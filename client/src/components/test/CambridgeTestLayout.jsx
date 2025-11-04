@@ -101,7 +101,7 @@ export default function CambridgeTestLayout({ skill = 'reading', setId = 'R1', o
         </>
       )}
       {skill === 'writing' && (
-        <WritingView data={data} onAnswer={setAnswer} answers={answers} />
+        <WritingView data={data} onAnswer={setAnswer} answers={answers} imageUrls={data.image_urls} />
       )}
       {skill === 'speaking' && (
         <SpeakingView data={data} />
@@ -144,7 +144,13 @@ function ListeningView({ data, index, setIndex, onAnswer, answers }) {
   const s = data.sections[index] || data.sections[0];
   return (
     <div>
-      <audio src={s.audioUrl} controls preload="auto" />
+      {Array.isArray(data.audio_urls) && data.audio_urls.length > 0 ? (
+        data.audio_urls.map((url, i) => (
+          <audio key={i} src={url} controls preload="auto" className="mb-3 w-full" />
+        ))
+      ) : (
+        <audio src={s.audioUrl} controls preload="auto" />
+      )}
       <p className="mt-2 text-gray-600">{s.transcript}</p>
       <div className="space-y-3 mt-3">
         {s.questions?.map((q) => (

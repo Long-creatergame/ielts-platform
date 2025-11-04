@@ -222,6 +222,7 @@ async function getHistory(req, res) {
 async function getTestBySkill(req, res) {
   try {
     const { skill } = req.params;
+    const { setId } = req.query || {};
     const fileMap = {
       reading: 'readingCambridge.json',
       listening: 'listeningCambridge.json',
@@ -234,19 +235,33 @@ async function getTestBySkill(req, res) {
     }
 
     const dataPath = path.join(__dirname, `../data/cambridge/${filename}`);
-    const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    let data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
     // Build absolute media URLs
     const frontend = process.env.FRONTEND_URL || '';
 
-    if (skill === 'listening' && data.sections) {
+    // Prefer DB media mapping when setId is provided
+    if (setId) {
+      const testDoc = await CambridgeTest.findOne({ skill: skill.toLowerCase(), setId });
+      if (testDoc) {
+        data.setId = setId;
+        if (Array.isArray(testDoc.audio_urls)) {
+          data.audio_urls = testDoc.audio_urls.map(u => `${frontend}${u}`);
+        }
+        if (Array.isArray(testDoc.image_urls)) {
+          data.image_urls = testDoc.image_urls.map(u => `${frontend}${u}`);
+        }
+      }
+    }
+
+    if (skill === 'listening' && data.sections && !data.audio_urls) {
       data.sections = data.sections.map((sec) => ({
         ...sec,
         audioUrl: sec.audioUrl ? `${frontend}${sec.audioUrl}` : `${frontend}/audio/cambridge/default_listening.mp3`
       }));
       data.audio_urls = data.sections.map(s => s.audioUrl);
     }
-    if (skill === 'writing') {
+    if (skill === 'writing' && !data.image_urls) {
       const img = data.task1?.image || '/images/writing/task1_bar_chart.png';
       data.image_urls = [ `${frontend}${img}` ];
       if (data.task1 && !data.task1.image) data.task1.image = `${frontend}${img}`;

@@ -1,0 +1,51 @@
+{
+  "listening": [
+    {
+      "setId": "test1",
+      "audio_urls": [
+        "/audio/cambridge/test1_section1.mp3",
+        "/audio/cambridge/test1_section2.mp3",
+        "/audio/cambridge/test1_section3.mp3",
+        "/audio/cambridge/test1_section4.mp3"
+      ]
+    },
+    {
+      "setId": "test2",
+      "audio_urls": [
+        "/audio/cambridge/test2_section1.mp3",
+        "/audio/cambridge/test2_section2.mp3",
+        "/audio/cambridge/test2_section3.mp3",
+        "/audio/cambridge/test2_section4.mp3"
+      ]
+    },
+    {
+      "setId": "test3",
+      "audio_urls": [
+        "/audio/cambridge/test3_section1.mp3",
+        "/audio/cambridge/test3_section2.mp3",
+        "/audio/cambridge/test3_section3.mp3",
+        "/audio/cambridge/test3_section4.mp3"
+      ]
+    },
+    {
+      "setId": "test4",
+      "audio_urls": [
+        "/audio/cambridge/test4_section1.mp3",
+        "/audio/cambridge/test4_section2.mp3",
+        "/audio/cambridge/test4_section3.mp3",
+        "/audio/cambridge/test4_section4.mp3"
+      ]
+    }
+  ],
+  "writing": [
+    { "setId": "test1", "image_urls": ["/images/writing/task1_bar_chart.png"] },
+    { "setId": "test2", "image_urls": ["/images/writing/task1_pie_chart.png"] },
+    { "setId": "test3", "image_urls": ["/images/writing/task1_line_chart.png"] },
+    { "setId": "test4", "image_urls": ["/images/writing/task1_table.png"] },
+    { "setId": "test5", "image_urls": ["/images/writing/task1_process.png"] },
+    { "setId": "test6", "image_urls": ["/images/writing/task1_map.png"] },
+    { "setId": "test7", "image_urls": ["/images/writing/task1_mixed_chart.png"] }
+  ]
+}
+
+
