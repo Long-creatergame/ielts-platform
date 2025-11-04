@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const testSessionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  cambridgeTestId: { type: mongoose.Schema.Types.ObjectId, ref: 'CambridgeTest', index: true },
   skill: { type: String, enum: ['reading', 'listening', 'writing', 'speaking'], required: true },
   setId: { type: String, required: true, index: true },
   startTime: { type: Date, default: Date.now },
