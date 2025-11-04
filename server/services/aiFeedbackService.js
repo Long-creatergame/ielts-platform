@@ -1,4 +1,8 @@
 const AI_Feedback = require('../models/AI_Feedback');
+const { assessWriting } = require('./ai/writingAssessment');
+const { assessSpeaking } = require('./ai/speakingAssessor');
+const { evaluateReading } = require('./ai/readingEvaluator');
+const { evaluateListening } = require('./ai/listeningEvaluator');
 
 async function saveFeedback(sessionId, userId, skill, feedback, improvementTips) {
   const doc = await AI_Feedback.findOneAndUpdate(
@@ -10,6 +14,53 @@ async function saveFeedback(sessionId, userId, skill, feedback, improvementTips)
 }
 
 module.exports = { saveFeedback };
+
+async function evaluateWriting(text) {
+  const res = await assessWriting(text);
+  return { band: res.band_overall, details: res };
+}
+
+async function evaluateSpeaking(transcript) {
+  const res = await assessSpeaking(transcript);
+  return { band: res.band_overall, details: res };
+}
+
+function generateFeedback(skill, result) {
+  if (skill === 'reading' || skill === 'listening') {
+    const { correct = 0, total = 40 } = result || {};
+    return `${skill} performance: ${correct}/${total} correct.`;
+  }
+  if (result?.comments) return result.comments;
+  return 'Good effort. Keep practicing to improve your skills.';
+}
+
+async function evaluateTest(testResult) {
+  const { skill, responses, skillScores, skillBands } = testResult || {};
+  if (skill === 'reading') {
+    const res = evaluateReading(responses, skillScores?.reading?.answerKeys || []);
+    return { bands: { reading: res.band }, overall: res.band, cefr: 'B2' };
+  }
+  if (skill === 'listening') {
+    const res = evaluateListening(responses, skillScores?.listening?.answerKeys || []);
+    return { bands: { listening: res.band }, overall: res.band, cefr: 'B2' };
+  }
+  if (skill === 'writing') {
+    const text = Array.isArray(responses) ? responses.join('\n') : responses;
+    const res = await assessWriting(text);
+    return { bands: { writing: res.band_overall }, overall: res.band_overall, cefr: 'B2' };
+  }
+  if (skill === 'speaking') {
+    const transcript = Array.isArray(responses) ? responses.join(' ') : responses;
+    const res = await assessSpeaking(transcript);
+    return { bands: { speaking: res.band_overall }, overall: res.band_overall, cefr: 'B2' };
+  }
+  return { bands: {}, overall: 0, cefr: 'A1' };
+}
+
+module.exports.evaluateWriting = evaluateWriting;
+module.exports.evaluateSpeaking = evaluateSpeaking;
+module.exports.generateFeedback = generateFeedback;
+module.exports.evaluateTest = evaluateTest;
 
 /**
  * AI Feedback Service

@@ -4,7 +4,7 @@
  * Handles complete test → assessment → feedback → learning path pipeline
  */
 
-const { evaluateTest } = require('../services/aiAssessmentService');
+const { evaluateTest } = require('../services/aiFeedbackService');
 const { generateLearningPath } = require('../services/learningPathService');
 const { generateAISummary } = require('../services/aiSummaryService');
 const { runAISupervision } = require('../services/aiSupervisorService');

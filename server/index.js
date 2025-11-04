@@ -12,8 +12,8 @@ const authenticIELTSRoutes = require('./routes/authenticIELTS.js');
 const aiEngineRoutes = require('./routes/aiEngine.js');
 const aiRecommendationsRoutes = require('./routes/aiRecommendations.js');
 const aiPersonalizationRoutes = require('./routes/aiPersonalization.js');
-const quickPracticeRoutes = require('./routes/quickPractice.js');
-const ieltsTestRoutes = require('./routes/ieltsTest.js');
+// const quickPracticeRoutes = require('./routes/quickPractice.js'); // deprecated
+// const ieltsTestRoutes = require('./routes/ieltsTest.js'); // deprecated
 const audioRoutes = require('./routes/audio.js');
 const recommendationsRoutes = require('./routes/recommendations.js');
 const progressTrackingRoutes = require('./routes/progress-tracking.js');
@@ -245,8 +245,8 @@ app.use('/api/authentic-ielts', authenticIELTSRoutes);
 app.use('/api/ai-engine', aiEngineRoutes);
 app.use('/api/ai-recommendations', aiRecommendationsRoutes);
 app.use('/api/ai-personalization', aiPersonalizationRoutes);
-app.use('/api/quick-practice', quickPracticeRoutes);
-app.use('/api/ielts-test', ieltsTestRoutes);
+// app.use('/api/quick-practice', quickPracticeRoutes); // deprecated
+// app.use('/api/ielts-test', ieltsTestRoutes); // deprecated
 app.use('/api/audio', audioRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api/progress-tracking', progressTrackingRoutes);

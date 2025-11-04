@@ -63,6 +63,26 @@ async function result(req, res) {
   }
 }
 
-module.exports = { start, submit, result };
+async function listSessions(req, res) {
+  try {
+    const docs = await ExamSession.find({}).limit(200).lean();
+    return res.json(docs);
+  } catch (e) {
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+async function patchSession(req, res) {
+  try {
+    const { id } = req.params;
+    const updates = req.body || {};
+    await ExamSession.updateOne({ _id: id }, { $set: updates });
+    return res.json({ success: true });
+  } catch (e) {
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+module.exports = { start, submit, result, listSessions, patchSession };
 
 

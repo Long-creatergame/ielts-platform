@@ -9,7 +9,9 @@
     "test": "jest --runInBand --testTimeout=60000",
     "validate:env": "node scripts/validateEnv.js",
     "validate:exam": "node scripts/validateUnifiedExam.js",
-    "autopatch:exam": "node scripts/autoPatchUnifiedExam.js"
+    "autopatch:exam": "node scripts/autoPatchUnifiedExam.js",
+    "validate:schema": "node scripts/validateUnifiedSchema.js",
+    "migrate:collections": "node scripts/migrateCollections.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
