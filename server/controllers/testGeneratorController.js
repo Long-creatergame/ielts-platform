@@ -140,6 +140,16 @@ const generateIELTSTest = async (req, res) => {
       });
     }
 
+    // Skip OpenAI calls during test/deploy to prevent timeout
+    if (process.env.NODE_ENV === 'test') {
+      console.log('[TestGenerator] Skipping OpenAI call during test/deploy');
+      return res.status(200).json({ 
+        success: false, 
+        message: "AI service temporarily unavailable during deployment",
+        data: null
+      });
+    }
+
     // Build enhanced system prompt with user preferences
     const preferenceContext = userPreferences 
       ? `User preferences: Tone=${userPreferences.tone || 'academic'}, Difficulty=${userPreferences.difficulty || 'adaptive'}, AI Style=${userPreferences.aiStyle || 'encouraging'}. Adapt the questions accordingly.`

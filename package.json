@@ -6,6 +6,7 @@
     "validate:phases": "node scripts/validate-phases.js",
     "validate:system": "node scripts/fullSystemValidation.js",
     "sync:env": "node scripts/autoSyncEnv.js",
+    "clear:render": "node scripts/clearRenderCache.js",
     "start": "node server.js",
     "dev:full": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
     "dev:server": "cd server && node index.js",

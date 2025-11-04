@@ -1678,6 +1678,12 @@ const generateWithAITemplate = async (skill, level) => {
       return null;
     }
     
+    // Skip OpenAI calls during test/deploy to prevent timeout
+    if (process.env.NODE_ENV === 'test') {
+      console.log('[ContentGenerator] Skipping OpenAI call during test/deploy');
+      return null;
+    }
+    
     // Call OpenAI
     const OpenAI = require('openai');
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

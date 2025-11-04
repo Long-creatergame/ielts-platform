@@ -46,6 +46,19 @@ const upload = multer({
 
 // Generate AI feedback for speaking performance
 async function generateSpeakingFeedback(fluency, lexical, grammar, pronunciation, overall) {
+  // Skip OpenAI calls during test/deploy to prevent timeout
+  if (process.env.NODE_ENV === 'test') {
+    console.log('[Speaking] Skipping OpenAI call during test/deploy');
+    return {
+      overall: "Feedback generation skipped during test/deploy",
+      fluency: { score: fluency, feedback: "Analysis skipped during test" },
+      lexical: { score: lexical, feedback: "Analysis skipped during test" },
+      grammar: { score: grammar, feedback: "Analysis skipped during test" },
+      pronunciation: { score: pronunciation, feedback: "Analysis skipped during test" },
+      recommendations: []
+    };
+  }
+  
   try {
     const response = await openai.chat.completions.create({
       model: process.env.AI_MODEL || "gpt-4o-mini",

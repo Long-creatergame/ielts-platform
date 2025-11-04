@@ -49,6 +49,21 @@ router.post('/writing/task1', async (req, res) => {
       return res.status(400).json({ error: 'Missing question or essay' });
     }
 
+    // Skip OpenAI calls during test/deploy to prevent timeout
+    if (process.env.NODE_ENV === 'test') {
+      console.log('[AITask1] Skipping OpenAI call during test/deploy');
+      return res.json({
+        bandScore: 6.0,
+        feedback: "AI analysis skipped during test/deploy",
+        breakdown: {
+          taskAchievement: 6.0,
+          coherenceCohesion: 6.0,
+          lexicalResource: 6.0,
+          grammar: 6.0
+        }
+      });
+    }
+
     const response = await openai.chat.completions.create({
       model: process.env.AI_MODEL || "gpt-4o-mini",
       messages: [

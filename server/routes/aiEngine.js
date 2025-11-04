@@ -78,7 +78,7 @@ router.post('/generate', auth, async (req, res) => {
     }
 
     // Try to use real OpenAI API first
-    if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '') {
+    if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '' && process.env.NODE_ENV !== 'test') {
       try {
         const OpenAI = require('openai');
         const openai = new OpenAI({
@@ -213,6 +213,27 @@ router.post('/analyze', auth, async (req, res) => {
             "Practice time management"
           ],
           submittedAt: new Date().toISOString()
+        }
+      });
+    }
+
+    // Skip OpenAI calls during test/deploy to prevent timeout
+    if (process.env.NODE_ENV === 'test') {
+      console.log('[AIEngine] Skipping OpenAI call during test/deploy');
+      return res.json({
+        success: true,
+        data: {
+          band_estimate: 6.0,
+          breakdown: {
+            taskAchievement: 6.0,
+            coherenceCohesion: 6.0,
+            lexicalResource: 6.0,
+            grammaticalRange: 6.0,
+            fluency: 6.0,
+            pronunciation: 6.0
+          },
+          feedback: "AI analysis skipped during test/deploy",
+          suggestions: ["Test environment - analysis skipped"]
         }
       });
     }

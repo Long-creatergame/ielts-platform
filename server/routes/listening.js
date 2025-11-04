@@ -37,6 +37,17 @@ function calculateBandScore(correctCount, totalQuestions) {
 
 // Generate AI feedback for listening performance
 async function generateListeningFeedback(correctCount, totalQuestions, bandScore, answerDetails) {
+  // Skip OpenAI calls during test/deploy to prevent timeout
+  if (process.env.NODE_ENV === 'test') {
+    console.log('[Listening] Skipping OpenAI call during test/deploy');
+    return {
+      overall: "Feedback generation skipped during test/deploy",
+      strengths: [],
+      improvements: [],
+      recommendations: []
+    };
+  }
+  
   try {
     const response = await openai.chat.completions.create({
       model: process.env.AI_MODEL || "gpt-4o-mini",

@@ -285,6 +285,12 @@ function identifyStrengths(tests, skill) {
 
 // Generate AI-powered recommendations
 async function generateAIRecommendations(performanceAnalysis, skill, currentLevel) {
+  // Skip OpenAI calls during test/deploy to prevent timeout
+  if (process.env.NODE_ENV === 'test') {
+    console.log('[AIRecommendations] Skipping OpenAI call during test/deploy');
+    return generateFallbackRecommendations(performanceAnalysis, skill);
+  }
+  
   try {
     const prompt = `
 You are an expert IELTS tutor. Based on the following performance analysis, generate 5 specific, actionable recommendations for improving ${skill} skills.
@@ -340,6 +346,12 @@ Respond in JSON format:
 
 // Generate follow-up recommendations
 async function generateFollowUpRecommendations(previousRecommendations, skill) {
+  // Skip OpenAI calls during test/deploy to prevent timeout
+  if (process.env.NODE_ENV === 'test') {
+    console.log('[AIRecommendations] Skipping OpenAI call during test/deploy');
+    return [];
+  }
+  
   try {
     const prompt = `
 You are an expert IELTS tutor. The student has been working on these recommendations for ${skill}:
