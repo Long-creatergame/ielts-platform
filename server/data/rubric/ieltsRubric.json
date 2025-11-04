@@ -1,0 +1,24 @@
+{
+  "reading": {
+    "total": 40,
+    "bandMapping": "official"
+  },
+  "listening": {
+    "total": 40,
+    "bandMapping": "official"
+  },
+  "writing": {
+    "taskResponse": 0.25,
+    "coherence": 0.25,
+    "lexical": 0.25,
+    "grammar": 0.25
+  },
+  "speaking": {
+    "fluency": 0.25,
+    "pronunciation": 0.25,
+    "lexical": 0.25,
+    "grammar": 0.25
+  }
+}
+
+

@@ -33,6 +33,8 @@ const userResultsRoutes = require('./routes/userResults.js');
 const feedbackRoutes = require('./routes/feedback.js');
 const motivationRoutes = require('./routes/motivation.js');
 const modeAnalyticsRoutes = require('./routes/modeAnalytics.js');
+const cambridgeTestRoutes = require('./routes/cambridgeTest.js');
+const testSessionRoutes = require('./routes/testSession.js');
 
 dotenv.config();
 
@@ -247,6 +249,8 @@ app.use('/api/user-results', userResultsRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/motivation', motivationRoutes);
 app.use('/api/mode-analytics', modeAnalyticsRoutes);
+app.use('/api/cambridge/test', cambridgeTestRoutes);
+app.use('/api/test', testSessionRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

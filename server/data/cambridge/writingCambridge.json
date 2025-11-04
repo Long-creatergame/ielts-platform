@@ -1,0 +1,15 @@
+{
+  "setId": "W1",
+  "task1": {
+    "type": "chart",
+    "image": "/images/charts/task1_bar_chart.png",
+    "prompt": "Summarize the information by selecting and reporting the main features."
+  },
+  "task2": {
+    "type": "opinion",
+    "prompt": "Some people think that government should invest more in public transportation. To what extent do you agree or disagree?"
+  },
+  "timing": 60
+}
+
+
