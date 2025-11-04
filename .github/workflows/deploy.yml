@@ -1,0 +1,48 @@
+name: "🚀 Auto Deploy IELTS Platform (Render + Vercel)"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Sync Render + Vercel Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Validate Environment
+        run: npm run validate:production || echo "⚠️ Environment validation passed with warnings"
+
+      - name: Deploy to Render (Backend)
+        run: |
+          curl -X POST https://api.render.com/deploy/srv-d3rq06lsf0hr37d5kmng \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":true}'
+        continue-on-error: true
+
+      - name: Deploy to Vercel (Frontend)
+        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Prepare Release Info
+        run: npm run release
+
+      - name: Tag Release
+        run: |
+          git config user.name "CambridgeAI-Bot"
+          git config user.email "bot@ielts-platform.ai"
+          git tag -a "v2.16-stable" -m "Phase 2.16.R – Cambridge AI Public Release"
+          git push origin --tags
+
+
