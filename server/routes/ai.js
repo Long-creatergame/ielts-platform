@@ -4,6 +4,7 @@ const recommendationService = require('../services/recommendationService.js');
 const { generateLearningPath, getLearningPath } = require('../controllers/learningPathController.js');
 const { generateAISummary } = require('../services/aiSummaryService.js');
 const { runAISupervision } = require('../services/aiSupervisorService.js');
+const { handleAIEmotionFeedback, getEngagementSummary, updateEngagementMetrics } = require('../services/aiEngagementService.js');
 const auth = require('../middleware/auth.js');
 
 const router = express.Router();
@@ -201,11 +202,99 @@ router.get('/status', (req, res) => {
       features: {
         scoring: true,
         recommendations: true,
-        practiceQuestions: true
+        practiceQuestions: true,
+        emotion: true
       },
       timestamp: new Date().toISOString()
     }
   });
+});
+
+// AI Emotion & Engagement endpoints
+
+/**
+ * POST /api/ai/emotion
+ * Get AI emotion feedback based on performance
+ */
+router.post('/emotion', auth, async (req, res) => {
+  try {
+    const { performance } = req.body;
+    const userId = req.user._id;
+    const userName = req.user.name || req.user.email?.split('@')[0] || 'Student';
+
+    if (!performance) {
+      return res.status(400).json({
+        success: false,
+        error: 'Performance data is required'
+      });
+    }
+
+    const result = await handleAIEmotionFeedback(userId, userName, performance);
+
+    return res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('[AI Emotion] Error:', error.message);
+    return res.status(500).json({
+      success: false,
+      error: 'Server error processing emotion feedback'
+    });
+  }
+});
+
+/**
+ * GET /api/ai/engagement/summary
+ * Get user's engagement summary
+ */
+router.get('/engagement/summary', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const summary = await getEngagementSummary(userId);
+
+    return res.json({
+      success: true,
+      data: summary
+    });
+  } catch (error) {
+    console.error('[AI Engagement Summary] Error:', error.message);
+    return res.status(500).json({
+      success: false,
+      error: 'Server error fetching engagement summary'
+    });
+  }
+});
+
+/**
+ * POST /api/ai/engagement/metrics
+ * Update engagement metrics after practice session
+ */
+router.post('/engagement/metrics', auth, async (req, res) => {
+  try {
+    const { metrics } = req.body;
+    const userId = req.user._id;
+
+    if (!metrics) {
+      return res.status(400).json({
+        success: false,
+        error: 'Metrics data is required'
+      });
+    }
+
+    const result = await updateEngagementMetrics(userId, metrics);
+
+    return res.json({
+      success: result,
+      message: result ? 'Engagement metrics updated' : 'Failed to update metrics'
+    });
+  } catch (error) {
+    console.error('[AI Engagement Metrics] Error:', error.message);
+    return res.status(500).json({
+      success: false,
+      error: 'Server error updating engagement metrics'
+    });
+  }
 });
 
 module.exports = router;
