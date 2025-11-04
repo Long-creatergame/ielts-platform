@@ -19,6 +19,7 @@
     "test": "npm run test:api && npm run test:e2e",
     "validate:production": "node scripts/validateProduction.js",
     "validate:examflow": "node scripts/validateExamFlow.js",
+    "validate:public": "node scripts/validatePublic.js",
     "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
     "release": "node scripts/releaseVersion.js",
     "test:deploy": "node scripts/testDeployment.js"

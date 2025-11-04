@@ -93,24 +93,50 @@ async function generateFeedback({ userId, testId, skill, text, level = 'B1', mod
       ? writingPrompt(text, level, mode)
       : speakingPrompt(text, level);
 
-    // Call OpenAI API
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an experienced IELTS tutor. Always return valid JSON format.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 1500
-    });
+    // Call OpenAI API with timeout and retry
+    const timeout = parseInt(process.env.OPENAI_TIMEOUT || '40000'); // Default 40 seconds
+    const maxRetries = parseInt(process.env.MAX_RETRY || '2');
+    
+    let lastError;
+    let aiResponse;
+    
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        // Create a promise that rejects after timeout
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('AI request timeout')), timeout);
+        });
 
-    const aiResponse = completion.choices[0].message.content;
+        const apiPromise = openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an experienced IELTS tutor. Always return valid JSON format.'
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 1500
+        });
+
+        const completion = await Promise.race([apiPromise, timeoutPromise]);
+        aiResponse = completion.choices[0].message.content;
+        break; // Success, exit retry loop
+      } catch (error) {
+        lastError = error;
+        console.warn(`[AI Feedback] Attempt ${attempt + 1}/${maxRetries} failed:`, error.message);
+        if (attempt === maxRetries - 1) {
+          console.warn('⚠️ AI Timeout after all retries, using fallback message');
+          return getFallbackFeedback(userId, testId, skill);
+        }
+        // Wait before retry (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+      }
+    }
     
     // Parse JSON response
     let parsed;

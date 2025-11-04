@@ -332,13 +332,31 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Demo mode shortcut for auth endpoints
-if (process.env.ENABLE_DEMO_MODE === 'true') {
-  console.log('🚀 Running in DEMO MODE: No user registration required.');
+if (process.env.ENABLE_DEMO_MODE === 'true' || process.env.DEMO_MODE === 'true') {
+  console.log('🧩 Running in DEMO MODE: Guest access enabled.');
   app.use((req, res, next) => {
     if (req.path.startsWith('/api/auth')) {
       return res.status(200).json({ message: 'Demo mode active', user: { id: 'demo-user', role: 'demo' } });
     }
     next();
+  });
+
+  // Demo reset endpoint
+  app.get('/api/demo/reset', async (req, res) => {
+    try {
+      const ExamSession = require('./models/ExamSession');
+      const ExamResult = require('./models/ExamResult');
+      const AI_Feedback = require('./models/AI_Feedback');
+      
+      await ExamSession.deleteMany({ userId: 'demo-user' });
+      await ExamResult.deleteMany({ userId: 'demo-user' });
+      await AI_Feedback.deleteMany({ userId: 'demo-user' });
+      
+      res.json({ message: 'Demo data reset complete.', timestamp: new Date() });
+    } catch (error) {
+      console.error('[Demo Reset] Error:', error.message);
+      res.status(500).json({ error: 'Failed to reset demo data' });
+    }
   });
 }
 

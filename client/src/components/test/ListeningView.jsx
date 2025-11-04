@@ -73,6 +73,15 @@ export default function ListeningView({ testData, answers, onChange, onTimeout }
     }
   };
 
+  const handleReplay = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(err => {
+        console.warn('[ListeningView] Auto-play prevented:', err);
+      });
+    }
+  };
+
   // Build audio URL from section data
   const audioUrl = currentSectionData.audioUrl 
     ? `/api/media/audio/${currentSectionData.audioUrl.split('/').pop()}`
@@ -110,6 +119,7 @@ export default function ListeningView({ testData, answers, onChange, onTimeout }
           </div>
           
           <audio
+            id="listening-audio"
             ref={audioRef}
             controls
             preload="auto"
@@ -122,6 +132,15 @@ export default function ListeningView({ testData, answers, onChange, onTimeout }
           >
             Your browser does not support the audio element.
           </audio>
+
+          <div className="listening-controls flex gap-2 mt-3">
+            <button
+              onClick={handleReplay}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              🔄 Replay Section
+            </button>
+          </div>
 
           {audioProgress > 0 && (
             <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
