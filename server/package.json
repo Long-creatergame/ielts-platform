@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "test": "jest --runInBand --testTimeout=60000",
     "validate:env": "node scripts/validateEnv.js",
-    "validate:exam": "node scripts/validateUnifiedExam.js"
+    "validate:exam": "node scripts/validateUnifiedExam.js",
+    "autopatch:exam": "node scripts/autoPatchUnifiedExam.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
