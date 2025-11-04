@@ -1,3 +1,16 @@
+const AI_Feedback = require('../models/AI_Feedback');
+
+async function saveFeedback(sessionId, userId, skill, feedback, improvementTips) {
+  const doc = await AI_Feedback.findOneAndUpdate(
+    { sessionId, skill },
+    { $set: { userId, feedback, improvementTips } },
+    { upsert: true, new: true }
+  );
+  return doc;
+}
+
+module.exports = { saveFeedback };
+
 /**
  * AI Feedback Service
  * Generates detailed feedback for Writing and Speaking using OpenAI

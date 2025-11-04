@@ -36,6 +36,7 @@ const modeAnalyticsRoutes = require('./routes/modeAnalytics.js');
 const cambridgeTestRoutes = require('./routes/cambridgeTest.js');
 const testSessionRoutes = require('./routes/testSession.js');
 const unifiedCambridgeRoutes = require('./routes/unifiedCambridgeRouter.js');
+const examRoutes = require('./routes/examRoutes.js');
 
 dotenv.config();
 
@@ -253,6 +254,7 @@ app.use('/api/mode-analytics', modeAnalyticsRoutes);
 app.use('/api/cambridge/test', cambridgeTestRoutes);
 app.use('/api/test', testSessionRoutes);
 app.use('/api/cambridge', unifiedCambridgeRoutes);
+app.use('/api/exam', examRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
