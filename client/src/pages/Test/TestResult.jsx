@@ -6,6 +6,7 @@ import FeatureGuide from '../../components/FeatureGuide';
 import AIEncouragement from '../../components/AIEncouragement';
 import AIFeedbackCard from '../../components/AIFeedbackCard';
 import ProgressCelebrationCard from '../../components/ProgressCelebrationCard';
+import AssessmentSummary from '../../components/dashboard/AssessmentSummary';
 
 export default function TestResult() {
   const { id } = useParams();
@@ -17,6 +18,8 @@ export default function TestResult() {
   const [loading, setLoading] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const [previousScore, setPreviousScore] = useState(null);
+  const [assessment, setAssessment] = useState(null);
+  const [learningPath, setLearningPath] = useState(null);
 
   useEffect(() => {
     loadTestResult();
@@ -51,6 +54,14 @@ export default function TestResult() {
     try {
       setLoading(true);
       
+      // Extract assessment and learning path from location.state
+      if (location.state?.assessment) {
+        setAssessment(location.state.assessment);
+      }
+      if (location.state?.learningPath) {
+        setLearningPath(location.state.learningPath);
+      }
+
       // Try to get from location state first
       if (location.state?.testResult) {
         const stateResult = location.state.testResult;
@@ -322,6 +333,18 @@ export default function TestResult() {
             userName={user?.name || 'Student'}
           />
         )}
+
+        {/* Assessment Summary */}
+        {(assessment || location.state?.assessment) && (
+          <div className="max-w-4xl mx-auto px-4 pt-8">
+            <AssessmentSummary 
+              assessment={assessment || location.state?.assessment}
+              learningPath={learningPath || location.state?.learningPath}
+              testId={id}
+            />
+          </div>
+        )}
+
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-8">

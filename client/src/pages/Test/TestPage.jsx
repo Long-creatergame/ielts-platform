@@ -908,24 +908,52 @@ export default function TestPage() {
         }
         
         console.log('📍 Navigating to:', `/test/result/${result.testId}`);
-        navigate(`/test/result/${result.testId}`, { state: { testResult } });
+        navigate(`/test/result/${result.testId}`, { 
+          state: { 
+            testResult,
+            assessment: result.assessment || null,
+            learningPath: result.learningPath || null
+          } 
+        });
       } else {
         const status = response?.status;
         const statusText = response?.statusText;
         console.warn(`⚠️ Backend save failed (status: ${status}, statusText: ${statusText}), using localStorage only`);
+        // Try to get assessment from response if available
+        let responseAssessment = null;
+        let responseLearningPath = null;
         if (response) {
-          const errorData = await response.text();
-          console.warn('⚠️ Error response:', errorData);
+          try {
+            const errorData = await response.json();
+            console.warn('⚠️ Error response:', errorData);
+            responseAssessment = errorData.assessment || null;
+            responseLearningPath = errorData.learningPath || null;
+          } catch (e) {
+            // Not JSON, ignore
+            console.warn('⚠️ Could not parse response as JSON');
+          }
         }
         console.log('📍 Navigating to:', '/test/result');
         // Navigate to result page (data already saved to localStorage)
-        navigate('/test/result', { state: { testResult } });
+        navigate('/test/result', { 
+          state: { 
+            testResult,
+            assessment: responseAssessment,
+            learningPath: responseLearningPath
+          } 
+        });
       }
     } catch (error) {
       console.error('❌ Error saving test to backend:', error);
       console.log('📍 Navigating to:', '/test/result');
       // Navigate to result page even if backend fails
-      navigate('/test/result', { state: { testResult } });
+      navigate('/test/result', { 
+        state: { 
+          testResult,
+          assessment: null,
+          learningPath: null
+        } 
+      });
     }
     
     // Don't reset isSubmitting here - let it stay true during navigation

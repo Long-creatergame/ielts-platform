@@ -496,6 +496,28 @@ router.post('/submit', auth, async (req, res) => {
       }
     }
 
+    // Unified Cambridge Assessment
+    let assessment = null;
+    let learningPath = null;
+    try {
+      const { evaluateTest } = require('../services/aiAssessmentService');
+      const { generateLearningPath } = require('../services/learningPathService');
+      
+      // Evaluate test with official Cambridge assessment
+      assessment = await evaluateTest({
+        skillScores: formattedSkillScores,
+        skillBands: skillBands,
+        aiFeedback: aiFeedback
+      });
+
+      // Generate adaptive learning path based on assessment
+      learningPath = await generateLearningPath(user._id, assessment);
+      
+      console.log(`[Assessment] User ${user._id}: Band ${assessment.overall}, CEFR ${assessment.cefr}`);
+    } catch (assessmentError) {
+      console.warn('[Assessment] Failed to generate assessment:', assessmentError.message);
+    }
+
     // Analytics logging
     console.log(`[Analytics] [TestSubmit] user=${user.email}, skill=${skill || 'mixed'}, band=${totalBand}`);
 
@@ -505,12 +527,14 @@ router.post('/submit', auth, async (req, res) => {
       test: {
         _id: test._id,
         level: test.level,
-        overallBand: totalBand,
+        overallBand: assessment?.overall || totalBand,
         skillScores: skillScores, // Return raw skillScores
         dateCompleted: test.dateTaken,
         completed: test.completed,
         feedback: aiFeedback // Include AI feedback if available
       },
+      assessment: assessment || null, // Cambridge assessment with CEFR
+      learningPath: learningPath || null, // Adaptive learning path
       message: 'Test results saved successfully'
     });
   } catch (error) {
