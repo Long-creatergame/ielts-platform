@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const Test = require('../models/Test');
 const { getRandomContent, generateWithAITemplate } = require('../services/contentGenerator');
+const { generateAuthenticTest } = require('../utils/generateAuthenticTest');
 
 const router = express.Router();
 
@@ -111,11 +112,24 @@ function formatContentForTest(content, skill) {
 // Generate IELTS test content
 router.post('/generate', auth, async (req, res) => {
   try {
-    const { level = 'A2', skill = 'reading' } = req.body;
+    const { level = 'A2', skill = 'reading', mode = 'academic' } = req.body;
     const userId = req.user._id;
 
     if (!['reading', 'writing', 'listening', 'speaking'].includes(skill)) {
       return res.status(400).json({ error: 'Invalid skill. Must be reading, writing, listening, or speaking.' });
+    }
+
+    if (!['academic', 'general'].includes(mode)) {
+      return res.status(400).json({ error: 'Invalid mode. Must be academic or general.' });
+    }
+
+    // Get authentic Cambridge blueprint structure
+    let authenticBlueprint = null;
+    try {
+      authenticBlueprint = await generateAuthenticTest(skill, mode);
+      console.log(`[Authentic Blueprint] Generated for ${skill} (${mode})`);
+    } catch (blueprintError) {
+      console.warn('[Authentic Blueprint] Failed to generate, using fallback:', blueprintError.message);
     }
 
     // Try to get content from database first
@@ -168,15 +182,30 @@ router.post('/generate', auth, async (req, res) => {
       // Continue with fallback ID
     }
 
+    // Combine authentic blueprint with generated content
+    const responseData = {
+      testId: testId,
+      skill,
+      mode,
+      level, // Keep for backward compatibility
+      content: testContent,
+      timeLimit: testContent.timeLimit
+    };
+
+    // Add authentic blueprint structure if available
+    if (authenticBlueprint) {
+      responseData.blueprint = {
+        formType: authenticBlueprint.formType,
+        structure: authenticBlueprint.structure || authenticBlueprint.tasks,
+        totalQuestions: authenticBlueprint.totalQuestions,
+        duration: authenticBlueprint.duration,
+        version: authenticBlueprint.version
+      };
+    }
+
     res.json({
       success: true,
-      data: {
-        testId: testId,
-        skill,
-        level,
-        content: testContent,
-        timeLimit: testContent.timeLimit
-      }
+      data: responseData
     });
   } catch (error) {
     console.error('Generate IELTS test error:', error);
