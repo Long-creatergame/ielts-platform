@@ -37,6 +37,7 @@ const cambridgeTestRoutes = require('./routes/cambridgeTest.js');
 const testSessionRoutes = require('./routes/testSession.js');
 const unifiedCambridgeRoutes = require('./routes/unifiedCambridgeRouter.js');
 const examRoutes = require('./routes/examRoutes.js');
+const productionRoutes = require('./routes/productionRoutes.js');
 
 dotenv.config();
 
@@ -47,6 +48,19 @@ console.log("Mongo URI:", process.env.MONGO_URI ? "✓ Loaded" : "❌ Missing");
 console.log("OpenAI Key:", process.env.OPENAI_API_KEY ? "✓ Loaded" : "❌ Missing");
 
 const app = express();
+// Production middlewares
+try {
+  const helmet = require('helmet');
+  const compression = require('compression');
+  const cors = require('cors');
+  const rateLimit = require('express-rate-limit');
+  const morgan = require('morgan');
+  app.use(helmet());
+  app.use(compression());
+  app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+  app.use(morgan('combined'));
+  app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 300, message: 'Too many requests, please try again later.' }));
+} catch (_) {}
 // Validate critical environment early
 try {
   const { validateCriticalEnv } = require('./utils/envValidation');
@@ -255,6 +269,7 @@ app.use('/api/cambridge/test', cambridgeTestRoutes);
 app.use('/api/test', testSessionRoutes);
 app.use('/api/cambridge', unifiedCambridgeRoutes);
 app.use('/api/exam', examRoutes);
+app.use('/api/production', productionRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -312,6 +327,17 @@ if (process.env.NODE_ENV !== 'test') {
   }, 7 * 24 * 60 * 60 * 1000);
   
   console.log('[Init] Cache cleanup scheduled (weekly)');
+}
+
+// Demo mode shortcut for auth endpoints
+if (process.env.ENABLE_DEMO_MODE === 'true') {
+  console.log('🚀 Running in DEMO MODE: No user registration required.');
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api/auth')) {
+      return res.status(200).json({ message: 'Demo mode active', user: { id: 'demo-user', role: 'demo' } });
+    }
+    next();
+  });
 }
 
 // In test mode, export app without starting the listener to avoid EADDRINUSE

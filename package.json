@@ -15,7 +15,9 @@
     "dev:client": "cd client && npm run dev",
     "test:api": "cd server && npm install --no-audit --no-fund && npm test",
     "test:e2e": "npx playwright install --with-deps && npx playwright test",
-    "test": "npm run test:api && npm run test:e2e"
+    "test": "npm run test:api && npm run test:e2e",
+    "validate:production": "node scripts/validateProduction.js",
+    "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'"
   },
   "engines": {
     "node": ">=18.19.0 <21"

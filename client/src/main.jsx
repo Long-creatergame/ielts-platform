@@ -4,6 +4,11 @@ import App from './App.jsx'
 import './index.css'
 
 // Initialize Tawk.to chat widget if configured
+if (import.meta.env.VITE_DEMO_MODE === 'true') {
+  // Demo mode indicator in console only
+  // eslint-disable-next-line no-console
+  console.log('🎯 IELTS Platform running in DEMO MODE');
+}
 if (import.meta.env.VITE_TAWK_PROPERTY_ID && import.meta.env.VITE_TAWK_WIDGET_ID) {
   window.Tawk_API = window.Tawk_API || {};
   window.Tawk_LoadStart = new Date();
