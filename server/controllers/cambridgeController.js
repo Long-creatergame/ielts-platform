@@ -38,17 +38,20 @@ async function startTest(req, res) {
     }
 
     // Create or find CambridgeTest document
-    let cambridgeTest = await CambridgeTest.findOne({ skill, section: testData.section || 1 });
+    let cambridgeTest = await CambridgeTest.findOne({ skill, section: testData.section || 1, setId });
     if (!cambridgeTest) {
       cambridgeTest = new CambridgeTest({
         skill,
         section: testData.section || 1,
+        setId,
         passages: testData.passages || testData.sections || [],
         audio_url: testData.sections?.[0]?.audioUrl || testData.audioUrl,
+        audio_urls: Array.isArray(testData.sections) ? testData.sections.map(s => s.audioUrl).filter(Boolean) : [],
         question_count: testData.totalQuestions || 40,
         answer_keys: testData.answerKeys || [],
         mode: testData.mode || 'academic',
-        blueprint: testData.blueprint || {}
+        blueprint: testData.blueprint || {},
+        image_urls: testData.task1?.image ? [testData.task1.image] : []
       });
       await cambridgeTest.save();
     }
@@ -233,15 +236,20 @@ async function getTestBySkill(req, res) {
     const dataPath = path.join(__dirname, `../data/cambridge/${filename}`);
     const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
-    // Apply fallbacks
+    // Build absolute media URLs
+    const frontend = process.env.FRONTEND_URL || '';
+
     if (skill === 'listening' && data.sections) {
       data.sections = data.sections.map((sec) => ({
         ...sec,
-        audioUrl: sec.audioUrl || '/audio/cambridge/default_listening.mp3'
+        audioUrl: sec.audioUrl ? `${frontend}${sec.audioUrl}` : `${frontend}/audio/cambridge/default_listening.mp3`
       }));
+      data.audio_urls = data.sections.map(s => s.audioUrl);
     }
-    if (skill === 'writing' && data.task1 && !data.task1.image) {
-      data.task1.image = '/images/charts/default_chart.png';
+    if (skill === 'writing') {
+      const img = data.task1?.image || '/images/writing/task1_bar_chart.png';
+      data.image_urls = [ `${frontend}${img}` ];
+      if (data.task1 && !data.task1.image) data.task1.image = `${frontend}${img}`;
     }
 
     return res.json({ success: true, data });
