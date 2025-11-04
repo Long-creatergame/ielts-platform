@@ -8,12 +8,12 @@ const router = express.Router();
 
 // Helper function to format content for test
 function formatContentForTest(content, skill) {
+  const mode = content.mode || 'academic';
+  const isGeneral = mode === 'general';
   switch (skill) {
     case 'reading':
       // Check if content has combined 3 passages or single passage
       const numQuestions = content.questions?.length || 0;
-      const mode = content.mode || 'academic';
-      const isGeneral = mode === 'general';
       return {
         title: `IELTS ${isGeneral ? 'General' : 'Academic'} Reading`,
         instructions: numQuestions >= 30 
@@ -32,8 +32,6 @@ function formatContentForTest(content, skill) {
     case 'writing':
       // Check if content has tasks array (full IELTS format) or single task
       const hasTasks = content.tasks && Array.isArray(content.tasks);
-      const mode = content.mode || 'academic';
-      const isGeneral = mode === 'general';
       
       if (hasTasks) {
         // Full IELTS Writing: 2 tasks
@@ -80,8 +78,6 @@ function formatContentForTest(content, skill) {
         ? content.sections.flatMap(s => s.questions || [])
         : content.questions || [];
       
-      const mode = content.mode || 'academic';
-      const isGeneral = mode === 'general';
       return {
         title: `IELTS ${isGeneral ? 'General' : 'Academic'} Listening`,
         instructions: hasSections
@@ -104,8 +100,7 @@ function formatContentForTest(content, skill) {
       
       if (hasParts) {
         // Full IELTS Speaking: 3 parts
-        const mode = content.mode || 'academic';
-        const isGeneral = mode === 'general';
+        
         return {
           title: `IELTS ${isGeneral ? 'General' : 'Academic'} Speaking`,
           instructions: "Complete all speaking parts below. Part 1: 4-5 minutes. Part 2: 3-4 minutes (with 1 min preparation). Part 3: 4-5 minutes.",

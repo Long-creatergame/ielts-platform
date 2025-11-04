@@ -36,6 +36,12 @@ const modeAnalyticsRoutes = require('./routes/modeAnalytics.js');
 
 dotenv.config();
 
+// Startup validation logs
+console.log("✅ Cambridge AI Server starting...");
+console.log("Environment:", process.env.NODE_ENV || 'development');
+console.log("Mongo URI:", process.env.MONGO_URI ? "✓ Loaded" : "❌ Missing");
+console.log("OpenAI Key:", process.env.OPENAI_API_KEY ? "✓ Loaded" : "❌ Missing");
+
 const app = express();
 // Validate critical environment early
 try {
