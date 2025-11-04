@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getUserTimezone, getTimezoneAbbr } from '../utils/timezone';
 import { useTranslation } from 'react-i18next';
 import { dashboardAPI } from '../api/dashboard';
 import ScoreCard from '../components/ScoreCard';
@@ -56,7 +57,23 @@ export default function Dashboard() {
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
+  const [localTime, setLocalTime] = useState('');
   // Removed showTestSelector - simplified UX
+
+  // Update local time every second
+  useEffect(() => {
+    const updateTime = () => {
+      setLocalTime(new Date().toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }));
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Memoize API base URL to avoid recalculation
   const API_BASE_URL = React.useMemo(() => 
@@ -205,6 +222,9 @@ export default function Dashboard() {
                   <LevelBadge level={user.currentLevel} size="sm" />
                   <span className="text-sm text-gray-600">
                     {t('dashboard.target')}: Band {user.targetBand} | {t('dashboard.current')}: {statistics?.averageBand > 0 ? `Band ${statistics.averageBand.toFixed(1)}` : t('dashboard.noTestsYet')}
+                  </span>
+                  <span className="text-xs text-gray-500 border-l pl-3 ml-3">
+                    🕓 {localTime} ({getTimezoneAbbr()})
                   </span>
                 </div>
               </div>

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { getUserTimezone } from "../utils/timezone";
 
 export const api = axios.create({
-  baseURL: "${import.meta.env.VITE_API_BASE_URL}",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -14,6 +15,9 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // Attach timezone header to all requests
+    const timezone = getUserTimezone();
+    config.headers["X-Timezone"] = timezone;
     return config;
   },
   (error) => {

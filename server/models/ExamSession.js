@@ -8,7 +8,8 @@ const examSessionSchema = new mongoose.Schema({
   startTime: { type: Date, default: Date.now },
   endTime: { type: Date },
   answers: { type: Array, default: [] },
-  status: { type: String, enum: ['in_progress', 'submitted'], default: 'in_progress' }
+  status: { type: String, enum: ['in_progress', 'submitted'], default: 'in_progress' },
+  timezone: { type: String, default: 'UTC' }
 }, { timestamps: true });
 
 examSessionSchema.index({ userId: 1, mode: 1, skill: 1, status: 1 });

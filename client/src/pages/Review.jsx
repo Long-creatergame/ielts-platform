@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { formatLocalTime, formatDuration } from '../utils/dateFormat';
+import { getUserTimezone, getTimezoneAbbr } from '../utils/timezone';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
 
@@ -22,9 +24,11 @@ export default function Review() {
 
     const fetchResult = async () => {
       try {
+        const timezone = getUserTimezone();
         const response = await fetch(`${API_BASE}/exam/result/${sessionId}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'X-Timezone': timezone
           }
         });
         const data = await response.json();
@@ -88,6 +92,9 @@ export default function Review() {
     );
   }
 
+  const timezone = resultData?.timezone || getUserTimezone();
+  const timezoneAbbr = getTimezoneAbbr();
+
   return (
     <div className="max-w-5xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Test Review</h1>
@@ -98,6 +105,35 @@ export default function Review() {
           <div className="text-center">
             <p className="text-sm opacity-90 mb-2">Overall Band Score</p>
             <p className="text-5xl font-bold">{resultData.overall.toFixed(1)}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Time Information */}
+      {(resultData?.startTime || resultData?.endTime) && (
+        <div className="bg-gray-50 border rounded-lg p-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {resultData.startTime && (
+              <div>
+                <p className="text-sm text-gray-600 mb-1">🕒 Started at:</p>
+                <p className="font-semibold">{formatLocalTime(resultData.startTime)}</p>
+              </div>
+            )}
+            {resultData.endTime && (
+              <div>
+                <p className="text-sm text-gray-600 mb-1">✅ Completed at:</p>
+                <p className="font-semibold">{formatLocalTime(resultData.endTime)}</p>
+              </div>
+            )}
+            {resultData.startTime && resultData.endTime && (
+              <div className="md:col-span-2">
+                <p className="text-sm text-gray-600 mb-1">⏱️ Time spent:</p>
+                <p className="font-semibold">{formatDuration(resultData.startTime, resultData.endTime)}</p>
+              </div>
+            )}
+            <div className="md:col-span-2">
+              <p className="text-xs text-gray-500">📍 Timezone: {timezone} ({timezoneAbbr})</p>
+            </div>
           </div>
         </div>
       )}

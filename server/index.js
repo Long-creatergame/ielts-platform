@@ -81,6 +81,10 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+// Timezone middleware - capture user timezone from headers
+const timezoneMiddleware = require('./middleware/timezoneMiddleware');
+app.use(timezoneMiddleware);
 const PORT = process.env.PORT || 4000;
 const http = require('http');
 const server = http.createServer(app);

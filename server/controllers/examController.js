@@ -7,10 +7,18 @@ async function start(req, res) {
   try {
     const userId = req.user?._id || req.user?.userId;
     const { mode = 'cambridge', skill = 'reading', setId } = req.body || {};
+    const userTimezone = req.userTimezone || 'UTC';
 
     const test = await generateExam(mode, skill, setId);
-    const session = await ExamSession.create({ userId, mode, testId: test?._id || setId || 'practice', skill });
-    return res.json({ success: true, data: { sessionId: session._id, test } });
+    const session = await ExamSession.create({ 
+      userId, 
+      mode, 
+      testId: test?._id || setId || 'practice', 
+      skill,
+      timezone: userTimezone,
+      startTime: new Date() // Explicit UTC
+    });
+    return res.json({ success: true, data: { sessionId: session._id, test, timezone: userTimezone } });
   } catch (err) {
     console.error('[ExamController:start]', err.message);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -54,7 +62,8 @@ async function submit(req, res) {
 
     session.answers = safeAnswers;
     session.status = 'submitted';
-    session.endTime = new Date();
+    session.endTime = new Date(); // Explicit UTC
+    session.timezone = req.userTimezone || session.timezone || 'UTC';
     await session.save();
 
     // Save per-skill result
@@ -97,13 +106,20 @@ async function result(req, res) {
       return res.status(404).json({ success: false, message: 'Result not found' });
     }
 
+    // Fetch session for timezone info
+    const session = await ExamSession.findById(id);
+    const timezone = session?.timezone || req.userTimezone || 'UTC';
+
     // Fetch AI feedback if available
     const AI_Feedback = require('../models/AI_Feedback');
     const feedback = await AI_Feedback.findOne({ sessionId: id }).lean();
     
     const resultData = {
       ...doc.toObject(),
-      feedback: feedback || null
+      feedback: feedback || null,
+      timezone: timezone,
+      startTime: session?.startTime,
+      endTime: session?.endTime
     };
 
     return res.json({ success: true, data: resultData });
