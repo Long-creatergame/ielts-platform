@@ -9,6 +9,7 @@
     "clear:render": "node scripts/clearRenderCache.js",
     "simulate:cambridge": "node scripts/testCambridgeFlow.js",
     "cleanup:indexes": "node scripts/cleanupIndexes.js",
+    "cleanup:imports": "node scripts/cleanupOrphanImports.js",
     "start": "node server/index.js",
     "dev:full": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
     "dev:server": "cd server && node index.js",
