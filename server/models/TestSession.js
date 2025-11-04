@@ -8,7 +8,9 @@ const testSessionSchema = new mongoose.Schema({
   endTime: { type: Date },
   responses: { type: Array, default: [] },
   progress: { type: Number, default: 0 },
-  completed: { type: Boolean, default: false }
+  completed: { type: Boolean, default: false },
+  audioTime: { type: Number, default: 0 },
+  lastSkill: { type: String }
 }, { timestamps: true });
 
 testSessionSchema.index({ userId: 1, skill: 1, setId: 1 });

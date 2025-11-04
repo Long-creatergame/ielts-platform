@@ -6,6 +6,18 @@
 
 const { getBandFromScore, calculateWritingBand, calculateSpeakingBand, calculateOverallBand } = require('../utils/bandCalculator');
 const { mapBandToCEFR } = require('../utils/cefrMapper');
+const fs = require('fs');
+const path = require('path');
+const OpenAI = require('openai');
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+
+let rubric = null;
+try {
+  const rubricPath = path.join(process.cwd(), 'server', 'data', 'rubric', 'ieltsRubric.json');
+  rubric = JSON.parse(fs.readFileSync(rubricPath, 'utf8'));
+} catch (_) {
+  rubric = null;
+}
 
 /**
  * Evaluate test result and calculate bands for all skills
@@ -50,22 +62,56 @@ async function evaluateTest(testResult) {
       }
     }
 
-    // Calculate Writing band from AI feedback
+    // Calculate Writing band from AI feedback or OpenAI rubric-based evaluation
     if (aiFeedback?.writing || skillBands?.writing) {
       if (aiFeedback?.writing) {
         bands.writing = calculateWritingBand(aiFeedback.writing);
       } else if (typeof skillBands?.writing === 'number') {
         bands.writing = parseFloat(skillBands.writing);
       }
+    } else if (openai && rubric?.writing && testResult?.responses?.writing) {
+      try {
+        const systemPrompt = `You are a Cambridge IELTS examiner. Grade WRITING according to official IELTS rubric. Rubric weights: ${JSON.stringify(rubric.writing)}. Return JSON {"band": number, "feedback": string}.`;
+        const completion = await openai.chat.completions.create({
+          model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+          temperature: 0.6,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: String(testResult.responses.writing) }
+          ]
+        });
+        const content = completion.choices[0].message.content;
+        const parsed = JSON.parse(content);
+        if (typeof parsed?.band === 'number') {
+          bands.writing = parsed.band;
+        }
+      } catch (_) {}
     }
 
-    // Calculate Speaking band from AI feedback
+    // Calculate Speaking band from AI feedback or OpenAI rubric-based evaluation
     if (aiFeedback?.speaking || skillBands?.speaking) {
       if (aiFeedback?.speaking) {
         bands.speaking = calculateSpeakingBand(aiFeedback.speaking);
       } else if (typeof skillBands?.speaking === 'number') {
         bands.speaking = parseFloat(skillBands.speaking);
       }
+    } else if (openai && rubric?.speaking && testResult?.responses?.speaking) {
+      try {
+        const systemPrompt = `You are a Cambridge IELTS examiner. Grade SPEAKING according to official IELTS rubric. Rubric weights: ${JSON.stringify(rubric.speaking)}. Return JSON {"band": number, "feedback": string}.`;
+        const completion = await openai.chat.completions.create({
+          model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+          temperature: 0.6,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: String(testResult.responses.speaking) }
+          ]
+        });
+        const content = completion.choices[0].message.content;
+        const parsed = JSON.parse(content);
+        if (typeof parsed?.band === 'number') {
+          bands.speaking = parsed.band;
+        }
+      } catch (_) {}
     }
 
     // Calculate overall band

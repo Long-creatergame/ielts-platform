@@ -7,7 +7,7 @@ const router = express.Router();
 // PATCH /api/test/resume - restore or upsert session progress
 router.patch('/resume', auth, async (req, res) => {
   try {
-    const { skill, setId, progress = 0, responses = [], completed = false } = req.body || {};
+    const { skill, setId, progress = 0, responses = [], completed = false, audioTime, lastSkill } = req.body || {};
     if (!skill || !setId) {
       return res.status(400).json({ success: false, message: 'Missing skill or setId' });
     }
@@ -19,7 +19,9 @@ router.patch('/resume', auth, async (req, res) => {
         progress: Math.max(0, Math.min(100, progress)),
         responses,
         completed,
-        endTime: completed ? new Date() : undefined
+        endTime: completed ? new Date() : undefined,
+        ...(typeof audioTime === 'number' ? { audioTime } : {}),
+        ...(lastSkill ? { lastSkill } : {})
       },
       $setOnInsert: {
         startTime: new Date()

@@ -44,6 +44,16 @@ export default function CambridgeTestLayout({ skill = 'reading', setId = 'R1', o
 
   const timingMinutes = useMemo(() => data?.timing || (skill === 'speaking' ? 12 : skill === 'listening' ? 40 : skill === 'reading' ? 60 : 60), [data, skill]);
   const { label } = useCountdown(timingMinutes, () => handleSubmit());
+  const [currentSection, setCurrentSection] = useState(1);
+  const progress = useMemo(() => {
+    if (skill === 'listening' && data?.sections?.length) {
+      return Math.round((index + 1) / data.sections.length * 100);
+    }
+    if (skill === 'reading' && data?.passages?.length) {
+      return Math.round((index + 1) / data.passages.length * 100);
+    }
+    return 0;
+  }, [skill, data, index]);
 
   function setAnswer(qid, value) {
     setAnswers((prev) => ({ ...prev, [qid]: value }));
@@ -82,7 +92,13 @@ export default function CambridgeTestLayout({ skill = 'reading', setId = 'R1', o
         <ReadingView data={data} index={index} setIndex={setIndex} onAnswer={setAnswer} answers={answers} />
       )}
       {skill === 'listening' && (
-        <ListeningView data={data} index={index} setIndex={setIndex} onAnswer={setAnswer} answers={answers} />
+        <>
+          <div className="mb-3 p-2 bg-blue-50 border rounded">
+            <p>Now playing Section {index + 1}</p>
+            <ProgressBar value={progress} max={100} />
+          </div>
+          <ListeningView data={data} index={index} setIndex={setIndex} onAnswer={setAnswer} answers={answers} />
+        </>
       )}
       {skill === 'writing' && (
         <WritingView data={data} onAnswer={setAnswer} answers={answers} />
@@ -128,7 +144,7 @@ function ListeningView({ data, index, setIndex, onAnswer, answers }) {
   const s = data.sections[index] || data.sections[0];
   return (
     <div>
-      <audio src={s.audioUrl} controls preload="none" />
+      <audio src={s.audioUrl} controls preload="auto" />
       <p className="mt-2 text-gray-600">{s.transcript}</p>
       <div className="space-y-3 mt-3">
         {s.questions?.map((q) => (
@@ -139,6 +155,15 @@ function ListeningView({ data, index, setIndex, onAnswer, answers }) {
         ))}
       </div>
       <div className="mt-3 text-sm text-gray-500">Section {index + 1} / {data.sections.length}</div>
+    </div>
+  );
+}
+
+function ProgressBar({ value = 0, max = 100 }) {
+  const pct = Math.max(0, Math.min(100, (value / max) * 100));
+  return (
+    <div className="w-full h-2 bg-gray-200 rounded">
+      <div className="h-2 bg-blue-600 rounded" style={{ width: pct + '%' }} />
     </div>
   );
 }
