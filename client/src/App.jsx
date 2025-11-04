@@ -18,6 +18,7 @@ import TestHistory from './pages/TestHistory';
 // ⚠️ Removed orphan import (./pages/QuickPractice)
 // import QuickPractice from './pages/QuickPractice';
 import PracticePage from './pages/PracticePage';
+import Review from './pages/Review';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Leaderboard from './pages/Leaderboard';
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="/test-history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
             {/* ⚠️ Removed orphan route (QuickPractice component deleted) */}
             <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
+            <Route path="/review/:sessionId" element={<ProtectedRoute><Review /></ProtectedRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />

@@ -38,6 +38,7 @@ const testSessionRoutes = require('./routes/testSession.js');
 const unifiedCambridgeRoutes = require('./routes/unifiedCambridgeRouter.js');
 const examRoutes = require('./routes/examRoutes.js');
 const productionRoutes = require('./routes/productionRoutes.js');
+const mediaRoutes = require('./routes/mediaRoutes.js');
 
 dotenv.config();
 
@@ -270,6 +271,7 @@ app.use('/api/test', testSessionRoutes);
 app.use('/api/cambridge', unifiedCambridgeRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/production', productionRoutes);
+app.use('/api/media', mediaRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
