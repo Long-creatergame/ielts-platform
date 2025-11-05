@@ -58,7 +58,38 @@ try {
   const morgan = require('morgan');
   app.use(helmet());
   app.use(compression());
-  app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+  
+  // CORS Configuration - Allow multiple origins
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://ielts-platform-two.vercel.app',
+    'https://ielts-platform-emrv.onrender.com',
+    process.env.FRONTEND_URL
+  ].filter(Boolean);
+
+  app.use(cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`[CORS] Blocked origin: ${origin}`);
+        callback(new Error(`Not allowed by CORS: ${origin}`));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Timezone', 'X-Requested-With'],
+    exposedHeaders: ['Content-Length', 'Content-Type'],
+    maxAge: 86400 // 24 hours
+  }));
+  
+  // Handle preflight requests
+  app.options('*', cors());
+  
   app.use(morgan('combined'));
   app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 300, message: 'Too many requests, please try again later.' }));
 } catch (_) {}
@@ -155,23 +186,8 @@ process.on('SIGINT', async () => {
   }
 });
 
-// CORS Middleware - ABSOLUTE FINAL FIX
-app.use((req, res, next) => {
-  // Force CORS headers for ALL requests
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  
-  next();
-});
+// CORS is already handled above, but keep this for additional safety if cors package fails
+// This middleware is now redundant but kept as fallback
 
 app.use(express.json());
 
@@ -292,10 +308,18 @@ app.use((err, req, res, next) => {
 if (process.env.NODE_ENV !== 'test') {
   try {
     const { Server } = require('socket.io');
+    const wsAllowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://ielts-platform-two.vercel.app',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+    
     io = new Server(server, {
       cors: {
-        origin: '*',
-        methods: ['GET', 'POST']
+        origin: wsAllowedOrigins.length > 0 ? wsAllowedOrigins : '*',
+        methods: ['GET', 'POST'],
+        credentials: true
       }
     });
 

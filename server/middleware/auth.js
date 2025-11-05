@@ -47,6 +47,16 @@ const auth = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('[Auth:Error]', error.message);
+    
+    // Return 403 for expired/invalid tokens (not 401)
+    if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Invalid or expired token',
+        code: 'TOKEN_INVALID'
+      });
+    }
+    
     return res.status(401).json({ 
       success: false,
       error: 'Token is not valid' 

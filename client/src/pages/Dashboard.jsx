@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getUserTimezone, getTimezoneAbbr } from '../utils/timezone';
+import { showAPIError } from '../components/common/ErrorToast';
 import { useTranslation } from 'react-i18next';
 import { dashboardAPI } from '../api/dashboard';
 import ScoreCard from '../components/ScoreCard';
@@ -86,15 +87,18 @@ export default function Dashboard() {
     try {
       if (user) {
         const token = localStorage.getItem('token');
+        const timezone = getUserTimezone();
         
         console.log('🔄 Refreshing dashboard data...');
         
-        // Fetch dashboard data from API
+        // Fetch dashboard data from API with proper headers
         const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+            'X-Timezone': timezone
+          },
+          credentials: 'include'
         });
 
         if (response.ok) {
@@ -102,6 +106,11 @@ export default function Dashboard() {
           const data = result.data || result; // Handle both {success, data} and direct data
           console.log('✅ Dashboard data refreshed:', data);
           setDashboardData(data);
+        } else if (response.status === 403 || response.status === 401) {
+          console.warn('⚠️ Auth error, redirecting to login');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
         } else {
           console.error('❌ Dashboard fetch failed:', response.status);
         }
@@ -114,15 +123,25 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        setLoading(true);
         if (user) {
           const token = localStorage.getItem('token');
+          const timezone = getUserTimezone();
           
-          // Fetch dashboard data from API
+          if (!token) {
+            console.warn('⚠️ No token found, redirecting to login');
+            window.location.href = '/login';
+            return;
+          }
+          
+          // Fetch dashboard data from API with proper headers
           const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
             headers: {
               'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
+              'Content-Type': 'application/json',
+              'X-Timezone': timezone
+            },
+            credentials: 'include'
           });
 
           if (response.ok) {
@@ -130,8 +149,16 @@ export default function Dashboard() {
             const data = result.data || result; // Handle both {success, data} and direct data
             console.log('✅ Dashboard loaded:', data);
             setDashboardData(data);
-          } else {
-            // Fallback to mock data if API fails
+          } else if (response.status === 403 || response.status === 401) {
+            console.warn('⚠️ Auth error, redirecting to login');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+            return;
+        } else {
+          // Fallback to mock data if API fails (non-auth errors)
+          console.warn('⚠️ Dashboard API failed, using fallback data');
+          showAPIError('Session expired or connection failed. Using cached data.');
             const mockData = {
               user: {
                 name: user.name,
@@ -158,14 +185,17 @@ export default function Dashboard() {
           }
         }
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        // Use fallback data
-        setDashboardData({
-          user: user,
-          statistics: { totalTests: 0, completedTests: 0, averageBand: 0, streakDays: 0 },
-          recentTests: [],
-          coachMessage: { message: "🤖 AI Coach: Ready to help you improve!", type: "ready" }
-        });
+        console.error('❌ Error fetching dashboard data:', error);
+        showAPIError('Failed to load dashboard. Please check your connection.');
+        // Use fallback data on network errors
+        if (user) {
+          setDashboardData({
+            user: user,
+            statistics: { totalTests: 0, completedTests: 0, averageBand: 0, streakDays: 0 },
+            recentTests: [],
+            coachMessage: { message: "🤖 AI Coach: Connection issue. Please refresh the page.", type: "error" }
+          });
+        }
       } finally {
         setLoading(false);
       }
