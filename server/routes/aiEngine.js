@@ -1,4 +1,5 @@
 const express = require('express');
+const { processAI } = require('../services/aiService.js');
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
@@ -77,57 +78,39 @@ router.post('/generate', auth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid skill. Must be writing, speaking, reading, or listening.' });
     }
 
-    // Try to use real OpenAI API first
-    if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '' && process.env.NODE_ENV !== 'test') {
+    // Use unified AI service for reading generation
+    if (skill === 'reading' && process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '' && process.env.NODE_ENV !== 'test') {
       try {
-        const OpenAI = require('openai');
-        const openai = new OpenAI({
-          apiKey: process.env.OPENAI_API_KEY
+        const result = await processAI('reading', {
+          topic: topic || 'general',
+          level: band.toString(),
+          band: parseFloat(band),
         });
-
-        const systemPrompt = `You are an IELTS question generator. Create a question in authentic IELTS style.
-Skill: ${skill}
-Topic: ${topic || 'random IELTS topic'}
-Band level: ${band}
-Format it exactly as official IELTS question wording.
-Return JSON format with: { "question": "...", "instructions": "...", "wordLimit": number, "timeLimit": number }`;
-
-        const response = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: `Generate a ${skill} question for band ${band} level` }
-          ],
-          temperature: 0.7,
-          max_tokens: 500
-        });
-
-        const content = response.choices[0].message.content;
-        console.log('✅ Real AI Generate response:', content);
         
-        try {
-          const questionData = JSON.parse(content);
-          
+        if (result.success && result.data) {
           // Save to database
           const practiceSet = new PracticeSet({
             user_id: req.user._id,
             skill,
             topic: topic || 'general',
             band,
-            question: questionData.question,
-            instructions: questionData.instructions,
-            wordLimit: questionData.wordLimit,
-            timeLimit: questionData.timeLimit
+            question: result.data.passage,
+            instructions: `Complete reading practice in ${result.data.timeLimit} minutes`,
+            wordLimit: result.data.passage?.length || 800,
+            timeLimit: result.data.timeLimit || 60
           });
           
           await practiceSet.save();
           
           return res.json({
             success: true,
-            data: questionData
+            data: {
+              question: result.data.passage,
+              instructions: `Complete reading practice in ${result.data.timeLimit} minutes`,
+              wordLimit: result.data.passage?.length || 800,
+              timeLimit: result.data.timeLimit || 60
+            }
           });
-        } catch (parseError) {
-          console.log('AI response parsing error, using fallback');
         }
       } catch (aiError) {
         console.log('AI API error:', aiError.message);

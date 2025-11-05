@@ -1,5 +1,6 @@
 const express = require('express');
-const aiScoringService = require('../services/aiScoringService.js');
+const { processAI, isAvailable } = require('../services/aiService.js');
+const aiScoringService = require('../services/aiScoringService.js'); // Keep for backward compatibility
 const recommendationService = require('../services/recommendationService.js');
 const { generateLearningPath, getLearningPath } = require('../controllers/learningPathController.js');
 const { generateAISummary } = require('../services/aiSummaryService.js');
@@ -34,10 +35,21 @@ router.post('/score', auth, async (req, res) => {
     }
 
     let result;
+    // Use unified AI service
     if (skill.toLowerCase() === 'writing') {
-      result = await aiScoringService.scoreWriting(answer, taskType);
+      result = await processAI('writing', {
+        essay: answer,
+        taskType: taskType || 'Task 2',
+        level: req.user?.currentLevel || 'B1',
+        options: {},
+      });
     } else {
-      result = await aiScoringService.scoreSpeaking(answer, taskType);
+      result = await processAI('speaking', {
+        transcript: answer,
+        taskType: taskType || 'Part 2',
+        level: req.user?.currentLevel || 'B1',
+        options: {},
+      });
     }
 
     res.json({
@@ -198,7 +210,7 @@ router.get('/status', (req, res) => {
   res.json({
     success: true,
     data: {
-      aiAvailable: aiScoringService.isAvailable,
+      aiAvailable: isAvailable,
       features: {
         scoring: true,
         recommendations: true,
