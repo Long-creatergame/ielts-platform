@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import ScoreCard from '../ScoreCard';
@@ -14,7 +13,6 @@ import Loader from '../Loader';
 export default function Overview() {
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
-  const { t } = useTranslation();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -77,7 +75,7 @@ export default function Overview() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <ModernStatsCard
-          title="Tests Completed"
+          title={t('dashboard.testsCompleted')}
           value={statistics?.totalTests || 0}
           icon="📝"
           trend={statistics?.completedTests || 0}
