@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { formatLocalTime, formatRelativeTime } from '../../utils/dateFormat';
 import Loader from '../Loader';
 
 export default function History() {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,8 +86,8 @@ export default function History() {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">Kết quả & Bài test</h1>
-        <p className="text-white/90">Xem lại tất cả bài test và phản hồi AI</p>
+        <h1 className="text-3xl font-bold mb-2">{t('dashboard.unified.history')}</h1>
+        <p className="text-white/90">{t('history.subtitle', 'View all your test results and AI feedback')}</p>
       </div>
 
       {/* Tests List */}
@@ -113,10 +115,10 @@ export default function History() {
                       </span>
                       <div>
                         <h3 className="text-lg font-bold text-gray-900">
-                          IELTS {skill.charAt(0).toUpperCase() + skill.slice(1)}
+                          {t(`test.skill.${skill}`, `IELTS ${skill.charAt(0).toUpperCase() + skill.slice(1)}`)}
                         </h3>
                         <p className="text-sm text-gray-500">
-                          🕒 {formatRelativeTime(testDate, true)}
+                          🕒 {formatRelativeTime(testDate, i18n.language)}
                           <span className="ml-2">({formatLocalTime(testDate)})</span>
                         </p>
                       </div>
@@ -135,9 +137,9 @@ export default function History() {
                     <div className="text-3xl font-bold text-indigo-600">
                       {bandScore.toFixed(1)}
                     </div>
-                    <div className="text-sm text-gray-500">Band</div>
+                    <div className="text-sm text-gray-500">{t('common.band', 'Band')}</div>
                     <button className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
-                      Xem chi tiết
+                      {t('test.viewDetail', 'View Detail')}
                     </button>
                   </div>
                 </div>
@@ -150,13 +152,13 @@ export default function History() {
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">📚</span>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Chưa có bài test nào</h3>
-          <p className="text-gray-600 mb-6">Bắt đầu làm bài test đầu tiên để xem kết quả ở đây</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('history.noTests', 'No tests yet')}</h3>
+          <p className="text-gray-600 mb-6">{t('history.noTestsDesc', 'Start your first test to see results here')}</p>
           <button
             onClick={() => navigate('/test/start')}
             className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
           >
-            Bắt đầu bài test
+            {t('dashboard.startTest', 'Start Test')}
           </button>
         </div>
       )}

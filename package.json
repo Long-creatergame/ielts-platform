@@ -27,6 +27,8 @@
     "validate:help-overlay": "node scripts/validateHelpOverlay.js",
     "validate:help-context": "node scripts/validateHelpContext.js",
     "validate:i18n": "node scripts/validateI18N.js",
+    "i18n:audit": "node scripts/i18nAudit.js",
+    "validate:i18n:coverage": "node scripts/validateI18nCoverage.js",
     "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
     "release": "node scripts/releaseVersion.js",
     "test:deploy": "node scripts/testDeployment.js"

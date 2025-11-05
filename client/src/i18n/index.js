@@ -422,6 +422,21 @@ const resources = {
       'test.submit': 'Submit Test',
       'test.result': 'Test Result',
       'test.bandScore': 'Band Score',
+      'test.viewDetail': 'View Detail',
+      'test.scored': 'Scored {{score}} band',
+      'test.skill.reading': 'IELTS Reading',
+      'test.skill.writing': 'IELTS Writing',
+      'test.skill.listening': 'IELTS Listening',
+      'test.skill.speaking': 'IELTS Speaking',
+      'test.skill.full': 'IELTS Full Test',
+      
+      // History
+      'history.subtitle': 'View all your test results and AI feedback',
+      'history.noTests': 'No tests yet',
+      'history.noTestsDesc': 'Start your first test to see results here',
+      
+      // Dashboard additional
+      'dashboard.startTest': 'Start Test',
       
       // Common additional
       'common.help': 'Help',
@@ -700,6 +715,21 @@ const resources = {
       'test.submit': 'Nộp bài',
       'test.result': 'Kết quả kiểm tra',
       'test.bandScore': 'Điểm Band',
+      'test.viewDetail': 'Xem chi tiết',
+      'test.scored': 'Đạt {{score}} band',
+      'test.skill.reading': 'IELTS Reading',
+      'test.skill.writing': 'IELTS Writing',
+      'test.skill.listening': 'IELTS Listening',
+      'test.skill.speaking': 'IELTS Speaking',
+      'test.skill.full': 'IELTS Full Test',
+      
+      // History
+      'history.subtitle': 'Xem lại tất cả bài test và phản hồi AI',
+      'history.noTests': 'Chưa có bài test nào',
+      'history.noTestsDesc': 'Bắt đầu làm bài test đầu tiên để xem kết quả ở đây',
+      
+      // Dashboard additional
+      'dashboard.startTest': 'Bắt đầu bài test',
       
       // Common additional
       'common.help': 'Trợ giúp',
@@ -1190,6 +1220,21 @@ const resources = {
       'test.submit': '提交测试',
       'test.result': '测试结果',
       'test.bandScore': '分数等级',
+      'test.viewDetail': '查看详情',
+      'test.scored': '获得 {{score}} 分',
+      'test.skill.reading': 'IELTS 阅读',
+      'test.skill.writing': 'IELTS 写作',
+      'test.skill.listening': 'IELTS 听力',
+      'test.skill.speaking': 'IELTS 口语',
+      'test.skill.full': 'IELTS 完整测试',
+      
+      // History
+      'history.subtitle': '查看所有测试结果和AI反馈',
+      'history.noTests': '还没有测试',
+      'history.noTestsDesc': '开始您的第一次测试以查看结果',
+      
+      // Dashboard additional
+      'dashboard.startTest': '开始测试',
     }
   },
   ja: {
@@ -1492,6 +1537,21 @@ const resources = {
       'test.submit': '送信',
       'test.result': 'テスト結果',
       'test.bandScore': 'バンドスコア',
+      'test.viewDetail': '詳細を見る',
+      'test.scored': '{{score}} バンドを獲得',
+      'test.skill.reading': 'IELTS リーディング',
+      'test.skill.writing': 'IELTS ライティング',
+      'test.skill.listening': 'IELTS リスニング',
+      'test.skill.speaking': 'IELTS スピーキング',
+      'test.skill.full': 'IELTS フルテスト',
+      
+      // History
+      'history.subtitle': 'すべてのテスト結果とAIフィードバックを表示',
+      'history.noTests': 'まだテストがありません',
+      'history.noTestsDesc': '最初のテストを開始して結果を確認してください',
+      
+      // Dashboard additional
+      'dashboard.startTest': 'テスト開始',
     }
   },
   ko: {
@@ -1830,6 +1890,21 @@ const resources = {
       'test.submit': '제출',
       'test.result': '테스트 결과',
       'test.bandScore': '밴드 점수',
+      'test.viewDetail': '자세히 보기',
+      'test.scored': '{{score}} 밴드 획득',
+      'test.skill.reading': 'IELTS 읽기',
+      'test.skill.writing': 'IELTS 쓰기',
+      'test.skill.listening': 'IELTS 듣기',
+      'test.skill.speaking': 'IELTS 말하기',
+      'test.skill.full': 'IELTS 전체 테스트',
+      
+      // History
+      'history.subtitle': '모든 테스트 결과 및 AI 피드백 보기',
+      'history.noTests': '아직 테스트가 없습니다',
+      'history.noTestsDesc': '첫 번째 테스트를 시작하여 결과를 확인하세요',
+      
+      // Dashboard additional
+      'dashboard.startTest': '테스트 시작',
     }
   }
 };

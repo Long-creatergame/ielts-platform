@@ -6,7 +6,7 @@ import { formatLocalTime, formatRelativeTime } from '../utils/dateFormat';
 import { getUserTimezone } from '../utils/timezone';
 
 const RecentActivityAndTests = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
@@ -88,7 +88,7 @@ const RecentActivityAndTests = () => {
           type: 'test',
           id: test.id || Date.now() + Math.random(),
           title: test.testType || 'IELTS Test',
-          description: `Scored ${test.overallScore || test.bandScore || 0} band`,
+          description: t('test.scored', { score: test.overallScore || test.bandScore || 0, defaultValue: `Scored ${test.overallScore || test.bandScore || 0} band` }),
           icon: getTestIcon(test.skill || 'full'),
           color: getTestColor(test.skill || 'full'),
           date: test.date || test.dateTaken || new Date().toISOString(),
@@ -224,7 +224,7 @@ const RecentActivityAndTests = () => {
                     <h3 className="font-bold text-gray-900 text-lg truncate">{activity.title}</h3>
                     <div className="text-right">
                       <span className="text-sm text-gray-500 block">
-                        🕒 {formatRelativeTime(activity.date, true)}
+                        🕒 {formatRelativeTime(activity.date, i18n.language)}
                       </span>
                       <span className="text-xs text-gray-400">
                         ({formatLocalTime(activity.date)})
@@ -262,7 +262,7 @@ const RecentActivityAndTests = () => {
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
                   >
                     <span>👁️</span>
-                    <span>Xem chi tiết bài test</span>
+                    <span>{t('test.viewDetail', 'View Detail')}</span>
                   </button>
                 </div>
               )}

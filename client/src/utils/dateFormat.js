@@ -119,12 +119,12 @@ export const formatDuration = (startTime, endTime) => {
 
 /**
  * Get relative time (e.g., "2 hours ago", "vừa xong", "hôm qua")
- * Supports both English and Vietnamese labels
+ * Supports multiple languages based on locale code
  * @param {string|Date} utcString - UTC timestamp
- * @param {boolean} useVietnamese - Use Vietnamese labels (vừa xong, giờ trước, etc.)
+ * @param {string} locale - Language code (en, vi, zh, ja, ko)
  * @returns {string}
  */
-export const formatRelativeTime = (utcString, useVietnamese = false) => {
+export const formatRelativeTime = (utcString, locale = 'en') => {
   if (!utcString) return '';
 
   try {
@@ -136,7 +136,8 @@ export const formatRelativeTime = (utcString, useVietnamese = false) => {
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (useVietnamese) {
+    // Vietnamese
+    if (locale === 'vi') {
       if (diffSeconds < 60) {
         return 'vừa xong';
       } else if (diffMinutes < 60) {
@@ -150,7 +151,57 @@ export const formatRelativeTime = (utcString, useVietnamese = false) => {
       } else {
         return formatDateShort(utcString);
       }
-    } else {
+    }
+    // Chinese
+    else if (locale === 'zh') {
+      if (diffSeconds < 60) {
+        return '刚刚';
+      } else if (diffMinutes < 60) {
+        return `${diffMinutes} 分钟前`;
+      } else if (diffHours < 24) {
+        return `${diffHours} 小时前`;
+      } else if (diffDays === 1) {
+        return '昨天';
+      } else if (diffDays < 7) {
+        return `${diffDays} 天前`;
+      } else {
+        return formatDateShort(utcString);
+      }
+    }
+    // Japanese
+    else if (locale === 'ja') {
+      if (diffSeconds < 60) {
+        return 'たった今';
+      } else if (diffMinutes < 60) {
+        return `${diffMinutes}分前`;
+      } else if (diffHours < 24) {
+        return `${diffHours}時間前`;
+      } else if (diffDays === 1) {
+        return '昨日';
+      } else if (diffDays < 7) {
+        return `${diffDays}日前`;
+      } else {
+        return formatDateShort(utcString);
+      }
+    }
+    // Korean
+    else if (locale === 'ko') {
+      if (diffSeconds < 60) {
+        return '방금 전';
+      } else if (diffMinutes < 60) {
+        return `${diffMinutes}분 전`;
+      } else if (diffHours < 24) {
+        return `${diffHours}시간 전`;
+      } else if (diffDays === 1) {
+        return '어제';
+      } else if (diffDays < 7) {
+        return `${diffDays}일 전`;
+      } else {
+        return formatDateShort(utcString);
+      }
+    }
+    // English (default)
+    else {
       if (diffSeconds < 60) {
         return 'Just now';
       } else if (diffMinutes < 60) {
