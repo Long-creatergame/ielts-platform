@@ -40,18 +40,42 @@ jobs:
         run: |
           echo "🚀 Deploying backend (Render)..."
           if [ -n "${{ secrets.RENDER_API_KEY }}" ] && [ -n "${{ secrets.RENDER_SERVICE_ID }}" ]; then
-            echo "📡 Triggering Render deployment via API..."
-            RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.render.com/deploy/${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}" || echo "ERROR")
-            HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+            echo "📡 Triggering Render deployment via API v1..."
+            HTTP_CODE=$(curl -s -o /tmp/render-response.json -w "%{http_code}" -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+              -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/json" \
+              -d '{}' || echo "000")
+            
             if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
-              echo "✅ Render deployment triggered successfully"
+              echo "✅ Render deployment triggered successfully (HTTP $HTTP_CODE)"
+              if [ -f /tmp/render-response.json ]; then
+                echo "📋 Render API Response:"
+                cat /tmp/render-response.json | head -20
+              fi
             else
-              echo "⚠️ Render API call returned: $HTTP_CODE (Render will auto-deploy via webhook)"
+              echo "⚠️ Render API call returned: HTTP $HTTP_CODE (Render will auto-deploy via webhook)"
+              if [ -f /tmp/render-response.json ]; then
+                echo "📋 Error details:"
+                cat /tmp/render-response.json | head -10
+              fi
             fi
           else
             echo "ℹ️ Render credentials missing — Render will auto-deploy via GitHub webhook."
           fi
         continue-on-error: true
+
+      - name: 🎨 Check Vercel Project Link
+        working-directory: ./client
+        run: |
+          echo "🔍 Checking Vercel project configuration..."
+          if [ -f ".vercel/project.json" ]; then
+            echo "✅ Found .vercel/project.json"
+            cat .vercel/project.json | head -5
+          else
+            echo "⚠️ Missing .vercel/project.json. Run 'npx vercel link' manually to link project."
+            echo "ℹ️ Vercel will use GitHub integration for deployment instead."
+          fi
 
       - name: 🎨 Deploy Frontend to Vercel
         working-directory: ./client
@@ -59,10 +83,17 @@ jobs:
           echo "🚀 Deploying frontend (Vercel)..."
           if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
             echo "📡 Using Vercel CLI to deploy..."
-            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes --force || {
-              echo "⚠️ Vercel CLI failed — Vercel GitHub integration will handle deploy"
-              exit 0
-            }
+            VERCEL_OUTPUT=$(npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes --force 2>&1) || VERCEL_EXIT=$?
+            
+            if [ "$VERCEL_EXIT" = "0" ] || [ -z "$VERCEL_EXIT" ]; then
+              echo "✅ Vercel deployment successful"
+              echo "📋 Vercel CLI Response:"
+              echo "$VERCEL_OUTPUT" | tail -20
+            else
+              echo "⚠️ Vercel CLI failed (exit code: $VERCEL_EXIT) — Vercel GitHub integration will handle deploy"
+              echo "📋 Error output:"
+              echo "$VERCEL_OUTPUT" | tail -20
+            fi
           else
             echo "ℹ️ No VERCEL_TOKEN found — Vercel GitHub integration will handle deploy."
           fi
