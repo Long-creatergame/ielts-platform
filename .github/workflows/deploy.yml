@@ -38,9 +38,10 @@ jobs:
         continue-on-error: true
 
       - name: Trigger Vercel Deploy (Optional)
+        working-directory: ./client
         run: |
           if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
-            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes || echo "⚠️ Vercel deploy failed (auto-deploy via webhook should work)"
+            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes || echo "⚠️ Vercel deploy failed (auto-deploy via GitHub integration should work)"
           else
             echo "ℹ️ Vercel token not set - Vercel will auto-deploy via GitHub integration"
           fi
