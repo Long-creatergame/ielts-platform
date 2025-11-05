@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import ScoreCard from '../ScoreCard';
@@ -12,13 +13,14 @@ import Loader from '../Loader';
 
 export default function Overview() {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const { t } = useTranslation();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadDashboardData();
-  }, [user]);
+  }, [user, i18n.language]);
 
   const loadDashboardData = async () => {
     try {
@@ -81,19 +83,19 @@ export default function Overview() {
           trend={statistics?.completedTests || 0}
         />
         <ModernStatsCard
-          title="Average Band"
+          title={t('dashboard.averageBand')}
           value={statistics?.averageBand?.toFixed(1) || '0.0'}
           icon="🎯"
           trend={statistics?.averageBand > 0 ? '↑' : '—'}
         />
         <ModernStatsCard
-          title="Streak Days"
+          title={t('dashboard.streakDays')}
           value={statistics?.streakDays || 0}
           icon="🔥"
           trend={statistics?.streakDays > 0 ? '↑' : '—'}
         />
         <ModernStatsCard
-          title="Current Level"
+          title={t('dashboard.currentLevel')}
           value={user.currentLevel || 'A2'}
           icon="📊"
           trend="—"
