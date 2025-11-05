@@ -23,6 +23,7 @@
     "validate:timezone": "node scripts/validateTimezone.js",
     "validate:timezones": "node scripts/validateTimezones.js",
     "validate:dashboard": "node scripts/validateDashboard.js",
+    "validate:dashboard-ux": "node scripts/validateDashboardUX.js",
     "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
     "release": "node scripts/releaseVersion.js",
     "test:deploy": "node scripts/testDeployment.js"

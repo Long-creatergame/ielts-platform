@@ -207,4 +207,173 @@ function generateCoachMessage(user, tests, averageBand) {
   }
 }
 
+// Unified dashboard endpoints
+router.get('/summary', auth, async (req, res) => {
+  // Alias for main dashboard endpoint
+  return router.handle({ ...req, url: '/', method: 'GET' }, res);
+});
+
+// Get insights (weaknesses + AI analytics)
+router.get('/insights', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // Get weak skills
+    const Test = require('../models/Test');
+    const tests = await Test.find({ userId, completed: true }).sort({ createdAt: -1 });
+    
+    // Calculate weak skills
+    const skillBands = {};
+    tests.forEach(test => {
+      if (test.skillBands) {
+        Object.entries(test.skillBands).forEach(([skill, band]) => {
+          if (!skillBands[skill]) skillBands[skill] = [];
+          skillBands[skill].push(band);
+        });
+      }
+    });
+    
+    const weakSkills = Object.entries(skillBands)
+      .map(([skill, bands]) => ({
+        skill,
+        averageBand: bands.reduce((a, b) => a + b, 0) / bands.length,
+        count: bands.length
+      }))
+      .sort((a, b) => a.averageBand - b.averageBand)
+      .slice(0, 3);
+    
+    // Get AI insights
+    let aiInsights = null;
+    try {
+      const aiMasterRoutes = require('./aiMaster');
+      // Mock AI insights for now
+      aiInsights = {
+        recommendations: weakSkills.map(ws => `Focus on improving ${ws.skill} skills`),
+        summary: `Your weakest skill is ${weakSkills[0]?.skill || 'unknown'}`
+      };
+    } catch (error) {
+      console.error('Error fetching AI insights:', error);
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        weakSkills,
+        aiInsights
+      }
+    });
+  } catch (error) {
+    console.error('Insights error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch insights' });
+  }
+});
+
+// Get path (learning path + progress)
+router.get('/path', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // Get learning path
+    const LearningPath = require('../models/LearningPath');
+    const learningPath = await LearningPath.findOne({ userId }).sort({ createdAt: -1 });
+    
+    // Get progress data
+    const Test = require('../models/Test');
+    const tests = await Test.find({ userId, completed: true }).sort({ createdAt: -1 });
+    
+    // Calculate progress
+    const progressData = {
+      totalTests: tests.length,
+      averageBand: tests.length > 0 
+        ? tests.reduce((sum, t) => sum + (t.totalBand || 0), 0) / tests.length 
+        : 0,
+      skillProgress: {}
+    };
+    
+    tests.forEach(test => {
+      if (test.skillBands) {
+        Object.entries(test.skillBands).forEach(([skill, band]) => {
+          if (!progressData.skillProgress[skill]) {
+            progressData.skillProgress[skill] = [];
+          }
+          progressData.skillProgress[skill].push(band);
+        });
+      }
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        learningPath: learningPath || null,
+        progress: progressData
+      }
+    });
+  } catch (error) {
+    console.error('Path error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch path data' });
+  }
+});
+
+// Get history (all tests)
+router.get('/history', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const timezone = req.userTimezone || 'UTC';
+    
+    // Get tests
+    const Test = require('../models/Test');
+    const tests = await Test.find({ userId })
+      .sort({ dateTaken: -1, createdAt: -1 })
+      .select('-answers');
+    
+    // Get exam sessions
+    const ExamSession = require('../models/ExamSession');
+    const sessions = await ExamSession.find({ userId })
+      .sort({ createdAt: -1 })
+      .lean();
+    
+    // Combine and map
+    const allTests = [
+      ...tests.map(test => ({
+        ...test.toObject(),
+        type: 'test',
+        date: test.dateTaken || test.createdAt,
+        localDate: test.dateTaken ? new Date(test.dateTaken).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }) : null
+      })),
+      ...sessions.map(session => ({
+        ...session,
+        type: 'session',
+        date: session.endTime || session.startTime || session.createdAt,
+        localDate: session.endTime ? new Date(session.endTime).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }) : null
+      }))
+    ].sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    res.json({
+      success: true,
+      data: allTests,
+      count: allTests.length,
+      timezone
+    });
+  } catch (error) {
+    console.error('History error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch history' });
+  }
+});
+
 module.exports = router;

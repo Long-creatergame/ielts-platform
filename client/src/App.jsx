@@ -5,6 +5,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import './i18n';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
+import DashboardUnified from './pages/DashboardUnified';
+// Keep old Dashboard for backward compatibility (can be removed later)
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -34,8 +36,10 @@ export default function App() {
             <Navbar />
             <ChatLauncher zaloUrl={import.meta.env.VITE_ZALO_URL || 'https://zalo.me/0923456789'} />
             <Routes>
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/" element={<ProtectedRoute><DashboardUnified /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardUnified /></ProtectedRoute>} />
+            {/* Legacy dashboard route - redirect to unified */}
+            <Route path="/dashboard-old" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
