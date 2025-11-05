@@ -19,6 +19,14 @@ api.interceptors.request.use(
     // Attach timezone header to all requests
     const timezone = getUserTimezone();
     config.headers["X-Timezone"] = timezone;
+    
+    // Attach language header from i18n (if available)
+    const language = localStorage.getItem("i18nextLng") || 
+                     navigator.language.split("-")[0] || 
+                     "en";
+    config.headers["X-Language"] = language;
+    config.headers["Accept-Language"] = language;
+    
     return config;
   },
   (error) => {

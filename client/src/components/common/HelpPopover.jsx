@@ -1,55 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-
-const helpContent = {
-  overview: {
-    title: "Tổng quan (Overview)",
-    steps: [
-      "Xem tiến độ học và điểm trung bình hiện tại.",
-      "Theo dõi mục tiêu Band và cấp độ hiện tại.",
-      "Xem số bài test đã hoàn thành và chuỗi ngày học.",
-      "Nhận thông báo từ AI Coach và đề xuất học tập."
-    ]
-  },
-  skills: {
-    title: "Luyện tập kỹ năng (Skills)",
-    steps: [
-      "Chọn kỹ năng Reading, Listening, Writing hoặc Speaking.",
-      "Làm bài theo chuẩn Cambridge và nhận phản hồi từ AI.",
-      "Bạn có thể chọn 'Full Test' để luyện 4 kỹ năng cùng lúc.",
-      "Xem kết quả chi tiết và gợi ý cải thiện sau mỗi bài test."
-    ]
-  },
-  insights: {
-    title: "Phân tích & Gợi ý (Insights)",
-    steps: [
-      "Xem các điểm yếu theo từng kỹ năng.",
-      "Nhận gợi ý học tập và bài luyện bổ sung.",
-      "AI sẽ tự động đề xuất hướng cải thiện phù hợp nhất.",
-      "Theo dõi tiến độ cải thiện qua thời gian."
-    ]
-  },
-  path: {
-    title: "Lộ trình học (Learning Path)",
-    steps: [
-      "Theo dõi lộ trình học dựa trên cấp độ hiện tại.",
-      "Nhận nhiệm vụ từng tuần để đạt Band mục tiêu.",
-      "Tự động cập nhật khi bạn hoàn thành bài luyện.",
-      "Xem biểu đồ tiến độ và mục tiêu CEFR."
-    ]
-  },
-  history: {
-    title: "Kết quả & Bài test (History)",
-    steps: [
-      "Xem lại toàn bộ bài test đã làm.",
-      "Kiểm tra điểm từng kỹ năng và phản hồi chi tiết từ AI.",
-      "So sánh kết quả qua các lần thi để thấy tiến bộ.",
-      "Bạn có thể tải lại bài test hoặc chia sẻ kết quả."
-    ]
-  }
-};
+import { useTranslation } from 'react-i18next';
 
 export default function HelpPopover({ currentTab = "overview", title, content }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   // Prevent body scroll when overlay is open
@@ -76,23 +30,38 @@ export default function HelpPopover({ currentTab = "overview", title, content })
     return () => document.removeEventListener('keydown', handleEscape);
   }, [open]);
 
-  // Get contextual help content based on current tab
-  const contextualHelp = helpContent[currentTab] || helpContent["overview"];
+  // Get contextual help content based on current tab using i18n
+  const getHelpTitle = () => {
+    if (title) return title;
+    return t(`help.popover.${currentTab}.title`, { defaultValue: t('help.popover.overview.title') });
+  };
 
-  // Use custom content if provided, otherwise use contextual help
+  const getHelpSteps = () => {
+    const steps = [];
+    for (let i = 1; i <= 4; i++) {
+      const stepKey = `help.popover.${currentTab}.step${i}`;
+      const step = t(stepKey);
+      if (step && step !== stepKey) { // Only add if translation exists
+        steps.push(step);
+      }
+    }
+    return steps;
+  };
+
+  // Use custom content if provided, otherwise use contextual help from i18n
   const displayContent = content || (
     <div className="space-y-4">
       <h3 className="text-xl font-semibold text-[#35b86d] mb-4">
-        {title || contextualHelp.title}
+        {getHelpTitle()}
       </h3>
       <ol className="list-decimal pl-5 text-gray-700 space-y-2 text-sm">
-        {contextualHelp.steps.map((step, i) => (
+        {getHelpSteps().map((step, i) => (
           <li key={i} className="leading-relaxed">{step}</li>
         ))}
       </ol>
       <div className="mt-4 p-3 bg-[#35b86d]/10 rounded-lg border border-[#35b86d]/20">
         <p className="text-sm text-gray-700">
-          💡 <strong>Tip:</strong> Hoàn thành bài test thường xuyên để theo dõi tiến độ và nhận gợi ý tốt hơn từ AI.
+          💡 <strong>{t('common.help', { defaultValue: 'Tip' })}:</strong> {t('help.popover.tip')}
         </p>
       </div>
     </div>
@@ -134,7 +103,7 @@ export default function HelpPopover({ currentTab = "overview", title, content })
         aria-label="Show help"
       >
         <span>❓</span>
-        <span>Help</span>
+        <span>{t('common.help', 'Help')}</span>
       </button>
       {open && overlayRoot && createPortal(overlayContent, overlayRoot)}
     </>

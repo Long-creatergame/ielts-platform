@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Overview from '../components/dashboard/Overview';
 import Skills from '../components/dashboard/Skills';
 import Insights from '../components/dashboard/Insights';
@@ -7,14 +8,15 @@ import History from '../components/dashboard/History';
 import HelpPopover from '../components/common/HelpPopover';
 
 export default function DashboardUnified() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'overview', label: 'Tổng quan', icon: '🧭' },
-    { id: 'skills', label: 'Luyện tập kỹ năng', icon: '🧩' },
-    { id: 'insights', label: 'Phân tích & Gợi ý', icon: '💡' },
-    { id: 'path', label: 'Lộ trình học', icon: '📈' },
-    { id: 'history', label: 'Kết quả & Bài test', icon: '📜' }
+    { id: 'overview', label: t('dashboard.unified.overview'), icon: '🧭' },
+    { id: 'skills', label: t('dashboard.unified.skills'), icon: '🧩' },
+    { id: 'insights', label: t('dashboard.unified.insights'), icon: '💡' },
+    { id: 'path', label: t('dashboard.unified.path'), icon: '📈' },
+    { id: 'history', label: t('dashboard.unified.history'), icon: '📜' }
   ];
 
   return (
@@ -22,7 +24,7 @@ export default function DashboardUnified() {
       <div className="container mx-auto px-4 py-6">
         {/* Header with Help Button */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-900 hidden sm:block">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900 hidden sm:block">{t('dashboard.unified.title')}</h1>
           <div className="flex items-center space-x-3">
             <HelpPopover currentTab={activeTab} />
           </div>
