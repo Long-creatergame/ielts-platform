@@ -166,16 +166,13 @@ router.post('/login', async (req, res) => {
 
     // Validation
     if (!email || !password) {
-      return res.status(400).json({ message: 'Missing credentials' });
+      return res.status(400).json({ message: 'Missing email or password' });
     }
 
     // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ 
-        message: 'Invalid email or password',
-        showForgotPassword: false
-      });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     // Check if account is locked
@@ -205,11 +202,7 @@ router.post('/login', async (req, res) => {
       
       await user.save();
       
-      return res.status(401).json({ 
-        message: 'Invalid email or password',
-        showForgotPassword: user.loginAttempts >= 2,
-        attemptsRemaining: 3 - user.loginAttempts
-      });
+      return res.status(401).json({ message: 'Invalid password' });
     }
 
     // Reset login attempts on successful login
