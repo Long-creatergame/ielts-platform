@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { getGoalText } from '../utils/goalText';
 
 export default function GoalProgressBar({ current, target, goal, className = '' }) {
   const { t } = useTranslation();
@@ -22,16 +23,14 @@ export default function GoalProgressBar({ current, target, goal, className = '' 
     }
   };
   
-  const getGoalLabel = (goal) => {
-    return t(`auth.goalOptions.${goal}`, goal);
-  };
+  const getGoalLabel = () => getGoalText(t, target);
 
   return (
     <div className={`bg-white rounded-lg p-4 shadow-sm border ${className}`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center">
           <span className="text-2xl mr-2">{getGoalIcon(goal)}</span>
-          <span className="font-semibold text-gray-700">{t('common.target')}: {getGoalLabel(goal)}</span>
+          <span className="font-semibold text-gray-700 goal-text">{getGoalLabel()}</span>
         </div>
         <span className="text-sm text-gray-500">
           {current.toFixed(1)} / {target} Band

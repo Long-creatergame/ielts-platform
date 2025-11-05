@@ -24,9 +24,8 @@ const userSchema = new mongoose.Schema({
     default: ''
   },
   goal: {
-    type: String,
-    enum: ['Du học', 'Định cư', 'Việc làm', 'Thử sức'],
-    default: 'Thử sức'
+    type: Number,
+    default: null
   },
   targetBand: {
     type: Number,

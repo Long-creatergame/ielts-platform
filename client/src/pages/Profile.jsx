@@ -2,9 +2,12 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import LevelBadge from '../components/LevelBadge';
 import ProgressRing from '../components/ProgressRing';
+import { useTranslation } from 'react-i18next';
+import { getGoalText } from '../utils/goalText';
 
 export default function Profile() {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
 
   if (!user) {
     return (
@@ -36,8 +39,8 @@ export default function Profile() {
                   <p className="mt-1 text-lg">{user.email}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Goal</label>
-                  <p className="mt-1 text-lg font-semibold text-blue-600">{user.goal}</p>
+              <label className="block text-sm font-medium text-gray-700">{t('common.target')}</label>
+                  <p className="mt-1 text-lg font-semibold text-blue-600 goal-text">{getGoalText(t, user?.targetBand)}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Current Level</label>
@@ -60,14 +63,14 @@ export default function Profile() {
               <div className="space-y-6">
                 {/* Progress Ring */}
                 <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-700 mb-4">Target Progress</h3>
+                  <h3 className="text-lg font-medium text-gray-700 mb-4">{t('dashboard.targetBand')}</h3>
                   <ProgressRing
                     current={user.averageBand || 0}
                     target={user.targetBand}
                     size={120}
                   />
                   <p className="mt-2 text-sm text-gray-600">
-                    Current: {user.averageBand || 'N/A'} / Target: {user.targetBand}
+                    {t('common.current')}: {user.averageBand || 'N/A'} / {getGoalText(t, user?.targetBand)}
                   </p>
                 </div>
 

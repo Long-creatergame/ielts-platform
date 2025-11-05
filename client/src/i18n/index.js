@@ -215,6 +215,16 @@ const resources = {
         'C1': 'C1 - Advanced',
         'C2': 'C2 - Proficient'
       },
+      'auth.goalOptions': {
+        'undefined': 'No goal set yet',
+        'band5.0': 'Target: Band 5.0',
+        'band5.5': 'Target: Band 5.5',
+        'band6.0': 'Target: Band 6.0',
+        'band6.5': 'Target: Band 6.5',
+        'band7.0': 'Target: Band 7.0',
+        'band7.5': 'Target: Band 7.5',
+        'band8.0': 'Target: Band 8.0'
+      },
       
       // Dashboard
       'dashboard.welcome': 'Welcome back!',
@@ -507,6 +517,16 @@ const resources = {
         'B2': 'B2 - Upper Intermediate',
         'C1': 'C1 - Advanced',
         'C2': 'C2 - Proficient'
+      },
+      'auth.goalOptions': {
+        'undefined': 'Chưa đặt mục tiêu',
+        'band5.0': 'Mục tiêu: Band 5.0',
+        'band5.5': 'Mục tiêu: Band 5.5',
+        'band6.0': 'Mục tiêu: Band 6.0',
+        'band6.5': 'Mục tiêu: Band 6.5',
+        'band7.0': 'Mục tiêu: Band 7.0',
+        'band7.5': 'Mục tiêu: Band 7.5',
+        'band8.0': 'Mục tiêu: Band 8.0'
       },
       
       // Dashboard
@@ -1095,6 +1115,16 @@ const resources = {
         'C1': 'C1 - 高级',
         'C2': 'C2 - 精通'
       },
+      'auth.goalOptions': {
+        'undefined': '尚未设置目标',
+        'band5.0': '目标：Band 5.0',
+        'band5.5': '目标：Band 5.5',
+        'band6.0': '目标：Band 6.0',
+        'band6.5': '目标：Band 6.5',
+        'band7.0': '目标：Band 7.0',
+        'band7.5': '目标：Band 7.5',
+        'band8.0': '目标：Band 8.0'
+      },
       
       // Dashboard
       'dashboard.welcome': '欢迎回来！',
@@ -1448,6 +1478,16 @@ const resources = {
         'C1': 'C1 - 上級',
         'C2': 'C2 - 熟練'
       },
+      'auth.goalOptions': {
+        'undefined': '目標が設定されていません',
+        'band5.0': '目標: Band 5.0',
+        'band5.5': '目標: Band 5.5',
+        'band6.0': '目標: Band 6.0',
+        'band6.5': '目標: Band 6.5',
+        'band7.0': '目標: Band 7.0',
+        'band7.5': '目標: Band 7.5',
+        'band8.0': '目標: Band 8.0'
+      },
       
       // Dashboard
       'dashboard.welcome': 'おかえりなさい！',
@@ -1764,6 +1804,16 @@ const resources = {
         'B2': 'B2 - 중상급',
         'C1': 'C1 - 고급',
         'C2': 'C2 - 숙련'
+      },
+      'auth.goalOptions': {
+        'undefined': '목표가 설정되지 않았습니다',
+        'band5.0': '목표: Band 5.0',
+        'band5.5': '목표: Band 5.5',
+        'band6.0': '목표: Band 6.0',
+        'band6.5': '목표: Band 6.5',
+        'band7.0': '목표: Band 7.0',
+        'band7.5': '목표: Band 7.5',
+        'band8.0': '목표: Band 8.0'
       },
       
       // Dashboard

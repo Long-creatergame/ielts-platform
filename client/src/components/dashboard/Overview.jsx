@@ -102,7 +102,7 @@ export default function Overview() {
 
       {/* Goal Progress */}
       <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-xl font-bold mb-4">Mục tiêu của bạn</h2>
+        <h2 className="text-xl font-bold mb-4">{t('dashboard.target')}</h2>
         <GoalProgressBar
           current={statistics?.averageBand || 0}
           target={user.targetBand || 6.5}
