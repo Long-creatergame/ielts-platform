@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import Loader from '../components/Loader';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
+import { formatLocalTime, formatRelativeTime } from '../utils/dateFormat';
+import { getUserTimezone } from '../utils/timezone';
 
 export default function LearningPath() {
   const { user } = useAuth();
@@ -63,7 +65,8 @@ export default function LearningPath() {
           setLearningPath({
             skillBands: resultsData.data,
             recommendations: [],
-            generatedAt: new Date().toISOString()
+            generatedAt: new Date().toISOString(),
+            localGeneratedAt: formatLocalTime(new Date().toISOString())
           });
         }
       }

@@ -550,14 +550,50 @@ router.post('/submit', auth, async (req, res) => {
 router.get('/mine', auth, async (req, res) => {
   try {
     const user = req.user;
+    const timezone = req.userTimezone || 'UTC';
     const tests = await Test.find({ userId: user._id })
       .sort({ dateTaken: -1 })
       .select('-answers');
     
+    // Map tests to include local time fields
+    const mappedTests = tests.map(test => {
+      const testObj = test.toObject();
+      
+      // Add local time fields for display
+      if (testObj.dateTaken) {
+        testObj.localDateTaken = new Date(testObj.dateTaken).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      }
+      
+      if (testObj.createdAt) {
+        testObj.localCreatedAt = new Date(testObj.createdAt).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      }
+      
+      testObj.timezone = timezone;
+      
+      return testObj;
+    });
+    
     return res.json({ 
       success: true,
-      data: tests,
-      count: tests.length 
+      data: mappedTests,
+      count: mappedTests.length,
+      timezone: timezone
     });
   } catch (error) {
     console.error('[TestsMine] Error:', error.message);

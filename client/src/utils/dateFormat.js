@@ -10,7 +10,7 @@
  * @returns {string} Formatted local time string
  */
 export const formatLocalTime = (utcString, options = {}) => {
-  if (!utcString) return 'N/A';
+  if (!utcString) return '—';
 
   try {
     const date = new Date(utcString);
@@ -18,17 +18,26 @@ export const formatLocalTime = (utcString, options = {}) => {
       return 'Invalid Date';
     }
 
+    // Default format: "DD/MM/YYYY, HH:mm" (Vietnamese style)
     const defaultOptions = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
       day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hour12: false,
       ...options
     };
+
+    // If no custom format specified, use DD/MM/YYYY, HH:mm
+    if (!options.format) {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${day}/${month}/${year}, ${hours}:${minutes}`;
+    }
 
     return date.toLocaleString(undefined, defaultOptions);
   } catch (error) {
@@ -109,12 +118,14 @@ export const formatDuration = (startTime, endTime) => {
 };
 
 /**
- * Get relative time (e.g., "2 hours ago", "in 5 minutes")
+ * Get relative time (e.g., "2 hours ago", "vừa xong", "hôm qua")
+ * Supports both English and Vietnamese labels
  * @param {string|Date} utcString - UTC timestamp
+ * @param {boolean} useVietnamese - Use Vietnamese labels (vừa xong, giờ trước, etc.)
  * @returns {string}
  */
-export const formatRelativeTime = (utcString) => {
-  if (!utcString) return 'N/A';
+export const formatRelativeTime = (utcString, useVietnamese = false) => {
+  if (!utcString) return '';
 
   try {
     const date = new Date(utcString);
@@ -125,16 +136,34 @@ export const formatRelativeTime = (utcString) => {
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffSeconds < 60) {
-      return 'Just now';
-    } else if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    if (useVietnamese) {
+      if (diffSeconds < 60) {
+        return 'vừa xong';
+      } else if (diffMinutes < 60) {
+        return `${diffMinutes} phút trước`;
+      } else if (diffHours < 24) {
+        return `${diffHours} giờ trước`;
+      } else if (diffDays === 1) {
+        return 'hôm qua';
+      } else if (diffDays < 7) {
+        return `${diffDays} ngày trước`;
+      } else {
+        return formatDateShort(utcString);
+      }
     } else {
-      return formatDateShort(utcString);
+      if (diffSeconds < 60) {
+        return 'Just now';
+      } else if (diffMinutes < 60) {
+        return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+      } else if (diffHours < 24) {
+        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      } else if (diffDays === 1) {
+        return 'Yesterday';
+      } else if (diffDays < 7) {
+        return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      } else {
+        return formatDateShort(utcString);
+      }
     }
   } catch (error) {
     return 'Invalid Date';

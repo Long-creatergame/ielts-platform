@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { formatLocalTime, formatRelativeTime } from '../utils/dateFormat';
+import { getUserTimezone } from '../utils/timezone';
 
 const RecentActivityAndTests = () => {
   const { t } = useTranslation();
@@ -27,10 +29,12 @@ const RecentActivityAndTests = () => {
         // Only fetch from MongoDB if we have a token and user
         if (token && user) {
           console.log('🔄 Fetching tests from MongoDB for user:', user.id);
+          const timezone = getUserTimezone();
           const response = await fetch(`${API_BASE_URL}/api/tests/mine`, {
             headers: {
               'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'X-Timezone': timezone
             }
           });
           
@@ -170,17 +174,16 @@ const RecentActivityAndTests = () => {
     return colors[color] || colors.blue;
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Auto-update relative time every minute
+  const [currentTime, setCurrentTime] = useState(new Date());
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
     
-    if (diffDays === 1) return 'Hôm qua';
-    if (diffDays < 7) return `${diffDays} ngày trước`;
-    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} tuần trước`;
-    return date.toLocaleDateString('vi-VN');
-  };
+    return () => clearInterval(timer);
+  }, []);
 
   if (loading) {
     return (
@@ -219,7 +222,14 @@ const RecentActivityAndTests = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <h3 className="font-bold text-gray-900 text-lg truncate">{activity.title}</h3>
-                    <span className="text-sm text-gray-500">{formatDate(activity.date)}</span>
+                    <div className="text-right">
+                      <span className="text-sm text-gray-500 block">
+                        🕒 {formatRelativeTime(activity.date, true)}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        ({formatLocalTime(activity.date)})
+                      </span>
+                    </div>
                   </div>
                   <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
                   {activity.skill && activity.skill !== 'full' && (

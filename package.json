@@ -21,6 +21,7 @@
     "validate:examflow": "node scripts/validateExamFlow.js",
     "validate:public": "node scripts/validatePublic.js",
     "validate:timezone": "node scripts/validateTimezone.js",
+    "validate:timezones": "node scripts/validateTimezones.js",
     "validate:dashboard": "node scripts/validateDashboard.js",
     "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
     "release": "node scripts/releaseVersion.js",

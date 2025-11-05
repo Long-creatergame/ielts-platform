@@ -8,6 +8,7 @@ router.post('/start', auth, start);
 router.post('/submit', auth, submit);
 router.get('/result/:id', auth, result);
 router.get('/sessions', auth, listSessions);
+router.get('/recent', auth, listSessions); // Alias for /sessions for compatibility
 router.patch('/patch/:id', auth, patchSession);
 
 module.exports = router;

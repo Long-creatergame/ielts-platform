@@ -131,8 +131,58 @@ async function result(req, res) {
 
 async function listSessions(req, res) {
   try {
-    const docs = await ExamSession.find({}).limit(200).lean();
-    return res.json(docs);
+    const userId = req.user?._id || req.user?.userId;
+    const timezone = req.userTimezone || 'UTC';
+    
+    const query = userId ? { userId } : {};
+    const docs = await ExamSession.find(query).limit(200).sort({ createdAt: -1 }).lean();
+    
+    // Map sessions to include local time fields
+    const mappedDocs = docs.map(doc => {
+      const docObj = { ...doc };
+      
+      if (docObj.startTime) {
+        docObj.localStartTime = new Date(docObj.startTime).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      }
+      
+      if (docObj.endTime) {
+        docObj.localEndTime = new Date(docObj.endTime).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      }
+      
+      if (docObj.createdAt) {
+        docObj.localCreatedAt = new Date(docObj.createdAt).toLocaleString('en-US', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      }
+      
+      docObj.timezone = docObj.timezone || timezone;
+      
+      return docObj;
+    });
+    
+    return res.json(mappedDocs);
   } catch (e) {
     return res.status(500).json({ success: false, message: 'Server error' });
   }
