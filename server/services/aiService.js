@@ -6,12 +6,17 @@
 
 const OpenAI = require('openai');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 const { saveAIResponseLog } = require('../utils/aiLogger.js');
 const { getFeedbackInstructions } = require('../config/aiLevelCalibration.js');
 
 dotenv.config();
+
+// Get __dirname for CommonJS (works in both dev and production)
+const __filename = require.main ? require.main.filename : __filename;
+const __dirname = path.dirname(__filename || process.cwd());
 
 // Environment configuration
 const ENV = {
@@ -169,11 +174,31 @@ async function handleReadingGenerator({ topic, level = '6.5', band = 6.5 }) {
   }
 
   try {
-    const templatePath = path.join(process.cwd(), 'ai-prompts/reading-generator-template.md');
+    // Try multiple paths for template file (works in dev and production)
+    const fsSync = require('fs');
+    const possiblePaths = [
+      path.join(process.cwd(), 'ai-prompts/reading-generator-template.md'),
+      path.join(__dirname, '../../ai-prompts/reading-generator-template.md'),
+      path.resolve('ai-prompts/reading-generator-template.md')
+    ];
     let template = '';
-    try {
-      template = await fs.readFile(templatePath, 'utf-8');
-    } catch {
+    let templatePath = null;
+    
+    // Find first existing template file
+    for (const p of possiblePaths) {
+      try {
+        if (fsSync.existsSync(p)) {
+          templatePath = p;
+          template = await fs.readFile(p, 'utf-8');
+          break;
+        }
+      } catch {
+        continue;
+      }
+    }
+    
+    // Fallback to default if no template found
+    if (!template) {
       template = 'Generate an IELTS Academic Reading passage and questions.';
     }
 
@@ -234,11 +259,30 @@ async function handleRecommendation({ weaknessProfile, userLevel = 'B1', current
   }
 
   try {
-    const templatePath = path.join(process.cwd(), 'ai-prompts/recommendation-template.md');
+    // Try multiple paths for template file (works in dev and production)
+    const possiblePaths = [
+      path.join(process.cwd(), 'ai-prompts/recommendation-template.md'),
+      path.join(__dirname, '../../ai-prompts/recommendation-template.md'),
+      path.resolve('ai-prompts/recommendation-template.md')
+    ];
     let template = '';
-    try {
-      template = await fs.readFile(templatePath, 'utf-8');
-    } catch {
+    let templatePath = null;
+    
+    // Find first existing template file
+    for (const p of possiblePaths) {
+      try {
+        if (fsSync.existsSync(p)) {
+          templatePath = p;
+          template = await fs.readFile(p, 'utf-8');
+          break;
+        }
+      } catch {
+        continue;
+      }
+    }
+    
+    // Fallback to default if no template found
+    if (!template) {
       template = 'Generate personalized learning recommendations.';
     }
 

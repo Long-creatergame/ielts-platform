@@ -3,8 +3,8 @@ services:
     name: ielts-server
     env: node
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd server && npm install --production=false
+    startCommand: cd server && node index.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -12,9 +12,23 @@ services:
         value: 4000
       - key: MONGO_URI
         sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_API_BASE
+        value: https://api.openai.com/v1
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: OPENAI_TEMPERATURE
+        value: "0.85"
+      - key: AI_FALLBACK_MODE
+        value: "false"
       - key: FRONTEND_URL
-        value: https://ielts-platform.vercel.app
+        value: https://ielts-platform-two.vercel.app
       - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: SENDGRID_API_KEY
         sync: false
       - key: PAYOS_CLIENT_ID
         sync: false
