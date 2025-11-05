@@ -32,6 +32,9 @@
     "validate:goal": "node scripts/validateGoalContext.js",
     "i18n:audit": "node scripts/i18nAudit.js",
     "validate:i18n:coverage": "node scripts/validateI18nCoverage.js",
+    "lint": "eslint . --ext .js,.jsx --fix",
+    "lint:client": "cd client && eslint src --ext .js,.jsx --fix",
+    "lint:server": "cd server && eslint . --ext .js --fix",
     "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
     "release": "node scripts/releaseVersion.js",
     "test:deploy": "node scripts/testDeployment.js"
