@@ -186,10 +186,9 @@ process.on('SIGINT', async () => {
   }
 });
 
-// CORS is already handled above, but keep this for additional safety if cors package fails
-// This middleware is now redundant but kept as fallback
-
-app.use(express.json());
+// Body parsers
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
