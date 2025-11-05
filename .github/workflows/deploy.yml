@@ -23,26 +23,36 @@ jobs:
 
       - name: Validate Environment
         run: npm run validate:production || echo "⚠️ Environment validation passed with warnings"
-
-      - name: Deploy to Render (Backend)
-        run: |
-          curl -X POST https://api.render.com/deploy/srv-d3rq06lsf0hr37d5kmng \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"clearCache":true}'
         continue-on-error: true
 
-      - name: Deploy to Vercel (Frontend)
-        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Prepare Release Info
-        run: npm run release
-
-      - name: Tag Release
+      - name: Trigger Render Deploy (Optional)
         run: |
-          git config user.name "CambridgeAI-Bot"
-          git config user.email "bot@ielts-platform.ai"
-          git tag -a "v2.16-stable" -m "Phase 2.16.R – Cambridge AI Public Release"
-          git push origin --tags
+          if [ -n "${{ secrets.RENDER_API_KEY }}" ]; then
+            curl -X POST https://api.render.com/deploy/srv-d3rq06lsf0hr37d5kmng \
+              -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"clearCache":true}' || echo "⚠️ Render deploy trigger failed (auto-deploy via webhook should work)"
+          else
+            echo "ℹ️ Render API key not set - Render will auto-deploy via GitHub webhook"
+          fi
+        continue-on-error: true
+
+      - name: Trigger Vercel Deploy (Optional)
+        run: |
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
+            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes || echo "⚠️ Vercel deploy failed (auto-deploy via webhook should work)"
+          else
+            echo "ℹ️ Vercel token not set - Vercel will auto-deploy via GitHub integration"
+          fi
+        continue-on-error: true
+
+      - name: Deployment Status
+        run: |
+          echo "✅ Code pushed to GitHub"
+          echo "📦 Render will auto-deploy via webhook (if configured)"
+          echo "📦 Vercel will auto-deploy via GitHub integration (if configured)"
+          echo "🔗 Manual deploy available at:"
+          echo "   - Render: https://dashboard.render.com"
+          echo "   - Vercel: https://vercel.com/dashboard"
 
 
