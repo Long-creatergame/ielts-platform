@@ -11,7 +11,7 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.15s ease-out;
+  animation: fadeIn 0.25s ease-in-out;
 }
 
 /* iOS Safari backdrop-filter support */
