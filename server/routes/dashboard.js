@@ -209,8 +209,76 @@ function generateCoachMessage(user, tests, averageBand) {
 
 // Unified dashboard endpoints
 router.get('/summary', auth, async (req, res) => {
-  // Alias for main dashboard endpoint
-  return router.handle({ ...req, url: '/', method: 'GET' }, res);
+  // Alias for main dashboard endpoint - reuse the same logic
+  try {
+    const userId = req.user._id;
+    
+    // Get user data
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Get user's tests
+    const tests = await Test.find({ userId }).sort({ createdAt: -1 }).limit(10);
+    
+    // Calculate statistics
+    const totalTests = tests.length;
+    const completedTests = tests.filter(test => test.completed).length;
+    const averageBand = tests.length > 0 
+      ? tests.reduce((sum, test) => sum + (test.totalBand || 0), 0) / tests.length 
+      : 0;
+
+    // Calculate streak
+    const streakDays = calculateStreak(tests);
+
+    // Get AI personalization data
+    let personalization = null;
+    try {
+      const aiData = await AIPersonalization.findOne({ userId });
+      if (aiData) {
+        personalization = {
+          greeting: aiData.greeting || `Hello ${user.name}!`,
+          strengths: aiData.strengths || [],
+          weaknesses: aiData.weaknesses || [],
+          recommendations: aiData.recommendations || []
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching personalization:', error);
+    }
+
+    // Get coach message
+    const coachMessage = generateCoachMessage(user, tests, averageBand);
+
+    const dashboardData = {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        plan: user.plan,
+        isTrialUsed: user.isTrialUsed,
+        targetBand: user.targetBand,
+        currentLevel: user.currentLevel,
+        goal: user.goal
+      },
+      statistics: {
+        totalTests,
+        completedTests,
+        averageBand: Math.round(averageBand * 10) / 10,
+        streakDays,
+        accuracy: calculateAccuracy(tests)
+      },
+      recentTests: tests.slice(0, 5),
+      personalization,
+      coachMessage
+    };
+
+    res.json({ success: true, data: dashboardData });
+  } catch (error) {
+    console.error('Dashboard summary error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch dashboard summary' });
+  }
 });
 
 // Get insights (weaknesses + AI analytics)

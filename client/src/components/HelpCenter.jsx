@@ -1,7 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 const HelpCenter = ({ isOpen, onClose }) => {
+  // Prevent body scroll when overlay is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('getting-started');
 
@@ -120,9 +144,18 @@ const HelpCenter = ({ isOpen, onClose }) => {
 
   const currentCategory = helpCategories[activeCategory];
 
-  return (
-    <div className={`fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-      <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+  const overlayContent = (
+    <div 
+      className={`fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      style={{
+        WebkitBackdropFilter: 'blur(4px)', // iOS Safari support
+      }}
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden animate-fadeIn"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
           <div className="flex items-center justify-between">
@@ -237,6 +270,12 @@ const HelpCenter = ({ isOpen, onClose }) => {
       </div>
     </div>
   );
+
+  const overlayRoot = document.getElementById('overlay-root');
+
+  if (!isOpen || !overlayRoot) return null;
+
+  return createPortal(overlayContent, overlayRoot);
 };
 
 export default HelpCenter;
