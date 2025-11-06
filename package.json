@@ -40,7 +40,7 @@
     "test:deploy": "node scripts/testDeployment.js"
   },
   "engines": {
-    "node": ">=18.19.0 <21"
+    "node": ">=18.19.0"
   },
   "dependencies": {
     "express": "^4.18.2",
