@@ -1,0 +1,19 @@
+# Force Deployment Trigger
+# This file triggers automatic deployment on Vercel and Render
+# Updated: 2025-01-27
+
+DEPLOYMENT_ID=2039bf3c
+TIMESTAMP=2025-01-27T00:00:00Z
+TRIGGER_TYPE=force_redeploy
+VERSION=2.0.0
+
+# This commit includes:
+# - Fixed Vercel configuration (vercel.json)
+# - Fixed Render configuration (render.yaml)
+# - Added .env.example files
+# - Updated .gitignore
+
+# Expected deployments:
+# - Vercel: Auto-deploy on push to main
+# - Render: Auto-deploy on push to main
+
