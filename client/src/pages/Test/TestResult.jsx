@@ -527,7 +527,7 @@ export default function TestResult() {
                     return (
                       <button
                         key={skill}
-                        onClick={() => navigate(`/quick-practice/${skill}?focus=true`)}
+                        onClick={() => navigate(`/practice?skill=${skill}&focus=true`)}
                         className="bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-400 text-red-700 font-semibold py-4 px-6 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:scale-105"
                       >
                         <div className="text-2xl mb-2">

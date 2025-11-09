@@ -34,7 +34,7 @@ const AIPractice = () => {
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
-      await fetch(`${API_BASE_URL}/api/user/preferences`, {
+      await fetch(`${API_BASE_URL}/api/user-preferences`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -329,7 +329,7 @@ const AIPractice = () => {
             <button
               onClick={() => {
                 // Navigate to quick practice for the generated skill
-                navigate(`/quick-practice/${generatedQuestion.skill}`);
+                navigate(`/practice?skill=${generatedQuestion.skill}`);
               }}
               className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
             >

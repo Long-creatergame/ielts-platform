@@ -59,7 +59,7 @@ const RecommendedPractice = () => {
   const handleStartPractice = (recommendation) => {
     // Navigate to quick practice for the specific skill
     const skill = recommendation.skill || recommendation.type || 'reading';
-    navigate(`/quick-practice/${skill}`);
+    navigate(`/practice?skill=${skill}`);
   };
 
   const filteredRecommendations = selectedSkill === 'all' 

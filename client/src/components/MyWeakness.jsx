@@ -297,7 +297,7 @@ const MyWeakness = () => {
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         <button
           onClick={fetchWeaknessData}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
@@ -313,6 +313,21 @@ const MyWeakness = () => {
         >
           Get Practice Recommendations
         </button>
+        {weaknessData.weakness && Object.keys(weaknessData.weakness).length > 0 && (
+          <button
+            onClick={() => {
+              // Find the skill with the lowest score
+              const weaknesses = Object.entries(weaknessData.weakness);
+              const weakestSkill = weaknesses.reduce((min, [skill, score]) => 
+                score < min[1] ? [skill, score] : min
+              )[0];
+              navigate(`/practice?skill=${weakestSkill}&focus=true`);
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors"
+          >
+            Practice Weakest Skill
+          </button>
+        )}
       </div>
     </div>
   );

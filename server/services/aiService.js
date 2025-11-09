@@ -9,8 +9,8 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
-const { saveAIResponseLog } = require('../utils/aiLogger.js');
-const { getFeedbackInstructions } = require('../config/aiLevelCalibration.js');
+const { saveAIResponseLog } = require('../utils/aiLogger');
+const { getFeedbackInstructions } = require('../config/aiLevelCalibration');
 
 dotenv.config();
 
