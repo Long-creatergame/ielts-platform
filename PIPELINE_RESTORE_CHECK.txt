@@ -1,0 +1,8 @@
+AUTO-DEPLOY PIPELINE RESTORE TEST
+Generated: $(date)
+Purpose: Verify original auto-deploy restoration
+Expected: Vercel and Render should auto-build on push to main
+
+This file tests the restored auto-deploy pipeline.
+Commit this file to trigger automatic deployments.
+
