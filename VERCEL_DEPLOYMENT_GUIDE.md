@@ -35,7 +35,7 @@ Add these in Vercel dashboard:
 
 ```
 VITE_API_BASE_URL=https://ielts-server.onrender.com
-VITE_STRIPE_PUBLIC_KEY=pk_test_51SJco3JGcJnrmm75B1K5kR2uPlWzUharxQNwN0WxsW6VE5LAf59RwBUPcv7hkiSVGOTnvbzPbZVtvUiq3Jw78v5400AccSRVpR
+VITE_STRIPE_PUBLIC_KEY=pk_test_YOUR_STRIPE_PUBLIC_KEY_HERE
 ```
 
 ### 5. **Deploy**
