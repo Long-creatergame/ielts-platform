@@ -1,0 +1,8 @@
+# Deployment Trigger File
+# This file is updated to trigger deployments on Vercel and Render
+# Last updated: 2025-01-27
+
+TRIGGER_DEPLOY=true
+DEPLOYMENT_ID=fdc98725
+TIMESTAMP=2025-01-27T00:00:00Z
+

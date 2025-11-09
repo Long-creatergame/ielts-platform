@@ -2,8 +2,11 @@ services:
   - type: web
     name: ielts-platform
     env: node
-    buildCommand: cd server && npm install
-    startCommand: cd server && npm start
+    region: singapore
+    plan: free
+    buildCommand: cd server && npm install --production=false
+    startCommand: cd server && node index.js
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,3 +20,5 @@ services:
         generateValue: true
       - key: OPENAI_API_KEY
         sync: false
+      - key: FRONTEND_URL
+        value: https://ielts-platform-two.vercel.app
