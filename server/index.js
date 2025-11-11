@@ -54,38 +54,14 @@ try {
   const helmet = require('helmet');
   const compression = require('compression');
   const cors = require('cors');
+  const { buildCorsOptions } = require('./config/corsConfig');
   const rateLimit = require('express-rate-limit');
   const morgan = require('morgan');
   app.use(helmet());
   app.use(compression());
   
-  // CORS Configuration - Allow multiple origins
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://ielts-platform-two.vercel.app',
-    'https://ielts-platform-emrv.onrender.com',
-    process.env.FRONTEND_URL
-  ].filter(Boolean);
-
-  app.use(cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`[CORS] Blocked origin: ${origin}`);
-        callback(new Error(`Not allowed by CORS: ${origin}`));
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Timezone', 'X-Requested-With'],
-    exposedHeaders: ['Content-Length', 'Content-Type'],
-    maxAge: 86400 // 24 hours
-  }));
+  // CORS options centralized
+  app.use(cors(buildCorsOptions()));
   
   // Handle preflight requests
   app.options('*', cors());
@@ -297,11 +273,16 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ message: 'Internal server error' });
-});
+// Error handler (unified)
+try {
+  const errorHandler = require('./middleware/errorHandler');
+  app.use(errorHandler);
+} catch (e) {
+  app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  });
+}
 
 // WebSocket (Socket.IO) setup - skip in test environment to avoid open handles
 if (process.env.NODE_ENV !== 'test') {

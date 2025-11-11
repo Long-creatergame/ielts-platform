@@ -21,19 +21,16 @@ const MyWeakness = () => {
 
   const fetchWeaknessData = async () => {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
+      const { default: api } = await import('@/lib/axios');
       
       // Try AI personalization API first
-      const response = await fetch(`${API_BASE_URL}/api/ai-personalization/${user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+      const response = await api.get(`/api/ai-personalization/${user.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response && response.status >= 200 && response.status < 300) {
+        const data = response.data;
         if (data.success) {
           // Transform AI personalization data to weakness format
           const personalization = data.data;
@@ -49,15 +46,12 @@ const MyWeakness = () => {
       }
 
       // Fallback to AI engine API
-      const fallbackResponse = await fetch(`${API_BASE_URL}/api/ai-engine/weakness/${user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+      const fallbackResponse = await api.get(`/api/ai-engine/weakness/${user.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      if (fallbackResponse.ok) {
-        const data = await fallbackResponse.json();
+      if (fallbackResponse && fallbackResponse.status >= 200 && fallbackResponse.status < 300) {
+        const data = fallbackResponse.data;
         if (data.success) {
           setWeaknessData(data.data);
         }
@@ -104,18 +98,14 @@ const MyWeakness = () => {
   const fetchProgressData = async () => {
     try {
       // Try to fetch from progress tracking API
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
-      
-      const response = await fetch(`${API_BASE_URL}/api/progress-tracking/${user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+      const { default: api } = await import('@/lib/axios');
+      const response = await api.get(`/api/progress-tracking/${user.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response && response.status >= 200 && response.status < 300) {
+        const data = response.data;
         if (data.success) {
           // Transform progress data to chart format
           const progressData = data.data.dailyProgress || [];

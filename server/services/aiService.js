@@ -4,7 +4,14 @@
  * Entry point: processAI(type, payload)
  */
 
-const OpenAI = require('openai');
+let OpenAI = null;
+try {
+  // Prefer CommonJS require; if not available, fall back gracefully
+  // eslint-disable-next-line global-require
+  OpenAI = require('openai');
+} catch (_) {
+  OpenAI = null;
+}
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
@@ -29,7 +36,7 @@ const ENV = {
 };
 
 // Initialize OpenAI client
-const openai = ENV.OPENAI_API_KEY
+const openai = (ENV.OPENAI_API_KEY && OpenAI)
   ? new OpenAI({
       apiKey: ENV.OPENAI_API_KEY,
       baseURL: ENV.OPENAI_API_BASE,

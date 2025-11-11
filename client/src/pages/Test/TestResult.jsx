@@ -30,15 +30,13 @@ export default function TestResult() {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`${API_BASE_URL}/api/tests/mine`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+      const { default: api } = await import('@/lib/axios');
+      const response = await api.get(`/api/tests/mine`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response && response.status >= 200 && response.status < 300) {
+        const data = response.data;
         // Handle both {success, data} and direct data formats
         const tests = data.data || data.tests || [];
         if (tests.length > 1) {
@@ -155,15 +153,13 @@ export default function TestResult() {
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
         const token = localStorage.getItem('token');
         
-        const response = await fetch(`${API_BASE_URL}/api/tests/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+        const { default: api } = await import('@/lib/axios');
+        const response = await api.get(`/api/tests/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        if (response.ok) {
-          const data = await response.json();
+        if (response && response.status >= 200 && response.status < 300) {
+          const data = response.data;
           const backendTest = data.data || data;
           
           // Transform MongoDB format to TestResult format
