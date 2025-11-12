@@ -1,68 +1,12 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const { loginUser, registerUser } = require('../controllers/authController');
-// mockData removed for production deploy
+const { register, login, getUserProfile } = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-this-in-production';
-
-// Generate JWT token
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
-};
-
-// Register route
-router.post('/register', registerUser);
-
-// Login route
-router.post('/login', loginUser);
-
-// Auth middleware
-const authMiddleware = async (req, res, next) => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
-    
-    if (!user) {
-      return res.status(401).json({ message: 'Token is not valid' });
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
-
-// Get user profile
-router.get('/profile', authMiddleware, async (req, res) => {
-  try {
-    res.json({
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        goal: req.user.goal,
-        targetBand: req.user.targetBand,
-        currentLevel: req.user.currentLevel,
-        plan: req.user.plan,
-        freeTestsUsed: req.user.freeTestsUsed,
-        paid: req.user.paid
-      }
-    });
-  } catch (error) {
-    console.error('Profile error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+router.post('/register', register);
+router.post('/login', login);
+router.get('/me', authMiddleware, getUserProfile);
 
 // Update user profile
 router.put('/profile', authMiddleware, async (req, res) => {

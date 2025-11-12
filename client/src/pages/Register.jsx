@@ -10,7 +10,8 @@ export default function Register() {
     email: '',
     password: '',
     confirmPassword: '',
-    goal: 'try',
+    goal: 0,
+    goalReason: 'try',
     targetBand: 6.5,
     currentLevel: 'A2'
   });
@@ -27,10 +28,18 @@ export default function Register() {
   }, [user, navigate]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, options, selectedIndex } = e.target;
+    const numericFields = ['goal', 'targetBand'];
+    const updates = {
+      [name]: numericFields.includes(name) ? Number(value) : value
+    };
+    if (name === 'goal' && options?.[selectedIndex]?.dataset?.reason) {
+      updates.goalReason = options[selectedIndex].dataset.reason;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      ...updates
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -58,7 +67,12 @@ export default function Register() {
     }
 
     try {
-      await register(formData);
+      const payload = {
+        ...formData,
+        goal: Number(formData.goal) || 0,
+        targetBand: Number(formData.targetBand) || 6.5,
+      };
+      await register(payload);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -127,10 +141,10 @@ export default function Register() {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="try">🎯 {t('auth.goalOptions.try')}</option>
-              <option value="study">🎓 {t('auth.goalOptions.study')}</option>
-              <option value="immigrate">🏠 {t('auth.goalOptions.immigrate')}</option>
-              <option value="work">💼 {t('auth.goalOptions.work')}</option>
+              <option value={0} data-reason="try">🎯 {t('auth.goalOptions.try')}</option>
+              <option value={1} data-reason="study">🎓 {t('auth.goalOptions.study')}</option>
+              <option value={2} data-reason="immigrate">🏠 {t('auth.goalOptions.immigrate')}</option>
+              <option value={3} data-reason="work">💼 {t('auth.goalOptions.work')}</option>
             </select>
           </div>
 

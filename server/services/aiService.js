@@ -21,10 +21,6 @@ const { getFeedbackInstructions } = require('../config/aiLevelCalibration');
 
 dotenv.config();
 
-// Get __dirname for CommonJS (works in both dev and production)
-const __filename = require.main ? require.main.filename : __filename;
-const __dirname = path.dirname(__filename || process.cwd());
-
 // Environment configuration
 const ENV = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',

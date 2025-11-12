@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL ||
+  'https://ielts-platform-emrv.onrender.com/api';
 
 const api = axios.create({
   baseURL,

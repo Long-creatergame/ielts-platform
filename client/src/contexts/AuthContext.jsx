@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-// Removed mock imports for production build
+import api from "@/lib/axios";
 
 const AuthContext = createContext();
 
@@ -44,53 +44,38 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (email, password) => {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Login failed');
-      }
-
-      const data = await response.json();
+      const { data } = await api.post('/auth/login', { email, password });
       login(data.user, data.token);
       return { success: true, user: data.user };
     } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Login failed';
       console.error('Login error:', error);
-      throw error;
+      throw new Error(message);
     }
   };
 
   const register = async (userData) => {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Registration failed');
-      }
-
-      const data = await response.json();
+      const payload = {
+        ...userData,
+        goal: Number(userData.goal) || 0,
+        targetBand: Number(userData.targetBand) || 6.5,
+      };
+      const { data } = await api.post('/auth/register', payload);
       login(data.user, data.token);
       return { success: true, user: data.user };
     } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Registration failed';
       console.error('Registration error:', error);
-      throw error;
+      throw new Error(message);
     }
   };
 
