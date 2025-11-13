@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const { getCoreConnection } = require('../config/db');
+let coreDB = null;
 
-const coreDB = getCoreConnection();
+function getModelConnection() {
+  if (!coreDB) {
+    const { getCoreConnection } = require('../config/db');
+    coreDB = getCoreConnection();
+  }
+  return coreDB;
+}
 
 /**
  * UserAnalytics Model - Tracks user performance analytics
@@ -94,7 +100,11 @@ userAnalyticsSchema.index({ averageBandScore: -1 });
 userAnalyticsSchema.index({ totalItemsCompleted: -1 });
 userAnalyticsSchema.index({ lastUpdated: -1 });
 
-const UserAnalytics = coreDB.model('UserAnalytics', userAnalyticsSchema);
+function getUserAnalyticsModel() {
+  return getModelConnection().model('UserAnalytics', userAnalyticsSchema);
+}
+
+const UserAnalytics = getUserAnalyticsModel();
 
 module.exports = UserAnalytics;
 

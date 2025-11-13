@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const { getCoreConnection } = require('../config/db');
+let coreDB = null;
 
-const coreDB = getCoreConnection();
+function getModelConnection() {
+  if (!coreDB) {
+    const { getCoreConnection } = require('../config/db');
+    coreDB = getCoreConnection();
+  }
+  return coreDB;
+}
 
 /**
  * IELTSItem Model - Core V3 IELTS Test Items
@@ -99,7 +105,11 @@ ieltsItemSchema.index({ topic: 1, tags: 1 });
 ieltsItemSchema.index({ createdAt: -1 });
 ieltsItemSchema.index({ usageCount: -1 });
 
-const IELTSItem = coreDB.model('IELTSItem', ieltsItemSchema);
+function getIELTSItemModel() {
+  return getModelConnection().model('IELTSItem', ieltsItemSchema);
+}
+
+const IELTSItem = getIELTSItemModel();
 
 module.exports = IELTSItem;
 

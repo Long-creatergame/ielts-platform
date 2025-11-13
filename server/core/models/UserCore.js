@@ -81,7 +81,11 @@ userCoreSchema.methods.toJSON = function() {
   return obj;
 };
 
-const UserCore = coreDB.model('UserCore', userCoreSchema);
+function getUserCoreModel() {
+  return getModelConnection().model('UserCore', userCoreSchema);
+}
+
+const UserCore = getUserCoreModel();
 
 module.exports = UserCore;
 

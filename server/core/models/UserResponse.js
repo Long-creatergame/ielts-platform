@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const { getCoreConnection } = require('../config/db');
+let coreDB = null;
 
-const coreDB = getCoreConnection();
+function getModelConnection() {
+  if (!coreDB) {
+    const { getCoreConnection } = require('../config/db');
+    coreDB = getCoreConnection();
+  }
+  return coreDB;
+}
 
 /**
  * UserResponse Model - Stores user responses to IELTS items
@@ -79,7 +85,11 @@ userResponseSchema.index({ userId: 1, itemId: 1 });
 userResponseSchema.index({ isCompleted: 1, submittedAt: -1 });
 userResponseSchema.index({ bandScore: -1 });
 
-const UserResponse = coreDB.model('UserResponse', userResponseSchema);
+function getUserResponseModel() {
+  return getModelConnection().model('UserResponse', userResponseSchema);
+}
+
+const UserResponse = getUserResponseModel();
 
 module.exports = UserResponse;
 

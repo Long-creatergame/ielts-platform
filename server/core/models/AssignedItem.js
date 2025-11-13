@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const { getCoreConnection } = require('../config/db');
+let coreDB = null;
 
-const coreDB = getCoreConnection();
+function getModelConnection() {
+  if (!coreDB) {
+    const { getCoreConnection } = require('../config/db');
+    coreDB = getCoreConnection();
+  }
+  return coreDB;
+}
 
 /**
  * AssignedItem Model - Tracks items assigned to users
@@ -67,7 +73,11 @@ assignedItemSchema.index({ itemId: 1 });
 assignedItemSchema.index({ dueDate: 1 });
 assignedItemSchema.index({ userId: 1, itemId: 1 }, { unique: true });
 
-const AssignedItem = coreDB.model('AssignedItem', assignedItemSchema);
+function getAssignedItemModel() {
+  return getModelConnection().model('AssignedItem', assignedItemSchema);
+}
+
+const AssignedItem = getAssignedItemModel();
 
 module.exports = AssignedItem;
 
