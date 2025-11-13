@@ -269,6 +269,9 @@ app.use('/api/exam', examRoutes);
 app.use('/api/production', productionRoutes);
 app.use('/api/media', mediaRoutes);
 
+// Core V3 API routes (isolated module)
+app.use('/api/v3', require('./core/routes/coreRouter'));
+
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
@@ -371,7 +374,7 @@ if (process.env.ENABLE_DEMO_MODE === 'true' || process.env.DEMO_MODE === 'true')
 
 // In test mode, export app without starting the listener to avoid EADDRINUSE
 if (process.env.NODE_ENV !== 'test') {
-  server.listen(PORT, () => {
+  server.listen(PORT, async () => {
     console.log('[Init] Server running on port', PORT);
     
     // Start daily IELTS item generator cron job
@@ -380,6 +383,15 @@ if (process.env.NODE_ENV !== 'test') {
       console.log('[Init] Daily IELTS item generator cron job initialized');
     } catch (error) {
       console.error('[Init] Error initializing cron job:', error);
+    }
+    
+    // Initialize Core V3
+    try {
+      const { setupCoreV3 } = require('./core/setup');
+      await setupCoreV3();
+    } catch (error) {
+      console.error('[Init] Error initializing Core V3:', error);
+      // Don't fail server startup if Core V3 setup fails
     }
   });
 }
