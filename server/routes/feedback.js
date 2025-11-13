@@ -6,7 +6,7 @@
 const express = require('express');
 const { generateFeedback, getFeedback } = require('../services/aiFeedbackService');
 const AIFeedback = require('../models/AIFeedback');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

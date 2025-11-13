@@ -334,7 +334,7 @@ async function updateHealthCheckScript() {
   log('🔧 Updating health check script to use better Render API endpoint...');
   
   const scriptPath = path.join(__dirname, 'ci_cd_health_check.js');
-  let scriptContent = fs.readFileSync(scriptPath, 'utf8');
+  const scriptContent = fs.readFileSync(scriptPath, 'utf8');
 
   // Check if script already uses deploys endpoint
   if (scriptContent.includes('/deploys')) {

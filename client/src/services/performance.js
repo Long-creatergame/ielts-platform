@@ -70,7 +70,7 @@ class PerformanceService {
   measureCLS() {
     if ('PerformanceObserver' in window) {
       let clsValue = 0;
-      let clsEntries = [];
+      const clsEntries = [];
       
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();

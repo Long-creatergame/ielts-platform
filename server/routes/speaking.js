@@ -161,7 +161,7 @@ router.post('/submit', upload.single('audio'), async (req, res) => {
 
     // Auto-update achievements
     try {
-      await fetch(`http://localhost:4000/api/achievements/update/${userId}`, {
+      await fetch(`${process.env.BACKEND_URL || 'http://localhost:4000'}/api/achievements/update/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -171,7 +171,7 @@ router.post('/submit', upload.single('audio'), async (req, res) => {
 
     // Auto-update challenge progress
     try {
-      await fetch(`http://localhost:4000/api/challenges/progress/${userId}`, {
+      await fetch(`${process.env.BACKEND_URL || 'http://localhost:4000'}/api/challenges/progress/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });

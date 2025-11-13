@@ -235,7 +235,7 @@ async function getTestBySkill(req, res) {
     }
 
     const dataPath = path.join(__dirname, `../data/cambridge/${filename}`);
-    let data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
     // Build absolute media URLs
     const frontend = process.env.FRONTEND_URL || '';

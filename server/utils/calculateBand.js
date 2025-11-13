@@ -1,6 +1,6 @@
 // Calculate IELTS band score based on correct answers
 function calculateBand(correctAnswers, totalQuestions, skill) {
-  let percentage = (correctAnswers / totalQuestions) * 100;
+  const percentage = (correctAnswers / totalQuestions) * 100;
   
   // IELTS band calculation based on skill
   switch (skill) {

@@ -227,10 +227,6 @@ app.get('/api/ai-status', (req, res) => {
 });
 
 // Test route
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Test route working' });
-});
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);

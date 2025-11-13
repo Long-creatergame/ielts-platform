@@ -176,7 +176,7 @@ const getTestResults = async (req, res) => {
     const userId = req.params.userId || req.user?._id || '000000000000000000000000';
     const { skill } = req.query;
 
-    let query = { userId, status: 'scored' };
+    const query = { userId, status: 'scored' };
     if (skill) {
       query.skill = skill.toLowerCase();
     }

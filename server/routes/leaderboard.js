@@ -1,6 +1,6 @@
 const express = require('express');
 const Leaderboard = require('../models/Leaderboard');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

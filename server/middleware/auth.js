@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const config = require('../config');
 
 // Test user whitelist for safe rollout
 const TEST_WHITELIST = ["testuser1@gmail.com", "testuser2@gmail.com"];
@@ -27,8 +26,12 @@ const auth = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, config.JWT_SECRET);
-    const user = await User.findById(decoded.userId);
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ message: 'JWT secret not configured' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId || decoded.id);
     
     if (!user) {
       console.log('[Auth:UserNotFound] Invalid userId:', decoded.userId);

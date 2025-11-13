@@ -2,7 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
 const emailService = require('../services/emailService');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

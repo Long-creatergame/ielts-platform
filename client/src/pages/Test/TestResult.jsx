@@ -27,9 +27,6 @@ export default function TestResult() {
 
   const loadPreviousScore = async () => {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      const token = localStorage.getItem('token');
-      
       const { default: api } = await import('@/lib/axios');
       const response = await api.get(`/api/tests/mine`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -150,13 +147,8 @@ export default function TestResult() {
 
       // Try to fetch from backend
       if (id) {
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-        const token = localStorage.getItem('token');
-        
         const { default: api } = await import('@/lib/axios');
-        const response = await api.get(`/api/tests/${id}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await api.get(`/api/tests/${id}`);
 
         if (response && response.status >= 200 && response.status < 300) {
           const data = response.data;

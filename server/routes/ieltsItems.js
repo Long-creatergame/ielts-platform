@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const authMiddleware = require('../middleware/authMiddleware');
 const IELTSItem = require('../models/IELTSItem');
 const UserRecord = require('../models/UserRecord');
 const { generateIELTSItem } = require('../services/ieltsItemGenerator');
@@ -10,7 +10,7 @@ const { generateIELTSItem } = require('../services/ieltsItemGenerator');
  * Assign a new IELTS item to the current user
  * Logic: Find item not used by user, or item with lowest usageCount
  */
-router.post('/assign-item', auth, async (req, res) => {
+router.post('/assign-item', authMiddleware, async (req, res) => {
   try {
     const userId = req.user._id;
     
@@ -93,7 +93,7 @@ router.post('/assign-item', auth, async (req, res) => {
  * POST /api/ielts-items/submit
  * Submit user's answers and update usage statistics
  */
-router.post('/submit', auth, async (req, res) => {
+router.post('/submit', authMiddleware, async (req, res) => {
   try {
     const userId = req.user._id;
     const { ieltsItemId, answers, score, feedback, timeSpent, metadata } = req.body;
@@ -175,7 +175,7 @@ router.post('/submit', auth, async (req, res) => {
  * GET /api/ielts-items/user-history
  * Get user's submission history
  */
-router.get('/user-history', auth, async (req, res) => {
+router.get('/user-history', authMiddleware, async (req, res) => {
   try {
     const userId = req.user._id;
     const { limit = 20, skip = 0 } = req.query;
@@ -205,7 +205,7 @@ router.get('/user-history', auth, async (req, res) => {
  * POST /api/ielts-items/auto-generate
  * Generate new IELTS items using AI (for cron job or admin)
  */
-router.post('/auto-generate', auth, async (req, res) => {
+router.post('/auto-generate', authMiddleware, async (req, res) => {
   try {
     // Check if user is admin (optional - can be removed for cron job)
     if (req.user.role !== 'admin' && process.env.ALLOW_AUTO_GENERATE !== 'true') {
@@ -247,7 +247,7 @@ router.post('/auto-generate', auth, async (req, res) => {
  * GET /api/ielts-items/stats
  * Get statistics about IELTS items (admin only)
  */
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({

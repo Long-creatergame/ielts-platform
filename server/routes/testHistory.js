@@ -1,10 +1,10 @@
 const express = require('express');
-const { authenticateToken } = require('../middleware/auth.js');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 // Get test history for a user
-router.get('/history', authenticateToken, async (req, res) => {
+router.get('/history', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     
@@ -68,7 +68,7 @@ router.get('/history', authenticateToken, async (req, res) => {
 });
 
 // Get specific test details
-router.get('/history/:testId', authenticateToken, async (req, res) => {
+router.get('/history/:testId', authMiddleware, async (req, res) => {
   try {
     const { testId } = req.params;
     const userId = req.user.id;
@@ -133,7 +133,7 @@ router.get('/history/:testId', authenticateToken, async (req, res) => {
 });
 
 // Save test result
-router.post('/save', authenticateToken, async (req, res) => {
+router.post('/save', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { testType, level, answers, scores, duration } = req.body;

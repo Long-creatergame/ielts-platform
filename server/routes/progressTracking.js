@@ -1,6 +1,6 @@
 const express = require('express');
 const ProgressTracking = require('../models/ProgressTracking');
-const authMiddleware = require('./auth.js');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

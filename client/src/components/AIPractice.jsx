@@ -32,15 +32,9 @@ const AIPractice = () => {
 
   const savePreferredMode = async (mode) => {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      const token = localStorage.getItem('token');
-      await fetch(`${API_BASE_URL}/api/user-preferences`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ preferredMode: mode })
+      const { default: api } = await import('@/lib/axios');
+      await api.patch('/api/user-preferences', {
+        preferredMode: mode
       });
     } catch (error) {
       console.error('Failed to save preferred mode:', error);
@@ -55,30 +49,17 @@ const AIPractice = () => {
 
     setLoading(true);
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      const token = localStorage.getItem('token');
+      const { default: api } = await import('@/lib/axios');
       
       // Use new test generation API
-      const response = await fetch(`${API_BASE_URL}/api/tests/generate-test`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          skill: formData.skill,
-          level: formData.level,
-          mode: formData.mode || 'academic',
-          topic: formData.topic || 'General English'
-        })
+      const response = await api.post('/api/tests/generate-test', {
+        skill: formData.skill,
+        level: formData.level,
+        mode: formData.mode || 'academic',
+        topic: formData.topic || 'General English'
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
-        throw new Error(errorData.message || 'Failed to generate test');
-      }
-
-      const data = await response.json();
+      
+      const data = response.data;
       
       if (data.success) {
         setGeneratedQuestion({

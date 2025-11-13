@@ -2,7 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Test = require('../models/Test');
 const AIPersonalization = require('../models/AIPersonalization');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

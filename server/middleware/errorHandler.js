@@ -6,11 +6,15 @@ module.exports = function errorHandler(err, req, res, next) {
     message: err.message,
     stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
     path: req.originalUrl,
+    method: req.method,
+    timestamp: new Date().toISOString(),
   });
   const status = err.status || 500;
   res.status(status).json({
+    success: false,
     ok: false,
-    error: status === 500 ? 'Internal server error' : err.message,
+    message: status === 500 ? 'Internal server error' : err.message,
+    error: process.env.NODE_ENV === 'production' ? undefined : err.message,
   });
 };
 

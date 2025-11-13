@@ -114,7 +114,7 @@ class NotificationService {
 
   // Create AI analysis notification
   static async createAIAnalysisNotification(userId, analysisType, results) {
-    let title = 'AI Analysis Complete 🤖';
+    const title = 'AI Analysis Complete 🤖';
     let message = 'Your AI analysis has been updated with new insights.';
 
     if (analysisType === 'weakness') {

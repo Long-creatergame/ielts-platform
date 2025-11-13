@@ -2,7 +2,7 @@ const express = require('express');
 const OpenAI = require('openai');
 const User = require('../models/User');
 const Test = require('../models/Test');
-const authMiddleware = require('./auth.js');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

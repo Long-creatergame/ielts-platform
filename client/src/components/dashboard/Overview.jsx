@@ -23,24 +23,18 @@ export default function Overview() {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      const token = localStorage.getItem('token');
+      const { default: api } = await import('@/lib/axios');
       
-      if (!token || !user) return;
+      if (!user) return;
 
-      const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+      const response = await api.get('/api/dashboard', {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
           'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
-        },
-        credentials: 'include'
+        }
       });
-
-      if (response.ok) {
-        const result = await response.json();
-        setDashboardData(result.data || result);
-      }
+      
+      const result = response.data;
+      setDashboardData(result.data || result);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     } finally {

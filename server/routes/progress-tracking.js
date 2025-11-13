@@ -1,7 +1,7 @@
 const express = require('express');
 const Test = require('../models/Test');
 const User = require('../models/User');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -307,7 +307,7 @@ function calculateStreak(tests) {
   today.setHours(0, 0, 0, 0);
   
   let streak = 0;
-  let currentDate = new Date(today);
+  const currentDate = new Date(today);
   
   for (let i = 0; i < 30; i++) {
     const dayStart = new Date(currentDate);

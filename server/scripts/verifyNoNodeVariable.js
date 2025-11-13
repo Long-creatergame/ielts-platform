@@ -7,7 +7,7 @@ const serverDir = path.join(__dirname, '..');
 const routesDir = path.join(serverDir, 'routes');
 const controllersDir = path.join(serverDir, 'controllers');
 
-let foundIssues = [];
+const foundIssues = [];
 
 function checkFile(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8');

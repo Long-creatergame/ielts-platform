@@ -3,7 +3,7 @@ const User = require('../models/User');
 const Test = require('../models/Test');
 const CachedFeedback = require('../models/CachedFeedback');
 const AnalyticsEvent = require('../models/AnalyticsEvent');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/authMiddleware');
 const { generateIELTSTest } = require('../controllers/testGeneratorController');
 const aiScoringService = require('../services/aiScoringService');
 const { generateAdaptiveTest, updatePerformanceHistory } = require('../utils/generateAdaptiveTest');
@@ -212,7 +212,7 @@ router.post('/submit', auth, async (req, res) => {
     // Convert skillScores to match Test model schema
     // Frontend sends: { reading: 7.0, listening: 6.5, ... }
     // Model expects: { reading: { correct: X, total: Y }, ... }
-    let formattedSkillScores = {};
+    const formattedSkillScores = {};
     if (typeof skillScores === 'object' && skillScores !== null) {
       Object.entries(skillScores).forEach(([skill, score]) => {
         // If already in model format, use as-is
@@ -368,7 +368,7 @@ router.post('/submit', auth, async (req, res) => {
     // Track analytics (best-effort)
     try {
       const fetch = require('node-fetch');
-      fetch(`${process.env.FRONTEND_URL || 'http://localhost:4000'}/api/analytics/track`, {
+      fetch(`${process.env.BACKEND_URL || process.env.FRONTEND_URL || 'http://localhost:4000'}/api/analytics/track`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -384,7 +384,7 @@ router.post('/submit', auth, async (req, res) => {
     try {
       const fetch = require('node-fetch');
       const points = Math.round((overallBand || 0) * 10);
-      fetch(`${process.env.FRONTEND_URL || 'http://localhost:4000'}/api/leaderboard/add-points`, {
+      fetch(`${process.env.BACKEND_URL || process.env.FRONTEND_URL || 'http://localhost:4000'}/api/leaderboard/add-points`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': req.header('Authorization') || '' },
         body: JSON.stringify({ points })

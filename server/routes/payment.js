@@ -8,30 +8,7 @@ if (process.env.STRIPE_SECRET_KEY) {
 }
 
 const router = express.Router();
-
-// Auth middleware
-const authMiddleware = async (req, res, next) => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
-    const jwt = await import('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super-secret-key-change-this-in-production');
-    const user = await User.findById(decoded.userId).select('-password');
-    
-    if (!user) {
-      return res.status(401).json({ message: 'Token is not valid' });
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
+const authMiddleware = require('../middleware/authMiddleware');
 
 // GET /api/payment/plans - Get pricing plans from Stripe
 router.get('/plans', async (req, res) => {

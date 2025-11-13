@@ -151,7 +151,7 @@ async function selectTaskByDifficulty(skill, difficulty, mode = 'academic') {
     const blueprint = getAuthenticBlueprint(skill, mode);
 
     // Map difficulty to task type
-    let taskSuggestion = {
+    const taskSuggestion = {
       skill: skill,
       mode: mode,
       difficulty: parseFloat(difficulty.toFixed(1)),

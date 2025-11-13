@@ -38,7 +38,8 @@
     "lint:server": "cd server && eslint . --ext .js --fix",
     "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
     "release": "node scripts/releaseVersion.js",
-    "test:deploy": "node scripts/testDeployment.js"
+    "test:deploy": "node scripts/testDeployment.js",
+    "health:check": "node scripts/ci_cd_health_check.js"
   },
   "engines": {
     "node": ">=18.19.0"

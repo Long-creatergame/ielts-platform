@@ -6,7 +6,7 @@ const { generateLearningPath, getLearningPath } = require('../controllers/learni
 const { generateAISummary } = require('../services/aiSummaryService.js');
 const { runAISupervision } = require('../services/aiSupervisorService.js');
 const { handleAIEmotionFeedback, getEngagementSummary, updateEngagementMetrics } = require('../services/aiEngagementService.js');
-const auth = require('../middleware/auth.js');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
