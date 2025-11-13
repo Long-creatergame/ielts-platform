@@ -17,6 +17,7 @@ import TestIntro from './pages/Test/TestIntro';
 import TestPage from './pages/Test/TestPage';
 import TestResult from './pages/Test/TestResult';
 import TestHistory from './pages/TestHistory';
+import IELTSItemTest from './pages/IELTSItemTest';
 // ⚠️ Removed orphan import (./pages/QuickPractice)
 // import QuickPractice from './pages/QuickPractice';
 import PracticePage from './pages/PracticePage';
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="/test/result/:id" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
             <Route path="/test/result/quick" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
             <Route path="/test-history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
+            <Route path="/ielts-item-test" element={<ProtectedRoute><IELTSItemTest /></ProtectedRoute>} />
             {/* ⚠️ Removed orphan route (QuickPractice component deleted) */}
             <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
             <Route path="/review/:sessionId" element={<ProtectedRoute><Review /></ProtectedRoute>} />

@@ -29,7 +29,9 @@ const weeklyReportRoutes = require('./routes/weeklyReport.js');
 const healthRoutes = require('./routes/health.js');
 const userPreferencesRoutes = require('./routes/userPreferences.js');
 const userRoutes = require('./routes/user.js');
+const ieltsItemsRoutes = require('./routes/ieltsItems.js');
 const debugRoutes = require('./routes/debug.js');
+const { startDailyGenerator } = require('./cron/dailyGenerator');
 const userResultsRoutes = require('./routes/userResults.js');
 const feedbackRoutes = require('./routes/feedback.js');
 const motivationRoutes = require('./routes/motivation.js');
@@ -258,6 +260,7 @@ app.use('/api/weekly-report', weeklyReportRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/user-preferences', userPreferencesRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/ielts-items', ieltsItemsRoutes);
 app.use('/api/debug', debugRoutes);
 app.use('/api/user-results', userResultsRoutes);
 app.use('/api/feedback', feedbackRoutes);
@@ -374,6 +377,14 @@ if (process.env.ENABLE_DEMO_MODE === 'true' || process.env.DEMO_MODE === 'true')
 if (process.env.NODE_ENV !== 'test') {
   server.listen(PORT, () => {
     console.log('[Init] Server running on port', PORT);
+    
+    // Start daily IELTS item generator cron job
+    try {
+      startDailyGenerator();
+      console.log('[Init] Daily IELTS item generator cron job initialized');
+    } catch (error) {
+      console.error('[Init] Error initializing cron job:', error);
+    }
   });
 }
 
