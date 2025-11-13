@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const { getCoreConnection } = require('../config/db');
+let coreDB = null;
 
-const coreDB = getCoreConnection();
+function getModelConnection() {
+  if (!coreDB) {
+    const { getCoreConnection } = require('../config/db');
+    coreDB = getCoreConnection();
+  }
+  return coreDB;
+}
 
 /**
  * UserCore Model - Core V3 User Schema
