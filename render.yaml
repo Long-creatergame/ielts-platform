@@ -1,25 +1,17 @@
 services:
   - type: web
     name: ielts-platform
-    env: node
-    region: singapore
-    plan: free
     rootDir: server
+    env: node
     buildCommand: npm ci --production=false
     startCommand: node index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 4000
-      - key: MONGO_URI
-        fromDatabase:
-          name: ielts-platform
-          property: connectionString
-      - key: JWT_SECRET
-        generateValue: true
-      - key: OPENAI_API_KEY
-        sync: false
       - key: FRONTEND_URL
         value: https://ielts-platform-two.vercel.app
+      - key: BACKEND_URL
+        value: https://ielts-platform-emrv.onrender.com
+    region: singapore
+    plan: free
