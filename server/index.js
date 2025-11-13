@@ -42,6 +42,7 @@ const unifiedCambridgeRoutes = require('./routes/unifiedCambridgeRouter.js');
 const examRoutes = require('./routes/examRoutes.js');
 const productionRoutes = require('./routes/productionRoutes.js');
 const mediaRoutes = require('./routes/mediaRoutes.js');
+const { connectCoreDB } = require('./core/config/db');
 
 dotenv.config();
 
@@ -268,6 +269,11 @@ app.use('/api/cambridge', unifiedCambridgeRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/production', productionRoutes);
 app.use('/api/media', mediaRoutes);
+
+// Initialize Core V3 database connection before mounting routes
+connectCoreDB()
+  .then(() => console.log("🔥 Core V3 Database connected"))
+  .catch(err => console.error("❌ Core V3 Database connection error:", err));
 
 // Core V3 API routes (isolated module)
 app.use('/api/v3', require('./core/routes/coreRouter'));
