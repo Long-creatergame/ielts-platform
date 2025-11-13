@@ -112,6 +112,56 @@ router.post('/progress', auth, async (req, res) => {
   }
 });
 
+// Get AI personalization by userId (for frontend compatibility)
+router.get('/:userId', auth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Verify user is accessing their own data
+    if (userId !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        error: 'Access denied'
+      });
+    }
+    
+    const personalization = await AIPersonalization.findOne({ userId: req.user._id });
+    
+    if (!personalization) {
+      const newPersonalization = await AIPersonalizationService.initializePersonalization(req.user._id);
+      return res.json({
+        success: true,
+        data: {
+          strengths: newPersonalization.aiProfile?.strengths || [],
+          weaknesses: newPersonalization.aiProfile?.weaknesses || [],
+          recommendations: newPersonalization.recommendations || [],
+          overallScore: newPersonalization.learningAnalytics?.overallScore || 0,
+          skillBreakdown: newPersonalization.learningAnalytics?.skillBreakdown || {}
+        },
+        message: 'AI personalization retrieved successfully'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        strengths: personalization.aiProfile?.strengths || [],
+        weaknesses: personalization.aiProfile?.weaknesses || [],
+        recommendations: personalization.recommendations || [],
+        overallScore: personalization.learningAnalytics?.overallScore || 0,
+        skillBreakdown: personalization.learningAnalytics?.skillBreakdown || {}
+      },
+      message: 'AI personalization retrieved successfully'
+    });
+  } catch (error) {
+    console.error('Get personalization error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Get AI profile
 router.get('/profile', auth, async (req, res) => {
   try {

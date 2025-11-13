@@ -10,7 +10,7 @@ const getJwtSecret = () => {
 };
 
 const generateToken = (user) =>
-  jwt.sign({ id: user._id, email: user.email }, getJwtSecret(), { expiresIn: '7d' });
+  jwt.sign({ userId: user._id, email: user.email }, getJwtSecret(), { expiresIn: '7d' });
 
 exports.register = async (req, res) => {
   try {
@@ -107,7 +107,7 @@ exports.getUserProfile = async (req, res) => {
 
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, getJwtSecret());
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.userId || decoded.id).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
