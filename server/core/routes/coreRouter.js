@@ -20,9 +20,10 @@ router.use('/admin', adminRoutes);
 // Health check endpoint
 router.get('/health', (req, res) => {
   res.json({
+    status: 'ok',
+    version: 'v3',
     success: true,
     message: 'Core V3 API is running',
-    version: '3.0.0',
     timestamp: new Date().toISOString()
   });
 });
