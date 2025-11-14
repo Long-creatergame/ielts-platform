@@ -3,28 +3,27 @@ const router = express.Router();
 
 // Import all route modules
 const authRoutes = require('./authRoutes');
-const itemRoutes = require('./itemRoutes');
+const itemsRoutes = require('./itemsRoutes');
 const assignRoutes = require('./assignRoutes');
 const responseRoutes = require('./responseRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
-const adminRoutes = require('./adminRoutes');
+const systemRoutes = require('./systemRoutes');
 
 // Mount routes
 router.use('/auth', authRoutes);
-router.use('/items', itemRoutes);
-router.use('/assignments', assignRoutes);
+router.use('/items', itemsRoutes);
+router.use('/assign', assignRoutes);
 router.use('/responses', responseRoutes);
 router.use('/analytics', analyticsRoutes);
-router.use('/admin', adminRoutes);
+router.use('/system', systemRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    version: 'v3',
+    version: 'core-v3-final',
     success: true,
-    message: 'Core V3 API is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const IELTSItem = require('../models/IELTSItem');
 const UserRecord = require('../models/UserRecord');
-const { generateIELTSItem } = require('../services/ieltsItemGenerator');
+// REMOVED LEGACY AUTO-GEN IMPORT: const { generateIELTSItem } = require('../services/ieltsItemGenerator');
 
 /**
  * POST /api/ielts-items/assign-item
@@ -202,46 +202,9 @@ router.get('/user-history', authMiddleware, async (req, res) => {
 });
 
 /**
- * POST /api/ielts-items/auto-generate
- * Generate new IELTS items using AI (for cron job or admin)
+ * REMOVED: POST /api/ielts-items/auto-generate
+ * Legacy auto-generate route removed - use Core V3 Final for item generation
  */
-router.post('/auto-generate', authMiddleware, async (req, res) => {
-  try {
-    // Check if user is admin (optional - can be removed for cron job)
-    if (req.user.role !== 'admin' && process.env.ALLOW_AUTO_GENERATE !== 'true') {
-      return res.status(403).json({
-        success: false,
-        message: 'Only admins can generate items manually'
-      });
-    }
-    
-    const { type = 'writing', count = 1 } = req.body;
-    
-    const generatedItems = [];
-    for (let i = 0; i < count; i++) {
-      try {
-        const newItem = await generateIELTSItem(type);
-        const savedItem = await IELTSItem.create(newItem);
-        generatedItems.push(savedItem);
-      } catch (error) {
-        console.error(`Error generating item ${i + 1}:`, error);
-      }
-    }
-    
-    res.json({
-      success: true,
-      message: `Generated ${generatedItems.length} new IELTS items`,
-      data: generatedItems
-    });
-  } catch (error) {
-    console.error('Auto-generate error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error generating IELTS items',
-      error: error.message
-    });
-  }
-});
 
 /**
  * GET /api/ielts-items/stats

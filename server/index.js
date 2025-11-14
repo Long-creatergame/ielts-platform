@@ -31,7 +31,7 @@ const userPreferencesRoutes = require('./routes/userPreferences.js');
 const userRoutes = require('./routes/user.js');
 const ieltsItemsRoutes = require('./routes/ieltsItems.js');
 const debugRoutes = require('./routes/debug.js');
-const { startDailyGenerator } = require('./cron/dailyGenerator');
+// REMOVED LEGACY AUTO-GEN IMPORT: const { startDailyGenerator } = require('./cron/dailyGenerator');
 const userResultsRoutes = require('./routes/userResults.js');
 const feedbackRoutes = require('./routes/feedback.js');
 const motivationRoutes = require('./routes/motivation.js');
@@ -42,7 +42,6 @@ const unifiedCambridgeRoutes = require('./routes/unifiedCambridgeRouter.js');
 const examRoutes = require('./routes/examRoutes.js');
 const productionRoutes = require('./routes/productionRoutes.js');
 const mediaRoutes = require('./routes/mediaRoutes.js');
-const { connectCoreDB } = require('./core/config/db');
 
 dotenv.config();
 
@@ -270,13 +269,12 @@ app.use('/api/exam', examRoutes);
 app.use('/api/production', productionRoutes);
 app.use('/api/media', mediaRoutes);
 
-// Initialize Core V3 database connection before mounting routes
-connectCoreDB()
-  .then(() => console.log("🔥 Core V3 Database connected"))
-  .catch(err => console.error("❌ Core V3 Database connection error:", err));
+// Initialize Core V3 Final database
+const { connectCoreDB } = require('./core_v3/config/db');
+connectCoreDB();
 
-// Core V3 API routes (isolated module)
-app.use('/api/v3', require('./core/routes/coreRouter'));
+// Core V3 Final routes
+app.use('/api/v3', require('./core_v3/routes/coreRouter'));
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -383,22 +381,8 @@ if (process.env.NODE_ENV !== 'test') {
   server.listen(PORT, async () => {
     console.log('[Init] Server running on port', PORT);
     
-    // Start daily IELTS item generator cron job
-    try {
-      startDailyGenerator();
-      console.log('[Init] Daily IELTS item generator cron job initialized');
-    } catch (error) {
-      console.error('[Init] Error initializing cron job:', error);
-    }
-    
-    // Initialize Core V3
-    try {
-      const { setupCoreV3 } = require('./core/setup');
-      await setupCoreV3();
-    } catch (error) {
-      console.error('[Init] Error initializing Core V3:', error);
-      // Don't fail server startup if Core V3 setup fails
-    }
+    // REMOVED: Legacy daily IELTS item generator cron job
+    // Auto-generation moved to Core V3 Final controlled system
   });
 }
 
