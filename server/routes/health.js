@@ -12,8 +12,7 @@ router.get('/', async (req, res) => {
       uptime: process.uptime(),
       db: dbState,
       env: {
-        stripe: !!process.env.STRIPE_SECRET_KEY,
-        email: !!(process.env.SENDGRID_API_KEY || (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS)),
+        openai: !!process.env.OPENAI_API_KEY,
       },
       version: process.env.GIT_SHA || 'unknown'
     });

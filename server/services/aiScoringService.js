@@ -23,7 +23,7 @@ class AIScoringService {
       const level = options.level || 'B1';
       const prompt = this.createWritingPrompt(answer, taskType, level);
       const response = await this.callOpenAI(prompt);
-      const parsed = this.parseResponse(response, 'writing');
+      const parsed = this.parseResponse(response);
       console.log(`[AI Feedback] Writing | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'writing').includes('simple') ? 'Simple' : 'Advanced'}`);
       return this.applyWeights(parsed, {
         coherence: options.weights?.coherence ?? 0.25,
@@ -34,29 +34,6 @@ class AIScoringService {
     } catch (error) {
       console.error('AI Scoring Error:', error);
       return this.getFallbackScore('writing');
-    }
-  }
-
-  async scoreSpeaking(answer, taskType = 'Part 2', options = {}) {
-    if (!this.isAvailable) {
-      return this.getFallbackScore('speaking');
-    }
-
-    try {
-      const level = options.level || 'B1';
-      const prompt = this.createSpeakingPrompt(answer, taskType, level);
-      const response = await this.callOpenAI(prompt);
-      const parsed = this.parseResponse(response, 'speaking');
-      console.log(`[AI Feedback] Speaking | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'speaking').includes('simple') ? 'Simple' : 'Advanced'}`);
-      return this.applyWeights(parsed, {
-        fluency: options.weights?.fluency ?? 0.25,
-        lexical: options.weights?.lexical ?? 0.25,
-        grammar: options.weights?.grammar ?? 0.25,
-        pronunciation: options.weights?.pronunciation ?? 0.25,
-      });
-    } catch (error) {
-      console.error('AI Scoring Error:', error);
-      return this.getFallbackScore('speaking');
     }
   }
 
@@ -88,34 +65,6 @@ Make sure the feedback language and examples match the ${level} proficiency leve
 `;
   }
 
-  createSpeakingPrompt(answer, taskType, level = 'B1') {
-    const feedbackInstructions = getFeedbackInstructions(level, 'speaking');
-    
-    return `
-You are an expert IELTS examiner. Score this ${taskType} speaking response on a 0-9 scale for a ${level} level student.
-
-${feedbackInstructions}
-
-Student's ${taskType} response:
-"""${answer}"""
-
-Provide your assessment in this EXACT JSON format:
-{
-  "overall": 7.0,
-  "fluency": 7,
-  "lexical": 6.5,
-  "grammar": 7,
-  "pronunciation": 7,
-  "feedback": "Your speaking shows good fluency and clear ideas. However, you could improve vocabulary variety and use more complex sentence structures. Focus on using more advanced linking words and varied sentence patterns.",
-  "strengths": ["Clear pronunciation", "Good fluency"],
-  "improvements": ["Use more varied vocabulary", "Add complex sentence structures"],
-  "bandLevel": "7.0"
-}
-
-Make sure the feedback language and examples match the ${level} proficiency level. Keep it constructive and specific.
-`;
-  }
-
   async callOpenAI(prompt) {
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
@@ -136,7 +85,7 @@ Make sure the feedback language and examples match the ${level} proficiency leve
     return completion.choices[0].message.content;
   }
 
-  parseResponse(response, skill) {
+  parseResponse(response) {
     try {
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -151,7 +100,7 @@ Make sure the feedback language and examples match the ${level} proficiency leve
       console.error('JSON Parse Error:', error);
     }
 
-    return this.getFallbackScore(skill);
+    return this.getFallbackScore();
   }
 
   applyWeights(result, weights) {
@@ -175,116 +124,22 @@ Make sure the feedback language and examples match the ${level} proficiency leve
     return result;
   }
 
-  getFallbackScore(skill) {
-    const fallbackScores = {
-      writing: {
+  getFallbackScore() {
+    return {
+      success: true,
+      data: {
         overall: 6.5,
         taskResponse: 6,
         coherence: 7,
         lexical: 6,
         grammar: 7,
-        feedback: "This is a sample assessment. For detailed AI feedback, please ensure your OpenAI API key is configured correctly.",
-        strengths: ["Good structure", "Clear ideas"],
-        improvements: ["Improve vocabulary", "Add examples"],
-        bandLevel: "6.5",
-        source: 'fallback'
+        feedback: 'This is a sample assessment. Configure OPENAI_API_KEY for live scoring.',
+        strengths: ['Good structure', 'Clear ideas'],
+        improvements: ['Improve vocabulary', 'Add stronger examples'],
+        bandLevel: '6.5',
+        source: 'fallback',
       },
-      speaking: {
-        overall: 6.5,
-        fluency: 6,
-        lexical: 6,
-        grammar: 7,
-        pronunciation: 7,
-        feedback: "This is a sample assessment. For detailed AI feedback, please ensure your OpenAI API key is configured correctly.",
-        strengths: ["Clear pronunciation", "Good fluency"],
-        improvements: ["Improve vocabulary", "Add examples"],
-        bandLevel: "6.5",
-        source: 'fallback'
-      }
-    };
-
-    return {
-      success: true,
-      data: fallbackScores[skill],
-      source: 'fallback'
-    };
-  }
-
-  async generatePracticeQuestions(skill, level = 'intermediate') {
-    if (!this.isAvailable) {
-      return this.getFallbackQuestions(skill, level);
-    }
-
-    try {
-      const prompt = this.createPracticePrompt(skill, level);
-      const response = await this.callOpenAI(prompt);
-      return this.parseResponse(response, 'practice');
-    } catch (error) {
-      console.error('AI Practice Generation Error:', error);
-      return this.getFallbackQuestions(skill, level);
-    }
-  }
-
-  createPracticePrompt(skill, level) {
-    return `
-Generate 3 ${skill} practice questions for IELTS ${level} level students.
-
-For ${skill}:
-- Make questions realistic and challenging
-- Include clear instructions
-- Provide sample answers
-- Focus on common IELTS topics
-
-Provide your response in this EXACT JSON format:
-{
-  "questions": [
-    {
-      "id": 1,
-      "question": "Question text here",
-      "instructions": "Clear instructions",
-      "sampleAnswer": "Sample answer",
-      "difficulty": "${level}",
-      "topic": "Common IELTS topic"
-    }
-  ],
-  "skill": "${skill}",
-  "level": "${level}"
-}
-`;
-  }
-
-  getFallbackQuestions(skill, level) {
-    const fallbackQuestions = {
-      writing: [
-        {
-          id: 1,
-          question: "Some people believe that technology has made our lives more complicated. To what extent do you agree or disagree?",
-          instructions: "Write at least 250 words. Give reasons for your answer and include relevant examples.",
-          sampleAnswer: "Technology has both simplified and complicated our lives...",
-          difficulty: level,
-          topic: "Technology"
-        }
-      ],
-      speaking: [
-        {
-          id: 1,
-          question: "Describe a memorable trip you have taken.",
-          instructions: "You should say: where you went, who you went with, what you did, and explain why it was memorable.",
-          sampleAnswer: "I would like to talk about a trip to Japan...",
-          difficulty: level,
-          topic: "Travel"
-        }
-      ]
-    };
-
-    return {
-      success: true,
-      data: {
-        questions: fallbackQuestions[skill] || [],
-        skill: skill,
-        level: level
-      },
-      source: 'fallback'
+      source: 'fallback',
     };
   }
 }

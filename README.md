@@ -1,211 +1,94 @@
-# IELTS Platform
+# IELTS Writing Task 2 AI Scorer
 
-A full-stack IELTS test platform built with Node.js, Express, MongoDB, React, Vite, and Tailwind CSS.
+Phase 1 trims the platform down to a single goal: help learners submit IELTS Writing Task 2 essays and receive instant AI feedback.
 
-## Features
+## What’s Included
 
-- User authentication (register/login) with JWT
-- User management with trial/paid plans
-- Test submission system
-- Test history tracking
-- Responsive design with Tailwind CSS
+- 🔐 **Auth** – JWT-based register/login endpoints plus a lightweight React auth context.
+- 📊 **Dashboard** – shows user info, submission count, average band and the last few essays.
+- ✍️ **Writing submissions** – React form that posts Task 2 responses to the API and displays AI scores.
+- 🤖 **AI scoring API** – Express route that calls OpenAI (or a fallback) via `aiScoringService`.
+- 🗄️ **Models** – `User` and `WritingSubmission` (all other legacy models/routes were removed).
 
 ## Tech Stack
 
-### Backend
+- **Backend**: Node.js, Express, MongoDB/Mongoose, JWT, bcrypt, OpenAI SDK.
+- **Frontend**: React 18, Vite, React Router, Axios, Tailwind CSS.
 
-- Node.js + Express
-- MongoDB with Mongoose
-- JWT authentication
-- bcryptjs for password hashing
-
-### Frontend
-
-- React 18
-- Vite
-- React Router DOM
-- Tailwind CSS
-- Axios for API calls
-
-## Project Structure
+## Repository Layout
 
 ```
 ielts-platform/
-├── client/                 # React frontend
+├── client/            # Vite + React SPA
 │   ├── src/
-│   │   ├── components/     # Reusable components
-│   │   ├── contexts/       # React contexts
-│   │   ├── pages/          # Page components
-│   │   └── ...
-│   └── package.json
-├── server/                 # Node.js backend
-│   ├── models/             # MongoDB models
-│   ├── routes/             # API routes
-│   ├── middleware/         # Express middleware
-│   └── package.json
+│   │   ├── components/
+│   │   ├── contexts/
+│   │   ├── lib/
+│   │   └── pages/     # Dashboard, Login, Register, WritingTask
+├── server/            # Express API
+│   ├── ai/writing/    # Placeholder for future writing utilities
+│   ├── middleware/
+│   ├── models/        # User, WritingSubmission
+│   └── routes/        # auth, dashboard, writing, health
 └── README.md
 ```
 
-## Prerequisites
+## Getting Started
 
-- Node.js (v16 or higher)
-- MongoDB (running locally or MongoDB Atlas)
-- npm or yarn
-
-## Installation
-
-1. Clone the repository:
+### 1. Install dependencies
 
 ```bash
-git clone <repository-url>
-cd ielts-platform
+# from repo root
+npm install          # installs root tools (concurrently)
+cd server && npm install
+cd ../client && npm install
 ```
 
-2. Install server dependencies:
+### 2. Configure environment
 
-```bash
-cd server
-npm install
-```
-
-3. Install client dependencies:
-
-```bash
-cd ../client
-npm install
-```
-
-## Configuration
-
-1. Create a `.env` file in the server directory:
-
-```bash
-cd server
-cp .env.example .env
-```
-
-2. Update the `.env` file with your MongoDB connection string and Stripe keys:
+Create `server/.env`:
 
 ```
 PORT=4000
-MONGODB_URI=mongodb://localhost:27017/ielts-platform
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-CLIENT_URL=http://localhost:5173
+MONGODB_URI=mongodb://localhost:27017/ielts-writing
+JWT_SECRET=change-me
+OPENAI_API_KEY=sk-your-key   # optional, fallback scores used if missing
+CORS_WHITELIST=http://localhost:5173
 ```
 
-## Running the Application
-
-### Start the Backend Server
+### 3. Run locally
 
 ```bash
-cd server
-npm run dev
+# in one terminal
+npm run dev:server   # starts Express with nodemon
+
+# in another terminal
+npm run dev:client   # starts Vite dev server on 5173
 ```
 
-The server will start on port 4000.
+The root `npm run dev` command runs both via `concurrently`.
 
-### Start the Frontend Client
+## API Overview
 
-```bash
-cd client
-npm run dev
-```
+| Method | Endpoint              | Description                         |
+| ------ | --------------------- | ----------------------------------- |
+| POST   | `/api/auth/register`  | Create account + issue JWT          |
+| POST   | `/api/auth/login`     | Login and receive JWT               |
+| GET    | `/api/auth/me`        | Current user info (requires token)  |
+| GET    | `/api/dashboard`      | Basic stats + recent writing scores |
+| POST   | `/api/writing/submit` | Score a Task 2 essay with AI        |
+| GET    | `/api/writing/...`    | List or fetch previous submissions  |
 
-The client will start on port 5173.
+## Frontend Routes
 
-## API Endpoints
+- `/login` and `/register`
+- `/` – dashboard (protected)
+- `/writing` – submit Task 2 essays (protected)
 
-### Authentication
+## Extending Phase 1
 
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (requires auth)
+- Add richer prompt management inside `server/ai/writing/`.
+- Store more granular scoring metadata in `WritingSubmission`.
+- Layer additional UI (filters, detailed feedback cards) on the dashboard.
 
-### Tests
-
-- `GET /api/test/can-start` - Check if user can start a test (requires auth)
-- `POST /api/test/submit` - Submit a test (requires auth)
-- `GET /api/test/mine` - Get user's test history (requires auth)
-
-### Payment
-
-- `POST /api/payment/create-session` - Create Stripe checkout session (requires auth)
-- `GET /api/payment/status` - Get payment status (requires auth)
-- `POST /api/payment/webhook` - Stripe webhook handler
-
-## User Model
-
-```javascript
-{
-  name: String,
-  email: String (unique),
-  passwordHash: String,
-  isTrialUsed: Boolean (default: false),
-  plan: String ('trial' | 'paid', default: 'trial'),
-  tests: [{
-    skill: String,
-    submittedAt: Date
-  }]
-}
-```
-
-## Pages
-
-- `/login` - Login/Register page
-- `/dashboard` - User dashboard with trial status and test history
-- `/test/:skill` - Test page for specific skill (listening, reading, writing, speaking)
-- `/payment-success` - Payment success page
-- `/payment-cancel` - Payment cancellation page
-
-## Development
-
-The application uses:
-
-- Vite for fast frontend development
-- Nodemon for backend auto-reload
-- Proxy configuration for API calls during development
-
-## Production Deployment
-
-1. Build the client:
-
-```bash
-cd client
-npm run build
-```
-
-2. Start the server:
-
-```bash
-cd server
-npm start
-```
-
-Make sure to set proper environment variables for production.
-
-## Stripe Setup
-
-1. Create a Stripe account at https://stripe.com
-2. Get your test API keys from the Stripe Dashboard
-3. Set up a webhook endpoint pointing to `http://localhost:4000/api/payment/webhook`
-4. Configure the webhook to listen for `checkout.session.completed` events
-5. Copy the webhook signing secret to your `.env` file
-
-### Testing Payments
-
-Use Stripe's test card numbers:
-
-- Success: `4242 4242 4242 4242`
-- Decline: `4000 0000 0000 0002`
-
-## Payment Flow
-
-1. User completes trial test
-2. Dashboard shows "Upgrade to paid plan" button
-3. Clicking button creates Stripe checkout session
-4. User completes payment on Stripe checkout page
-5. Stripe webhook updates user plan to "paid"
-6. User redirected to success page and then dashboard
+Enjoy the focused writing-only workflow! 🎯

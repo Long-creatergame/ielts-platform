@@ -1,63 +1,19 @@
 {
   "name": "ielts-platform",
   "version": "1.0.0",
-  "description": "IELTS Platform - Full Stack Application",
+  "description": "IELTS Writing Task 2 AI scorer",
   "scripts": {
-    "validate:phases": "node scripts/validate-phases.js",
-    "validate:system": "node scripts/fullSystemValidation.js",
-    "sync:env": "node scripts/autoSyncEnv.js",
-    "clear:render": "node scripts/clearRenderCache.js",
-    "simulate:cambridge": "node scripts/testCambridgeFlow.js",
-    "cleanup:indexes": "node scripts/cleanupIndexes.js",
-    "cleanup:imports": "node scripts/cleanupOrphanImports.js",
-    "dev": "node server/server.js",
-    "start": "node server/server.js",
-    "dev:full": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-    "dev:server": "cd server && node index.js",
+    "dev": "npm run dev:full",
+    "start": "npm run dev:server",
+    "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
-    "test:api": "cd server && npm install --no-audit --no-fund && npm test",
-    "test:e2e": "npx playwright install --with-deps && npx playwright test",
-    "test": "npm run test:api && npm run test:e2e",
-    "validate:production": "node scripts/validateProduction.js",
-    "validate:examflow": "node scripts/validateExamFlow.js",
-    "validate:public": "node scripts/validatePublic.js",
-    "validate:timezone": "node scripts/validateTimezone.js",
-    "validate:timezones": "node scripts/validateTimezones.js",
-    "validate:dashboard": "node scripts/validateDashboard.js",
-    "validate:dashboard-ux": "node scripts/validateDashboardUX.js",
-    "validate:help-overlay": "node scripts/validateHelpOverlay.js",
-    "validate:help-context": "node scripts/validateHelpContext.js",
-    "validate:i18n": "node scripts/validateI18N.js",
-    "validate:i18n:dashboard": "node scripts/validateDashboardI18n.js",
-    "migrate:goals": "node scripts/migrateGoals.js",
-    "validate:goal": "node scripts/validateGoalContext.js",
-    "i18n:audit": "node scripts/i18nAudit.js",
-    "validate:i18n:coverage": "node scripts/validateI18nCoverage.js",
-    "lint": "eslint . --ext .js,.jsx --fix",
-    "lint:client": "cd client && eslint src --ext .js,.jsx --fix",
-    "lint:server": "cd server && eslint . --ext .js --fix",
-    "build:all": "cd client && npm run build && cd ../server && echo 'server build step placeholder'",
-    "release": "node scripts/releaseVersion.js",
-    "test:deploy": "node scripts/testDeployment.js",
-    "health:check": "node scripts/ci_cd_health_check.js"
+    "dev:full": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "lint": "cd client && npm run lint"
   },
   "engines": {
     "node": ">=18.19.0"
   },
-  "dependencies": {
-    "express": "^4.18.2",
-    "dotenv": "^16.3.1",
-    "mongoose": "^8.0.3",
-    "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "compression": "^1.7.4",
-    "express-rate-limit": "^7.1.5",
-    "morgan": "^1.10.0"
-  },
   "devDependencies": {
-    "concurrently": "^8.2.2",
-    "eslint": "^8.55.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "concurrently": "^8.2.2"
   }
 }

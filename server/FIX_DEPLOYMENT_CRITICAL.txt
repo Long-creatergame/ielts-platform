@@ -1,5 +1,0 @@
-CRITICAL FIX: Disabled AI assessment to prevent deployment failures
-- Temporarily disabled OpenAI API calls
-- Server should now deploy successfully
-- TODO: Re-enable AI after fixing billing and API key issues
-- This is a temporary workaround to get the service running

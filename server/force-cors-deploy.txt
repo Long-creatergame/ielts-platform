@@ -1,4 +1,0 @@
-FORCE CORS DEPLOY - URGENT
-Timestamp: 2025-01-22 00:15:00
-CORS middleware updated to allow all origins
-This file should trigger Render to redeploy
