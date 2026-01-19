@@ -1,62 +1,101 @@
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
+const { z } = require('zod');
 const { getFeedbackInstructions } = require('../config/aiLevelCalibration');
 
 dotenv.config();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
+function createClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
+  });
+}
+
+const PROMPT_VERSION = 'writing-task2-json-v1';
+const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+
+const scoringSchema = z.object({
+  overallBand: z.number().min(0).max(9),
+  criteria: z.object({
+    taskResponse: z.number().min(0).max(9),
+    coherence: z.number().min(0).max(9),
+    lexical: z.number().min(0).max(9),
+    grammar: z.number().min(0).max(9),
+  }),
+  comments: z.array(z.string().min(1)).min(1).max(12),
 });
 
+function toNumberOrNull(value) {
+  const n = typeof value === 'string' ? Number(value) : value;
+  return Number.isFinite(n) ? n : null;
+}
+
+function clampBand(value) {
+  const n = toNumberOrNull(value);
+  if (n === null) return null;
+  return Math.max(0, Math.min(9, Number(n)));
+}
+
+function normalizeToAiScore(validated) {
+  const overall = Number(validated.overallBand.toFixed(1));
+  return {
+    overall,
+    taskResponse: Number(validated.criteria.taskResponse),
+    coherence: Number(validated.criteria.coherence),
+    lexical: Number(validated.criteria.lexical),
+    grammar: Number(validated.criteria.grammar),
+    feedback: validated.comments.join('\n'),
+    strengths: [],
+    improvements: [],
+    bandLevel: String(overall),
+    source: 'ai',
+  };
+}
+
 class AIScoringService {
-  constructor() {
-    this.isAvailable = !!process.env.OPENAI_API_KEY;
-  }
-
   async scoreWriting(answer, taskType = 'Task 2', options = {}) {
-    if (!this.isAvailable) {
-      return this.getFallbackScore('writing');
+    if (!process.env.OPENAI_API_KEY) {
+      const err = new Error('AI scoring not configured');
+      err.status = 503;
+      throw err;
     }
+
+    const level = options.level || 'B1';
+    const prompt = this.createWritingPrompt(answer, taskType, level);
+    const model = options.model || DEFAULT_MODEL;
 
     try {
-      const level = options.level || 'B1';
-      const prompt = this.createWritingPrompt(answer, taskType, level);
-      const response = await this.callOpenAI(prompt);
-      const parsed = this.parseResponse(response, 'writing');
-      console.log(`[AI Feedback] Writing | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'writing').includes('simple') ? 'Simple' : 'Advanced'}`);
-      return this.applyWeights(parsed, {
-        coherence: options.weights?.coherence ?? 0.25,
-        lexical: options.weights?.lexical ?? 0.25,
-        grammar: options.weights?.grammar ?? 0.25,
-        taskResponse: options.weights?.taskResponse ?? 0.25,
-      });
+      const startedAt = Date.now();
+      const responseText = await this.callOpenAI(prompt, { model });
+      const latencyMs = Date.now() - startedAt;
+
+      const validated = this.parseAndValidate(responseText);
+      const aiScore = normalizeToAiScore(validated);
+
+      return {
+        success: true,
+        source: 'ai',
+        data: aiScore,
+        scoringMeta: {
+          source: 'ai',
+          model,
+          promptVersion: PROMPT_VERSION,
+          latencyMs,
+        },
+      };
     } catch (error) {
       console.error('AI Scoring Error:', error);
-      return this.getFallbackScore('writing');
-    }
-  }
-
-  async scoreSpeaking(answer, taskType = 'Part 2', options = {}) {
-    if (!this.isAvailable) {
-      return this.getFallbackScore('speaking');
-    }
-
-    try {
-      const level = options.level || 'B1';
-      const prompt = this.createSpeakingPrompt(answer, taskType, level);
-      const response = await this.callOpenAI(prompt);
-      const parsed = this.parseResponse(response, 'speaking');
-      console.log(`[AI Feedback] Speaking | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'speaking').includes('simple') ? 'Simple' : 'Advanced'}`);
-      return this.applyWeights(parsed, {
-        fluency: options.weights?.fluency ?? 0.25,
-        lexical: options.weights?.lexical ?? 0.25,
-        grammar: options.weights?.grammar ?? 0.25,
-        pronunciation: options.weights?.pronunciation ?? 0.25,
-      });
-    } catch (error) {
-      console.error('AI Scoring Error:', error);
-      return this.getFallbackScore('speaking');
+      if (!error.status) {
+        error.status = error.name === 'AbortError' ? 504 : 502;
+      }
+      if (!error.publicMessage) {
+        error.publicMessage =
+          error.status === 504
+            ? 'AI scoring timed out, please try again.'
+            : 'AI scoring failed, please try again.';
+      }
+      throw error;
     }
   }
 
@@ -71,222 +110,159 @@ ${feedbackInstructions}
 Student's ${taskType} response:
 """${answer}"""
 
-Provide your assessment in this EXACT JSON format:
+Return ONLY valid JSON. No markdown, no extra keys, no surrounding text.
+JSON schema:
 {
-  "overall": 7.0,
-  "taskResponse": 7,
-  "coherence": 7,
-  "lexical": 6.5,
-  "grammar": 7,
-  "feedback": "Your essay shows good organization and clear arguments. However, you could improve vocabulary variety and sentence structure complexity. Focus on using more advanced linking words and varied sentence patterns.",
-  "strengths": ["Clear thesis statement", "Good paragraph structure"],
-  "improvements": ["Use more varied vocabulary", "Add complex sentence structures"],
-  "bandLevel": "7.0"
+  "overallBand": 7.0,
+  "criteria": {
+    "taskResponse": 7.0,
+    "coherence": 7.0,
+    "lexical": 6.5,
+    "grammar": 7.0
+  },
+  "comments": [
+    "Comment 1 (specific, actionable).",
+    "Comment 2 ...",
+    "Comment 3 ..."
+  ]
 }
-
-Make sure the feedback language and examples match the ${level} proficiency level. Keep it constructive and specific.
+Rules:
+- All band scores must be numbers between 0 and 9 (decimals allowed).
+- comments must be 3-8 short bullet-like sentences (no numbering required).
+Make sure the language matches ${level} proficiency level and stays constructive.
 `;
   }
 
-  createSpeakingPrompt(answer, taskType, level = 'B1') {
-    const feedbackInstructions = getFeedbackInstructions(level, 'speaking');
-    
-    return `
-You are an expert IELTS examiner. Score this ${taskType} speaking response on a 0-9 scale for a ${level} level student.
+  async callOpenAI(prompt, { model }) {
+    const openai = createClient();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25_000);
 
-${feedbackInstructions}
-
-Student's ${taskType} response:
-"""${answer}"""
-
-Provide your assessment in this EXACT JSON format:
-{
-  "overall": 7.0,
-  "fluency": 7,
-  "lexical": 6.5,
-  "grammar": 7,
-  "pronunciation": 7,
-  "feedback": "Your speaking shows good fluency and clear ideas. However, you could improve vocabulary variety and use more complex sentence structures. Focus on using more advanced linking words and varied sentence patterns.",
-  "strengths": ["Clear pronunciation", "Good fluency"],
-  "improvements": ["Use more varied vocabulary", "Add complex sentence structures"],
-  "bandLevel": "7.0"
-}
-
-Make sure the feedback language and examples match the ${level} proficiency level. Keep it constructive and specific.
-`;
-  }
-
-  async callOpenAI(prompt) {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert IELTS examiner. Always respond with valid JSON format as requested.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.3,
-      max_tokens: 500
-    });
-
-    return completion.choices[0].message.content;
-  }
-
-  parseResponse(response, skill) {
     try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const scoreData = JSON.parse(jsonMatch[0]);
-        return {
-          success: true,
-          data: scoreData,
-          source: 'ai'
-        };
+      const baseRequest = {
+        model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are an expert IELTS examiner. Return ONLY valid JSON matching the provided schema. Do not include markdown.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        temperature: 0.2,
+        max_tokens: 500,
+      };
+
+      let completion;
+      try {
+        completion = await openai.chat.completions.create(
+          {
+            ...baseRequest,
+            response_format: {
+              type: 'json_schema',
+              json_schema: {
+                name: 'ielts_writing_score',
+                strict: true,
+                schema: {
+                  type: 'object',
+                  additionalProperties: false,
+                  properties: {
+                    overallBand: { type: 'number' },
+                    criteria: {
+                      type: 'object',
+                      additionalProperties: false,
+                      properties: {
+                        taskResponse: { type: 'number' },
+                        coherence: { type: 'number' },
+                        lexical: { type: 'number' },
+                        grammar: { type: 'number' },
+                      },
+                      required: ['taskResponse', 'coherence', 'lexical', 'grammar'],
+                    },
+                    comments: {
+                      type: 'array',
+                      items: { type: 'string' },
+                      minItems: 3,
+                      maxItems: 8,
+                    },
+                  },
+                  required: ['overallBand', 'criteria', 'comments'],
+                },
+              },
+            },
+          },
+          { signal: controller.signal, timeout: 25_000 }
+        );
+      } catch (_) {
+        completion = await openai.chat.completions.create(baseRequest, {
+          signal: controller.signal,
+          timeout: 25_000,
+        });
       }
-    } catch (error) {
-      console.error('JSON Parse Error:', error);
+
+      return completion.choices[0].message.content;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  parseAndValidate(responseText) {
+    const tryParse = (text) => {
+      try {
+        return JSON.parse(text);
+      } catch {
+        return null;
+      }
+    };
+
+    const extracted = () => {
+      if (typeof responseText !== 'string') return null;
+      const match = responseText.match(/\{[\s\S]*\}/);
+      if (!match) return null;
+      return tryParse(match[0]);
+    };
+
+    const raw =
+      (typeof responseText === 'string' ? tryParse(responseText) : null) ||
+      extracted() ||
+      null;
+
+    if (!raw || typeof raw !== 'object') {
+      const err = new Error('Invalid AI response format');
+      err.status = 502;
+      err.publicMessage = 'AI returned an invalid response. Please try again.';
+      throw err;
     }
 
-    return this.getFallbackScore(skill);
-  }
-
-  applyWeights(result, weights) {
-    try {
-      if (!result?.data) return result;
-      const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-      let weighted = 0;
-      let total = 0;
-      Object.entries(weights).forEach(([k, w]) => {
-        if (typeof result.data[k] === 'number') {
-          weighted += result.data[k] * w;
-          total += w;
-        }
-      });
-      if (total > 0) {
-        const overall = clamp(Number((weighted / total).toFixed(1)), 0, 9);
-        result.data.overall = overall;
-        result.data.bandLevel = String(overall);
-      }
-    } catch (_) {}
-    return result;
-  }
-
-  getFallbackScore(skill) {
-    const fallbackScores = {
-      writing: {
-        overall: 6.5,
-        taskResponse: 6,
-        coherence: 7,
-        lexical: 6,
-        grammar: 7,
-        feedback: "This is a sample assessment. For detailed AI feedback, please ensure your OpenAI API key is configured correctly.",
-        strengths: ["Good structure", "Clear ideas"],
-        improvements: ["Improve vocabulary", "Add examples"],
-        bandLevel: "6.5",
-        source: 'fallback'
+    const coerced = {
+      overallBand: clampBand(raw.overallBand) ?? clampBand(raw.overall) ?? null,
+      criteria: {
+        taskResponse: clampBand(raw?.criteria?.taskResponse) ?? clampBand(raw.taskResponse) ?? null,
+        coherence: clampBand(raw?.criteria?.coherence) ?? clampBand(raw.coherence) ?? null,
+        lexical: clampBand(raw?.criteria?.lexical) ?? clampBand(raw.lexical) ?? null,
+        grammar: clampBand(raw?.criteria?.grammar) ?? clampBand(raw.grammar) ?? null,
       },
-      speaking: {
-        overall: 6.5,
-        fluency: 6,
-        lexical: 6,
-        grammar: 7,
-        pronunciation: 7,
-        feedback: "This is a sample assessment. For detailed AI feedback, please ensure your OpenAI API key is configured correctly.",
-        strengths: ["Clear pronunciation", "Good fluency"],
-        improvements: ["Improve vocabulary", "Add examples"],
-        bandLevel: "6.5",
-        source: 'fallback'
-      }
+      comments: Array.isArray(raw.comments)
+        ? raw.comments
+        : typeof raw.feedback === 'string'
+          ? raw.feedback
+              .split(/\n+/)
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
     };
 
-    return {
-      success: true,
-      data: fallbackScores[skill],
-      source: 'fallback'
-    };
-  }
-
-  async generatePracticeQuestions(skill, level = 'intermediate') {
-    if (!this.isAvailable) {
-      return this.getFallbackQuestions(skill, level);
+    const result = scoringSchema.safeParse(coerced);
+    if (!result.success) {
+      const err = new Error('Invalid AI response content');
+      err.status = 502;
+      err.publicMessage = 'AI returned an invalid score format. Please try again.';
+      throw err;
     }
 
-    try {
-      const prompt = this.createPracticePrompt(skill, level);
-      const response = await this.callOpenAI(prompt);
-      return this.parseResponse(response, 'practice');
-    } catch (error) {
-      console.error('AI Practice Generation Error:', error);
-      return this.getFallbackQuestions(skill, level);
-    }
+    return result.data;
   }
 
-  createPracticePrompt(skill, level) {
-    return `
-Generate 3 ${skill} practice questions for IELTS ${level} level students.
-
-For ${skill}:
-- Make questions realistic and challenging
-- Include clear instructions
-- Provide sample answers
-- Focus on common IELTS topics
-
-Provide your response in this EXACT JSON format:
-{
-  "questions": [
-    {
-      "id": 1,
-      "question": "Question text here",
-      "instructions": "Clear instructions",
-      "sampleAnswer": "Sample answer",
-      "difficulty": "${level}",
-      "topic": "Common IELTS topic"
-    }
-  ],
-  "skill": "${skill}",
-  "level": "${level}"
-}
-`;
-  }
-
-  getFallbackQuestions(skill, level) {
-    const fallbackQuestions = {
-      writing: [
-        {
-          id: 1,
-          question: "Some people believe that technology has made our lives more complicated. To what extent do you agree or disagree?",
-          instructions: "Write at least 250 words. Give reasons for your answer and include relevant examples.",
-          sampleAnswer: "Technology has both simplified and complicated our lives...",
-          difficulty: level,
-          topic: "Technology"
-        }
-      ],
-      speaking: [
-        {
-          id: 1,
-          question: "Describe a memorable trip you have taken.",
-          instructions: "You should say: where you went, who you went with, what you did, and explain why it was memorable.",
-          sampleAnswer: "I would like to talk about a trip to Japan...",
-          difficulty: level,
-          topic: "Travel"
-        }
-      ]
-    };
-
-    return {
-      success: true,
-      data: {
-        questions: fallbackQuestions[skill] || [],
-        skill: skill,
-        level: level
-      },
-      source: 'fallback'
-    };
-  }
 }
 
 module.exports = new AIScoringService();

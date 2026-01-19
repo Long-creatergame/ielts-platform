@@ -6,7 +6,7 @@ const baseURL =
 
 const api = axios.create({
   baseURL,
-  withCredentials: true,
+  // Bearer-only auth (no cookies)
   timeout: 30000, // 30 seconds for Render cold starts
   headers: {
     'Content-Type': 'application/json',
@@ -17,6 +17,7 @@ api.interceptors.request.use((config) => {
   // Attach auth token if available
   const token = localStorage.getItem('token');
   if (token) {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
