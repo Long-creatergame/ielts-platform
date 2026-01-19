@@ -35,6 +35,8 @@ const userSchema = new mongoose.Schema(
       enum: ['A2', 'B1', 'B2', 'C1', 'C2'],
       default: 'B1',
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     lastLoginAt: Date,
   },
   { timestamps: true }

@@ -19,6 +19,10 @@ const { mongoUri } = validateEnv();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Required for correct client IP handling behind proxies (Render/Vercel/etc.),
+// especially for rate limiting.
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(compression());
 app.use(corsMiddleware);
@@ -27,26 +31,19 @@ app.use(timezoneMiddleware);
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-mongoose
-  .connect(mongoUri || 'mongodb://localhost:27017/ielts-writing')
-  .then(() => console.log('[MongoDB] connected'))
-  .catch((error) => {
-    console.error('[MongoDB] connection error:', error.message);
-    process.exit(1);
-  });
+if (process.env.NODE_ENV !== 'test') {
+  mongoose
+    .connect(mongoUri || 'mongodb://localhost:27017/ielts-writing')
+    .then(() => console.log('[MongoDB] connected'))
+    .catch((error) => {
+      console.error('[MongoDB] connection error:', error.message);
+      process.exit(1);
+    });
+}
 
 process.on('SIGINT', async () => {
   await mongoose.connection.close();
   process.exit(0);
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({
-    ok: true,
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
-  });
 });
 
 app.use('/api/auth', authRoutes);

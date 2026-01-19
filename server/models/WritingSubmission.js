@@ -34,7 +34,10 @@ const writingSubmissionSchema = new mongoose.Schema(
       source: String,
     },
     scoringMeta: {
-      type: Object,
+      source: { type: String },
+      model: { type: String },
+      promptVersion: { type: String },
+      latencyMs: { type: Number },
     },
   },
   { timestamps: true }
@@ -43,4 +46,6 @@ const writingSubmissionSchema = new mongoose.Schema(
 writingSubmissionSchema.index({ userId: 1, createdAt: -1 });
 
 module.exports = mongoose.model('WritingSubmission', writingSubmissionSchema);
+
+
 

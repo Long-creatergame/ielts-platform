@@ -3,27 +3,17 @@ const mongoose = require('mongoose');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-  try {
-    const dbState = mongoose.connection.readyState; // 1 connected, 2 connecting
-    res.json({
-      success: true,
-      ok: true,
-      uptime: process.uptime(),
-      db: dbState,
-      env: {
-        openai: !!process.env.OPENAI_API_KEY,
-      },
-      version: process.env.GIT_SHA || 'unknown'
-    });
-  } catch (error) {
-    console.error('Health check error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Health check failed',
-      error: error.message
-    });
-  }
+router.get('/', (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+
+  res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    db: {
+      ok: dbOk,
+    },
+  });
 });
 
 module.exports = router;

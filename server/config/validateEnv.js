@@ -1,7 +1,4 @@
-const REQUIRED_VARS = ['JWT_SECRET', 'CORS_WHITELIST', 'PORT'];
-const OPTIONAL_VARS = ['OPENAI_API_KEY'];
-
-const LOCAL_MONGO_KEYS = ['MONGODB_URI', 'MONGO_URI', 'MONGO_URL'];
+const CORE_REQUIRED_VARS = ['JWT_SECRET'];
 
 function escapeList(value = '') {
   return value
@@ -11,55 +8,81 @@ function escapeList(value = '') {
 }
 
 function resolveMongoUri(env = process.env) {
-  for (const key of LOCAL_MONGO_KEYS) {
-    if (env[key]) {
-      return env[key];
-    }
-  }
-  return null;
+  return env.MONGODB_URI || env.MONGO_URI || env.MONGO_URL || null;
+}
+
+function resolveFrontendUrl(env = process.env) {
+  return env.FRONTEND_URL || env.CLIENT_URL || null;
+}
+
+function resolveSendgridFrom(env = process.env) {
+  return env.SENDGRID_FROM || env.SENDGRID_FROM_EMAIL || null;
 }
 
 function validateEnv(env = process.env) {
-  const missing = [];
+  const isProduction = env.NODE_ENV === 'production';
+
+  // Normalize aliases so the rest of the codebase can rely on consistent names.
+  if (!env.FRONTEND_URL && env.CLIENT_URL) env.FRONTEND_URL = env.CLIENT_URL;
+  if (!env.SENDGRID_FROM && env.SENDGRID_FROM_EMAIL) env.SENDGRID_FROM = env.SENDGRID_FROM_EMAIL;
+  if (!env.MONGODB_URI && env.MONGO_URI) env.MONGODB_URI = env.MONGO_URI;
+
   const mongoUri = resolveMongoUri(env);
   if (!mongoUri) {
-    missing.push('MONGODB_URI');
-  } else if (!env.MONGODB_URI) {
-    console.warn('[Env] Using fallback Mongo connection string. Prefer MONGODB_URI for consistency.');
+    const msg = '[Env] No MongoDB connection string detected.';
+    if (isProduction) {
+      console.error(msg);
+      process.exit(1);
+    } else {
+      console.warn(msg);
+    }
   }
 
-  REQUIRED_VARS.forEach((key) => {
-    if (!env[key]) {
-      missing.push(key);
-    }
-  });
+  const missingCore = CORE_REQUIRED_VARS.filter((key) => !env[key]);
+  const frontendUrl = resolveFrontendUrl(env);
+  if (!frontendUrl) missingCore.push('FRONTEND_URL (or CLIENT_URL)');
 
-  if (missing.length > 0) {
-    const message = `Missing required environment variables: ${missing.join(', ')}`;
-    const error = new Error(message);
-    error.code = 'ENV_VALIDATION_ERROR';
-    throw error;
+  if (missingCore.length > 0) {
+    const message = `Missing required environment variables: ${missingCore.join(', ')}`;
+    if (isProduction) {
+      console.error(`[Env] ${message}`);
+      process.exit(1);
+    } else {
+      console.warn(`[Env] ${message}`);
+    }
   }
 
-  OPTIONAL_VARS.forEach((key) => {
-    if (!env[key]) {
-      console.warn(`[Env] Optional variable ${key} is not set. Related features may be limited.`);
-    }
-  });
+  const whitelist = escapeList(env.CORS_WHITELIST || '');
+  if (!whitelist.length) {
+    console.warn('[Env] CORS_WHITELIST is empty. Only explicitly provided domains will be allowed.');
+  }
 
-  if (!escapeList(env.CORS_WHITELIST).length) {
-    console.warn('[Env] CORS_WHITELIST is defined but empty. Only localhost origins will be allowed.');
+  const aiConfigured = !!env.OPENAI_API_KEY;
+  const emailConfigured = !!env.SENDGRID_API_KEY && !!resolveSendgridFrom(env);
+
+  if (!aiConfigured) {
+    console.warn('[Env] OPENAI_API_KEY is missing. AI scoring endpoints will return 503.');
+  }
+  if (!emailConfigured) {
+    console.warn('[Env] SENDGRID config is missing. Password reset email endpoint will return 501.');
   }
 
   return {
     mongoUri,
-    corsWhitelist: escapeList(env.CORS_WHITELIST),
+    corsWhitelist: whitelist,
+    frontendUrl,
+    features: {
+      ai: aiConfigured,
+      email: emailConfigured,
+    },
   };
 }
 
 module.exports = {
   validateEnv,
   resolveMongoUri,
+  resolveFrontendUrl,
+  resolveSendgridFrom,
   escapeList,
 };
 

@@ -1,39 +1,101 @@
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
+const { z } = require('zod');
 const { getFeedbackInstructions } = require('../config/aiLevelCalibration');
 
 dotenv.config();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
+function createClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
+  });
+}
+
+const PROMPT_VERSION = 'writing-task2-json-v1';
+const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+
+const scoringSchema = z.object({
+  overallBand: z.number().min(0).max(9),
+  criteria: z.object({
+    taskResponse: z.number().min(0).max(9),
+    coherence: z.number().min(0).max(9),
+    lexical: z.number().min(0).max(9),
+    grammar: z.number().min(0).max(9),
+  }),
+  comments: z.array(z.string().min(1)).min(1).max(12),
 });
 
-class AIScoringService {
-  constructor() {
-    this.isAvailable = !!process.env.OPENAI_API_KEY;
-  }
+function toNumberOrNull(value) {
+  const n = typeof value === 'string' ? Number(value) : value;
+  return Number.isFinite(n) ? n : null;
+}
 
+function clampBand(value) {
+  const n = toNumberOrNull(value);
+  if (n === null) return null;
+  return Math.max(0, Math.min(9, Number(n)));
+}
+
+function normalizeToAiScore(validated) {
+  const overall = Number(validated.overallBand.toFixed(1));
+  return {
+    overall,
+    taskResponse: Number(validated.criteria.taskResponse),
+    coherence: Number(validated.criteria.coherence),
+    lexical: Number(validated.criteria.lexical),
+    grammar: Number(validated.criteria.grammar),
+    feedback: validated.comments.join('\n'),
+    strengths: [],
+    improvements: [],
+    bandLevel: String(overall),
+    source: 'ai',
+  };
+}
+
+class AIScoringService {
   async scoreWriting(answer, taskType = 'Task 2', options = {}) {
-    if (!this.isAvailable) {
-      return this.getFallbackScore('writing');
+    if (!process.env.OPENAI_API_KEY) {
+      const err = new Error('AI scoring not configured');
+      err.status = 503;
+      throw err;
     }
 
+    const level = options.level || 'B1';
+    const prompt = this.createWritingPrompt(answer, taskType, level);
+    const model = options.model || DEFAULT_MODEL;
+
     try {
-      const level = options.level || 'B1';
-      const prompt = this.createWritingPrompt(answer, taskType, level);
-      const response = await this.callOpenAI(prompt);
-      const parsed = this.parseResponse(response);
-      console.log(`[AI Feedback] Writing | Level: ${level} | Tone: ${getFeedbackInstructions(level, 'writing').includes('simple') ? 'Simple' : 'Advanced'}`);
-      return this.applyWeights(parsed, {
-        coherence: options.weights?.coherence ?? 0.25,
-        lexical: options.weights?.lexical ?? 0.25,
-        grammar: options.weights?.grammar ?? 0.25,
-        taskResponse: options.weights?.taskResponse ?? 0.25,
-      });
+      const startedAt = Date.now();
+      const responseText = await this.callOpenAI(prompt, { model });
+      const latencyMs = Date.now() - startedAt;
+
+      const validated = this.parseAndValidate(responseText);
+      const aiScore = normalizeToAiScore(validated);
+
+      return {
+        success: true,
+        source: 'ai',
+        data: aiScore,
+        scoringMeta: {
+          source: 'ai',
+          model,
+          promptVersion: PROMPT_VERSION,
+          latencyMs,
+        },
+      };
     } catch (error) {
       console.error('AI Scoring Error:', error);
-      return this.getFallbackScore('writing');
+      if (!error.status) {
+        error.status = error.name === 'AbortError' ? 504 : 502;
+      }
+      if (!error.publicMessage) {
+        error.publicMessage =
+          error.status === 504
+            ? 'AI scoring timed out, please try again.'
+            : 'AI scoring failed, please try again.';
+      }
+      throw error;
     }
   }
 
@@ -48,100 +110,159 @@ ${feedbackInstructions}
 Student's ${taskType} response:
 """${answer}"""
 
-Provide your assessment in this EXACT JSON format:
+Return ONLY valid JSON. No markdown, no extra keys, no surrounding text.
+JSON schema:
 {
-  "overall": 7.0,
-  "taskResponse": 7,
-  "coherence": 7,
-  "lexical": 6.5,
-  "grammar": 7,
-  "feedback": "Your essay shows good organization and clear arguments. However, you could improve vocabulary variety and sentence structure complexity. Focus on using more advanced linking words and varied sentence patterns.",
-  "strengths": ["Clear thesis statement", "Good paragraph structure"],
-  "improvements": ["Use more varied vocabulary", "Add complex sentence structures"],
-  "bandLevel": "7.0"
+  "overallBand": 7.0,
+  "criteria": {
+    "taskResponse": 7.0,
+    "coherence": 7.0,
+    "lexical": 6.5,
+    "grammar": 7.0
+  },
+  "comments": [
+    "Comment 1 (specific, actionable).",
+    "Comment 2 ...",
+    "Comment 3 ..."
+  ]
 }
-
-Make sure the feedback language and examples match the ${level} proficiency level. Keep it constructive and specific.
+Rules:
+- All band scores must be numbers between 0 and 9 (decimals allowed).
+- comments must be 3-8 short bullet-like sentences (no numbering required).
+Make sure the language matches ${level} proficiency level and stays constructive.
 `;
   }
 
-  async callOpenAI(prompt) {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert IELTS examiner. Always respond with valid JSON format as requested.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.3,
-      max_tokens: 500
-    });
+  async callOpenAI(prompt, { model }) {
+    const openai = createClient();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25_000);
 
-    return completion.choices[0].message.content;
+    try {
+      const baseRequest = {
+        model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are an expert IELTS examiner. Return ONLY valid JSON matching the provided schema. Do not include markdown.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        temperature: 0.2,
+        max_tokens: 500,
+      };
+
+      let completion;
+      try {
+        completion = await openai.chat.completions.create(
+          {
+            ...baseRequest,
+            response_format: {
+              type: 'json_schema',
+              json_schema: {
+                name: 'ielts_writing_score',
+                strict: true,
+                schema: {
+                  type: 'object',
+                  additionalProperties: false,
+                  properties: {
+                    overallBand: { type: 'number' },
+                    criteria: {
+                      type: 'object',
+                      additionalProperties: false,
+                      properties: {
+                        taskResponse: { type: 'number' },
+                        coherence: { type: 'number' },
+                        lexical: { type: 'number' },
+                        grammar: { type: 'number' },
+                      },
+                      required: ['taskResponse', 'coherence', 'lexical', 'grammar'],
+                    },
+                    comments: {
+                      type: 'array',
+                      items: { type: 'string' },
+                      minItems: 3,
+                      maxItems: 8,
+                    },
+                  },
+                  required: ['overallBand', 'criteria', 'comments'],
+                },
+              },
+            },
+          },
+          { signal: controller.signal, timeout: 25_000 }
+        );
+      } catch (_) {
+        completion = await openai.chat.completions.create(baseRequest, {
+          signal: controller.signal,
+          timeout: 25_000,
+        });
+      }
+
+      return completion.choices[0].message.content;
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
-  parseResponse(response) {
-    try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const scoreData = JSON.parse(jsonMatch[0]);
-        return {
-          success: true,
-          data: scoreData,
-          source: 'ai'
-        };
+  parseAndValidate(responseText) {
+    const tryParse = (text) => {
+      try {
+        return JSON.parse(text);
+      } catch {
+        return null;
       }
-    } catch (error) {
-      console.error('JSON Parse Error:', error);
+    };
+
+    const extracted = () => {
+      if (typeof responseText !== 'string') return null;
+      const match = responseText.match(/\{[\s\S]*\}/);
+      if (!match) return null;
+      return tryParse(match[0]);
+    };
+
+    const raw =
+      (typeof responseText === 'string' ? tryParse(responseText) : null) ||
+      extracted() ||
+      null;
+
+    if (!raw || typeof raw !== 'object') {
+      const err = new Error('Invalid AI response format');
+      err.status = 502;
+      err.publicMessage = 'AI returned an invalid response. Please try again.';
+      throw err;
     }
 
-    return this.getFallbackScore();
-  }
-
-  applyWeights(result, weights) {
-    try {
-      if (!result?.data) return result;
-      const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-      let weighted = 0;
-      let total = 0;
-      Object.entries(weights).forEach(([k, w]) => {
-        if (typeof result.data[k] === 'number') {
-          weighted += result.data[k] * w;
-          total += w;
-        }
-      });
-      if (total > 0) {
-        const overall = clamp(Number((weighted / total).toFixed(1)), 0, 9);
-        result.data.overall = overall;
-        result.data.bandLevel = String(overall);
-      }
-    } catch (_) {}
-    return result;
-  }
-
-  getFallbackScore() {
-    return {
-      success: true,
-      data: {
-        overall: 6.5,
-        taskResponse: 6,
-        coherence: 7,
-        lexical: 6,
-        grammar: 7,
-        feedback: 'This is a sample assessment. Configure OPENAI_API_KEY for live scoring.',
-        strengths: ['Good structure', 'Clear ideas'],
-        improvements: ['Improve vocabulary', 'Add stronger examples'],
-        bandLevel: '6.5',
-        source: 'fallback',
+    const coerced = {
+      overallBand: clampBand(raw.overallBand) ?? clampBand(raw.overall) ?? null,
+      criteria: {
+        taskResponse: clampBand(raw?.criteria?.taskResponse) ?? clampBand(raw.taskResponse) ?? null,
+        coherence: clampBand(raw?.criteria?.coherence) ?? clampBand(raw.coherence) ?? null,
+        lexical: clampBand(raw?.criteria?.lexical) ?? clampBand(raw.lexical) ?? null,
+        grammar: clampBand(raw?.criteria?.grammar) ?? clampBand(raw.grammar) ?? null,
       },
-      source: 'fallback',
+      comments: Array.isArray(raw.comments)
+        ? raw.comments
+        : typeof raw.feedback === 'string'
+          ? raw.feedback
+              .split(/\n+/)
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
     };
+
+    const result = scoringSchema.safeParse(coerced);
+    if (!result.success) {
+      const err = new Error('Invalid AI response content');
+      err.status = 502;
+      err.publicMessage = 'AI returned an invalid score format. Please try again.';
+      throw err;
+    }
+
+    return result.data;
   }
+
 }
 
 module.exports = new AIScoringService();

@@ -31,7 +31,8 @@ const corsMiddleware = cors({
     console.warn(`[CORS] Blocked origin: ${origin}`);
     return callback(new Error('Not allowed by CORS'));
   },
-  credentials: true,
+  // Bearer-only auth (no cookies)
+  credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Timezone', 'X-Requested-With'],
   exposedHeaders: ['Content-Length', 'Content-Type'],

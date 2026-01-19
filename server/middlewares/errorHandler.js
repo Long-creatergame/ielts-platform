@@ -32,6 +32,15 @@ function errorHandler(err, req, res, next) {
     method: req.method,
   });
 
+  // Consistent validation error format
+  if (err?.name === 'ValidationError' && Array.isArray(err.details)) {
+    return res.status(errorResponse.code).json({
+      success: false,
+      message: errorResponse.message || 'Validation failed',
+      errors: err.details,
+    });
+  }
+
   res.status(errorResponse.code).json({
     success: false,
     error: errorResponse,
@@ -39,6 +48,8 @@ function errorHandler(err, req, res, next) {
 }
 
 module.exports = errorHandler;
+
+
 
 
 
