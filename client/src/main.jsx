@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import './styles/overlay.css'
+import './i18n'
 
 // Initialize Tawk.to chat widget if configured
 if (import.meta.env.VITE_DEMO_MODE === 'true') {
