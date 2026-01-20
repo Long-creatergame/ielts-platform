@@ -14,25 +14,38 @@ const LOCALHOST_REGEX = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
 
 function buildWhitelist() {
   const envList = escapeList(process.env.CORS_WHITELIST || '');
-  const combined = new Set([...LOCALHOST_ORIGINS, ...envList]);
-  return Array.from(combined);
+  if (process.env.FRONTEND_URL) {
+    envList.push(process.env.FRONTEND_URL.trim());
+  }
+
+  // Dev: allow localhost by default. Prod: only explicit allow-list.
+  const isProduction = process.env.NODE_ENV === 'production';
+  if (!isProduction) {
+    return Array.from(new Set([...LOCALHOST_ORIGINS, ...envList.filter(Boolean)]));
+  }
+  return Array.from(new Set(envList.filter(Boolean)));
 }
 
 const whitelist = buildWhitelist();
+const allowCredentials = String(process.env.CORS_ALLOW_CREDENTIALS || '').toLowerCase() === 'true';
 
 const corsMiddleware = cors({
   origin(origin, callback) {
     if (!origin) return callback(null, true);
 
-    if (LOCALHOST_REGEX.test(origin) || whitelist.includes(origin)) {
+    if (process.env.NODE_ENV !== 'production' && LOCALHOST_REGEX.test(origin)) {
+      return callback(null, true);
+    }
+
+    if (whitelist.includes(origin)) {
       return callback(null, true);
     }
 
     console.warn(`[CORS] Blocked origin: ${origin}`);
     return callback(new Error('Not allowed by CORS'));
   },
-  // Bearer-only auth (no cookies)
-  credentials: false,
+  // Bearer-only by default; enable credentials only if you explicitly switch to cookie auth.
+  credentials: allowCredentials,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Timezone', 'X-Requested-With'],
   exposedHeaders: ['Content-Length', 'Content-Type'],

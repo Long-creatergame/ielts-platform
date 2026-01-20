@@ -84,11 +84,58 @@ The root `npm run dev` command runs both via `concurrently`.
 - `/login` and `/register`
 - `/` – dashboard (protected)
 - `/writing` – submit Task 2 essays (protected)
+- `/verify-email` – verify email from link token
+- `/reset-password` – reset password from link token
 
 ## Extending Phase 1
 
 - Add richer prompt management inside `server/ai/writing/`.
 - Store more granular scoring metadata in `WritingSubmission`.
 - Layer additional UI (filters, detailed feedback cards) on the dashboard.
+
+## Deployment Checklist (Vercel + Render + MongoDB)
+
+### Backend (Render)
+
+- **Health/monitoring endpoints**
+  - `GET /health` – fast (no DB), used by Render health checks + UptimeRobot
+  - `GET /ready` – readiness (checks Mongo connection state)
+  - (Legacy) `GET /api/health` – older health endpoint still exists for backwards compatibility
+
+- **Required env vars**
+  - **DB**: `MONGO_URI` (or `MONGODB_URI`)
+  - **Auth**: `JWT_SECRET`
+  - **Frontend URL**: `FRONTEND_URL` (or `CLIENT_URL`)
+  - **CORS allowlist**: `CORS_WHITELIST` (comma-separated, include your Vercel domain)
+
+- **Optional env vars**
+  - **AI scoring**: `OPENAI_API_KEY`, `OPENAI_MODEL` (optional), `OPENAI_API_BASE` (optional)
+  - **SendGrid**: `SENDGRID_API_KEY`, `EMAIL_FROM` (or `SENDGRID_FROM` / `SENDGRID_FROM_EMAIL`)
+  - **Public link base URL** (used in email links): `APP_BASE_URL` (recommended: your Vercel domain)
+  - **Cookie auth toggle (only if you switch to cookies later)**: `CORS_ALLOW_CREDENTIALS=true`
+
+### Frontend (Vercel)
+
+- **Required env vars**
+  - `VITE_API_BASE_URL` – must include `/api` suffix (example: `https://<render-backend>/api`)
+
+- **Optional env vars**
+  - **Tawk.to**
+    - `VITE_TAWK_ENABLED=true|false`
+    - `VITE_TAWK_PROPERTY_ID=...`
+    - `VITE_TAWK_WIDGET_ID=...`
+
+### UptimeRobot setup
+
+- Create an **HTTP(s) monitor**:
+  - URL: `https://<your-render-backend-domain>/health`
+  - Interval: **5 minutes**
+  - Alerts: email/SMS as desired
+
+### SendGrid reminders
+
+- Ensure your SendGrid sender identity is verified.
+- Configure `EMAIL_FROM` to a verified sender.
+- Ensure `APP_BASE_URL` points to your Vercel frontend domain so verification/reset links open correctly.
 
 Enjoy the focused writing-only workflow! 🎯

@@ -24,8 +24,10 @@ function formatError(err) {
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
   const errorResponse = formatError(err);
+  const requestId = req.requestId || req.headers['x-request-id'];
 
   console.error('[ErrorHandler]', {
+    requestId,
     message: err?.message,
     code: errorResponse.code,
     path: req.originalUrl,
@@ -38,12 +40,14 @@ function errorHandler(err, req, res, next) {
       success: false,
       message: errorResponse.message || 'Validation failed',
       errors: err.details,
+      requestId,
     });
   }
 
   res.status(errorResponse.code).json({
     success: false,
     error: errorResponse,
+    requestId,
   });
 }
 
