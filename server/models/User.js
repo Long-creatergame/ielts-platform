@@ -35,6 +35,22 @@ const userSchema = new mongoose.Schema(
       enum: ['A2', 'B1', 'B2', 'C1', 'C2'],
       default: 'B1',
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerifyTokenHash: {
+      type: String,
+    },
+    emailVerifyTokenExpiresAt: {
+      type: Date,
+    },
+    onboarding: {
+      dashboardDone: { type: Boolean, default: false },
+      testDone: { type: Boolean, default: false },
+      resultDone: { type: Boolean, default: false },
+      completedAt: { type: Date },
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     lastLoginAt: Date,

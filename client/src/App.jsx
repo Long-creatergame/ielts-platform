@@ -1,69 +1,45 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import './i18n';
 import Navbar from './components/Navbar';
-import ErrorBoundary from './components/ErrorBoundary';
-import DashboardUnified from './pages/DashboardUnified';
-// Keep old Dashboard for backward compatibility (can be removed later)
+import TawkTo from './components/TawkTo';
 import Dashboard from './pages/Dashboard';
+import WritingTask from './pages/WritingTask';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Profile from './pages/Profile';
-import Payment from './pages/Payment';
-import Pricing from './pages/Pricing';
-import TestIntro from './pages/Test/TestIntro';
-import TestPage from './pages/Test/TestPage';
-import TestResult from './pages/Test/TestResult';
-import TestHistory from './pages/TestHistory';
-import IELTSItemTest from './pages/IELTSItemTest';
-// ⚠️ Removed orphan import (./pages/QuickPractice)
-// import QuickPractice from './pages/QuickPractice';
-import PracticePage from './pages/PracticePage';
-import Review from './pages/Review';
-import Demo from './pages/Demo';
-import ForgotPassword from './pages/ForgotPassword';
+import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/ResetPassword';
-import Leaderboard from './pages/Leaderboard';
-import ChatLauncher from './components/ChatLauncher';
 
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <ErrorBoundary>
-          <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <ChatLauncher zaloUrl={import.meta.env.VITE_ZALO_URL || 'https://zalo.me/0923456789'} />
-            <Routes>
-            <Route path="/" element={<ProtectedRoute><DashboardUnified /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><DashboardUnified /></ProtectedRoute>} />
-            {/* Legacy dashboard route - redirect to unified */}
-            <Route path="/dashboard-old" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/payment/:testId" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/test/start" element={<ProtectedRoute><TestIntro /></ProtectedRoute>} />
-            <Route path="/test/:skill" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
-            <Route path="/test/result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
-            <Route path="/test/result/:id" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
-            <Route path="/test/result/quick" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
-            <Route path="/test-history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
-            <Route path="/ielts-item-test" element={<ProtectedRoute><IELTSItemTest /></ProtectedRoute>} />
-            {/* ⚠️ Removed orphan route (QuickPractice component deleted) */}
-            <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
-            <Route path="/review/:sessionId" element={<ProtectedRoute><Review /></ProtectedRoute>} />
-            <Route path="/demo" element={<Demo />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-            </Routes>
-          </div>
-        </ErrorBoundary>
-      </Router>
+      <BrowserRouter>
+        <TawkTo />
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/writing"
+            element={
+              <ProtectedRoute>
+                <WritingTask />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

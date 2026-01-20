@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const User = require('../models/User');
-const { sendPasswordReset } = require('../services/emailService');
+const { sendPasswordReset, sendEmailVerification, isEmailConfigured } = require('../services/emailService');
 
 const getJwtSecret = () => {
   if (!process.env.JWT_SECRET) {
@@ -13,6 +13,32 @@ const getJwtSecret = () => {
 
 const generateToken = (user) =>
   jwt.sign({ userId: user._id, email: user.email }, getJwtSecret(), { expiresIn: '7d' });
+
+function getAppBaseUrl() {
+  const base = process.env.APP_BASE_URL || process.env.FRONTEND_URL || process.env.CLIENT_URL || '';
+  return String(base).replace(/\/+$/, '');
+}
+
+function buildVerifyEmailUrl(rawToken) {
+  const base = getAppBaseUrl();
+  return `${base}/verify-email?token=${rawToken}`;
+}
+
+function buildResetPasswordUrl(rawToken, email) {
+  const base = getAppBaseUrl();
+  return `${base}/reset-password?token=${rawToken}&email=${encodeURIComponent(email)}`;
+}
+
+async function issueEmailVerification(user) {
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+  user.emailVerifyTokenHash = tokenHash;
+  user.emailVerifyTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  await user.save();
+
+  const verifyUrl = buildVerifyEmailUrl(rawToken);
+  await sendEmailVerification(user.email, verifyUrl);
+}
 
 exports.register = async (req, res) => {
   try {
@@ -45,6 +71,17 @@ exports.register = async (req, res) => {
     });
     await user.save();
 
+    // Send verification email (non-blocking for registration if email is not configured)
+    let verificationEmailSent = false;
+    if (isEmailConfigured() && getAppBaseUrl()) {
+      try {
+        await issueEmailVerification(user);
+        verificationEmailSent = true;
+      } catch (e) {
+        console.error('Email verification send error:', e?.message || e);
+      }
+    }
+
     const token = generateToken(user);
     return res.status(201).json({
       message: 'User registered successfully',
@@ -55,8 +92,13 @@ exports.register = async (req, res) => {
         goal: user.goal,
         targetBand: user.targetBand,
         currentLevel: user.currentLevel,
+        emailVerified: !!user.emailVerified,
       },
       token,
+      verification: {
+        required: true,
+        emailSent: verificationEmailSent,
+      },
     });
   } catch (err) {
     console.error('Register error:', err);
@@ -91,6 +133,7 @@ exports.login = async (req, res) => {
         goal: user.goal,
         targetBand: user.targetBand,
         currentLevel: user.currentLevel,
+        emailVerified: !!user.emailVerified,
       },
       token,
     });
@@ -142,9 +185,7 @@ exports.requestPasswordReset = async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${rawToken}&email=${encodeURIComponent(
-      user.email
-    )}`;
+    const resetUrl = buildResetPasswordUrl(rawToken, user.email);
 
     await sendPasswordReset(user.email, resetUrl);
 

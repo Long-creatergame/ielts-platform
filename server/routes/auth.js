@@ -2,7 +2,8 @@ const express = require('express');
 const User = require('../models/User');
 const rateLimit = require('express-rate-limit');
 const { z } = require('zod');
-const { isEmailConfigured } = require('../services/emailService');
+const crypto = require('crypto');
+const { isEmailConfigured, sendEmailVerification } = require('../services/emailService');
 const {
   register,
   login,
@@ -65,9 +66,89 @@ const loginSchema = z
   })
   .passthrough();
 
+const resendSchema = z
+  .object({
+    email: z.string().trim().email('Invalid email'),
+  })
+  .passthrough();
+
 router.post('/register', validateBody(registerSchema), register);
 router.post('/login', validateBody(loginSchema), login);
 router.get('/me', authMiddleware, getUserProfile);
+
+router.get('/verify-email', async (req, res) => {
+  try {
+    const token = String(req.query?.token || '').trim();
+    if (!token) {
+      return res.status(400).json({ success: false, message: 'Missing token' });
+    }
+
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOne({
+      emailVerifyTokenHash: tokenHash,
+      emailVerifyTokenExpiresAt: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+    }
+
+    user.emailVerified = true;
+    user.emailVerifyTokenHash = undefined;
+    user.emailVerifyTokenExpiresAt = undefined;
+    await user.save();
+
+    return res.json({ success: true, message: 'Email verified successfully' });
+  } catch (error) {
+    console.error('Verify email error:', error);
+    return res.status(500).json({ success: false, message: 'Unable to verify email right now.' });
+  }
+});
+
+const resendLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' },
+});
+
+router.post('/resend-verification', resendLimiter, validateBody(resendSchema), async (req, res) => {
+  try {
+    // Avoid account enumeration: always return success-ish message.
+    const email = String(req.body?.email || '').toLowerCase().trim();
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ success: true, message: 'If that email exists, a verification email has been sent.' });
+    }
+    if (user.emailVerified) {
+      return res.json({ success: true, message: 'Email is already verified.' });
+    }
+
+    if (!isEmailConfigured() || !(process.env.APP_BASE_URL || process.env.FRONTEND_URL || process.env.CLIENT_URL)) {
+      return res.status(501).json({
+        success: false,
+        message: 'Email verification service is not configured',
+      });
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    user.emailVerifyTokenHash = tokenHash;
+    user.emailVerifyTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await user.save();
+
+    const base = String(process.env.APP_BASE_URL || process.env.FRONTEND_URL || process.env.CLIENT_URL).replace(/\/+$/, '');
+    const verifyUrl = `${base}/verify-email?token=${rawToken}`;
+    await sendEmailVerification(user.email, verifyUrl);
+
+    return res.json({ success: true, message: 'If that email exists, a verification email has been sent.' });
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    return res.status(500).json({ success: false, message: 'Unable to resend verification email right now.' });
+  }
+});
 
 function requireEmailReset(req, res, next) {
   if (!isEmailConfigured()) {

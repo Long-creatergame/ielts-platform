@@ -1,181 +1,88 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import api from '../lib/axios';
+
+function useQuery() {
+  const { search } = useLocation();
+  return useMemo(() => new URLSearchParams(search), [search]);
+}
 
 export default function ResetPassword() {
-  const [searchParams] = useSearchParams();
-  const [formData, setFormData] = useState({
-    resetCode: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const query = useQuery();
+  const token = query.get('token') || '';
+  const email = query.get('email') || '';
+
+  const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Get token from URL if available
-    const token = searchParams.get('token');
-    if (token) {
-      setFormData(prev => ({ ...prev, resetCode: token }));
-    }
-  }, [searchParams]);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const [status, setStatus] = useState('idle'); // idle | success | error
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setStatus('idle');
+    setMessage('');
 
-    // Validate passwords match
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    if (!token || !email) {
+      setStatus('error');
+      setMessage('Missing token or email.');
       return;
     }
-
-    // Validate password strength
-    if (formData.newPassword.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (!newPassword || newPassword.length < 6) {
+      setStatus('error');
+      setMessage('Password must be at least 6 characters.');
       return;
     }
-
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.newPassword)) {
-      setError('Password must contain at least one uppercase letter, one lowercase letter, and one number');
-      return;
-    }
-
-    setLoading(true);
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-      
-      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: formData.resetCode,
-          newPassword: formData.newPassword
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to reset password');
-      }
-
-      // Success - redirect to login
-      navigate('/login?reset=success');
+      setLoading(true);
+      const { data } = await api.post('/auth/reset-password/confirm', { email, token, newPassword });
+      setStatus('success');
+      setMessage(data?.message || 'Password reset successfully.');
     } catch (err) {
-      setError(err.message);
+      setStatus('error');
+      setMessage(err.response?.data?.message || 'Unable to reset password.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          🔄 Reset Password
-        </h1>
+    <div className="app-container min-h-screen flex items-center justify-center">
+      <div className="card w-full max-w-md p-8 space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Reset password</h1>
+          <p className="text-gray-600">Choose a new password for your account.</p>
+        </div>
 
-        {error && (
-          <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
-          </div>
+        {status !== 'idle' && (
+          <p className={status === 'success' ? 'text-green-700' : 'text-red-600'}>{message}</p>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="resetCode" className="block text-sm font-medium text-gray-700 mb-2">
-              Reset Code
-            </label>
+            <label className="block text-sm font-medium mb-1">New password</label>
             <input
-              type="text"
-              id="resetCode"
-              name="resetCode"
-              value={formData.resetCode}
-              onChange={handleChange}
+              type="password"
+              className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="At least 6 characters"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter reset code from email"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Check your email for the reset code
-            </p>
           </div>
-
-          <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="newPassword"
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              >
-                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-          >
-            {loading ? 'Resetting...' : 'Reset Password'}
+          <button type="submit" className="btn-primary w-full py-3" disabled={loading}>
+            {loading ? 'Resetting…' : 'Reset password'}
           </button>
-
-          <Link
-            to="/login"
-            className="block text-center text-blue-600 hover:text-blue-800"
-          >
-            Back to Login
-          </Link>
         </form>
+
+        <p className="text-center text-sm text-gray-600">
+          Back to{' '}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   );
 }
+
