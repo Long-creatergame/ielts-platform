@@ -2,10 +2,16 @@ import axios from 'axios';
 
 function resolveBaseUrl() {
   const explicit = String(import.meta.env.VITE_API_BASE_URL || '').trim();
-  if (explicit) return explicit;
+  const isDev = !!import.meta.env.DEV;
 
-  // Local/dev fallback (so login works out-of-the-box when running server on :4000)
-  if (import.meta.env.DEV) return 'http://127.0.0.1:4000/api';
+  // In dev, prefer localhost even if VITE_API_BASE_URL is accidentally set to production.
+  // Allow explicit override ONLY when it points to localhost/127.0.0.1.
+  if (isDev) {
+    if (explicit && /(localhost|127\.0\.0\.1)/i.test(explicit)) return explicit;
+    return 'http://127.0.0.1:4000/api';
+  }
+
+  if (explicit) return explicit;
 
   // In production, we expect VITE_API_BASE_URL to be set (Vercel env).
   // Fallback to same-origin /api only if you run a reverse proxy in front.
