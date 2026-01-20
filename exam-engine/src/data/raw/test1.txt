@@ -1,0 +1,10 @@
+IELTS Academic MOCK TEST – Training Center Use
+
+NOTE: This file is intentionally a raw-text source for the parser/converter.
+If you replace this content with a new mock test in the same general format,
+run: npm run parse:test1
+
+<<<RAW TEST PLACEHOLDER>>>
+Replace this file with the raw mock test text.
+<<<END>>>
+

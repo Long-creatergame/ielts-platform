@@ -1,0 +1,780 @@
+{
+  "metadata": {
+    "title": "IELTS Academic MOCK TEST – Training Center Use",
+    "modeDefault": "computer",
+    "timeLimits": {
+      "listening": {
+        "computerDeliveredMinutes": 30,
+        "paperBasedMinutes": 30,
+        "paperBasedTransferMinutes": 10,
+        "computerCheckMinutes": 2
+      },
+      "readingMinutes": 60,
+      "writingMinutes": 60
+    }
+  },
+  "listening": {
+    "sections": [
+      {
+        "title": "Section 1 – Weekend Course Booking",
+        "instructions": "Complete Questions 1–6. Write ONE WORD AND/OR A NUMBER. Questions 7–10: choose A, B or C.",
+        "transcript": "Riverside Community Centre, bookings desk. How can I help? Oh, hello. I’m calling about the practical photography course—beginners, I think? ... It starts on the twelfth of April ... We offer a morning session at ten ... Full name? It’s Hart. Emily Hart ... spelling: H-A-R-T ... Contact number: 07958 214 603 ... Email: emily.hart72@mail.com ... heard about the course from a friend ... fee includes printed handouts ... I’ll bring my own camera ... main reason: holidays ...",
+        "questions": [
+          { "id": 1, "type": "listening_form_completion", "prompt": "Start date: ____ April", "constraints": "ONE WORD AND/OR A NUMBER", "correctAnswer": "12th" },
+          { "id": 2, "type": "listening_form_completion", "prompt": "Preferred time: ____ a.m. session", "constraints": "ONE WORD AND/OR A NUMBER", "correctAnswer": "ten / 10" },
+          { "id": 3, "type": "listening_form_completion", "prompt": "Full name: ____ Hart (first name)", "constraints": "ONE WORD", "correctAnswer": "Emily" },
+          { "id": 4, "type": "listening_form_completion", "prompt": "First name spelling: H-A-____", "constraints": "ONE LETTER", "correctAnswer": "R" },
+          { "id": 5, "type": "listening_form_completion", "prompt": "Contact number: ____", "constraints": "ONE NUMBER", "correctAnswer": "07958 214 603" },
+          { "id": 6, "type": "listening_form_completion", "prompt": "Email: ____@mail.com", "constraints": "ONE WORD", "correctAnswer": "emily.hart72" },
+          {
+            "id": 7,
+            "type": "listening_multiple_choice",
+            "prompt": "The caller heard about the course from",
+            "options": [
+              { "key": "A", "text": "a poster at the centre" },
+              { "key": "B", "text": "a friend" },
+              { "key": "C", "text": "a social media advert" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 8,
+            "type": "listening_multiple_choice",
+            "prompt": "The course fee includes",
+            "options": [
+              { "key": "A", "text": "camera hire" },
+              { "key": "B", "text": "printed handouts" },
+              { "key": "C", "text": "one studio session" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 9,
+            "type": "listening_multiple_choice",
+            "prompt": "What does the caller decide about bringing a camera?",
+            "options": [
+              { "key": "A", "text": "They will borrow one from the centre." },
+              { "key": "B", "text": "They will bring their own." },
+              { "key": "C", "text": "They will buy a new one before the course." }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 10,
+            "type": "listening_multiple_choice",
+            "prompt": "The caller’s main reason for taking the course is to",
+            "options": [
+              { "key": "A", "text": "improve holiday photos" },
+              { "key": "B", "text": "prepare for a job application" },
+              { "key": "C", "text": "start a photography blog" }
+            ],
+            "correctAnswer": "A"
+          }
+        ]
+      },
+      {
+        "title": "Section 2 – Northgate Library",
+        "instructions": "Questions 11–16: label the plan (A–H). Questions 17–20: match each facility with A–F.",
+        "transcript": "Welcome to Northgate Library... returns machine immediately on your right along the east wall... café near the front... study rooms at the far end of the west corridor... computers in the north-east... local history room in the north-west... lift slightly left of the information desk... e-readers require a deposit... printing: first ten pages free... quiet floor open later... community noticeboard updated weekly by local organisations.",
+        "questions": [
+          {
+            "id": 11,
+            "type": "listening_map_label",
+            "prompt": "Returns Machine",
+            "options": [
+              { "key": "A", "text": "Café" },
+              { "key": "B", "text": "Children’s Zone" },
+              { "key": "C", "text": "Computers Area" },
+              { "key": "D", "text": "Information Desk" },
+              { "key": "E", "text": "Local History Room" },
+              { "key": "F", "text": "Lift" },
+              { "key": "G", "text": "Returns Machine" },
+              { "key": "H", "text": "Study Rooms" }
+            ],
+            "correctAnswer": "G"
+          },
+          {
+            "id": 12,
+            "type": "listening_map_label",
+            "prompt": "Café",
+            "options": [
+              { "key": "A", "text": "Café" },
+              { "key": "B", "text": "Children’s Zone" },
+              { "key": "C", "text": "Computers Area" },
+              { "key": "D", "text": "Information Desk" },
+              { "key": "E", "text": "Local History Room" },
+              { "key": "F", "text": "Lift" },
+              { "key": "G", "text": "Returns Machine" },
+              { "key": "H", "text": "Study Rooms" }
+            ],
+            "correctAnswer": "A"
+          },
+          {
+            "id": 13,
+            "type": "listening_map_label",
+            "prompt": "Study Rooms",
+            "options": [
+              { "key": "A", "text": "Café" },
+              { "key": "B", "text": "Children’s Zone" },
+              { "key": "C", "text": "Computers Area" },
+              { "key": "D", "text": "Information Desk" },
+              { "key": "E", "text": "Local History Room" },
+              { "key": "F", "text": "Lift" },
+              { "key": "G", "text": "Returns Machine" },
+              { "key": "H", "text": "Study Rooms" }
+            ],
+            "correctAnswer": "H"
+          },
+          {
+            "id": 14,
+            "type": "listening_map_label",
+            "prompt": "Local History Room",
+            "options": [
+              { "key": "A", "text": "Café" },
+              { "key": "B", "text": "Children’s Zone" },
+              { "key": "C", "text": "Computers Area" },
+              { "key": "D", "text": "Information Desk" },
+              { "key": "E", "text": "Local History Room" },
+              { "key": "F", "text": "Lift" },
+              { "key": "G", "text": "Returns Machine" },
+              { "key": "H", "text": "Study Rooms" }
+            ],
+            "correctAnswer": "E"
+          },
+          {
+            "id": 15,
+            "type": "listening_map_label",
+            "prompt": "Computers Area",
+            "options": [
+              { "key": "A", "text": "Café" },
+              { "key": "B", "text": "Children’s Zone" },
+              { "key": "C", "text": "Computers Area" },
+              { "key": "D", "text": "Information Desk" },
+              { "key": "E", "text": "Local History Room" },
+              { "key": "F", "text": "Lift" },
+              { "key": "G", "text": "Returns Machine" },
+              { "key": "H", "text": "Study Rooms" }
+            ],
+            "correctAnswer": "C"
+          },
+          {
+            "id": 16,
+            "type": "listening_map_label",
+            "prompt": "Lift",
+            "options": [
+              { "key": "A", "text": "Café" },
+              { "key": "B", "text": "Children’s Zone" },
+              { "key": "C", "text": "Computers Area" },
+              { "key": "D", "text": "Information Desk" },
+              { "key": "E", "text": "Local History Room" },
+              { "key": "F", "text": "Lift" },
+              { "key": "G", "text": "Returns Machine" },
+              { "key": "H", "text": "Study Rooms" }
+            ],
+            "correctAnswer": "F"
+          },
+          {
+            "id": 17,
+            "type": "listening_matching",
+            "prompt": "Borrowing e-readers",
+            "options": [
+              { "key": "A", "text": "Available only after attending a short induction" },
+              { "key": "B", "text": "Free for the first 10 pages each day" },
+              { "key": "C", "text": "Located beside the main stairs" },
+              { "key": "D", "text": "Requires an additional card deposit" },
+              { "key": "E", "text": "Open later than the rest of the building on weekdays" },
+              { "key": "F", "text": "Updated weekly by local organisations" }
+            ],
+            "correctAnswer": "D"
+          },
+          {
+            "id": 18,
+            "type": "listening_matching",
+            "prompt": "Printing service",
+            "options": [
+              { "key": "A", "text": "Available only after attending a short induction" },
+              { "key": "B", "text": "Free for the first 10 pages each day" },
+              { "key": "C", "text": "Located beside the main stairs" },
+              { "key": "D", "text": "Requires an additional card deposit" },
+              { "key": "E", "text": "Open later than the rest of the building on weekdays" },
+              { "key": "F", "text": "Updated weekly by local organisations" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 19,
+            "type": "listening_matching",
+            "prompt": "Quiet floor",
+            "options": [
+              { "key": "A", "text": "Available only after attending a short induction" },
+              { "key": "B", "text": "Free for the first 10 pages each day" },
+              { "key": "C", "text": "Located beside the main stairs" },
+              { "key": "D", "text": "Requires an additional card deposit" },
+              { "key": "E", "text": "Open later than the rest of the building on weekdays" },
+              { "key": "F", "text": "Updated weekly by local organisations" }
+            ],
+            "correctAnswer": "E"
+          },
+          {
+            "id": 20,
+            "type": "listening_matching",
+            "prompt": "Community noticeboard",
+            "options": [
+              { "key": "A", "text": "Available only after attending a short induction" },
+              { "key": "B", "text": "Free for the first 10 pages each day" },
+              { "key": "C", "text": "Located beside the main stairs" },
+              { "key": "D", "text": "Requires an additional card deposit" },
+              { "key": "E", "text": "Open later than the rest of the building on weekdays" },
+              { "key": "F", "text": "Updated weekly by local organisations" }
+            ],
+            "correctAnswer": "F"
+          }
+        ]
+      },
+      {
+        "title": "Section 3 – Research Project Discussion",
+        "instructions": "Questions 21–26: choose A–C. Questions 27–30: complete the table (ONE WORD AND/OR A NUMBER).",
+        "transcript": "Tutor: title should mention the comparison of environments... Maya: rating scales inconsistent... Tom: replace 'library' with 'silent zone'... Tutor: avoid collecting during exam week, do weeks four to six... phone use: simple self-report... sample size around forty... session length 25 minutes... short memory test.",
+        "questions": [
+          {
+            "id": 21,
+            "type": "listening_multiple_choice",
+            "prompt": "The tutor thinks the project title should",
+            "options": [
+              { "key": "A", "text": "focus on technology use" },
+              { "key": "B", "text": "mention the comparison of environments" },
+              { "key": "C", "text": "include the term “wellbeing”" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 22,
+            "type": "listening_multiple_choice",
+            "prompt": "Maya’s main concern about their initial questionnaire is that it",
+            "options": [
+              { "key": "A", "text": "is too long" },
+              { "key": "B", "text": "uses unclear rating scales" },
+              { "key": "C", "text": "asks personal questions" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 23,
+            "type": "listening_multiple_choice",
+            "prompt": "Tom suggests replacing “library” with “silent zone” because",
+            "options": [
+              { "key": "A", "text": "the library is currently being renovated" },
+              { "key": "B", "text": "some participants might not use libraries" },
+              { "key": "C", "text": "silent zones always improve concentration" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 24,
+            "type": "listening_multiple_choice",
+            "prompt": "The tutor warns them to avoid",
+            "options": [
+              { "key": "A", "text": "collecting data during exam week" },
+              { "key": "B", "text": "using online surveys" },
+              { "key": "C", "text": "interviewing first-year students" }
+            ],
+            "correctAnswer": "A"
+          },
+          {
+            "id": 25,
+            "type": "listening_multiple_choice",
+            "prompt": "What do they decide about measuring phone use?",
+            "options": [
+              { "key": "A", "text": "They will ask participants to install an app." },
+              { "key": "B", "text": "They will estimate it from screenshots." },
+              { "key": "C", "text": "They will include a short self-report item." }
+            ],
+            "correctAnswer": "C"
+          },
+          {
+            "id": 26,
+            "type": "listening_multiple_choice",
+            "prompt": "The tutor says their sample size should be",
+            "options": [
+              { "key": "A", "text": "at least 20 participants" },
+              { "key": "B", "text": "around 40 participants" },
+              { "key": "C", "text": "no more than 60 participants" }
+            ],
+            "correctAnswer": "B"
+          },
+          { "id": 27, "type": "listening_table_completion", "prompt": "Main comparison: library vs ____ space", "constraints": "ONE WORD", "correctAnswer": "open-plan" },
+          { "id": 28, "type": "listening_table_completion", "prompt": "Session length: ____ minutes", "constraints": "ONE NUMBER", "correctAnswer": "25" },
+          { "id": 29, "type": "listening_table_completion", "prompt": "Attention measure: short ____ test", "constraints": "ONE WORD", "correctAnswer": "memory" },
+          { "id": 30, "type": "listening_table_completion", "prompt": "Data collection period: weeks ____ to ____", "constraints": "TWO NUMBERS", "correctAnswer": "4 to 6" }
+        ]
+      },
+      {
+        "title": "Section 4 – Lecture: Managed Retreat",
+        "instructions": "Complete Questions 31–40. Write ONE WORD AND/OR A NUMBER.",
+        "transcript": "Managed retreat involves relocating away from areas at high risk of flooding ... property values ... transport route ... matched grants ... services ... erosion ... ownership ... trust ... public spaces ... before a disaster occurs.",
+        "questions": [
+          { "id": 31, "type": "listening_sentence_completion", "prompt": "Managed retreat involves moving away from areas at high risk of ____.", "constraints": "ONE WORD", "correctAnswer": "flooding" },
+          { "id": 32, "type": "listening_sentence_completion", "prompt": "It can reduce the value of ____.", "constraints": "ONE WORD", "correctAnswer": "property" },
+          { "id": 33, "type": "listening_sentence_completion", "prompt": "The first stage focused on protecting a key ____ route.", "constraints": "ONE WORD", "correctAnswer": "transport" },
+          { "id": 34, "type": "listening_sentence_completion", "prompt": "Relocation support used a system of ____ grants.", "constraints": "ONE WORD", "correctAnswer": "matched" },
+          { "id": 35, "type": "listening_sentence_completion", "prompt": "New housing near public ____ increased willingness to move.", "constraints": "ONE WORD", "correctAnswer": "services" },
+          { "id": 36, "type": "listening_sentence_completion", "prompt": "Sea walls can increase ____ in neighbouring areas.", "constraints": "ONE WORD", "correctAnswer": "erosion" },
+          { "id": 37, "type": "listening_sentence_completion", "prompt": "Compensation is difficult with unclear ____.", "constraints": "ONE WORD", "correctAnswer": "ownership" },
+          { "id": 38, "type": "listening_sentence_completion", "prompt": "Local leaders helped build ____.", "constraints": "ONE WORD", "correctAnswer": "trust" },
+          { "id": 39, "type": "listening_sentence_completion", "prompt": "Outcomes improved when communities kept shared ____ spaces.", "constraints": "ONE WORD", "correctAnswer": "public" },
+          { "id": 40, "type": "listening_sentence_completion", "prompt": "Managed retreat is most viable when planned ____ a disaster occurs.", "constraints": "ONE WORD", "correctAnswer": "before" }
+        ]
+      }
+    ]
+  },
+  "reading": {
+    "passages": [
+      {
+        "title": "Passage 1 – Rethinking Feedback in Higher Education",
+        "text": "Universities have long treated feedback as a simple, linear transaction: a teacher comments on a piece of work, the student reads those comments, and improvement follows. Yet research into student learning suggests that this account is, at best, incomplete. Feedback does not “work” merely because it exists; it works when learners are able to interpret it, accept it, and translate it into subsequent action. This process is influenced by factors that are not visible on a marked script: confidence, prior knowledge, the perceived credibility of the assessor, and even whether the student believes improvement is possible.\n\nOne widely discussed problem is timing. In many modules, students receive written feedback after an assignment has been graded and the topic has already shifted. Even when comments are thorough, their relevance can feel remote, as if they belong to a past version of the student’s learning. Some institutions have responded by speeding up marking, but a quicker return does not necessarily guarantee engagement. If students view feedback as a post-mortem rather than a resource for future work, they may skim it for the final grade and ignore the rest.\n\nA second issue concerns language. Academic feedback frequently contains compressed professional shorthand, such as “insufficient synthesis” or “weak criticality”. To an experienced academic, these phrases may be precise; to a student, they can be opaque. Moreover, feedback often includes multiple messages at once—praise, criticism, and suggested improvements—without signalling which points matter most. When overwhelmed, learners may default to what is easiest to do, such as correcting minor grammar errors, even if the assessor intended to highlight larger structural issues.\n\nIn response, some educators advocate “feedback literacy”: the capacity to understand feedback, make judgements about it, and use it strategically. This approach treats students not as passive recipients but as active participants. For example, learners can be asked to identify patterns in comments across several assignments, or to write a short action plan specifying how they will apply advice in a subsequent task. Peer review can also contribute, not because classmates are more accurate than instructors, but because reviewing others’ work can sharpen one’s sense of standards.\n\nHowever, critics argue that the burden should not fall entirely on students. If a course requires feedback literacy, then it must be taught explicitly. Otherwise, those who already possess academic cultural capital—students who are familiar with institutional expectations—will gain more than those who do not. Some universities have therefore experimented with dialogue-based feedback: short meetings, audio comments, or online exchanges in which the student can ask questions. The aim is not to remove challenge but to reduce misinterpretation.\n\nA further complication is emotional. Feedback threatens identity: it suggests that an individual’s current performance is inadequate. Even when comments are well-intentioned, students may interpret them as a judgement of ability rather than of a particular piece of work. Research has found that learners are more likely to act on feedback when it is framed as a set of choices—possible routes for development—rather than as a list of deficits. Yet achieving this tone consistently is difficult, especially in large classes.\n\nUltimately, the shift in thinking is subtle but significant: effective feedback is not an object delivered by teachers; it is a relationship between information and action. Universities that want students to benefit must design systems that support interpretation, prioritisation, and application—skills that can be learned, but rarely by accident.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "reading_matching_headings",
+            "prompt": "Paragraph A",
+            "options": [
+              { "key": "i", "text": "Feedback as a relationship rather than a product" },
+              { "key": "ii", "text": "The risk of unequal benefits" },
+              { "key": "iii", "text": "Why speed alone does not solve the problem" },
+              { "key": "iv", "text": "The hidden influences on how feedback is used" },
+              { "key": "v", "text": "The value of peer review for understanding standards" },
+              { "key": "vi", "text": "The emotional cost of being evaluated" },
+              { "key": "vii", "text": "When specialist language becomes a barrier" },
+              { "key": "viii", "text": "Turning comments into a concrete plan" },
+              { "key": "ix", "text": "A historical overview of university assessment" }
+            ],
+            "correctAnswer": "iv"
+          },
+          { "id": 2, "type": "reading_matching_headings", "prompt": "Paragraph B", "options": [
+            { "key": "i", "text": "Feedback as a relationship rather than a product" },
+            { "key": "ii", "text": "The risk of unequal benefits" },
+            { "key": "iii", "text": "Why speed alone does not solve the problem" },
+            { "key": "iv", "text": "The hidden influences on how feedback is used" },
+            { "key": "v", "text": "The value of peer review for understanding standards" },
+            { "key": "vi", "text": "The emotional cost of being evaluated" },
+            { "key": "vii", "text": "When specialist language becomes a barrier" },
+            { "key": "viii", "text": "Turning comments into a concrete plan" },
+            { "key": "ix", "text": "A historical overview of university assessment" }
+          ], "correctAnswer": "iii" },
+          { "id": 3, "type": "reading_matching_headings", "prompt": "Paragraph C", "options": [
+            { "key": "i", "text": "Feedback as a relationship rather than a product" },
+            { "key": "ii", "text": "The risk of unequal benefits" },
+            { "key": "iii", "text": "Why speed alone does not solve the problem" },
+            { "key": "iv", "text": "The hidden influences on how feedback is used" },
+            { "key": "v", "text": "The value of peer review for understanding standards" },
+            { "key": "vi", "text": "The emotional cost of being evaluated" },
+            { "key": "vii", "text": "When specialist language becomes a barrier" },
+            { "key": "viii", "text": "Turning comments into a concrete plan" },
+            { "key": "ix", "text": "A historical overview of university assessment" }
+          ], "correctAnswer": "vii" },
+          { "id": 4, "type": "reading_matching_headings", "prompt": "Paragraph D", "options": [
+            { "key": "i", "text": "Feedback as a relationship rather than a product" },
+            { "key": "ii", "text": "The risk of unequal benefits" },
+            { "key": "iii", "text": "Why speed alone does not solve the problem" },
+            { "key": "iv", "text": "The hidden influences on how feedback is used" },
+            { "key": "v", "text": "The value of peer review for understanding standards" },
+            { "key": "vi", "text": "The emotional cost of being evaluated" },
+            { "key": "vii", "text": "When specialist language becomes a barrier" },
+            { "key": "viii", "text": "Turning comments into a concrete plan" },
+            { "key": "ix", "text": "A historical overview of university assessment" }
+          ], "correctAnswer": "viii" },
+          { "id": 5, "type": "reading_matching_headings", "prompt": "Paragraph E", "options": [
+            { "key": "i", "text": "Feedback as a relationship rather than a product" },
+            { "key": "ii", "text": "The risk of unequal benefits" },
+            { "key": "iii", "text": "Why speed alone does not solve the problem" },
+            { "key": "iv", "text": "The hidden influences on how feedback is used" },
+            { "key": "v", "text": "The value of peer review for understanding standards" },
+            { "key": "vi", "text": "The emotional cost of being evaluated" },
+            { "key": "vii", "text": "When specialist language becomes a barrier" },
+            { "key": "viii", "text": "Turning comments into a concrete plan" },
+            { "key": "ix", "text": "A historical overview of university assessment" }
+          ], "correctAnswer": "ii" },
+          { "id": 6, "type": "reading_matching_headings", "prompt": "Paragraph F", "options": [
+            { "key": "i", "text": "Feedback as a relationship rather than a product" },
+            { "key": "ii", "text": "The risk of unequal benefits" },
+            { "key": "iii", "text": "Why speed alone does not solve the problem" },
+            { "key": "iv", "text": "The hidden influences on how feedback is used" },
+            { "key": "v", "text": "The value of peer review for understanding standards" },
+            { "key": "vi", "text": "The emotional cost of being evaluated" },
+            { "key": "vii", "text": "When specialist language becomes a barrier" },
+            { "key": "viii", "text": "Turning comments into a concrete plan" },
+            { "key": "ix", "text": "A historical overview of university assessment" }
+          ], "correctAnswer": "vi" },
+          { "id": 7, "type": "reading_matching_headings", "prompt": "Paragraph G", "options": [
+            { "key": "i", "text": "Feedback as a relationship rather than a product" },
+            { "key": "ii", "text": "The risk of unequal benefits" },
+            { "key": "iii", "text": "Why speed alone does not solve the problem" },
+            { "key": "iv", "text": "The hidden influences on how feedback is used" },
+            { "key": "v", "text": "The value of peer review for understanding standards" },
+            { "key": "vi", "text": "The emotional cost of being evaluated" },
+            { "key": "vii", "text": "When specialist language becomes a barrier" },
+            { "key": "viii", "text": "Turning comments into a concrete plan" },
+            { "key": "ix", "text": "A historical overview of university assessment" }
+          ], "correctAnswer": "i" },
+          { "id": 8, "type": "reading_t_f_ng", "prompt": "Faster marking always leads to higher student engagement with feedback.", "correctAnswer": "FALSE" },
+          { "id": 9, "type": "reading_t_f_ng", "prompt": "Students sometimes focus on minor corrections even when assessors intend more substantial changes.", "correctAnswer": "TRUE" },
+          { "id": 10, "type": "reading_t_f_ng", "prompt": "Peer review is recommended mainly because students give more accurate comments than teachers.", "correctAnswer": "FALSE" },
+          { "id": 11, "type": "reading_t_f_ng", "prompt": "Dialogue-based feedback is intended to remove difficulty from the learning process.", "correctAnswer": "FALSE" },
+          { "id": 12, "type": "reading_t_f_ng", "prompt": "Students are more likely to act on feedback when it is presented as optional paths for improvement.", "correctAnswer": "TRUE" },
+          { "id": 13, "type": "reading_t_f_ng", "prompt": "The passage suggests that feedback literacy cannot be learned without formal teaching.", "correctAnswer": "NOT GIVEN" }
+        ]
+      },
+      {
+        "title": "Passage 2 – Batteries Beyond Lithium: The Search for Alternative Storage",
+        "text": "As renewable electricity expands, the need to store energy at scale becomes pressing... (A) ... (B) ... (C) ... (D) ... (E) ... (F) ...\n\nA. As renewable electricity expands, the need to store energy at scale becomes pressing. The problem is not merely technical but systemic: wind farms and solar arrays generate power intermittently, while households and industries demand it continuously. For two decades, lithium-ion batteries have been the default answer, powering everything from phones to electric vehicles. Yet their dominance is now being questioned, partly because of the constraints of supply chains and partly because grid storage has different priorities than portable electronics.\n\nB. For grid applications, cost per kilowatt-hour, longevity, and safety often matter more than weight. This has revived interest in chemistries that were previously considered unfashionable. Sodium-ion batteries, for instance, replace lithium with sodium, a far more abundant element. While sodium cells generally have lower energy density, they can be adequate for stationary storage, where a battery’s mass is less critical. Manufacturers have also improved performance by optimising electrode materials that reduce the rapid degradation once associated with sodium designs.\n\nC. Another approach is the flow battery, which stores energy in liquid electrolytes kept in external tanks. Because the energy capacity depends largely on tank size, flow systems can be expanded more easily than conventional cells. Their architecture also separates power (the rate of charge and discharge) from capacity (how much energy is stored), allowing engineers to tailor installations to local needs. However, flow batteries can be expensive, and the chemicals used may be corrosive, requiring robust maintenance regimes.\n\nD. Meanwhile, researchers are exploring “solid-state” variants of existing batteries... prototypes often look promising in laboratories but struggle in real-world conditions.\n\nE. Beyond chemistry, there is the question of how storage integrates with the grid. Some analysts argue that focusing only on batteries is misguided. Demand-response programmes can shift consumption to times of high generation, reducing the amount of storage required...\n\nF. Still, the search for alternatives continues because no single technology can satisfy all scenarios. The most likely future is plural: a mix of storage systems...",
+        "questions": [
+          {
+            "id": 14,
+            "type": "reading_matching_information",
+            "prompt": "A storage technology whose capacity can be increased by enlarging a separate component",
+            "options": [
+              { "key": "A", "text": "Paragraph A" },
+              { "key": "B", "text": "Paragraph B" },
+              { "key": "C", "text": "Paragraph C" },
+              { "key": "D", "text": "Paragraph D" },
+              { "key": "E", "text": "Paragraph E" },
+              { "key": "F", "text": "Paragraph F" }
+            ],
+            "correctAnswer": "C"
+          },
+          { "id": 15, "type": "reading_matching_information", "prompt": "A reason why weight is less important for some storage uses", "options": [
+            { "key": "A", "text": "Paragraph A" },
+            { "key": "B", "text": "Paragraph B" },
+            { "key": "C", "text": "Paragraph C" },
+            { "key": "D", "text": "Paragraph D" },
+            { "key": "E", "text": "Paragraph E" },
+            { "key": "F", "text": "Paragraph F" }
+          ], "correctAnswer": "B" },
+          { "id": 16, "type": "reading_matching_information", "prompt": "A warning that laboratory success may not translate to practical success", "options": [
+            { "key": "A", "text": "Paragraph A" },
+            { "key": "B", "text": "Paragraph B" },
+            { "key": "C", "text": "Paragraph C" },
+            { "key": "D", "text": "Paragraph D" },
+            { "key": "E", "text": "Paragraph E" },
+            { "key": "F", "text": "Paragraph F" }
+          ], "correctAnswer": "D" },
+          { "id": 17, "type": "reading_matching_information", "prompt": "The idea that reducing demand at certain times can reduce storage needs", "options": [
+            { "key": "A", "text": "Paragraph A" },
+            { "key": "B", "text": "Paragraph B" },
+            { "key": "C", "text": "Paragraph C" },
+            { "key": "D", "text": "Paragraph D" },
+            { "key": "E", "text": "Paragraph E" },
+            { "key": "F", "text": "Paragraph F" }
+          ], "correctAnswer": "E" },
+          { "id": 18, "type": "reading_matching_information", "prompt": "An explanation of how two different performance features can be adjusted independently", "options": [
+            { "key": "A", "text": "Paragraph A" },
+            { "key": "B", "text": "Paragraph B" },
+            { "key": "C", "text": "Paragraph C" },
+            { "key": "D", "text": "Paragraph D" },
+            { "key": "E", "text": "Paragraph E" },
+            { "key": "F", "text": "Paragraph F" }
+          ], "correctAnswer": "C" },
+          { "id": 19, "type": "reading_matching_information", "prompt": "A prediction that multiple technologies will probably be used in the future", "options": [
+            { "key": "A", "text": "Paragraph A" },
+            { "key": "B", "text": "Paragraph B" },
+            { "key": "C", "text": "Paragraph C" },
+            { "key": "D", "text": "Paragraph D" },
+            { "key": "E", "text": "Paragraph E" },
+            { "key": "F", "text": "Paragraph F" }
+          ], "correctAnswer": "F" },
+          { "id": 20, "type": "reading_summary_completion", "prompt": "For large-scale storage, priorities include lower ____.", "constraints": "ONE WORD ONLY", "correctAnswer": "cost" },
+          { "id": 21, "type": "reading_summary_completion", "prompt": "Sodium is more ____ than lithium.", "constraints": "ONE WORD ONLY", "correctAnswer": "abundant" },
+          { "id": 22, "type": "reading_summary_completion", "prompt": "Flow batteries store energy in ____.", "constraints": "ONE WORD ONLY", "correctAnswer": "liquid" },
+          { "id": 23, "type": "reading_summary_completion", "prompt": "The chemicals used may be ____.", "constraints": "ONE WORD ONLY", "correctAnswer": "corrosive" },
+          { "id": 24, "type": "reading_summary_completion", "prompt": "Solid-state batteries aim to reduce ____ risk.", "constraints": "ONE WORD ONLY", "correctAnswer": "fire" },
+          { "id": 25, "type": "reading_summary_completion", "prompt": "Improved transmission and ____-response can reduce reliance on batteries.", "constraints": "ONE WORD ONLY", "correctAnswer": "demand" }
+        ]
+      },
+      {
+        "title": "Passage 3 – The Social Life of Algorithms",
+        "text": "Algorithms are often discussed as if they were neutral tools... (full passage provided in the RAW TEXT source).",
+        "questions": [
+          {
+            "id": 26,
+            "type": "reading_multiple_choice",
+            "prompt": "In the recruitment example, bias can occur because",
+            "options": [
+              { "key": "A", "text": "programmers always include discriminatory rules" },
+              { "key": "B", "text": "the system learns indirect indicators linked to advantage" },
+              { "key": "C", "text": "gender is the strongest predictor of job performance" },
+              { "key": "D", "text": "applicants provide inaccurate information" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 27,
+            "type": "reading_multiple_choice",
+            "prompt": "Algorithmic influence is often unnoticed because",
+            "options": [
+              { "key": "A", "text": "users refuse to read instructions" },
+              { "key": "B", "text": "recommendations are always correct" },
+              { "key": "C", "text": "behaviour changes through repeated small signals" },
+              { "key": "D", "text": "platforms conceal all ranking systems" }
+            ],
+            "correctAnswer": "C"
+          },
+          {
+            "id": 28,
+            "type": "reading_multiple_choice",
+            "prompt": "Transparency is difficult partly because",
+            "options": [
+              { "key": "A", "text": "companies never use proprietary data" },
+              { "key": "B", "text": "complex models may not be understandable to non-specialists" },
+              { "key": "C", "text": "source code is illegal to publish" },
+              { "key": "D", "text": "regulators do not care about fairness" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 29,
+            "type": "reading_multiple_choice",
+            "prompt": "What limitation of explainability is mentioned?",
+            "options": [
+              { "key": "A", "text": "Accurate explanations are always easy to understand" },
+              { "key": "B", "text": "Simplified explanations can be misleading" },
+              { "key": "C", "text": "Explainability guarantees fairness" },
+              { "key": "D", "text": "Explainability is irrelevant to performance" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 30,
+            "type": "reading_multiple_choice",
+            "prompt": "Auditing can be undermined when",
+            "options": [
+              { "key": "A", "text": "auditors are given too much data" },
+              { "key": "B", "text": "companies choose metrics that conceal unequal performance" },
+              { "key": "C", "text": "proprietary systems are fully disclosed" },
+              { "key": "D", "text": "models are too interpretable" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 31,
+            "type": "reading_multiple_choice",
+            "prompt": "“Gaming” the system refers to",
+            "options": [
+              { "key": "A", "text": "using entertainment algorithms at work" },
+              { "key": "B", "text": "optimising behaviour to satisfy algorithmic criteria" },
+              { "key": "C", "text": "deleting data to avoid being ranked" },
+              { "key": "D", "text": "refusing to use any platforms" }
+            ],
+            "correctAnswer": "B"
+          },
+          {
+            "id": 32,
+            "type": "reading_multiple_choice",
+            "prompt": "The final paragraph argues accountability must remain human because",
+            "options": [
+              { "key": "A", "text": "algorithms cannot be audited" },
+              { "key": "B", "text": "technology will stop developing" },
+              { "key": "C", "text": "otherwise responsibility becomes unclear when harm occurs" },
+              { "key": "D", "text": "legal frameworks are unnecessary" }
+            ],
+            "correctAnswer": "C"
+          },
+          { "id": 33, "type": "reading_short_answer", "prompt": "What kind of data may act as “proxies” for social advantage in recruitment systems?", "constraints": "NO MORE THAN THREE WORDS", "correctAnswer": "postcode data" },
+          { "id": 34, "type": "reading_short_answer", "prompt": "What can shift over time through repeated nudges?", "constraints": "NO MORE THAN THREE WORDS", "correctAnswer": "attention" },
+          { "id": 35, "type": "reading_short_answer", "prompt": "Who can test systems for disparate impact and robustness?", "constraints": "NO MORE THAN THREE WORDS", "correctAnswer": "independent auditors" },
+          { "id": 36, "type": "reading_short_answer", "prompt": "What may become narrower when creators tailor outputs to platform rewards?", "constraints": "NO MORE THAN THREE WORDS", "correctAnswer": "diversity" },
+          { "id": 37, "type": "reading_t_f_ng", "prompt": "Algorithms always reduce inequality if sensitive categories are removed.", "correctAnswer": "FALSE" },
+          { "id": 38, "type": "reading_t_f_ng", "prompt": "Publishing source code is sufficient for meaningful transparency.", "correctAnswer": "FALSE" },
+          { "id": 39, "type": "reading_t_f_ng", "prompt": "Explainable models are always less accurate than complex models.", "correctAnswer": "NOT GIVEN" },
+          { "id": 40, "type": "reading_t_f_ng", "prompt": "Technical solutions alone are unlikely to govern algorithmic power adequately.", "correctAnswer": "TRUE" }
+        ]
+      }
+    ]
+  },
+  "writing": {
+    "task1": {
+      "prompt": "The table below shows the percentages of students in a UK university who used four different study resources in 2005, 2015, and 2025. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+      "datasetText": "Printed textbooks: 82% (2005), 64% (2015), 41% (2025)\nLibrary physical loans: 56% (2005), 38% (2015), 22% (2025)\nOnline academic journals: 34% (2005), 57% (2015), 76% (2025)\nRecorded lectures: 12% (2005), 46% (2015), 69% (2025)",
+      "modelAnswerBand7": "The table compares the proportions of students at a UK university who regularly used four study resources in 2005, 2015 and 2025.\n\nOverall, there is a clear shift away from traditional, physical materials towards digital resources. In particular, the use of printed textbooks and library loans declined steadily over the period, whereas online journals and recorded lectures became far more common.\n\nIn 2005, printed textbooks were the dominant resource, used by 82% of students, and over half (56%) also relied on borrowing physical items from the library. By 2015, both figures had fallen notably, to 64% and 38% respectively, indicating reduced dependence on printed and loaned materials even before 2025.\n\nBy contrast, digital resources rose sharply. The proportion using online academic journals increased from 34% in 2005 to 57% in 2015, reaching 76% by 2025, making it the most widely used resource at the end of the period. Recorded lectures showed the most dramatic growth, climbing from just 12% in 2005 to 46% in 2015 and then to 69% in 2025. By 2025, both digital options were used by a clear majority of students, while the two traditional resources were used by fewer than half."
+    },
+    "task2": {
+      "prompt": "Some people believe that universities should require all students to complete a period of unpaid community work as part of their degree. Others argue that this would place an unfair burden on students.\n\nDiscuss both views and give your own opinion.",
+      "modelAnswerBand7": "The idea of making unpaid community work compulsory for all university students is controversial. Supporters argue that it would benefit society and help students develop, while opponents contend that it could be unfair and impractical. This essay will discuss both perspectives before explaining why I believe community engagement should be strongly encouraged but not universally required.\n\nOn the one hand, compulsory service could produce clear social and educational gains. Universities do not exist in isolation; they are funded, directly or indirectly, by the wider public, and students may reasonably be expected to contribute in return. Community work can also cultivate transferable skills such as teamwork, communication and reliability, which are not always developed through academic study alone. Furthermore, structured placements may expose students to social issues beyond their campus experience, potentially making them more empathetic citizens and, in some fields such as education or health, more effective professionals.\n\nOn the other hand, a blanket requirement risks disadvantaging certain groups. Many students already juggle part-time jobs, caring responsibilities, or long commutes, and adding unpaid work could reduce their ability to support themselves financially. There is also the question of quality and oversight. If placements are introduced at scale, some students may be assigned tasks that are repetitive or poorly supervised, turning the requirement into a box-ticking exercise rather than meaningful service. Finally, students’ degrees vary considerably; imposing identical conditions on all programmes may ignore legitimate differences in workload and scheduling.\n\nIn my view, universities should provide well-designed opportunities and incentives for community work, but participation should remain flexible. For example, institutions could offer credit-bearing modules, paid placements for students with financial constraints, or alternative forms of contribution such as research support for local organisations. In this way, community engagement can be widened without becoming an unfair obligation."
+    },
+    "bandRubricSummary": {
+      "taskAchievement": "Band 6: addresses task; overview present but may be unclear; some key features supported; position relevant but underdeveloped. Band 7: clear overview/position; key features/ideas selected well; extends and supports main points; addresses all parts.",
+      "coherenceCohesion": "Band 6: generally clear organisation; some cohesion errors; paragraphing may be mechanical. Band 7: logically organised; clear progression; effective paragraphing; cohesive devices used with control.",
+      "lexicalResource": "Band 6: adequate range; some inaccuracies; repetition. Band 7: sufficient range; good collocation control; flexible paraphrasing; occasional errors.",
+      "grammar": "Band 6: mix of simple/complex; errors occur but meaning clear. Band 7: varied complex structures; good control; occasional non-systematic errors."
+    }
+  },
+  "speaking": {
+    "part1": {
+      "topics": [
+        {
+          "title": "Home and neighbourhood",
+          "questions": [
+            "Where do you live at the moment?",
+            "What do you like most about your area?",
+            "Is there anything you would like to change about your neighbourhood? Why?",
+            "Do you prefer living in a busy place or a quiet place?",
+            "How has your neighbourhood changed in recent years?"
+          ],
+          "sampleAnswersBand7": [
+            "I’m currently living in a fairly residential area on the edge of the city. It’s not right in the centre, but it’s close enough that I can get there in, say, twenty minutes by bus.",
+            "Probably the convenience. There are small supermarkets and cafés within walking distance, and at the same time it’s still quite green, so it doesn’t feel too crowded."
+          ]
+        },
+        {
+          "title": "Studying",
+          "questions": [
+            "Do you study best in the morning or at night?",
+            "What kind of place do you usually study in?",
+            "Do you prefer studying alone or with other people?",
+            "What is one thing that distracts you when you study?",
+            "Have your study habits changed since you were younger?"
+          ],
+          "sampleAnswersBand7": [
+            "Definitely in the morning. At night I’m… I’m not useless, but my concentration drops quite quickly.",
+            "My phone, honestly. Even if I don’t open it, just seeing notifications pop up breaks my focus."
+          ]
+        }
+      ]
+    },
+    "part2": {
+      "cueCard": "Describe a time when you learned something useful outside a classroom.\n\nYou should say:\n- what you learned\n- how you learned it\n- why you wanted to learn it\n- and explain how it has been useful to you",
+      "preparationNotesExample": [
+        "Learned: basic photo editing (light, contrast, cropping)",
+        "How: online tutorials + practising on my own photos",
+        "Useful: confidence, faster workflow, understanding of visual storytelling"
+      ],
+      "sampleAnswerBand7": "Let me think… A good example is when I learned basic photo editing, not in a formal class but through online tutorials. I’d taken a lot of photos during a trip, and I realised they didn’t look as good as I expected—some were too dark, and the colours felt a bit flat. So I started watching short videos on how to adjust exposure, contrast and colour balance, and I practised on my own pictures as I went.\n\nAt first it was quite slow because I kept second-guessing myself—like, I’d change the brightness and then undo it because it looked unnatural. But after a few weeks I began to understand what “looks right”, especially for landscapes and portraits. I wanted to learn it mainly because I didn’t want my photos to just sit on my phone; I wanted them to look presentable, maybe even good enough to share.\n\nIt’s been useful in a couple of ways. Practically, I can now fix common issues very quickly, so I don’t waste time. And more broadly, it changed how I take photos in the first place, because I pay attention to light and composition. So it wasn’t only a technical skill; it improved my judgement as well."
+    },
+    "part3": {
+      "questions": [
+        "Why do some people learn more effectively outside formal education?",
+        "How has technology changed the way people learn new skills?",
+        "Do you think employers value informal learning as much as formal qualifications? Why/why not?",
+        "In the future, will universities become less important?",
+        "What are the possible disadvantages of relying heavily on online learning?"
+      ],
+      "sampleAnswersBand7": [
+        "I think it’s partly motivation. If you choose to learn something yourself, you’re usually genuinely interested, so you persist even when it’s difficult. Also, outside a classroom you can learn at your own pace instead of following a fixed syllabus.",
+        "Massively. You can learn almost anything from step-by-step videos, forums and even short courses. The difference is that learning is more immediate—you can watch, try it, fail, and then correct yourself straight away."
+      ]
+    }
+  },
+  "answerKeys": {
+    "listening": [
+      "12th",
+      "ten / 10",
+      "Emily",
+      "R",
+      "07958 214 603",
+      "emily.hart72",
+      "B",
+      "B",
+      "B",
+      "A",
+      "G",
+      "A",
+      "H",
+      "E",
+      "C",
+      "F",
+      "D",
+      "B",
+      "E",
+      "F",
+      "B",
+      "B",
+      "B",
+      "A",
+      "C",
+      "B",
+      "open-plan",
+      "25",
+      "memory",
+      "4 to 6",
+      "flooding",
+      "property",
+      "transport",
+      "matched",
+      "services",
+      "erosion",
+      "ownership",
+      "trust",
+      "public",
+      "before"
+    ],
+    "reading": [
+      "iv",
+      "iii",
+      "vii",
+      "viii",
+      "ii",
+      "vi",
+      "i",
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "NOT GIVEN",
+      "C",
+      "B",
+      "D",
+      "E",
+      "C",
+      "F",
+      "cost",
+      "abundant",
+      "liquid",
+      "corrosive",
+      "fire",
+      "demand",
+      "B",
+      "C",
+      "B",
+      "B",
+      "B",
+      "B",
+      "C",
+      "postcode data",
+      "attention",
+      "independent auditors",
+      "diversity",
+      "FALSE",
+      "FALSE",
+      "NOT GIVEN",
+      "TRUE"
+    ]
+  },
+  "bandGuide": {
+    "listeningReadingRawToBand": [
+      { "min": 39, "max": 40, "band": 9.0 },
+      { "min": 37, "max": 38, "band": 8.5 },
+      { "min": 35, "max": 36, "band": 8.0 },
+      { "min": 32, "max": 34, "band": 7.5 },
+      { "min": 30, "max": 31, "band": 7.0 },
+      { "min": 26, "max": 29, "band": 6.5 },
+      { "min": 23, "max": 25, "band": 6.0 },
+      { "min": 19, "max": 22, "band": 5.5 },
+      { "min": 15, "max": 18, "band": 5.0 },
+      { "min": 13, "max": 14, "band": 4.5 },
+      { "min": 10, "max": 12, "band": 4.0 }
+    ]
+  },
+  "examinerNotes": {
+    "commonMistakes": [
+      "Listening: missing last-moment corrections (dates/times), spelling errors in names/emails, confusion in plan orientation.",
+      "Reading: choosing headings from keywords (partial match trap), confusing NOT GIVEN with FALSE, picking synonyms rather than exact words for summary completion.",
+      "Writing: Task 1 missing overview, listing without comparisons; Task 2 addressing only one view and unclear position.",
+      "Speaking: over-memorised answers, limited development in Part 3, coherence loss under abstract questions."
+    ],
+    "differentiation": [
+      "Listening Section 2 and Section 4 differentiate band 6 vs 7+ through spatial language and academic paraphrase.",
+      "Reading Passage 3 differentiates higher bands via referencing, nuance, and NOT GIVEN control."
+    ]
+  }
+}
+
