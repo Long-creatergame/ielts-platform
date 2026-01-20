@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const fs = require('fs');
 
 const V2TestSession = require('../models/TestSession');
 const V2SpeakingAttempt = require('../models/SpeakingAttempt');
@@ -6,9 +7,33 @@ const V2ScoreReport = require('../models/ScoreReport');
 const V2StudentProfile = require('../models/StudentProfile');
 
 const { scoreSpeaking } = require('../scoring/speakingPipeline');
+const OpenAI = require('openai');
 
 function hashTranscript(text) {
   return crypto.createHash('sha256').update(String(text || '')).digest('hex');
+}
+
+function createOpenAI() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
+  });
+}
+
+async function transcribeAudioFile(filePath) {
+  if (!process.env.OPENAI_API_KEY) {
+    const err = new Error('AI scoring not configured');
+    err.statusCode = 503;
+    err.publicMessage = 'AI (ASR) is not configured on the server.';
+    throw err;
+  }
+  const openai = createOpenAI();
+  const model = process.env.OPENAI_ASR_MODEL || 'whisper-1';
+  const resp = await openai.audio.transcriptions.create({
+    file: fs.createReadStream(filePath),
+    model,
+  });
+  return (resp && resp.text) || '';
 }
 
 async function ensureProfile(userId) {
@@ -89,6 +114,96 @@ exports.submitSpeakingAttempt = async (req, res, next) => {
     attempt.submittedAt = new Date();
     attempt.status = 'submitted';
     attempt.clientMeta = clientMeta || {};
+    await attempt.save();
+
+    const inputHash = hashTranscript(`${attempt.cueCardText}|||${transcript}`);
+    const existing = await V2ScoreReport.findOne({ module: 'speaking', inputHash }).lean();
+    if (existing) {
+      attempt.scoreReportId = existing._id;
+      await attempt.save();
+      return res.json({ success: true, data: existing.report, cached: true });
+    }
+
+    const last = await V2ScoreReport.findOne({ userId, module: 'speaking' }).sort({ createdAt: -1 }).lean();
+    const lastReport = last?.report || null;
+
+    const scored = await scoreSpeaking({
+      cueCardText: attempt.cueCardText,
+      transcript,
+      lastReport,
+    });
+
+    const scoreDoc = await V2ScoreReport.create({
+      userId,
+      module: 'speaking',
+      attemptId: attempt._id,
+      inputHash: scored.inputHash,
+      promptVersion: scored.promptVersion,
+      model: scored.model,
+      temperature: scored.temperature,
+      report: scored.report,
+    });
+
+    attempt.scoreReportId = scoreDoc._id;
+    await attempt.save();
+
+    const profile = await ensureProfile(userId);
+    profile.abilityHistory.push({
+      at: new Date(),
+      module: 'speaking',
+      overallBand: scored.report.overall_band,
+      criteria: scored.report.criteria,
+    });
+    profile.recurringWeaknesses = mergeWeaknesses(profile.recurringWeaknesses || [], scored.report.top_3_weaknesses);
+    profile.plan7Days = scored.report.next_steps_7_days;
+    profile.lastUpdatedAt = new Date();
+    await profile.save();
+
+    return res.json({ success: true, data: scored.report, cached: false });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// Audio upload path: (1) store audio, (2) ASR transcript, (3) score.
+exports.submitSpeakingAttemptAudio = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const attempt = await V2SpeakingAttempt.findById(req.params.id);
+    if (!attempt || String(attempt.userId) !== String(userId)) {
+      return res.status(404).json({ success: false, message: 'Attempt not found' });
+    }
+    if (attempt.status === 'submitted') {
+      if (attempt.scoreReportId) {
+        const report = await V2ScoreReport.findById(attempt.scoreReportId).lean();
+        return res.json({ success: true, data: report?.report, cached: true });
+      }
+      return res.status(409).json({ success: false, message: 'Attempt already submitted' });
+    }
+
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ success: false, message: 'Missing audio file' });
+    }
+
+    // Save audio metadata (local storage)
+    attempt.audio = {
+      storage: 'local',
+      url: undefined,
+      mimeType: req.file.mimetype,
+      durationSeconds: undefined,
+    };
+
+    const transcript = (await transcribeAudioFile(req.file.path)).trim();
+    if (!transcript || transcript.length < 20) {
+      const err = new Error('ASR transcript too short');
+      err.statusCode = 502;
+      err.publicMessage = 'Could not transcribe audio reliably. Please try again.';
+      throw err;
+    }
+
+    attempt.transcript = transcript;
+    attempt.submittedAt = new Date();
+    attempt.status = 'submitted';
     await attempt.save();
 
     const inputHash = hashTranscript(`${attempt.cueCardText}|||${transcript}`);
