@@ -1,6 +1,20 @@
 import Joyride, { STATUS, EVENTS } from 'react-joyride';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function OnboardingTour({ steps, run, onFinish, onSkip }) {
+  const { t } = useTranslation();
+  const locale = useMemo(
+    () => ({
+      back: t('joyride.back', { defaultValue: 'Back' }),
+      close: t('joyride.close', { defaultValue: 'Close' }),
+      last: t('joyride.last', { defaultValue: 'Done' }),
+      next: t('joyride.next', { defaultValue: 'Next' }),
+      skip: t('joyride.skip', { defaultValue: 'Skip' }),
+    }),
+    [t]
+  );
+
   return (
     <Joyride
       steps={steps}
@@ -16,13 +30,7 @@ export default function OnboardingTour({ steps, run, onFinish, onSkip }) {
           textColor: '#0f172a',
         },
       }}
-      locale={{
-        back: 'Quay lại',
-        close: 'Đóng',
-        last: 'Xong',
-        next: 'Tiếp',
-        skip: 'Bỏ qua',
-      }}
+      locale={locale}
       callback={(data) => {
         const { status, type } = data;
 

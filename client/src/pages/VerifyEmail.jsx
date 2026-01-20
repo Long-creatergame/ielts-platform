@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../lib/axios';
 
 function useQuery() {
@@ -8,6 +9,7 @@ function useQuery() {
 }
 
 export default function VerifyEmail() {
+  const { t } = useTranslation();
   const query = useQuery();
   const token = query.get('token') || '';
 
@@ -19,7 +21,7 @@ export default function VerifyEmail() {
     const run = async () => {
       if (!token) {
         setStatus('error');
-        setMessage('Missing verification token.');
+        setMessage(t('verifyEmail.missingToken'));
         return;
       }
       try {
@@ -27,11 +29,11 @@ export default function VerifyEmail() {
         const { data } = await api.get('/auth/verify-email', { params: { token } });
         if (cancelled) return;
         setStatus('success');
-        setMessage(data?.message || 'Email verified successfully.');
+        setMessage(data?.message || t('verifyEmail.success'));
       } catch (err) {
         if (cancelled) return;
         setStatus('error');
-        setMessage(err.response?.data?.message || 'Unable to verify email.');
+        setMessage(err.response?.data?.message || t('verifyEmail.error'));
       }
     };
     run();
@@ -43,17 +45,17 @@ export default function VerifyEmail() {
   return (
     <div className="app-container min-h-screen flex items-center justify-center">
       <div className="card w-full max-w-md p-8 space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900">Verify email</h1>
-        {status === 'loading' && <p className="text-gray-600">Verifying…</p>}
+        <h1 className="text-2xl font-bold text-gray-900">{t('verifyEmail.title')}</h1>
+        {status === 'loading' && <p className="text-gray-600">{t('verifyEmail.verifying')}</p>}
         {status !== 'loading' && (
           <p className={status === 'success' ? 'text-green-700' : 'text-red-600'}>{message}</p>
         )}
         <div className="pt-2 flex gap-3">
           <Link to="/login" className="btn-primary px-4 py-2">
-            Go to login
+            {t('verifyEmail.goToLogin')}
           </Link>
           <Link to="/" className="btn-secondary px-4 py-2">
-            Home
+            {t('verifyEmail.home')}
           </Link>
         </div>
       </div>

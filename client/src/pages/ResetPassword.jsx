@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../lib/axios';
 
 function useQuery() {
@@ -8,6 +9,7 @@ function useQuery() {
 }
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const query = useQuery();
   const token = query.get('token') || '';
   const email = query.get('email') || '';
@@ -24,12 +26,12 @@ export default function ResetPassword() {
 
     if (!token || !email) {
       setStatus('error');
-      setMessage('Missing token or email.');
+      setMessage(t('resetPassword.missingTokenOrEmail'));
       return;
     }
     if (!newPassword || newPassword.length < 6) {
       setStatus('error');
-      setMessage('Password must be at least 6 characters.');
+      setMessage(t('resetPassword.passwordTooShort'));
       return;
     }
 
@@ -37,10 +39,10 @@ export default function ResetPassword() {
       setLoading(true);
       const { data } = await api.post('/auth/reset-password/confirm', { email, token, newPassword });
       setStatus('success');
-      setMessage(data?.message || 'Password reset successfully.');
+      setMessage(data?.message || t('resetPassword.success'));
     } catch (err) {
       setStatus('error');
-      setMessage(err.response?.data?.message || 'Unable to reset password.');
+      setMessage(err.response?.data?.message || t('resetPassword.error'));
     } finally {
       setLoading(false);
     }
@@ -50,8 +52,8 @@ export default function ResetPassword() {
     <div className="app-container min-h-screen flex items-center justify-center">
       <div className="card w-full max-w-md p-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reset password</h1>
-          <p className="text-gray-600">Choose a new password for your account.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('resetPassword.title')}</h1>
+          <p className="text-gray-600">{t('resetPassword.subtitle')}</p>
         </div>
 
         {status !== 'idle' && (
@@ -60,25 +62,25 @@ export default function ResetPassword() {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium mb-1">New password</label>
+            <label className="block text-sm font-medium mb-1">{t('resetPassword.newPasswordLabel')}</label>
             <input
               type="password"
               className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder={t('resetPassword.newPasswordPlaceholder')}
               required
             />
           </div>
           <button type="submit" className="btn-primary w-full py-3" disabled={loading}>
-            {loading ? 'Resetting…' : 'Reset password'}
+            {loading ? t('resetPassword.resetting') : t('resetPassword.submit')}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-600">
-          Back to{' '}
+          {t('resetPassword.backTo')}{' '}
           <Link to="/login" className="text-blue-600 hover:underline">
-            Sign in
+            {t('resetPassword.signIn')}
           </Link>
         </p>
       </div>
