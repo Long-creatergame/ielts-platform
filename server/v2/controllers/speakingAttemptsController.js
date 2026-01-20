@@ -1,0 +1,142 @@
+const crypto = require('crypto');
+
+const V2TestSession = require('../models/TestSession');
+const V2SpeakingAttempt = require('../models/SpeakingAttempt');
+const V2ScoreReport = require('../models/ScoreReport');
+const V2StudentProfile = require('../models/StudentProfile');
+
+const { scoreSpeaking } = require('../scoring/speakingPipeline');
+
+function hashTranscript(text) {
+  return crypto.createHash('sha256').update(String(text || '')).digest('hex');
+}
+
+async function ensureProfile(userId) {
+  const existing = await V2StudentProfile.findOne({ userId });
+  if (existing) return existing;
+  return V2StudentProfile.create({ userId });
+}
+
+function mergeWeaknesses(existing, incoming) {
+  const next = [...existing];
+  for (const w of incoming) {
+    const idx = next.findIndex((x) => x.area === w.area && x.pattern === w.pattern);
+    if (idx >= 0) {
+      next[idx].count = (next[idx].count || 1) + 1;
+      next[idx].lastSeenAt = new Date();
+      next[idx].impact = w.impact;
+    } else {
+      next.push({ ...w, count: 1, lastSeenAt: new Date() });
+    }
+  }
+  next.sort((a, b) => (b.count || 0) - (a.count || 0));
+  return next.slice(0, 12);
+}
+
+exports.startSpeakingAttempt = async (req, res) => {
+  const userId = req.user._id;
+  const { sessionId } = req.body;
+
+  const session = await V2TestSession.findById(sessionId).lean();
+  if (!session || String(session.userId) !== String(userId) || session.module !== 'speaking') {
+    return res.status(404).json({ success: false, message: 'Session not found' });
+  }
+
+  const attempt = await V2SpeakingAttempt.create({
+    userId,
+    sessionId: session._id,
+    cueCardText: session.promptText,
+    timeLimitSeconds: session.timeLimitSeconds,
+  });
+
+  return res.json({
+    success: true,
+    data: {
+      attemptId: attempt._id,
+      cueCardText: attempt.cueCardText,
+      timeLimitSeconds: attempt.timeLimitSeconds,
+      startedAt: attempt.startedAt,
+    },
+  });
+};
+
+exports.getSpeakingAttempt = async (req, res) => {
+  const userId = String(req.user._id);
+  const attempt = await V2SpeakingAttempt.findById(req.params.id).lean();
+  if (!attempt || String(attempt.userId) !== userId) {
+    return res.status(404).json({ success: false, message: 'Attempt not found' });
+  }
+  return res.json({ success: true, data: attempt });
+};
+
+exports.submitSpeakingAttempt = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const attempt = await V2SpeakingAttempt.findById(req.params.id);
+    if (!attempt || String(attempt.userId) !== String(userId)) {
+      return res.status(404).json({ success: false, message: 'Attempt not found' });
+    }
+    if (attempt.status === 'submitted') {
+      if (attempt.scoreReportId) {
+        const report = await V2ScoreReport.findById(attempt.scoreReportId).lean();
+        return res.json({ success: true, data: report?.report, cached: true });
+      }
+      return res.status(409).json({ success: false, message: 'Attempt already submitted' });
+    }
+
+    const { transcript, clientMeta } = req.body;
+    attempt.transcript = transcript;
+    attempt.submittedAt = new Date();
+    attempt.status = 'submitted';
+    attempt.clientMeta = clientMeta || {};
+    await attempt.save();
+
+    const inputHash = hashTranscript(`${attempt.cueCardText}|||${transcript}`);
+    const existing = await V2ScoreReport.findOne({ module: 'speaking', inputHash }).lean();
+    if (existing) {
+      attempt.scoreReportId = existing._id;
+      await attempt.save();
+      return res.json({ success: true, data: existing.report, cached: true });
+    }
+
+    const last = await V2ScoreReport.findOne({ userId, module: 'speaking' }).sort({ createdAt: -1 }).lean();
+    const lastReport = last?.report || null;
+
+    const scored = await scoreSpeaking({
+      cueCardText: attempt.cueCardText,
+      transcript,
+      lastReport,
+    });
+
+    const scoreDoc = await V2ScoreReport.create({
+      userId,
+      module: 'speaking',
+      attemptId: attempt._id,
+      inputHash: scored.inputHash,
+      promptVersion: scored.promptVersion,
+      model: scored.model,
+      temperature: scored.temperature,
+      report: scored.report,
+    });
+
+    attempt.scoreReportId = scoreDoc._id;
+    await attempt.save();
+
+    const profile = await ensureProfile(userId);
+    profile.abilityHistory.push({
+      at: new Date(),
+      module: 'speaking',
+      overallBand: scored.report.overall_band,
+      criteria: scored.report.criteria,
+    });
+    profile.recurringWeaknesses = mergeWeaknesses(profile.recurringWeaknesses || [], scored.report.top_3_weaknesses);
+    profile.plan7Days = scored.report.next_steps_7_days;
+    profile.lastUpdatedAt = new Date();
+    await profile.save();
+
+    return res.json({ success: true, data: scored.report, cached: false });
+  } catch (err) {
+    return next(err);
+  }
+};
+

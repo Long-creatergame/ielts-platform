@@ -29,7 +29,8 @@ router.get('/:userId', auth, async (req, res) => {
 
 // Helper function to generate progress data
 function generateProgressData(tests, userId) {
-  const completedTests = tests.filter(test => test.status === 'completed');
+  // Support both legacy `status` and current schema (`completed` boolean).
+  const completedTests = tests.filter((test) => test?.completed === true || test?.status === 'completed');
   
   // Generate daily progress for last 30 days
   const dailyProgress = generateDailyProgress(completedTests);
@@ -74,19 +75,19 @@ function generateDailyProgress(completedTests) {
     const speakingTests = dayTests.filter(test => test.skill === 'speaking');
     
     const reading = readingTests.length > 0 
-      ? readingTests.reduce((sum, test) => sum + (test.bandScore || 0), 0) / readingTests.length 
+      ? readingTests.reduce((sum, test) => sum + (Number(test.totalBand || test.bandScore || 0) || 0), 0) / readingTests.length 
       : null;
     
     const writing = writingTests.length > 0 
-      ? writingTests.reduce((sum, test) => sum + (test.bandScore || 0), 0) / writingTests.length 
+      ? writingTests.reduce((sum, test) => sum + (Number(test.totalBand || test.bandScore || 0) || 0), 0) / writingTests.length 
       : null;
     
     const listening = listeningTests.length > 0 
-      ? listeningTests.reduce((sum, test) => sum + (test.bandScore || 0), 0) / listeningTests.length 
+      ? listeningTests.reduce((sum, test) => sum + (Number(test.totalBand || test.bandScore || 0) || 0), 0) / listeningTests.length 
       : null;
     
     const speaking = speakingTests.length > 0 
-      ? speakingTests.reduce((sum, test) => sum + (test.bandScore || 0), 0) / speakingTests.length 
+      ? speakingTests.reduce((sum, test) => sum + (Number(test.totalBand || test.bandScore || 0) || 0), 0) / speakingTests.length 
       : null;
     
     const overall = [reading, writing, listening, speaking]
@@ -114,7 +115,7 @@ function calculateSkillBreakdown(completedTests) {
   
   skills.forEach(skill => {
     const skillTests = completedTests.filter(test => test.skill === skill);
-    const scores = skillTests.map(test => test.bandScore || 0);
+    const scores = skillTests.map((test) => Number(test.totalBand || test.bandScore || 0) || 0);
     
     const current = scores.length > 0 
       ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 
@@ -201,7 +202,7 @@ function generateAchievements(completedTests, allTests) {
   }
   
   // Score achievements
-  const maxScore = Math.max(...completedTests.map(test => test.bandScore || 0));
+  const maxScore = Math.max(...completedTests.map((test) => Number(test.totalBand || test.bandScore || 0) || 0));
   if (maxScore >= 7.0) {
     achievements.push({
       id: 4,

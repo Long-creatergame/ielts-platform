@@ -14,6 +14,10 @@ const dashboardRoutes = require('./routes/dashboard');
 const writingRoutes = require('./routes/writing');
 const healthRoutes = require('./routes/health');
 const opsRoutes = require('./routes/ops');
+const testsRoutes = require('./routes/tests');
+const progressTrackingRoutes = require('./routes/progress-tracking');
+const v2Routes = require('./routes/v2');
+const paymentRoutes = require('./routes/payment');
 
 dotenv.config();
 const { mongoUri } = validateEnv();
@@ -77,6 +81,10 @@ process.on('SIGINT', async () => {
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/writing', writingRoutes);
+app.use('/api/tests', testsRoutes);
+app.use('/api/progress-tracking', progressTrackingRoutes);
+app.use('/api/v2', v2Routes);
+app.use('/api/payment', paymentRoutes);
 app.use('/api/health', healthRoutes);
 
 // Ops endpoints (Render/UptimeRobot friendly)

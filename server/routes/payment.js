@@ -1,10 +1,20 @@
 const express = require('express');
 const User = require('../models/User');
 
-// Initialize Stripe only if API key is available
+// Initialize Stripe only if API key is available AND the dependency exists.
+// This keeps local/test environments working without installing Stripe.
 let stripe = null;
-if (process.env.STRIPE_SECRET_KEY) {
-  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+function getStripe() {
+  if (stripe) return stripe;
+  if (!process.env.STRIPE_SECRET_KEY) return null;
+  try {
+    // eslint-disable-next-line global-require
+    const stripeFactory = require('stripe');
+    stripe = stripeFactory(process.env.STRIPE_SECRET_KEY);
+    return stripe;
+  } catch (_) {
+    return null;
+  }
 }
 
 const router = express.Router();
@@ -13,12 +23,13 @@ const authMiddleware = require('../middleware/authMiddleware');
 // GET /api/payment/plans - Get pricing plans from Stripe
 router.get('/plans', async (req, res) => {
   try {
-    if (!stripe) {
+    const stripeClient = getStripe();
+    if (!stripeClient) {
       return res.status(503).json({ message: 'Payment service not configured' });
     }
 
     // List active prices with product data
-    const prices = await stripe.prices.list({ active: true, expand: ['data.product'], limit: 50 });
+    const prices = await stripeClient.prices.list({ active: true, expand: ['data.product'], limit: 50 });
 
     const plans = prices.data
       .filter((p) => p.type === 'one_time' || p.recurring) // support both one-time and subscriptions
@@ -42,7 +53,8 @@ router.get('/plans', async (req, res) => {
 // POST /api/payment/create - Create Stripe payment session
 router.post('/create', authMiddleware, async (req, res) => {
   try {
-    if (!stripe) {
+    const stripeClient = getStripe();
+    if (!stripeClient) {
       return res.status(503).json({ 
         message: 'Payment service not configured. Please contact support.' 
       });
@@ -64,7 +76,7 @@ router.post('/create', authMiddleware, async (req, res) => {
     }
 
     // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripeClient.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
@@ -103,7 +115,8 @@ router.post('/create', authMiddleware, async (req, res) => {
 // POST /api/payment/verify - Verify Stripe payment
 router.post('/verify', authMiddleware, async (req, res) => {
   try {
-    if (!stripe) {
+    const stripeClient = getStripe();
+    if (!stripeClient) {
       return res.status(503).json({ 
         message: 'Payment service not configured. Please contact support.' 
       });
@@ -113,7 +126,7 @@ router.post('/verify', authMiddleware, async (req, res) => {
     const user = req.user;
 
     // Retrieve the checkout session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripeClient.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status !== 'paid') {
       return res.status(400).json({ message: 'Payment not completed' });
@@ -146,7 +159,8 @@ router.post('/verify', authMiddleware, async (req, res) => {
 
 // POST /api/payment/webhook - Stripe webhook handler
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
-  if (!stripe) {
+  const stripeClient = getStripe();
+  if (!stripeClient) {
     return res.status(503).json({ message: 'Payment service not configured' });
   }
 
@@ -154,7 +168,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripeClient.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     console.log(`Webhook signature verification failed.`, err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
