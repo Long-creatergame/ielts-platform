@@ -1,8 +1,18 @@
 import axios from 'axios';
 
-const baseURL =
-  import.meta.env.VITE_API_BASE_URL ||
-  'https://ielts-platform-emrv.onrender.com/api';
+function resolveBaseUrl() {
+  const explicit = String(import.meta.env.VITE_API_BASE_URL || '').trim();
+  if (explicit) return explicit;
+
+  // Local/dev fallback (so login works out-of-the-box when running server on :4000)
+  if (import.meta.env.DEV) return 'http://127.0.0.1:4000/api';
+
+  // In production, we expect VITE_API_BASE_URL to be set (Vercel env).
+  // Fallback to same-origin /api only if you run a reverse proxy in front.
+  return '/api';
+}
+
+const baseURL = resolveBaseUrl();
 
 const api = axios.create({
   baseURL,
